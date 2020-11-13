@@ -3,9 +3,11 @@ class Effect extends Entity{
     animationCount=0;
     constructor(x,y,type){
         super(x,y,"resource/"+type+".png");
+        this.w=20;
+        this.h=20;
     }
     collisionHandler(type, entity){
-        if(type=="entity")console.log("아야");
+        //if(type=="entity")console.log("아야");
         this.removeEntity();
     }
 

@@ -5,6 +5,8 @@ class Monster extends Entity{
 
     constructor(x,y,src){
         super(x,y,"resource/giratina.png");
+        this.w=100;
+        this.h=100;
     }
 
     do(){
