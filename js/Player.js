@@ -1,36 +1,33 @@
 class Player extends Entity{
     lv=1;
-    hp=20;
     mp=40;
-    skill=new Array();
-
+    pv=2;
     isRight=true;
+    static dir="resource/player/";
 
     constructor(x,y){
-        super(x,y,`resource/player_right.png`);
+        super(x,y);
         this.w=20;
         this.h=20;
+        this.life=1000;
+        this.img.src = Player.dir+`player_right.png`;
     }
 
+    goRight(){
+        this.isRight=true;
+        this.img.src =Player.dir+`player_right.png`;
+        this.vx=this.pv;
 
-
-    collisionHandler(type, entity){
-        if(type=="entity"){
-            if(this.x+this.w<=entity.x){ //left collision
-                this.vx=0;
-                this.x=entity.x-this.w;
-            }else if(this.x>=entity.x+entity.w){ //right collision
-                this.vx=0;
-                this.x=entity.x+entity.w;
-            }else if(this.y+this.h<=entity.y){ //bottom collision
-                this.vy=0;
-                this.y=entity.y-this.h;
-            }else if(this.y>=entity.y+entity.h){ //top collision
-                this.vy=0;
-                this.y=entity.y+entity.h;
-            }
-            
-        }
-        
     }
+    goLeft(){
+        this.isRight=false;
+        this.img.src =Player.dir+`player_left.png`;
+        this.vx=-this.pv;
+    }
+
+    removeHandler(){
+        console.log("player die");
+    }
+
+    
 }
