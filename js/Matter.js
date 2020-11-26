@@ -16,8 +16,8 @@ class Matter extends Entity{
         this.type = Matter.types[typenum];
         this.vx=vx;
         this.vy=vy;
-        this.w=20;
-        this.h=20;
+        this.w=30;
+        this.h=30;
         this.ga=0.02;
         this.img.src = Matter.dir+this.type.name+".png";
     }
@@ -36,12 +36,9 @@ class Matter extends Entity{
         this.life--;
         if(!(e instanceof MapBlock)){
             e.life -= this.type.damage;
-            
-            console.log(this.type.damage);
             if(this.type.name=="arrow"){
                 var damage = (this.vx*this.vx+this.vy*this.vy)*5;
                 e.life -= damage;
-                console.log(damage);
             }
             if(!(e instanceof Block)){
                 e.vx+=this.vx/10;
@@ -50,12 +47,12 @@ class Matter extends Entity{
             if(this.type.effect==0){
                 e.addAction(1,100,function(){e.life--;});
             }else if(this.type.effect==1){
-
-            }else if(this.type.effect==2){
-                e.addAction(1,1,function(){e.canMove=false;});
+                e.addAction(1,1,function(){e.vx=0;e.vy=0;});
                 e.addAction(300,300,function(){e.canMove=true;});
+            }else if(this.type.effect==2){
+                e.addAction(1,299,function(){e.vx=0;e.vy=0;ctx.fillStyle="rgba(167, 220, 244, 0.5)";ctx.fillRect(e.x, e.y, e.w, e.h);});
+                //e.addAction(300,300,function(){e.canMove=true;});
             }else if(this.type.effect==3){
-                //var ei=entitys.indexOf(e);
                 e.addAction(1,1,function(){e.visibility=false;});
                 e.addAction(300,300,function(){e.visibility=true;});
             }  

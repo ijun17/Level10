@@ -1,16 +1,18 @@
 class Block extends Entity{
     color;
+    mass=1;
     constructor(x,y,w,h,color = "#080808"){
         super(x,y);
         this.w=w;
         this.h=h;
-        this.life=1000;
         this.color = color;
         this.overlap=false;
     }
 
+    setMass(m){this.mass=m;}
+
     draw(){
-        this.life--;
+        //this.life--;
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.w, this.h);
         ctx.fillStyle = this.color;
@@ -18,11 +20,10 @@ class Block extends Entity{
         ctx.closePath();
     }
 
-    collisionHandler(e){
-        if(e.canRemoved){
-            var damage=this.w*this.h*Math.sqrt(this.vx*this.vx+this.vy*this.vy)/20;
+    collisionHandler(e,ct,isActor){
+        if(e.canRemoved&&isActor){
+            var damage=this.w*this.h*Math.sqrt(this.vx*this.vx+this.vy*this.vy)*this.mass/40;
             e.life -= damage;
-            console.log(damage);
         }
     }
 }
