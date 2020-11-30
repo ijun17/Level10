@@ -22,8 +22,6 @@ function keyDownHandler(e) {
             bullet.setVectorX(30*temp);
             bullet.life=50;
         }
-        
-
         bullet.setMass(10);
     }
     else if(e.keyCode == 87 &&p.wCT<time){ //w
@@ -31,7 +29,7 @@ function keyDownHandler(e) {
         var ice;
         var temp=-1;
         if(p.isRight)temp=1;
-        ice=new Matter(2,p.x+30*temp, p.y, 10*temp, 0.5);
+        ice=new Matter(2,p.x+50*temp, p.y, 10*temp, 0.5);
     }
     else if(e.keyCode == 69 &&p.eCT<time){ //e
         p.eCT=time+100;

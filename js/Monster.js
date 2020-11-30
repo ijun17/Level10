@@ -34,6 +34,7 @@ class Monster extends Entity{
             this.addAction(999,999,function(){temp.skill2();});
         }
         if(typenum==3){
+            this.ga=0.2;
             this.addAction(100,100,function(){temp.skill();});
             this.addAction(999,999,function(){temp.skill2();});
         }
@@ -41,8 +42,8 @@ class Monster extends Entity{
 
     draw(){
         ctx.drawImage(this.img, this.x, this.y);
-        ctx.font="20px";
-        ctx.strokeText("hp: "+this.life,this.x,this.y-20);
+        ctx.font="40px";
+        ctx.strokeText("hp: "+(Math.floor(this.life)),this.x,this.y-20);
     }
 
     collisionHandler(e,ct,isActor){
@@ -73,13 +74,11 @@ class Monster extends Entity{
     }
 
     skill(){
-        //if(p.y>200){
-            this.x=p.x-this.w/2;
-            this.y=0;
-            this.vy=-5;
-        //}
+        this.x=p.x+p.w/2-this.w/2;
+        this.y=0;
+        this.vx=0;
+        this.vy=-6;
         var temp=this;
-
         this.addAction(500,500,function(){temp.skill();});
     }
 
@@ -96,8 +95,6 @@ class Monster extends Entity{
     }
 
     skill3(){
-        //this.x=p.x;
-        //this.y=p.y+60;
         var monster = this;
         this.addAction(1,1,function(){monster.visibility=false;});
         this.addAction(50,50,function(){monster.visibility=true;});

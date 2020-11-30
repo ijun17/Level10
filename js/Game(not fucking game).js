@@ -44,11 +44,10 @@ class Game{
         new MapBlock(0,canvas.height-40,canvas.width,40,"#54341E");
 
         p = new Player(10,canvas.height-460);
+        new Monster(0,900, 200);
+        new Monster(0,800, 200);
         new Monster(0,700, 200);
-        new Monster(0,600, 200);
-        new Monster(0,500, 200);
-        new Monster(3,600, 0);
-        //new Monster(2,1000, 0);
+        new Monster(3,800, 0);
         
     }
 }
