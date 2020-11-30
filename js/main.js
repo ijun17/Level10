@@ -30,7 +30,9 @@ function keyDownHandler(e) {
         //fire.setVectorX(5*temp);
     }
     else if(e.keyCode == 69){ //e
-        p.addAction(1,1000,function(){p.canJump=true;});
+        var temp=-1;
+        if(p.isRight)temp=1;
+        p.x+=300*temp;
     }else if(e.keyCode == 82){ //r
         var ice;
         var temp=-1;

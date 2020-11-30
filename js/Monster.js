@@ -1,6 +1,6 @@
 class Monster extends Entity{
     static dir="resource/monster/";
-    static types=[{name:"crazymushroom",w:30,h:30,life:5000,damage:10},{name:"crazyclam",w:100,h:100,life:10000,damage:10}, {name:"오세안",w:240,h:320,life:1000000,damage:40}];
+    static types=[{name:"crazymushroom",w:30,h:30,life:5000,damage:20},{name:"crazyclam",w:100,h:100,life:10000,damage:10}, {name:"오세안",w:142,h:297,life:1000000,damage:40}];
 
     type;
     target;
@@ -18,7 +18,11 @@ class Monster extends Entity{
         var temp = this;
 
         this.addAction(100-time%10,100-time%10,function(){temp.AI();});
-        //this.AI();
+        
+        if(typenum==2){
+            //this.addAction(100-time%10,100-time%10,function(){temp.skill();});
+            this.addAction(100-time%10,100-time%10,function(){temp.skill2();});
+        }
     }
 
     draw(){
@@ -36,7 +40,7 @@ class Monster extends Entity{
                 e.vx=this.type.damage/10*(this.vx);
                 e.vy=1;
             }
-            else e.life-=500;
+            //else e.life-=500;
             
         }
     }
@@ -52,5 +56,26 @@ class Monster extends Entity{
         }
         var temp = this;
         this.addAction(50,50,function(){temp.AI();});
+    }
+
+    skill(){
+        if(p.y>200){
+            this.x=p.x-120;
+            this.y=0;
+        }
+        var temp=this;
+        this.addAction(1000,1000,function(){temp.skill();});
+    }
+
+    skill2(){
+        var monster = this;
+        var ice;
+        var temp=-1;
+        if(this.x+this.w/2 < p.x+p.w/2)temp=1;
+        ice=new Matter(0,monster.x+monster.w/2+(monster.w+80)/2*temp, monster.y+monster.h/2,0, 0);
+        ice.vx=(p.x-ice.x)/80;
+        ice.vy=-(p.y-ice.y)/79;
+        
+        this.addAction(30,30,function(){monster.skill2();});
     }
 }

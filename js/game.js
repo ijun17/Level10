@@ -51,7 +51,7 @@ class Game{
         // new MapBlock(650, canvas.height-300, 50, 20);
 
         p = new Player(10,canvas.height-460);
-        new Player(300,200);
+        //new Player(300,200);
         new Monster(0,700, 200);
         new Monster(2,1000, 0);
         //new Monster(1,500, 200);

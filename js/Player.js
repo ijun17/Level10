@@ -44,6 +44,7 @@ class Player extends Entity{
 
     removeHandler(){
         console.log("player die");
+        Game.levelSelectedScreen();
     }
 
     
