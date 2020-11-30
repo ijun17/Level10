@@ -42,10 +42,10 @@ function keyDownHandler(e) {
         p.rCT=time+1000;
         
         
-        p.addAction(1,300,function(){
+        p.addAction(1,70,function(){
             var temp=-1;
             if(p.isRight)temp=1;
-            ice=new Matter(1,p.x+40*temp, p.y, 15*temp, 0.5);
+            ice=new Matter(1,p.x+40*temp, p.y+20, 15*temp, 0.5);
         })
         
     }
