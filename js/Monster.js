@@ -52,8 +52,8 @@ class Monster extends Entity{
         if(!(e instanceof Monster)&&e.canMove&&time%10==0){
             e.life-=this.type.damage;
             if(!(e instanceof Block)){
-                e.vx=this.type.damage/10*(this.vx);
-                e.vy=1;
+                e.vx=Math.sqrt(this.type.damage)/1.5;
+                e.vy=1.5;
             }
             else e.life-=500;
             

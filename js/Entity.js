@@ -6,7 +6,7 @@ let time=0;
 let p;
 
 class Entity{
-    x;y;w=0;h=0;vx=0;vy=0;ga=0.15;friction=0.9; //phisics;
+    x;y;w=0;h=0;vx=0;vy=0;ga=0.15;friction=0.7; //phisics;
     life=1;
     
     overlap=true; //겹칠 수 있는가
@@ -94,8 +94,8 @@ class Entity{
         this.x+=this.vx;
         this.y-=this.vy;
         if(collisionType=='D'){
-            if(Math.abs(this.vx)>1.8&&time%10==0)this.vx*=this.friction;
-            if(Math.abs(this.vx)<=1.8)this.vx=0;
+            if(Math.abs(this.vx)>2&&time%10==0)this.vx*=this.friction;
+            if(Math.abs(this.vx)<=2)this.vx=0;
         }
         this.vy-=this.ga;
     }

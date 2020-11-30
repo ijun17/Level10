@@ -3,6 +3,7 @@ class Player extends Entity{
     mp=40;
     pv=4;
     isRight=true;
+    moveFlag=false;
     canJump=true;
     static dir="resource/player/";
     
@@ -23,6 +24,16 @@ class Player extends Entity{
         ctx.drawImage(this.img, this.x, this.y);
         ctx.font="20px";
         ctx.strokeText("hp: "+this.life,this.x,this.y-20);
+    }
+
+    go(){
+        if(this.isRight){
+            this.img.src =Player.dir+`player2_right.png`;
+            this.vx=this.pv;
+        }else{
+            this.img.src =Player.dir+`player2_left.png`;
+            this.vx=-this.pv;
+        }
     }
 
     goRight(){

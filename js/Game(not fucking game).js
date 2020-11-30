@@ -12,6 +12,9 @@ class Game{
     }
 
     static updateWorld(){
+        if(p!=null&&p.moveFlag){
+            p.go();
+        }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for(var e of entitys){e.update();}
         time++;

@@ -5,9 +5,11 @@ var ctx = canvas.getContext("2d");
 
 function keyDownHandler(e) {
     if(e.keyCode == 39) {//right
-        p.goRight();
+        p.moveFlag=true;
+        p.isRight=true;
     }else if(e.keyCode == 37) {//left
-        p.goLeft();
+        p.moveFlag=true;
+        p.isRight=false;
     }else if(e.keyCode == 38){//up
         p.jump();
     }else if(e.keyCode == 40){//down
@@ -51,9 +53,11 @@ function keyDownHandler(e) {
 }
 function keyUpHandler(e) {
     if(e.keyCode == 39) {
+        p.moveFlag=false;
         p.setVectorX(0);
     }
     else if(e.keyCode == 37) {
+        p.moveFlag=false;
         p.setVectorX(0);
     }
 }
