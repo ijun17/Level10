@@ -1,6 +1,9 @@
 class Monster extends Entity{
     static dir="resource/monster/";
-    static types=[{name:"crazymushroom",w:30,h:30,life:2000,damage:20,speed:3},{name:"crazyclam",w:100,h:100,life:10000,damage:10, speed:2}, {name:"오세안",w:142,h:297,life:20000,damage:40, speed:2}];
+    static types=[{name:"crazymushroom",w:30,h:30,life:2000,damage:20,speed:3},
+    {name:"crazyclam",w:100,h:100,life:10000,damage:10, speed:2}, 
+    {name:"오세안",w:142,h:297,life:20000,damage:40, speed:2},
+    {name:"crazymonkey",w:125,h:200,life:20000,damage:60, speed:4}];
 
     type;
     target;
@@ -27,6 +30,10 @@ class Monster extends Entity{
             this.addAction(100-time%10,100-time%10,function(){temp.skill3();});
         }
         if(typenum==2){
+            this.addAction(100,100,function(){temp.skill();});
+            this.addAction(999,999,function(){temp.skill2();});
+        }
+        if(typenum==3){
             this.addAction(100,100,function(){temp.skill();});
             this.addAction(999,999,function(){temp.skill2();});
         }

@@ -47,7 +47,8 @@ class Game{
         new Monster(0,700, 200);
         new Monster(0,600, 200);
         new Monster(0,500, 200);
-        new Monster(2,1000, 0);
+        new Monster(3,600, 0);
+        //new Monster(2,1000, 0);
         
     }
 }
