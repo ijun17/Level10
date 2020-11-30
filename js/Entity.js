@@ -6,7 +6,7 @@ let time=0;
 let p;
 
 class Entity{
-    x;y;w=0;h=0;vx=0;vy=0;ga=0.1;friction=0.9; //phisics;
+    x;y;w=0;h=0;vx=0;vy=0;ga=0.15;friction=0.9; //phisics;
     life=1;
     
     overlap=true; //겹칠 수 있는가

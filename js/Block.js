@@ -12,7 +12,7 @@ class Block extends Entity{
     setMass(m){this.mass=m;}
 
     draw(){
-        //this.life--;
+        this.life--;
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.w, this.h);
         ctx.fillStyle = this.color;

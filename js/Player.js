@@ -1,7 +1,7 @@
 class Player extends Entity{
     lv=1;
     mp=40;
-    pv=3;
+    pv=4;
     isRight=true;
     canJump=true;
     static dir="resource/player/";

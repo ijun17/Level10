@@ -1,6 +1,6 @@
 class Monster extends Entity{
     static dir="resource/monster/";
-    static types=[{name:"crazymushroom",w:30,h:30,life:5000,damage:10},{name:"crazyclam",w:100,h:100,life:10000,damage:10}];
+    static types=[{name:"crazymushroom",w:30,h:30,life:5000,damage:10},{name:"crazyclam",w:100,h:100,life:10000,damage:10}, {name:"오세안",w:240,h:320,life:1000000,damage:40}];
 
     type;
     target;
@@ -36,6 +36,7 @@ class Monster extends Entity{
                 e.vx=this.type.damage/10*(this.vx);
                 e.vy=1;
             }
+            else e.life-=500;
             
         }
     }
@@ -47,7 +48,7 @@ class Monster extends Entity{
         else this.vx = -2;
         if(this.canJump){
             this.canJump=false;
-            this.vy=1;
+            this.vy=1.5;
         }
         var temp = this;
         this.addAction(50,50,function(){temp.AI();});

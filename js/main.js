@@ -18,7 +18,7 @@ function keyDownHandler(e) {
         if(p.isRight)temp=1;
         bullet = new Block(p.x+30*temp, p.y+p.h/2, 10,10);
         bullet.setVectorX(30*temp);
-        //bullet.setVectorY(-10);
+        bullet.life=10;
         bullet.setMass(10);
     }
     else if(e.keyCode == 87){ //w
