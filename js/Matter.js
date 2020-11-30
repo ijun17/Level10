@@ -1,6 +1,6 @@
 class Matter extends Entity{
     static types = 
-    [{name:"fire",effect:0,damage:10},
+    [{name:"fire",effect:0,damage:100},
     {name:"lightning",effect:1,damage:100}, 
     {name:"ice",effect:2,damage:50}, 
     {name:"explosion",effect:-1,damage:200},
@@ -45,12 +45,12 @@ class Matter extends Entity{
                 e.vy+=this.vy/10+1;
             }
             if(this.type.effect==0){
-                //e.addAction(1,100,function(){e.life--;});
+                e.addAction(1,100,function(){e.life--;});
             }else if(this.type.effect==1){
                 e.addAction(1,1,function(){e.vx=0;e.vy=0;});
                 e.addAction(300,300,function(){e.canMove=true;});
             }else if(this.type.effect==2){
-                e.addAction(1,299,function(){e.vx=0;e.vy=0;ctx.fillStyle="rgba(167, 220, 244, 0.5)";ctx.fillRect(e.x, e.y, e.w, e.h);});
+                e.addAction(1,100,function(){e.vx=0;e.vy=0;ctx.fillStyle="rgba(167, 220, 244, 0.5)";ctx.fillRect(e.x, e.y, e.w, e.h);});
                 //e.addAction(300,300,function(){e.canMove=true;});
             }else if(this.type.effect==3){
                 e.addAction(1,1,function(){e.visibility=false;});

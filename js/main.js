@@ -12,32 +12,42 @@ function keyDownHandler(e) {
         p.jump();
     }else if(e.keyCode == 40){//down
         p.setVectorY(-2.5);
-    }else if(e.keyCode == 81){ //q
+    }else if(e.keyCode == 81 &&p.qCT<time){ //q
+        p.qCT=time+50;
         var bullet;
         var temp=-1;
         if(p.isRight)temp=1;
-        bullet = new Block(p.x+30*temp, p.y+p.h/2, 10,10);
-        bullet.setVectorX(30*temp);
-        bullet.life=10;
+        for(var i=0; i<3; i++){
+            bullet = new Block(p.x+30*temp, p.y+i*14, 10,10);
+            bullet.setVectorX(30*temp);
+            bullet.life=50;
+        }
+        
+
         bullet.setMass(10);
     }
-    else if(e.keyCode == 87){ //w
-        var wall;
-        var temp=-1;
-        if(p.isRight)temp=1;
-        wall = new Block(p.x+30*temp, p.y-60, 10,60);
-        wall.setLife(2000);
-        //fire.setVectorX(5*temp);
-    }
-    else if(e.keyCode == 69){ //e
-        var temp=-1;
-        if(p.isRight)temp=1;
-        p.x+=300*temp;
-    }else if(e.keyCode == 82){ //r
+    else if(e.keyCode == 87 &&p.wCT<time){ //w
+        p.wCT=time+200;
         var ice;
         var temp=-1;
         if(p.isRight)temp=1;
         ice=new Matter(2,p.x+30*temp, p.y, 10*temp, 0.5);
+    }
+    else if(e.keyCode == 69 &&p.eCT<time){ //e
+        p.eCT=time+100;
+        var temp=-1;
+        if(p.isRight)temp=1;
+        p.x+=300*temp;
+    }else if(e.keyCode == 82 &&p.rCT<time){ //r
+        p.rCT=time+1000;
+        
+        
+        p.addAction(1,300,function(){
+            var temp=-1;
+            if(p.isRight)temp=1;
+            ice=new Matter(1,p.x+40*temp, p.y, 15*temp, 0.5);
+        })
+        
     }
 
 }

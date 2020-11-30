@@ -5,6 +5,11 @@ class Player extends Entity{
     isRight=true;
     canJump=true;
     static dir="resource/player/";
+    
+    qCT=0;
+    wCT=0;
+    eCT=0;
+    rCT=0;
 
     constructor(x,y){
         super(x,y);

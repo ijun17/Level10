@@ -1,11 +1,14 @@
 class Monster extends Entity{
     static dir="resource/monster/";
-    static types=[{name:"crazymushroom",w:30,h:30,life:5000,damage:20},{name:"crazyclam",w:100,h:100,life:10000,damage:10}, {name:"오세안",w:142,h:297,life:1000000,damage:40}];
+    static types=[{name:"crazymushroom",w:30,h:30,life:2000,damage:20},{name:"crazyclam",w:100,h:100,life:10000,damage:10}, {name:"오세안",w:142,h:297,life:20000,damage:40}];
 
     type;
     target;
     canJump=true;
     //speed=50;
+
+    //temp
+    bossMode=0;
 
     constructor(typenum,x,y){
         super(x,y);
@@ -19,9 +22,13 @@ class Monster extends Entity{
 
         this.addAction(100-time%10,100-time%10,function(){temp.AI();});
         
-        if(typenum==2){
+        if(typenum==0){
             //this.addAction(100-time%10,100-time%10,function(){temp.skill();});
-            this.addAction(100-time%10,100-time%10,function(){temp.skill2();});
+            this.addAction(100-time%10,100-time%10,function(){temp.skill3();});
+        }
+        if(typenum==2){
+            this.addAction(100,100,function(){temp.skill();});
+            this.addAction(999,999,function(){temp.skill2();});
         }
     }
 
@@ -40,7 +47,7 @@ class Monster extends Entity{
                 e.vx=this.type.damage/10*(this.vx);
                 e.vy=1;
             }
-            //else e.life-=500;
+            else e.life-=500;
             
         }
     }
@@ -59,12 +66,14 @@ class Monster extends Entity{
     }
 
     skill(){
-        if(p.y>200){
-            this.x=p.x-120;
+        //if(p.y>200){
+            this.x=p.x-this.w/2;
             this.y=0;
-        }
+            this.vy=-3;
+        //}
         var temp=this;
-        this.addAction(1000,1000,function(){temp.skill();});
+
+        this.addAction(500,500,function(){temp.skill();});
     }
 
     skill2(){
@@ -72,10 +81,20 @@ class Monster extends Entity{
         var ice;
         var temp=-1;
         if(this.x+this.w/2 < p.x+p.w/2)temp=1;
-        ice=new Matter(0,monster.x+monster.w/2+(monster.w+80)/2*temp, monster.y+monster.h/2,0, 0);
-        ice.vx=(p.x-ice.x)/80;
-        ice.vy=-(p.y-ice.y)/79;
+        ice=new Matter(2,monster.x+monster.w/2+(monster.w+80)/2*temp, monster.y+monster.h/2,0, 0);
+        ice.vx=(p.x-ice.x)/60;
+        ice.vy=-(p.y-ice.y)/60;
         
-        this.addAction(30,30,function(){monster.skill2();});
+        this.addAction(200,200,function(){monster.skill2();});
+    }
+
+    skill3(){
+        //this.x=p.x;
+        //this.y=p.y+60;
+        var monster = this;
+        this.addAction(1,1,function(){monster.visibility=false;});
+        this.addAction(50,50,function(){monster.visibility=true;});
+        this.addAction(100,100,function(){monster.skill3();});
+
     }
 }
