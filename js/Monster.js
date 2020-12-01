@@ -42,21 +42,21 @@ class Monster extends Entity{
 
     draw(){
         ctx.drawImage(this.img, this.x, this.y);
-        ctx.font="40px";
+        ctx.font="10px serif";
         ctx.strokeText("hp: "+(Math.floor(this.life)),this.x,this.y-20);
     }
 
     collisionHandler(e,ct,isActor){
         if(isActor&&this.y+this.h<=e.y)this.canJump=true;
         //공격
-        if(!(e instanceof Monster)&&e.canMove&&time%10==0){
-            e.life-=this.type.damage;
-            if(!(e instanceof Block)){
-                e.vx=Math.sqrt(this.type.damage)/1.5;
-                e.vy=1.5;
+        if(this.collisionLevel+e.collisionLevel>=0){
+            if(!(e instanceof Monster)&&e.canMove&&time%10==0){
+                e.life-=this.type.damage;
+                if(!(e instanceof Block)){
+                    e.vx=Math.sqrt(this.type.damage)/1.5;
+                    e.vy=1.5;
+                }else e.life-=500;
             }
-            else e.life-=500;
-            
         }
     }
 

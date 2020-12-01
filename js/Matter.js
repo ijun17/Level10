@@ -1,6 +1,6 @@
 class Matter extends Entity{
     static types = 
-    [{name:"fire",effect:0,damage:100},
+    [{name:"fire",effect:0,damage:300},
     {name:"lightning",effect:1,damage:100}, 
     {name:"ice",effect:2,damage:50}, 
     {name:"explosion",effect:-1,damage:200},
@@ -33,6 +33,7 @@ class Matter extends Entity{
     }
 
     collisionHandler(e){
+        if(this.collisionLevel+e.collisionLevel<0)return;
         this.life--;
         if(!(e instanceof MapBlock)){
             e.life -= this.type.damage;
@@ -45,7 +46,7 @@ class Matter extends Entity{
                 e.vy+=this.vy/10+1;
             }
             if(this.type.effect==0){
-                e.addAction(1,100,function(){e.life--;});
+                //e.addAction(1,100,function(){e.life--;});
             }else if(this.type.effect==1){
                 e.addAction(1,1,function(){e.vx=0;e.vy=0;});
                 e.addAction(300,300,function(){e.canMove=true;});

@@ -11,6 +11,7 @@ class Player extends Entity{
     wCT=0;
     eCT=0;
     rCT=0;
+    aCT=0;
 
     constructor(x,y){
         super(x,y);
@@ -22,7 +23,7 @@ class Player extends Entity{
 
     draw(){
         ctx.drawImage(this.img, this.x, this.y);
-        ctx.font="20px";
+        ctx.font="10px serif";
         ctx.strokeText("hp: "+this.life,this.x,this.y-20);
     }
 
@@ -34,18 +35,6 @@ class Player extends Entity{
             this.img.src =Player.dir+`player2_left.png`;
             this.vx=-this.pv;
         }
-    }
-
-    goRight(){
-        this.isRight=true;
-        this.img.src =Player.dir+`player2_right.png`;
-        this.vx=this.pv;
-
-    }
-    goLeft(){
-        this.isRight=false;
-        this.img.src =Player.dir+`player2_left.png`;
-        this.vx=-this.pv;
     }
     jump(){
         if(this.canJump){
@@ -60,7 +49,7 @@ class Player extends Entity{
 
     removeHandler(){
         console.log("player die");
-        Game.levelSelectedScreen();
+        Game.selectScreen();
     }
 
     

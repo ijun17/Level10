@@ -10,6 +10,7 @@ class MapBlock extends Entity{ //안부숴지는
         this.color = color;
         this.overlap=false;
         this.canRemoved=false;
+        this.collisionLevel=1;
     }
 
     update(){

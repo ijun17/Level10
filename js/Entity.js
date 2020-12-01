@@ -9,7 +9,7 @@ class Entity{
     x;y;w=0;h=0;vx=0;vy=0;ga=0.15;friction=0.7; //phisics;
     life=1;
     
-    overlap=true; //겹칠 수 있는가
+    collisionLevel=0; //0보다 크면 물리적 충돌
     canRemoved=true; //삭제될 수 있는가
     visibility=true; //보일 수 있는가
     canMove=true; //움직일 수 있는가
@@ -74,7 +74,7 @@ class Entity{
                 }
                 this.collisionHandler(e,collisionType,true);
                 e.collisionHandler(this,collisionType,false);
-                if(!(this.overlap&&e.overlap)){
+                if(this.collisionLevel+e.collisionLevel>0){
                     if(collisionType=='L'){ //left collision
                         this.vx=0;
                         this.x=e.x-this.w;

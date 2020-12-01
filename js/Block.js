@@ -7,6 +7,7 @@ class Block extends Entity{
         this.h=h;
         this.color = color;
         this.overlap=false;
+        this.collisionLevel=1;
     }
 
     setMass(m){this.mass=m;}
