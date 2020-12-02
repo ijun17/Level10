@@ -57,10 +57,11 @@ class Game{
     }
 
     static clickHandler(e){
-        var click = new Block(e.layerX, e.layerY, 0, 0);
-        click.life=1;
-        click.overlap=true;
-        click.collisionLevel=-2;
+        let clickE = new Block(e.layerX, e.layerY, 0, 0);
+        clickE.life=1;
+        clickE.overlap=true;
+        clickE.collisionLevel=-8;
+        clickE.canMove=false;
     }
 
     static updateWorld(){
@@ -89,41 +90,56 @@ class Game{
     static selectMagicScreen(){
         time=0;
         this.clearEntitys();
+        Magic.clearCoolTime();
         let backButton = new Button(0,0,80,80,"back.png",function(){Game.selectScreen();});
 
         let key=['q','w','e','r'];
+        let keyButtons=new Array(4);
         for(let i=0; i<4; i++) {
+            new Button(10,50+110*i,200,50,null,function(){});
             let keyButton = new Button(10,100+110*i,100,100,key[i]+".png",function(){
                 if(Game.selectMagic!=null){
                     Game.selectMagic.x=120;Game.selectMagic.y=100+110*i;
                     Magic.skillNum[i]=Game.selectMagic.life;
+                    if(keyButton.friction != null){
+                        keyButton.friction.x=400;
+                        keyButton.friction.y=600;
+                    }
+                    keyButton.friction=Game.selectMagic;
                     Game.selectMagic=null;
                 }
+                console.log(Magic.skillNum);
             });
+            keyButtons[i]=keyButton;
+            keyButton.friction = null; //friction 은 선택된 마법을 의미
         }
+        new Button(400,0,200,100,null,function(){});
         for(let i=0; i<Magic.basicMagic.length; i++){
             let magicButton = new Button(400,100+50*i,200,40,null,function(){});
             magicButton.code=function(){Game.selectMagic=magicButton;new (Magic.basicMagic[i][1]);};
             magicButton.life=i;
             magicButton.drawCode=function(){
-                ctx.beginPath();
-                ctx.rect(magicButton.x, magicButton.y, magicButton.w, magicButton.h);
-                ctx.fillStyle = "white";
-                ctx.fill();
-                ctx.closePath();
-                ctx.font="30px Arial";
+                ctx.fillStyle = "rgb(126, 197, 238)";
+                ctx.fillRect(magicButton.x, magicButton.y, magicButton.w, magicButton.h);
+                ctx.strokeRect(magicButton.x, magicButton.y, magicButton.w, magicButton.h);
+                ctx.font="bold 30px Arial";
                 ctx.fillStyle = "black";
                 ctx.fillText(Magic.basicMagic[i][0],magicButton.x+10,magicButton.y+30);
             }
+            magicButton.ga=-0.5;
             var keyIndex = Magic.skillNum.findIndex(function(e){return e==i;});
             if(keyIndex>=0){
-                magicButton.x=120;
-                magicButton.y=100+110*keyIndex;
+                Game.selectMagic=magicButton;
+                let clickE = new Block(0, 0, 0, 0);
+                clickE.life=1;
+                clickE.collisionLevel=-8;
+                clickE.canMove=false;
+                keyButtons[keyIndex].collisionHandler(clickE);
             }
         }
 
         //simulation
-        new MapBlock(700,400,500,10);
+        new MapBlock(700,400,500,200,"rgb(35, 35, 35)");
         p = new Player(700,0);
         
     }
@@ -138,8 +154,8 @@ class Game{
         new MapBlock(0,-10,canvas.width,10);//top
         new MapBlock(-200,canvas.height-50,canvas.width+400,10,"#2B650D");//bottom
         new MapBlock(0,canvas.height-40,canvas.width,40,"#54341E");
-
         p = new Player(10,canvas.height-460);
+        
         new Monster(0,900, 200);
         new Monster(0,800, 200);
         new Monster(0,700, 200);

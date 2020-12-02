@@ -6,19 +6,14 @@ class Player extends Entity{
     moveFlag=false;
     canJump=true;
     static dir="resource/player/";
-    
-    qCT=0;
-    wCT=0;
-    eCT=0;
-    rCT=0;
-    aCT=0;
 
     constructor(x,y){
         super(x,y);
         this.w=27;
         this.h=60;
-        this.life=1000;
+        this.life=10000;
         this.img.src = Player.dir+`player2_right.png`;
+        this.collisionLevel=1;
     }
 
     draw(){

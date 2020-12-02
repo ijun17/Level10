@@ -1,9 +1,9 @@
 class Monster extends Entity{
     static dir="resource/monster/";
-    static types=[{name:"crazymushroom",w:30,h:30,life:2000,damage:20,speed:3},
+    static types=[{name:"crazymushroom",w:30,h:30,life:10000,damage:20,speed:3},
     {name:"crazyclam",w:100,h:100,life:10000,damage:10, speed:2}, 
     {name:"오세안",w:142,h:297,life:20000,damage:40, speed:2},
-    {name:"crazymonkey",w:125,h:200,life:20000,damage:60, speed:4}];
+    {name:"crazymonkey",w:125,h:200,life:50000,damage:60, speed:4}];
 
     type;
     target;
@@ -50,11 +50,12 @@ class Monster extends Entity{
         if(isActor&&this.y+this.h<=e.y)this.canJump=true;
         //공격
         if(this.collisionLevel+e.collisionLevel>=0){
-            if(!(e instanceof Monster)&&e.canMove&&time%10==0){
+            if(!(e instanceof Monster)){
                 e.life-=this.type.damage;
                 if(!(e instanceof Block)){
-                    e.vx=Math.sqrt(this.type.damage)/1.5;
-                    e.vy=1.5;
+                    if(e.x+e.w/2>this.x+this.w/2)e.vx=Math.sqrt(this.type.damage)/2;
+                    else e.vx=-(Math.sqrt(this.type.damage))/2;
+                    e.vy=2;
                 }else e.life-=500;
             }
         }
@@ -88,8 +89,8 @@ class Monster extends Entity{
         var temp=-1;
         if(this.x+this.w/2 < p.x+p.w/2)temp=1;
         ice=new Matter(2,monster.x+monster.w/2+(monster.w+80)/2*temp, monster.y+monster.h/2,0, 0);
-        ice.vx=(p.x-ice.x)/40;
-        ice.vy=-(p.y-ice.y)/40;
+        ice.vx=(p.x-ice.x)/30;
+        ice.vy=-(p.y-ice.y)/30;
         
         this.addAction(200,200,function(){monster.skill2();});
     }

@@ -31,18 +31,19 @@ class Magic{
     },100],
 
     ["chidori",function(){
-        let temp=-1;
-        if(p.isRight)temp=1;
-        p.addAction(1,70,function(){new Matter(1,p.x+40*temp, p.y+20, 15*temp, 0.5)});
+        p.addAction(1,200,function(){
+            let temp=-1;
+            if(p.isRight)temp=1;
+            new Matter(1,p.x+40*temp, p.y+20, 0, 0);});
     },1000],
 
     ["firetornado",function(){
         let temp=-1;
         if(p.isRight)temp=1;
-        for(let i=0; i<10; i++){
+        for(let i=0; i<12; i++){
             let x=p.x+200*temp;
             let y=p.y+29-i*40;
-            let fire = new Matter(0, x-15*i+10,y,0,0 );
+            let fire = new Matter(0, x-13*i+10,y,0,0 );
             fire.addAction(1,1000,function(){
                 fire.vx+=(x-fire.x)/(1.1+i/10);
                 fire.vy=0;

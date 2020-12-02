@@ -19,6 +19,7 @@ class Matter extends Entity{
         this.w=30;
         this.h=30;
         this.ga=0.02;
+        this.collisionLevel=-1;
         this.img.src = Matter.dir+this.type.name+".png";
     }
     
@@ -33,9 +34,9 @@ class Matter extends Entity{
     }
 
     collisionHandler(e){
-        if(this.collisionLevel+e.collisionLevel<0)return;
+        //if(this.collisionLevel+e.collisionLevel<0)return;
         this.life--;
-        if(!(e instanceof MapBlock)){
+        if(e.collisionLevel>-3){
             e.life -= this.type.damage;
             if(this.type.name=="arrow"){
                 var damage = (this.vx*this.vx+this.vy*this.vy)*5;
