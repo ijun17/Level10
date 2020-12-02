@@ -10,15 +10,15 @@ class Game{
     static clearEntitys(){entitys=[];}
 
     static startGame(){
-        let a=34.5;
-        let b=13.234;
-        console.log((a*b).toFixed());
-
-        this.menuScreen();
         document.addEventListener("keydown", this.keyDownHandler, false);
         document.addEventListener("keyup", this.keyUpHandler, false);
         canvas.addEventListener("click", this.clickHandler, false);
+
+        Level.loadLevel();
+        console.log(Level.playerLevel);
+        this.menuScreen();
         p=new Player(100,100);
+        p.ga=-0.01;
     }
 
     static keyDownHandler(e){
@@ -100,8 +100,8 @@ class Game{
         var magicButton = new Button(canvas.width-210,10,200,50,null,function(){Game.selectMagicScreen();});
         var backButton = new Button(0,0,80,80,"back.png",function(){Game.menuScreen();});
         new Button((canvas.width-200)*0.5,0,200,10,null,function(){});
-        for(let i=0; i<10; i++){
-            let level1Button = new Button((canvas.width-200)*0.5,250+i*60,200,59,null,function(){Game.gameScreen();});
+        for(let i=1; i<=Level.playerLevel; i++){
+            let level1Button = new Button((canvas.width-200)*0.5,250+i*60,200,59,null,function(){Game.gameScreen();Level.makeStage(i);});
             level1Button.ga=0.5;
             level1Button.drawCode=function(){
                 let thisBtn=level1Button;
@@ -113,7 +113,7 @@ class Game{
                 ctx.fillStyle = "black";
                 ctx.textBaseline = "middle";
                 ctx.textAlign = "center";
-                ctx.fillText("LEVEL"+(i+1),thisBtn.x+100,thisBtn.y+30);
+                ctx.fillText("LEVEL"+i,thisBtn.x+100,thisBtn.y+30);
                 ctx.closePath();
             }
         }
@@ -121,8 +121,6 @@ class Game{
             let thisBtn=magicButton;
             ctx.beginPath();
             ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
-            ctx.fillStyle = "white";
-            ctx.fillRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
             ctx.font="bold 30px Arial";
             ctx.fillStyle = "black";
             ctx.textBaseline = "middle";
@@ -188,7 +186,7 @@ class Game{
             magicButton.drawCode=function(){
                 let thisBtn=magicButton;
                 ctx.beginPath();
-                ctx.fillStyle = "rgb(126, 197, 238)";
+                ctx.fillStyle = "rgb(121, 140, 205)";
                 ctx.fillRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
                 ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
                 ctx.font="bold 30px Arial";
@@ -224,17 +222,11 @@ class Game{
         this.clearEntitys();
         Magic.clearCoolTime();
         var backButton = new Button(0,0,80,80,"back.png",function(){Game.selectScreen();});
-        new MapBlock(-10,0,10,canvas.height); //left
-        new MapBlock(canvas.width,0,10,canvas.height);//right
-        new MapBlock(0,-10,canvas.width,10);//top
-        new MapBlock(-200,canvas.height-50,canvas.width+400,10,"#2B650D");//bottom
-        new MapBlock(0,canvas.height-40,canvas.width,40,"#54341E");
+        new MapBlock(-50,0,50,canvas.height); //left
+        new MapBlock(canvas.width,0,50,canvas.height);//right
+        new MapBlock(0,-50,canvas.width,50);//top
+        new MapBlock(-200,canvas.height-100,canvas.width+400,20,"#2B650D");//bottom
+        new MapBlock(0,canvas.height-90,canvas.width,90,"#54341E");
         p = new Player(10,canvas.height-460);
-        
-        new Monster(0,900, 200);
-        new Monster(0,800, 200);
-        new Monster(0,700, 200);
-        new Monster(3,800, 0);
-        
     }
 }

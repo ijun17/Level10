@@ -1,6 +1,6 @@
 class Magic{
     //qwer
-    static skillNum=[1,2,3,5];
+    static skillNum=[1,2,3,4];
     static coolTime=[0,0,0,0];
     
     //magic = [magic,coolTime]
@@ -22,6 +22,14 @@ class Magic{
         let temp=-1;
         if(p.isRight)temp=1;
         ice=new Matter(2,p.x+50*temp, p.y+20, 10*temp, 0.5);
+    },200],
+
+    ["wall",function(){
+        let wall;
+        let temp=-1;
+        if(p.isRight)temp=1;
+        wall=new Block(p.x+50*temp, p.y-40, 20, 100);
+        wall.life=4000;
     },200],
 
     ["teleport",function(){

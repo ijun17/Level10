@@ -83,23 +83,23 @@ class Entity{
                         this.vx=0;
                         this.x=e.x+e.w;
                     }else if(collisionType=='D'){ //down collision
-                        this.vy=0;
-                        this.y=e.y-this.h;
+                        this.vy=-this.ga;
+                        this.y=e.y-this.h-this.ga;
                     }else if(collisionType=='U'){ //up collision
-                        this.vy=0;
-                        this.y=e.y+e.h;
+                        this.vy=-this.ga;
+                        this.y=e.y+e.h-this.ga;
                     }
                 }
             }
         }
         this.x+=this.vx;
         this.y-=this.vy;
+        this.vy+=this.ga;
         if(collisionType=='D'){
             if(this.vx>0)this.vx-=this.friction;
             else this.vx+=this.friction;
             if(Math.abs(this.vx)<2)this.vx=0;
         }
-        this.vy+=this.ga;
     }
     giveForce(ax,ay){
         this.vx+=ax;

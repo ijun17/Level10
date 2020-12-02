@@ -30,11 +30,11 @@ class Monster extends Entity{
             this.addAction(100-time%10,100-time%10,function(){temp.skill3();});
         }
         if(typenum==2){
-            this.addAction(100,100,function(){temp.skill();});
+            this.addAction(100,100,function(){temp.skill(500);});
             this.addAction(999,999,function(){temp.skill2();});
         }
         if(typenum==3){
-            this.addAction(100,100,function(){temp.skill();});
+            this.addAction(100,100,function(){temp.skill(500);});
             this.addAction(999,999,function(){temp.skill2();});
         }
     }
@@ -49,15 +49,27 @@ class Monster extends Entity{
         if(isActor&&this.y+this.h<=e.y)this.canJump=true;
         //공격
         if(this.collisionLevel+e.collisionLevel>=0){
-            if(!(e instanceof Monster)){
+            if(!(e instanceof Monster||e instanceof MapBlock)){
                 e.life-=this.type.damage;
                 if(!(e instanceof Block)){
                     if(e.x+e.w/2>this.x+this.w/2)e.vx=Math.sqrt(this.type.damage)/2;
                     else e.vx=-(Math.sqrt(this.type.damage))/2;
                     e.vy=2;
                 }else e.life-=500;
+
+                if(this.type.name=="crazymonkey"){
+                    this.img.src= Monster.dir+this.type.name+"_attack.png";
+                    let m = this;
+                    this.addAction(10,10,function(){m.img.src= Monster.dir+m.type.name+".png";});
+                }
             }
         }
+    }
+
+    removeHandler(){
+        //console.log(Level.stageMonsterCounter);
+        Level.stageMonsterCounter--;
+        if(Level.stageMonsterCounter==0)Level.clearLevel();
     }
 
     AI(){
@@ -73,13 +85,13 @@ class Monster extends Entity{
         this.addAction(50,50,function(){temp.AI();});
     }
 
-    skill(){
+    skill(time){
         this.x=p.x+p.w/2-this.w/2;
         this.y=0;
         this.vx=0;
         this.vy=-6;
         var temp=this;
-        this.addAction(500,500,function(){temp.skill();});
+        this.addAction(time,time,function(){temp.skill(time);});
     }
 
     skill2(){
