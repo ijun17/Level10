@@ -76,15 +76,57 @@ class Game{
     static menuScreen(){
         time=0;
         this.clearEntitys();
-        var startButton = new Button((canvas.width-300)*0.5,250,300,100,"start.png",function(){Game.selectScreen();});
+        var startButton = new Button((canvas.width-300)*0.5,250,300,100,null,function(){Game.selectScreen();});
+        startButton.drawCode=function(){
+            let thisBtn=startButton;
+            ctx.beginPath();
+            ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
+            ctx.font="bold 80px Arial";
+            ctx.fillStyle = "black";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            ctx.fillText("START",thisBtn.x+150,thisBtn.y+55);
+            ctx.closePath();
+        }
     }
 
     static selectScreen(){
         time=0;
         this.clearEntitys();
-        var level1Button = new Button((canvas.width-200)*0.5,250,200,50,"level1.png",function(){Game.gameScreen();});
-        var magicButton = new Button((canvas.width-200)*0.5,190,200,50,"selectmagic.png",function(){Game.selectMagicScreen();});
+        var magicButton = new Button(canvas.width-210,10,200,50,null,function(){Game.selectMagicScreen();});
         var backButton = new Button(0,0,80,80,"back.png",function(){Game.menuScreen();});
+        new Button((canvas.width-200)*0.5,0,200,10,null,function(){});
+        for(let i=0; i<10; i++){
+            let level1Button = new Button((canvas.width-200)*0.5,250+i*60,200,59,null,function(){Game.gameScreen();});
+            level1Button.ga=-0.1;
+            level1Button.drawCode=function(){
+                let thisBtn=level1Button;
+                ctx.beginPath();
+                ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h-10);
+                ctx.fillStyle = "white";
+                ctx.fillRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h-10);
+                ctx.font="bold 40px Arial";
+                ctx.fillStyle = "black";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillText("LEVEL"+(i+1),thisBtn.x+100,thisBtn.y+30);
+                ctx.closePath();
+            }
+        }
+        
+        magicButton.drawCode=function(){
+            let thisBtn=magicButton;
+            ctx.beginPath();
+            ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
+            ctx.fillStyle = "white";
+            ctx.fillRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
+            ctx.font="bold 30px Arial";
+            ctx.fillStyle = "black";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            ctx.fillText("select magic",thisBtn.x+100,thisBtn.y+25);
+            ctx.closePath();
+        }
     }
 
     static selectMagicScreen(){
@@ -93,11 +135,11 @@ class Game{
         Magic.clearCoolTime();
         let backButton = new Button(0,0,80,80,"back.png",function(){Game.selectScreen();});
 
-        let key=['q','w','e','r'];
+        let key=['Q','W','E','R'];
         let keyButtons=new Array(4);
         for(let i=0; i<4; i++) {
             new Button(10,50+110*i,200,50,null,function(){});
-            let keyButton = new Button(10,100+110*i,100,100,key[i]+".png",function(){
+            let keyButton = new Button(10,100+110*i,100,100,null,function(){
                 if(Game.selectMagic!=null){
                     Game.selectMagic.x=120;Game.selectMagic.y=100+110*i;
                     Magic.skillNum[i]=Game.selectMagic.life;
@@ -110,6 +152,20 @@ class Game{
                 }
                 console.log(Magic.skillNum);
             });
+            keyButton.drawCode=function(){
+                let thisBtn=keyButton;
+                ctx.beginPath();
+                ctx.fillStyle = "rgb(88, 88, 88)";
+                ctx.fillRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
+                ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
+                ctx.font="bold 80px Arial";
+                ctx.fillStyle = "black";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillText(key[i],thisBtn.x+50,thisBtn.y+55);
+                ctx.closePath();
+            }
+
             keyButtons[i]=keyButton;
             keyButton.friction = null; //friction 은 선택된 마법을 의미
         }
@@ -119,12 +175,17 @@ class Game{
             magicButton.code=function(){Game.selectMagic=magicButton;new (Magic.basicMagic[i][1]);};
             magicButton.life=i;
             magicButton.drawCode=function(){
+                let thisBtn=magicButton;
+                ctx.beginPath();
                 ctx.fillStyle = "rgb(126, 197, 238)";
-                ctx.fillRect(magicButton.x, magicButton.y, magicButton.w, magicButton.h);
-                ctx.strokeRect(magicButton.x, magicButton.y, magicButton.w, magicButton.h);
+                ctx.fillRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
+                ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
                 ctx.font="bold 30px Arial";
                 ctx.fillStyle = "black";
-                ctx.fillText(Magic.basicMagic[i][0],magicButton.x+10,magicButton.y+30);
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillText(Magic.basicMagic[i][0],thisBtn.x+100,thisBtn.y+20);
+                ctx.closePath();
             }
             magicButton.ga=-0.5;
             var keyIndex = Magic.skillNum.findIndex(function(e){return e==i;});
