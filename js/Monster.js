@@ -34,7 +34,6 @@ class Monster extends Entity{
             this.addAction(999,999,function(){temp.skill2();});
         }
         if(typenum==3){
-            this.ga=0.2;
             this.addAction(100,100,function(){temp.skill();});
             this.addAction(999,999,function(){temp.skill2();});
         }

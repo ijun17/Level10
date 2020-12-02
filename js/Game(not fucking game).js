@@ -10,6 +10,10 @@ class Game{
     static clearEntitys(){entitys=[];}
 
     static startGame(){
+        let a=34.5;
+        let b=13.234;
+        console.log((a*b).toFixed());
+
         this.menuScreen();
         document.addEventListener("keydown", this.keyDownHandler, false);
         document.addEventListener("keyup", this.keyUpHandler, false);
@@ -48,11 +52,11 @@ class Game{
     static keyUpHandler(e) {
         if(e.keyCode == 39) {
             p.moveFlag=false;
-            p.setVectorX(0);
+            //p.setVectorX(0);
         }
         else if(e.keyCode == 37) {
             p.moveFlag=false;
-            p.setVectorX(0);
+            //p.setVectorX(0);
         }
     }
 
@@ -98,7 +102,7 @@ class Game{
         new Button((canvas.width-200)*0.5,0,200,10,null,function(){});
         for(let i=0; i<10; i++){
             let level1Button = new Button((canvas.width-200)*0.5,250+i*60,200,59,null,function(){Game.gameScreen();});
-            level1Button.ga=-0.1;
+            level1Button.ga=0.5;
             level1Button.drawCode=function(){
                 let thisBtn=level1Button;
                 ctx.beginPath();
@@ -113,7 +117,6 @@ class Game{
                 ctx.closePath();
             }
         }
-        
         magicButton.drawCode=function(){
             let thisBtn=magicButton;
             ctx.beginPath();
@@ -138,16 +141,23 @@ class Game{
         let key=['Q','W','E','R'];
         let keyButtons=new Array(4);
         for(let i=0; i<4; i++) {
-            new Button(10,50+110*i,200,50,null,function(){});
+            let temp = new Button(120,50+110*i,200,50,null,function(){});
+
             let keyButton = new Button(10,100+110*i,100,100,null,function(){
-                if(Game.selectMagic!=null){
-                    Game.selectMagic.x=120;Game.selectMagic.y=100+110*i;
-                    Magic.skillNum[i]=Game.selectMagic.life;
-                    if(keyButton.friction != null){
-                        keyButton.friction.x=400;
-                        keyButton.friction.y=600;
+                if(Game.selectMagic!=null&&Game.selectMagic.temp[1]!=i){
+                    if(keyButton.temp[0] != null){ //키버튼에 마법이 있으면
+                        keyButton.temp[0].x=400;
+                        keyButton.temp[0].y=600;
+                        (keyButton.temp[0]).temp[1]=null;//마법 기록 삭제
                     }
-                    keyButton.friction=Game.selectMagic;
+                    if(Game.selectMagic.temp[1]!=null){ //선택한 마법에 이미 키가 있으면
+                        Magic.skillNum[Game.selectMagic.temp[1]]=0;
+                        keyButtons[Game.selectMagic.temp[1]].temp[0]=null;//이전 키버튼의 선택 기록 삭제
+                    }
+                    Game.selectMagic.x=120;Game.selectMagic.y=100+110*i;
+                    Magic.skillNum[i]=Game.selectMagic.temp[0];
+                    Game.selectMagic.temp[1]=i;
+                    keyButton.temp[0]=Game.selectMagic;
                     Game.selectMagic=null;
                 }
                 console.log(Magic.skillNum);
@@ -167,13 +177,14 @@ class Game{
             }
 
             keyButtons[i]=keyButton;
-            keyButton.friction = null; //friction 은 선택된 마법을 의미
+            keyButton.temp.push(null); //temp[0] 은 선택된 마법을 의미
         }
         new Button(400,0,200,100,null,function(){});
-        for(let i=0; i<Magic.basicMagic.length; i++){
+        for(let i=1; i<Magic.basicMagic.length; i++){
             let magicButton = new Button(400,100+50*i,200,40,null,function(){});
             magicButton.code=function(){Game.selectMagic=magicButton;new (Magic.basicMagic[i][1]);};
-            magicButton.life=i;
+            magicButton.temp.push(i); //temp[0]=Magic.basicMagic
+            magicButton.temp.push(null); //temp[1] is keyButton index
             magicButton.drawCode=function(){
                 let thisBtn=magicButton;
                 ctx.beginPath();
@@ -187,8 +198,8 @@ class Game{
                 ctx.fillText(Magic.basicMagic[i][0],thisBtn.x+100,thisBtn.y+20);
                 ctx.closePath();
             }
-            magicButton.ga=-0.5;
-            var keyIndex = Magic.skillNum.findIndex(function(e){return e==i;});
+            magicButton.ga=0.5;
+            let keyIndex = Magic.skillNum.findIndex(function(e){return e==i;});
             if(keyIndex>=0){
                 Game.selectMagic=magicButton;
                 let clickE = new Block(0, 0, 0, 0);
@@ -201,7 +212,10 @@ class Game{
 
         //simulation
         new MapBlock(700,400,500,200,"rgb(35, 35, 35)");
-        p = new Player(700,0);
+        p = new Player(720,0);
+        let monster = new Monster(0,1100,0);
+        monster.life=100000;
+        monster.action=[];
         
     }
 

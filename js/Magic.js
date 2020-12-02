@@ -1,17 +1,17 @@
 class Magic{
     //qwer
-    static skillNum=[0,1,2,4];
+    static skillNum=[1,2,3,5];
     static coolTime=[0,0,0,0];
     
     //magic = [magic,coolTime]
-    static basicMagic=[
+    static basicMagic=[["null", function(){}, 0],
     ["bullet", function(){
         let bullet;
         let temp=-1;
         if(p.isRight)temp=1;
         for(let i=0; i<3; i++){
             bullet = new Block(p.x+30*temp, p.y+i*14, 10,10);
-            bullet.setVectorX(30*temp);
+            bullet.vx=30*temp;
             bullet.life=50;
         }
         bullet.setMass(10);
@@ -21,7 +21,7 @@ class Magic{
         let ice;
         let temp=-1;
         if(p.isRight)temp=1;
-        ice=new Matter(2,p.x+50*temp, p.y, 10*temp, 0.5);
+        ice=new Matter(2,p.x+50*temp, p.y+20, 10*temp, 0.5);
     },200],
 
     ["teleport",function(){
@@ -53,7 +53,7 @@ class Magic{
         }
     },2000],
 
-    ["metheor",function(){
+    ["meteor",function(){
         let temp=-1;
         if(p.isRight)temp=1;
         for(let i=0; i<4; i++){

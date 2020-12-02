@@ -1,7 +1,7 @@
 class Player extends Entity{
     lv=1;
     mp=40;
-    pv=4;
+    pv=3;
     isRight=true;
     moveFlag=false;
     canJump=true;
@@ -33,7 +33,7 @@ class Player extends Entity{
     }
     jump(){
         if(this.canJump){
-            p.setVectorY(this.pv);
+            p.vy=this.pv;
             this.canJump=false;
         }
     }

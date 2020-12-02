@@ -18,7 +18,7 @@ class Matter extends Entity{
         this.vy=vy;
         this.w=30;
         this.h=30;
-        this.ga=0.02;
+        this.ga=-0.02;
         this.collisionLevel=-1;
         this.img.src = Matter.dir+this.type.name+".png";
     }

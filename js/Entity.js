@@ -6,7 +6,7 @@ let time=0;
 let p;
 
 class Entity{
-    x;y;w=0;h=0;vx=0;vy=0;ga=0.15;friction=0.7; //phisics;
+    x=0;y=0;w=0;h=0;vx=0;vy=0;ga=-0.15;friction=0.4; //phisics;
     life=1;
     
     collisionLevel=0; //0보다 크면 물리적 충돌
@@ -72,6 +72,7 @@ class Entity{
                 }else if(this.y>=e.y+e.h){ //up collision
                     collisionType='U';
                 }
+                
                 this.collisionHandler(e,collisionType,true);
                 e.collisionHandler(this,collisionType,false);
                 if(this.collisionLevel+e.collisionLevel>0){
@@ -94,17 +95,11 @@ class Entity{
         this.x+=this.vx;
         this.y-=this.vy;
         if(collisionType=='D'){
-            if(Math.abs(this.vx)>2&&time%10==0)this.vx*=this.friction;
-            if(Math.abs(this.vx)<=2)this.vx=0;
+            if(this.vx>0)this.vx-=this.friction;
+            else this.vx+=this.friction;
+            if(Math.abs(this.vx)<2)this.vx=0;
         }
-        this.vy-=this.ga;
-    }
-
-    setVectorX(vx){
-        this.vx=vx;
-    }
-    setVectorY(vy){
-        this.vy=vy;
+        this.vy+=this.ga;
     }
     giveForce(ax,ay){
         this.vx+=ax;
@@ -116,12 +111,6 @@ class Entity{
             if(ei>=0)entitys.splice(ei, 1);
             this.removeHandler();
         }
-    }
-    setGravity(ga){
-        this.ga=ga;
-    }
-    setLife(life){
-        this.life=life;
     }
 
     //event handler

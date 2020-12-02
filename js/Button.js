@@ -1,6 +1,7 @@
 class Button extends Entity{
     code=function(){};
     drawCode=function(){};
+    temp=new Array();
 
     constructor(x,y,w,h,img,code){  
         super(x,y);
@@ -24,7 +25,8 @@ class Button extends Entity{
     collisionHandler(e){
         if(e.w==0&&e.h==0){
             new (this.code)();
-        }else if(e.collisionLevel==-8){//button끼리는 충돌
+        }
+        if(e instanceof Button){//button끼리는 충돌
             if(this.x+this.w<=e.x){ //left collision
                 this.vx=0;
                 this.x=e.x-this.w;
@@ -32,11 +34,11 @@ class Button extends Entity{
                 this.vx=0;
                 this.x=e.x+e.w;
             }else if(this.y+this.h<=e.y){ //down collision
-                this.vy=0;
-                this.y=e.y-this.h;
+                this.vy=-this.ga;
+                this.y=e.y-this.h -this.ga;
             }else if(this.y>=e.y+e.h){ //up collision
-                this.vy=0;
-                this.y=e.y+e.h;
+                this.vy=-this.ga;
+                this.y=e.y+e.h -this.ga;
             }
         }
     }
