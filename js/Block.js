@@ -1,8 +1,8 @@
 class Block extends Entity{
     color;
     mass=1;
-    constructor(x,y,w,h,color = "#080808"){
-        super(x,y);
+    constructor(x,y,w,h,color = "#080808", channelLevel=0){
+        super(x,y,channelLevel);
         this.w=w;
         this.h=h;
         this.color = color;

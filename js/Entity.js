@@ -1,11 +1,8 @@
-//var canvas = document.getElementById("myCanvas");
-//var ctx = canvas.getContext("2d");
-
-let entitys = new Array();
-//let time=0;
-//let p;
+//let entitys = new Array();
 
 class Entity{
+    channelLevel;
+
     x=0;y=0;w=0;h=0;vx=0;vy=0;ga=-0.15;friction=0.4; //phisics;
     life=1;
     
@@ -19,10 +16,12 @@ class Entity{
 
     action=new Array(); //한 틱마다 행위들 [시작시간, 종료시간-1, 코드]
 
-    constructor(x,y){
+    constructor(x,y,channelLevel=0){
         this.x=x;
         this.y=y;
-        entitys.push(this);
+        //entitys.push(this);
+        this.channelLevel=channelLevel;
+        Game.channel[channelLevel].push(this);
     }
 
     update(){
@@ -59,9 +58,9 @@ class Entity{
     move(){
         if(this.y>canvas.height+100)this.life=0;
         var collisionType;
-        for(var e of entitys){//entity collision event
+        for(var e of Game.channel[this.channelLevel]){//entity collision event
             if(e!=this&&this.x+this.vx<e.x+e.w&&this.x+this.vx+this.w>e.x&&this.y-this.vy<e.y+e.h&&this.y-this.vy+this.h>e.y){
-                if(entitys.indexOf(this)==-1)return; //엔티티 리스트에서 삭제시 연산 종료
+                if(Game.channel[this.channelLevel].indexOf(this)==-1)return; //엔티티 리스트에서 삭제시 연산 종료
 
                 if(this.x+this.w<=e.x){ //left collision
                     collisionType='L';
@@ -107,8 +106,8 @@ class Entity{
     }
     removeEntity(){
         if(this.canRemoved){
-            var ei = entitys.indexOf(this);
-            if(ei>=0)entitys.splice(ei, 1);
+            var ei = Game.channel[this.channelLevel].indexOf(this);
+            if(ei>=0)Game.channel[this.channelLevel].splice(ei, 1);
             this.removeHandler();
         }
     }

@@ -4,8 +4,8 @@ class Particle extends Entity{
     {name:"smoke",speed:0.5,ga:-0.001}];
     static particleDir="resource/particle/";
     type;
-    constructor(typeNum,x,y){
-        super(x,y);
+    constructor(typeNum,x,y,channelLevel=1){
+        super(x,y,channelLevel);
         this.type=Particle.types[typeNum];
         this.w=10;
         this.h=10;

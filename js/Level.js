@@ -1,6 +1,6 @@
 class Level {
     static playerLevel;
-    static stageMonsterCounter;
+    static stageMonsterCount;
     static stageLevel;
 
     static loadLevel() {
@@ -22,12 +22,11 @@ class Level {
         this.stageLevel=0;
         this.stageMonster=0;
         //animation
-        let clickE = new Block(canvas.width/2, canvas.height, 0,0);
-        clickE.canMove=false;
+        let clickE = Game.click(canvas.width/2, canvas.height);
         clickE.life = 100000;
         clickE.visibility=false;
         let clearBtn = new Button(canvas.width/2-150, 0, 300, 100)
-        clearBtn.code = function(){Game.selectScreen();};
+        clearBtn.code = function(){Screen.selectScreen();};
         clearBtn.drawOption(null,null,"CLEAR",300,"yellow");
         clearBtn.vy=-1.5;
     }
@@ -37,14 +36,14 @@ class Level {
         switch (level) {
             case 1:
                 new Monster(0, 900, 200);
-                this.stageMonsterCounter=1;
+                this.stageMonsterCount=1;
                 break;
             case 2:
                 new Monster(0, 900, 200);
                 new Monster(0, 800, 200);
                 new Monster(0, 700, 200);
                 new Monster(3, 800, 0);
-                this.stageMonsterCounter=4;
+                this.stageMonsterCount=4;
                 break;
             case 3:
                 break;

@@ -4,8 +4,8 @@ class Button extends Entity {
     temp = new Array();
     isTextBtn = true;
 
-    constructor(x, y, w, h) {
-        super(x, y);
+    constructor(x, y, w, h, channelLevel=2) {
+        super(x, y, channelLevel);
         this.w = w;
         this.h = h;
 

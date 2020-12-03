@@ -69,8 +69,8 @@ class Monster extends Entity{
 
     removeHandler(){
         //console.log(Level.stageMonsterCounter);
-        Level.stageMonsterCounter--;
-        if(Level.stageMonsterCounter==0)Level.clearLevel();
+        Level.stageMonsterCount--;
+        if(Level.stageMonsterCount==0)Level.clearLevel();
     }
 
     AI(){
