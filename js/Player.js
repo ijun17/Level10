@@ -13,7 +13,7 @@ class Player extends Entity{
         this.h=60;
         this.life=10000;
         this.img.src = Player.dir+`player2_right.png`;
-        this.collisionLevel=1;
+        this.overlap=false;
     }
 
     draw(){

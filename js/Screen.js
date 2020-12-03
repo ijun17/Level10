@@ -5,12 +5,25 @@ class Screen {
     static menuScreen() {
         Game.restartGame();
 
+        let ashSpray = new MapBlock(-100,-100,0,0,"black",Game.BUTTON_CHENNEL);
+        ashSpray.canAct=true;
+        ashSpray.canMove=false;
+        ashSpray.addAction(1,1000000,function(){
+            if(Game.time%10==0){
+                let r = Math.random()*canvas.width;
+                let ash=new Particle(0,r,0);
+                ash.life=200;
+                ash.vy-=2;
+            }
+        });
+
         var startButton = new Button((canvas.width - 300)/2, 250, 300, 100);
         startButton.canAct=true;
         startButton.code = function () { 
             for(let i=0; i<30; i++){
                 for(let j=0; j<10; j++){
                     let e = new Particle(2, (canvas.width - 300)/2+i*10, 250+j*10);
+                    e.ga=0;
                 }
             }
             startButton.addAction(50,50,function(){Screen.selectScreen();});
@@ -22,6 +35,18 @@ class Screen {
     static selectScreen() {
         Game.time = 0;
         Game.restartGame();
+
+        let ashSpray = new MapBlock(-100,-100,0,0,"black",Game.BUTTON_CHENNEL);
+        ashSpray.canAct=true;
+        ashSpray.canMove=false;
+        ashSpray.addAction(1,1000000,function(){
+            if(Game.time%10==0){
+                let r = Math.random()*canvas.width;
+                let ash=new Particle(0,r,0);
+                ash.life=200;
+                ash.vy-=2;
+            }
+        });
 
         let backButton = new Button(0, 0, 80, 80);
         backButton.code = function () { Screen.menuScreen() };
@@ -184,5 +209,7 @@ class Screen {
             }
         }
         Game.p = new Player(10, canvas.height - 460);
+
+        
     }
 }

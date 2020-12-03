@@ -10,16 +10,18 @@ class MapBlock extends Entity{ //안부숴지는
         this.color = color;
         this.overlap=false;
         this.canRemoved=false;
-        this.collisionLevel=4;
+        this.canAct=false;
+        this.canMove=false;
+        this.canInteraction=false;
     }
 
-    update(){
-        ctx.beginPath();
-        ctx.rect(this.x, this.y, this.w, this.h);
+    draw(){
         ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.closePath();
+        ctx.fillRect(this.x, this.y, this.w, this.h);
     }
 
-
+    collisionHandler(){
+        this.vx=0;
+        this.vy=0;
+    }
 }

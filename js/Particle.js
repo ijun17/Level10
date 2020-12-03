@@ -12,7 +12,6 @@ class Particle extends Entity{
         this.canAct=false;
         this.ga=this.type.ga;
         this.life=50;
-        this.collisionLevel=-4;
         this.img.src=Particle.particleDir+this.type.name+".png";
         this.vx=(1-Math.random()*2)*this.type.speed;
         this.vy=(1-Math.random()*2)*this.type.speed;
@@ -26,7 +25,6 @@ class Particle extends Entity{
         this.x+=this.vx;
         this.y-=this.vy;
         this.vy+=this.ga;
-        //remove
-        if(this.life<1)this.removeEntity();
+        //remove는 Game에서 관리
     }
 }

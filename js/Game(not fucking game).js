@@ -1,4 +1,5 @@
-
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
 
 class Game {
     static channel = [new Array(), new Array(),new Array()]; //phisics, particle, button
@@ -26,7 +27,7 @@ class Game {
 
         Level.loadLevel();
         Screen.menuScreen();
-        Game.p = new Player(100, 100);
+        Game.p = new Player(100, -1000);
         Game.p.ga = -0.01;
     }
 
@@ -38,7 +39,20 @@ class Game {
         for (var e of Game.channel[0]) { e.update(); }
         for (var e of Game.channel[1]) { e.update(); }
         for (var e of Game.channel[2]) { e.update(); }
+        Game.removeEntity(0);
+        Game.removeEntity(1);
+        Game.removeEntity(2);
         Game.time++;
+    }
+
+    static removeEntity(channelLevel) {
+        for(let e of Game.channel[channelLevel]){
+            if(e.life<1&&e.canRemoved){
+                e.removeHandler();
+                let ei = Game.channel[channelLevel].indexOf(e);
+                if (ei >= 0) Game.channel[channelLevel].splice(ei, 1);
+            }
+        }
     }
 
     static click(x,y){
@@ -96,3 +110,6 @@ class Game {
 
     
 }
+
+Game.startGame();
+setInterval(Game.updateWorld, 10);

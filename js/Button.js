@@ -8,12 +8,10 @@ class Button extends Entity {
         super(x, y, channelLevel);
         this.w = w;
         this.h = h;
-
         this.canRemoved = false;
         this.canAct = false;
         this.ga = 0;
-        //this.canMove=false;
-        this.collisionLevel = -8;
+        this.overlap=false;
     }
 
     draw() {
@@ -51,20 +49,6 @@ class Button extends Entity {
     }
 
     collisionHandler(e) {
-        if (e instanceof Button) {//button끼리는 충돌
-            if (this.x + this.w <= e.x) { //left collision
-                this.vx = 0;
-                this.x = e.x - this.w;
-            } else if (this.x >= e.x + e.w) { //right collision
-                this.vx = 0;
-                this.x = e.x + e.w;
-            } else if (this.y + this.h <= e.y) { //down collision
-                this.vy = -this.ga;
-                this.y = e.y - this.h - this.ga;
-            } else if (this.y >= e.y + e.h) { //up collision
-                this.vy = -this.ga;
-                this.y = e.y + e.h - this.ga;
-            }
-        }else new (this.code)();
+        if (!(e instanceof Button)) new (this.code)();
     }
 }

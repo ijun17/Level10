@@ -1,6 +1,6 @@
 class Magic{
     //qwer
-    static skillNum=[1,2,3,4];
+    static skillNum=[5,7,4,6];
     static coolTime=[0,0,0,0];
     
     //magic = [magic,coolTime]
@@ -10,11 +10,12 @@ class Magic{
         let temp=-1;
         if(Game.p.isRight)temp=1;
         for(let i=0; i<3; i++){
+
             bullet = new Block(Game.p.x+30*temp, Game.p.y+i*14, 10,10);
             bullet.vx=30*temp;
             bullet.life=50;
+            bullet.mass=10;
         }
-        bullet.setMass(10);
     },50],
 
     ["ice",function(){

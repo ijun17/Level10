@@ -7,18 +7,12 @@ class Block extends Entity{
         this.h=h;
         this.color = color;
         this.overlap=false;
-        this.collisionLevel=4;
     }
-
-    setMass(m){this.mass=m;}
 
     draw(){
         this.life--;
-        ctx.beginPath();
-        ctx.rect(this.x, this.y, this.w, this.h);
         ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.closePath();
+        ctx.fillRect(this.x, this.y, this.w, this.h);
     }
 
     collisionHandler(e,ct,isActor){
