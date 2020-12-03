@@ -20,14 +20,14 @@ class Monster extends Entity{
         this.h=this.type.h;
         this.life=this.type.life;
         this.img.src = Monster.dir+this.type.name+".png";
-        this.target=p;
+        this.target=Game.p;
         var temp = this;
 
-        this.addAction(100-time%10,100-time%10,function(){temp.AI();});
+        this.addAction(100,100,function(){temp.AI();});
         
         if(typenum==0){
             //this.addAction(100-time%10,100-time%10,function(){temp.skill();});
-            this.addAction(100-time%10,100-time%10,function(){temp.skill3();});
+            this.addAction(100,100,function(){temp.skill3();});
         }
         if(typenum==2){
             this.addAction(100,100,function(){temp.skill(500);});
@@ -41,8 +41,9 @@ class Monster extends Entity{
 
     draw(){
         ctx.drawImage(this.img, this.x, this.y);
-        ctx.font="10px serif";
-        ctx.strokeText("hp: "+(Math.floor(this.life)),this.x,this.y-20);
+        ctx.font="bold 20px Arial";
+        ctx.fillStyle="black"
+        ctx.fillText("hp: "+(Math.floor(this.life)),this.x,this.y-20);
     }
 
     collisionHandler(e,ct,isActor){
@@ -86,7 +87,7 @@ class Monster extends Entity{
     }
 
     skill(time){
-        this.x=p.x+p.w/2-this.w/2;
+        this.x=this.target.x+this.target.w/2-this.w/2;
         this.y=0;
         this.vx=0;
         this.vy=-6;
@@ -98,10 +99,10 @@ class Monster extends Entity{
         var monster = this;
         var ice;
         var temp=-1;
-        if(this.x+this.w/2 < p.x+p.w/2)temp=1;
+        if(this.x+this.w/2 < this.target.x+this.target.w/2)temp=1;
         ice=new Matter(2,monster.x+monster.w/2+(monster.w+80)/2*temp, monster.y+monster.h/2,0, 0);
-        ice.vx=(p.x-ice.x)/30;
-        ice.vy=-(p.y-ice.y)/30;
+        ice.vx=(this.target.x-ice.x)/30;
+        ice.vy=-(this.target.y-ice.y)/30;
         
         this.addAction(200,200,function(){monster.skill2();});
     }

@@ -18,8 +18,9 @@ class Player extends Entity{
 
     draw(){
         ctx.drawImage(this.img, this.x, this.y);
-        ctx.font="10px serif";
-        ctx.strokeText("hp: "+this.life,this.x,this.y-20);
+        ctx.font="bold 20px Arial";
+        ctx.fillStyle="black"
+        ctx.fillText("hp: "+(Math.floor(this.life)),this.x,this.y-20);
     }
 
     go(){
@@ -33,7 +34,7 @@ class Player extends Entity{
     }
     jump(){
         if(this.canJump){
-            p.vy=this.pv;
+            this.vy=this.pv;
             this.canJump=false;
         }
     }

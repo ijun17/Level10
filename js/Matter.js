@@ -21,6 +21,8 @@ class Matter extends Entity{
         this.ga=-0.02;
         this.collisionLevel=-1;
         this.img.src = Matter.dir+this.type.name+".png";
+        let matter = this;
+        this.addAction(1,10000,function(){if(Game.time%10==0){new Particle(2,matter.x,matter.y);new Particle(0,matter.x,matter.y);}});
     }
     
 
@@ -34,9 +36,8 @@ class Matter extends Entity{
     }
 
     collisionHandler(e){
-        //if(this.collisionLevel+e.collisionLevel<0)return;
-        this.life--;
-        if(e.collisionLevel>-3){
+        if(e.collisionLevel>-2){
+            this.life--;
             e.life -= this.type.damage;
             if(this.type.name=="arrow"){
                 var damage = (this.vx*this.vx+this.vy*this.vy)*5;

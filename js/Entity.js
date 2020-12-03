@@ -2,8 +2,8 @@
 //var ctx = canvas.getContext("2d");
 
 let entitys = new Array();
-let time=0;
-let p;
+//let time=0;
+//let p;
 
 class Entity{
     x=0;y=0;w=0;h=0;vx=0;vy=0;ga=-0.15;friction=0.4; //phisics;
@@ -39,17 +39,17 @@ class Entity{
     addAction(start, end, code){
         var i;
         for(i=0; i<this.action.length; i++){
-            if(this.action[i][1]>=end+time)break;
+            if(this.action[i][1]>=end+Game.time)break;
         }
-        this.action.splice(i,0,[start+time, end+time, code]);
+        this.action.splice(i,0,[start+Game.time, end+Game.time, code]);
     }
 
     act(){
         let removed=0;
         for(var a of this.action){
-            if(a[1]<time){
-               removed++;
-            }else if(a[0]<=time){
+            if(a[1]<Game.time){
+                removed++;
+            }else if(a[0]<=Game.time){
                 new (a[2])();
             }
         }

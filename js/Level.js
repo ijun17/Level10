@@ -26,18 +26,10 @@ class Level {
         clickE.canMove=false;
         clickE.life = 100000;
         clickE.visibility=false;
-        let clearBtn = new Button(canvas.width/2-150, 0, 300, 100, null, function(){Game.selectScreen();});
+        let clearBtn = new Button(canvas.width/2-150, 0, 300, 100)
+        clearBtn.code = function(){Game.selectScreen();};
+        clearBtn.drawOption(null,null,"CLEAR",300,"yellow");
         clearBtn.vy=-1.5;
-        clearBtn.drawCode=function(){
-            let thisBtn=clearBtn;
-            ctx.beginPath();
-            ctx.font="bold 300px Arial";
-            ctx.fillStyle = "yellow";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            ctx.fillText("CLEAR",thisBtn.x+150,thisBtn.y+60);
-            ctx.closePath();
-        }
     }
 
     static makeStage(level) {

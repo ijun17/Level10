@@ -1,9 +1,9 @@
 
 
 class Game{
-    // static entitys = new Array();
-    // static time=0;
-    // static p;
+    static channel = [new Array(), new Array(), new Array()]; //button, phisics, particle
+    static time=0;
+    static p;
 
     static selectMagic=null;
 
@@ -14,25 +14,28 @@ class Game{
         document.addEventListener("keyup", this.keyUpHandler, false);
         canvas.addEventListener("click", this.clickHandler, false);
 
+        // const today = new Date();
+        // let hours = today.getHours();
+        // if(hours>12)canvas.background = "rgb(65, 67, 95)";
+
         Level.loadLevel();
-        console.log(Level.playerLevel);
         this.menuScreen();
-        p=new Player(100,100);
-        p.ga=-0.01;
+        Game.p=new Player(100,100);
+        Game.p.ga=-0.01;
     }
 
     static keyDownHandler(e){
         switch(e.keyCode){
             case 39:
-                p.moveFlag=true;
-                p.isRight=true;
+                Game.p.moveFlag=true;
+                Game.p.isRight=true;
                 break;
             case 37:
-                p.moveFlag=true;
-                p.isRight=false;
+                Game.p.moveFlag=true;
+                Game.p.isRight=false;
                 break;
             case 38:
-                p.jump();
+                Game.p.jump();
                 break;
             case 81: //q
                 Magic.doSkill(0);
@@ -51,11 +54,11 @@ class Game{
 
     static keyUpHandler(e) {
         if(e.keyCode == 39) {
-            p.moveFlag=false;
+            Game.p.moveFlag=false;
             //p.setVectorX(0);
         }
         else if(e.keyCode == 37) {
-            p.moveFlag=false;
+            Game.p.moveFlag=false;
             //p.setVectorX(0);
         }
     }
@@ -69,79 +72,60 @@ class Game{
     }
 
     static updateWorld(){
-        if(p!=null&&p.moveFlag){
-            p.go();
+        if(Game.p!=null&&Game.p.moveFlag){
+            Game.p.go();
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for(var e of entitys){e.update();}
-        time++;
+        Game.time++;
     }
 
     static menuScreen(){
-        time=0;
+        Game.time=0;
         this.clearEntitys();
-        var startButton = new Button((canvas.width-300)*0.5,250,300,100,null,function(){Game.selectScreen();});
-        startButton.drawCode=function(){
-            let thisBtn=startButton;
-            ctx.beginPath();
-            ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
-            ctx.font="bold 80px Arial";
-            ctx.fillStyle = "black";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            ctx.fillText("START",thisBtn.x+150,thisBtn.y+55);
-            ctx.closePath();
-        }
+        var startButton = new Button((canvas.width-300)*0.5,250,300,100);
+        startButton.code = function(){Game.selectScreen();};
+        startButton.drawOption(null, "black", "START", 80, "black");
     }
 
     static selectScreen(){
-        time=0;
+        Game.time=0;
         this.clearEntitys();
-        var magicButton = new Button(canvas.width-210,10,200,50,null,function(){Game.selectMagicScreen();});
-        var backButton = new Button(0,0,80,80,"back.png",function(){Game.menuScreen();});
+
+        let backButton = new Button(0,0,80,80);
+        backButton.code = function(){Game.menuScreen()};
+        backButton.drawOption(null,null,"<",80,"black");
+
+        let magicButton = new Button(canvas.width-210,10,200,50)
+        magicButton.code = function(){Game.selectMagicScreen();};
+
         new Button((canvas.width-200)*0.5,0,200,10,null,function(){});
         for(let i=1; i<=Level.playerLevel; i++){
-            let level1Button = new Button((canvas.width-200)*0.5,250+i*60,200,59,null,function(){Game.gameScreen();Level.makeStage(i);});
-            level1Button.ga=0.5;
-            level1Button.drawCode=function(){
-                let thisBtn=level1Button;
-                ctx.beginPath();
-                ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h-10);
-                ctx.fillStyle = "white";
-                ctx.fillRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h-10);
-                ctx.font="bold 40px Arial";
-                ctx.fillStyle = "black";
-                ctx.textBaseline = "middle";
-                ctx.textAlign = "center";
-                ctx.fillText("LEVEL"+i,thisBtn.x+100,thisBtn.y+30);
-                ctx.closePath();
-            }
+            let levelButton = new Button((canvas.width-200)*0.5,250+i*60,200,59);
+            levelButton.code = function(){Game.gameScreen();Level.makeStage(i);};
+            levelButton.drawOption("white","black","LEVEL"+i,40,"black");
+            levelButton.ga=0.5;
         }
-        magicButton.drawCode=function(){
-            let thisBtn=magicButton;
-            ctx.beginPath();
-            ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
-            ctx.font="bold 30px Arial";
-            ctx.fillStyle = "black";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            ctx.fillText("select magic",thisBtn.x+100,thisBtn.y+25);
-            ctx.closePath();
-        }
+        magicButton.drawOption(null,"black","select magic",30,"black");
     }
 
     static selectMagicScreen(){
-        time=0;
+        Game.time=0;
         this.clearEntitys();
         Magic.clearCoolTime();
-        let backButton = new Button(0,0,80,80,"back.png",function(){Game.selectScreen();});
+        let backButton = new Button(0,0,80,80);
+        backButton.code = function(){Game.selectScreen()};
+        backButton.drawOption(null,null,"<",80,"black");
+
+        
 
         let key=['Q','W','E','R'];
         let keyButtons=new Array(4);
         for(let i=0; i<4; i++) {
-            let temp = new Button(120,50+110*i,200,50,null,function(){});
+            let temp = new Button(120,50+110*i,200,50);
 
-            let keyButton = new Button(10,100+110*i,100,100,null,function(){
+            let keyButton = new Button(10,100+110*i,100,100)
+            keyButton.code=function(){
                 if(Game.selectMagic!=null&&Game.selectMagic.temp[1]!=i){
                     if(keyButton.temp[0] != null){ //키버튼에 마법이 있으면
                         keyButton.temp[0].x=400;
@@ -159,44 +143,21 @@ class Game{
                     Game.selectMagic=null;
                 }
                 console.log(Magic.skillNum);
-            });
-            keyButton.drawCode=function(){
-                let thisBtn=keyButton;
-                ctx.beginPath();
-                ctx.fillStyle = "rgb(88, 88, 88)";
-                ctx.fillRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
-                ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
-                ctx.font="bold 80px Arial";
-                ctx.fillStyle = "black";
-                ctx.textBaseline = "middle";
-                ctx.textAlign = "center";
-                ctx.fillText(key[i],thisBtn.x+50,thisBtn.y+55);
-                ctx.closePath();
-            }
+            };
+            keyButton.drawOption("rgb(88, 88, 88)","black",key[i],80,"black");
 
             keyButtons[i]=keyButton;
             keyButton.temp.push(null); //temp[0] 은 선택된 마법을 의미
         }
         new Button(400,0,200,100,null,function(){});
         for(let i=1; i<Magic.basicMagic.length; i++){
-            let magicButton = new Button(400,100+50*i,200,40,null,function(){});
+            let magicButton = new Button(400,100+50*i,200,40);
             magicButton.code=function(){Game.selectMagic=magicButton;new (Magic.basicMagic[i][1]);};
+            magicButton.drawOption("rgb(121, 140, 205)","black",Magic.basicMagic[i][0],30,"black");
             magicButton.temp.push(i); //temp[0]=Magic.basicMagic
             magicButton.temp.push(null); //temp[1] is keyButton index
-            magicButton.drawCode=function(){
-                let thisBtn=magicButton;
-                ctx.beginPath();
-                ctx.fillStyle = "rgb(121, 140, 205)";
-                ctx.fillRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
-                ctx.strokeRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
-                ctx.font="bold 30px Arial";
-                ctx.fillStyle = "black";
-                ctx.textBaseline = "middle";
-                ctx.textAlign = "center";
-                ctx.fillText(Magic.basicMagic[i][0],thisBtn.x+100,thisBtn.y+20);
-                ctx.closePath();
-            }
             magicButton.ga=0.5;
+
             let keyIndex = Magic.skillNum.findIndex(function(e){return e==i;});
             if(keyIndex>=0){
                 Game.selectMagic=magicButton;
@@ -207,10 +168,18 @@ class Game{
                 keyButtons[keyIndex].collisionHandler(clickE);
             }
         }
+        
+        let selectMagigButton = new Button(0,0,0,0);
+        selectMagigButton.drawCode=function(){
+            if(Game.selectMagic!=null){
+                ctx.strokeStyle="white";
+                ctx.strokeRect(Game.selectMagic.x, Game.selectMagic.y, Game.selectMagic.w, Game.selectMagic.h);
+            }
+        }
 
         //simulation
         new MapBlock(700,400,500,200,"rgb(35, 35, 35)");
-        p = new Player(720,0);
+        Game.p = new Player(720,0);
         let monster = new Monster(0,1100,0);
         monster.life=100000;
         monster.action=[];
@@ -218,15 +187,19 @@ class Game{
     }
 
     static gameScreen(){
-        time=0;
+        Game.time=0;
         this.clearEntitys();
         Magic.clearCoolTime();
-        var backButton = new Button(0,0,80,80,"back.png",function(){Game.selectScreen();});
+
+        let backButton = new Button(0,0,80,80);
+        backButton.code = function(){Game.selectScreen()};
+        backButton.drawOption(null,null,"<",80,"black");
+
         new MapBlock(-50,0,50,canvas.height); //left
         new MapBlock(canvas.width,0,50,canvas.height);//right
         new MapBlock(0,-50,canvas.width,50);//top
         new MapBlock(-200,canvas.height-100,canvas.width+400,20,"#2B650D");//bottom
         new MapBlock(0,canvas.height-90,canvas.width,90,"#54341E");
-        p = new Player(10,canvas.height-460);
+        Game.p = new Player(10,canvas.height-460);
     }
 }
