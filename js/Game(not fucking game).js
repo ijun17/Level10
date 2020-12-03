@@ -5,6 +5,10 @@ class Game {
     static time = 0;
     static p;
 
+    static PHYSICS_CHENNEL=0;
+    static PARTICLE_CHENNEL=1;
+    static BUTTON_CHENNEL=2;
+
     //static clearEntitys() { entitys = []; }
 
     static restartGame(){
@@ -38,13 +42,12 @@ class Game {
     }
 
     static click(x,y){
-        let clickE = new Block(x, y, 0, 0,"black",2);
-        clickE.life = 1;
-        clickE.overlap = true;
-        clickE.collisionLevel = -8;
-        clickE.canMove = false;
-        clickE.ga=0;
-        return clickE;
+        for(let e of Game.channel[Game.BUTTON_CHENNEL]){
+            if(e.x<x&&x<e.x+e.w&&e.y<y&&y<e.y+e.h){
+                e.collisionHandler(null);
+                break;
+            }
+        }
     }
 
     static keyDownHandler(e) {

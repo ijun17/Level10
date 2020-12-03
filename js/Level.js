@@ -22,11 +22,9 @@ class Level {
         this.stageLevel=0;
         this.stageMonster=0;
         //animation
-        let clickE = Game.click(canvas.width/2, canvas.height);
-        clickE.life = 100000;
-        clickE.visibility=false;
-        let clearBtn = new Button(canvas.width/2-150, 0, 300, 100)
-        clearBtn.code = function(){Screen.selectScreen();};
+        let clearBtn = new Button(canvas.width/2-150, 0, 300, 100);
+        clearBtn.canAct=true;
+        clearBtn.addAction(400,400,function(){Screen.selectScreen();});
         clearBtn.drawOption(null,null,"CLEAR",300,"yellow");
         clearBtn.vy=-1.5;
     }

@@ -51,9 +51,6 @@ class Button extends Entity {
     }
 
     collisionHandler(e) {
-        if (e.w == 0 && e.h == 0) {
-            new (this.code)();
-        }
         if (e instanceof Button) {//button끼리는 충돌
             if (this.x + this.w <= e.x) { //left collision
                 this.vx = 0;
@@ -68,6 +65,6 @@ class Button extends Entity {
                 this.vy = -this.ga;
                 this.y = e.y + e.h - this.ga;
             }
-        }
+        }else new (this.code)();
     }
 }
