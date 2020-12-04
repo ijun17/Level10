@@ -1,3 +1,17 @@
+function startFS(element) {
+    if(element.requestFullScreen) {
+        element.requestFullScreen();
+    } else if(element.webkitRequestFullScreen ) {
+        element.webkitRequestFullScreen();
+    } else if(element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+    } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen(); // IE
+    }
+    canvas.width = screen.width;
+    canvas.height = screen.height;
+}
+
 class Screen {
     static isMobile = false;
     static selectMagic = null;
@@ -17,17 +31,18 @@ class Screen {
             }
         });
 
-        var startButton = new Button((canvas.width - 300)/2, 250, 300, 100);
+        var startButton = new Button((canvas.width - 300)/2, (canvas.height-100)/2, 300, 100);
         startButton.canAct=true;
         startButton.code = function () { 
             for(let i=0; i<30; i++){
                 for(let j=0; j<10; j++){
-                    let e = new Particle(2, (canvas.width - 300)/2+i*10, 250+j*10);
+                    let e = new Particle(2, startButton.x+i*10, startButton.y+j*10);
                     e.ga=0;
                 }
             }
             startButton.addAction(50,50,function(){Screen.selectScreen();});
             startButton.drawCode=function(){};
+            startFS(canvas);
         };
         startButton.drawOption(null, "black", "START", 80, "black");
     }

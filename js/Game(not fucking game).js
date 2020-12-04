@@ -1,6 +1,7 @@
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
+
 class Game {
     static channel = [new Array(), new Array(),new Array()]; //phisics, particle, button
     static time = 0;
@@ -24,6 +25,10 @@ class Game {
         document.addEventListener("keydown", this.keyDownHandler, false);
         document.addEventListener("keyup", this.keyUpHandler, false);
         canvas.addEventListener("mousedown", this.clickHandler, false);
+
+        
+
+        //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A, 붉은빛밤하늘: #3F3939}
 
         Level.loadLevel();
         Screen.menuScreen();
