@@ -1,4 +1,4 @@
-function startFS(element) {
+function startFs(element) {
     if(element.requestFullScreen) {
         element.requestFullScreen();
     } else if(element.webkitRequestFullScreen ) {
@@ -12,9 +12,33 @@ function startFS(element) {
     canvas.height = screen.height;
 }
 
+function exitFs(element) {		
+    if (element.exitFullscreen){
+        element.exitFullscreen();
+    }else if(element.cancelFullScreen) {
+        element.cancelFullScreen();
+    } else if(element.webkitCancelFullScreen ) {
+        element.webkitCancelFullScreen();
+    } else if(element.mozCancelFullScreen) {
+        element.mozCancelFullScreen();
+    } else if (element.msExitFullscreen) {
+        element.msExitFullscreen(); // IE        
+    }
+    canvas.width = Screen.CANVAS_W;
+    canvas.height = Screen.CANVAS_H;
+}
+
+
 class Screen {
+    //const
+    static CANVAS_W=1200;
+    static CANVAS_H=600;
+    static M_100BUTTON=80;
+
+    //screen status
     static isMobile = false;
     static selectMagic = null;
+    static isFullScreen = false;
 
     static menuScreen() {
         Game.restartGame();
@@ -42,7 +66,6 @@ class Screen {
             }
             startButton.addAction(50,50,function(){Screen.selectScreen();});
             startButton.drawCode=function(){};
-            startFS(canvas);
         };
         startButton.drawOption(null, "black", "START", 80, "black");
     }
@@ -67,6 +90,23 @@ class Screen {
         backButton.code = function () { Screen.menuScreen() };
         backButton.drawOption(null, null, "<", 80, "black");
 
+        let fullScreenButton =new Button(canvas.width - 110, canvas.height - 100, 100, 40);
+        if (Screen.isFullScreen) fullScreenButton.temp.push("exit full screen");
+        else fullScreenButton.temp.push("to full screen");
+        fullScreenButton.code = function () {
+            if (Screen.isFullScreen) { Screen.isFullScreen = false; fullScreenButton.temp[0] = "to full screen"; exitFs(document);Screen.selectScreen();}
+            else { Screen.isFullScreen = true; fullScreenButton.temp[0] = "exit full screen"; startFs(canvas);Screen.selectScreen();}
+        };
+        fullScreenButton.drawCode=function(){
+            ctx.fillStyle="black";
+            ctx.strokeStyle="black";
+            ctx.strokeRect(fullScreenButton.x, fullScreenButton.y, fullScreenButton.w, fullScreenButton.h);
+            ctx.font = "bold 15px Arial";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            ctx.fillText(fullScreenButton.temp[0], fullScreenButton.x + 50, fullScreenButton.y + 22);
+        }
+
         let mobileButton = new Button(canvas.width - 110, canvas.height - 50, 100, 40);
         if (Screen.isMobile) mobileButton.temp.push("to PC");
         else mobileButton.temp.push("to mobile");
@@ -74,7 +114,6 @@ class Screen {
             if (Screen.isMobile) { Screen.isMobile = false; mobileButton.temp[0] = "to mobile"; }
             else { Screen.isMobile = true; mobileButton.temp[0] = "to PC"; }
         };
-        //mobileButton.drawOption(null, "black", mobileButton.temp[0], 30, "black");
         mobileButton.drawCode=function(){
             ctx.fillStyle="black";
             ctx.strokeStyle="black";
@@ -167,9 +206,9 @@ class Screen {
         }
 
         //simulation
-        new MapBlock(700, 400, 500, 200, "rgb(35, 35, 35)");
-        Game.p = new Player(720, 0);
-        let monster = new Monster(0, 1100, 0);
+        new MapBlock(canvas.width/2, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "rgb(35, 35, 35)");
+        Game.p = new Player(canvas.width/2+20, 0);
+        let monster = new Monster(0, canvas.width-100, 0);
         monster.life = 100000;
         monster.action = [];
 
@@ -189,23 +228,23 @@ class Screen {
         new MapBlock(-50, 0, 50, canvas.height); //left
         new MapBlock(canvas.width, 0, 50, canvas.height);//right
         new MapBlock(0, -50, canvas.width, 50);//top
-        new MapBlock(-200, canvas.height - 150, canvas.width + 400, 20, "#2B650D");//bottom
-        new MapBlock(0, canvas.height - 130, canvas.width, 130, "#54341E");
+        new MapBlock(-200, canvas.height - 90, canvas.width + 400, 20, "#2B650D");//bottom
+        new MapBlock(0, canvas.height - 70, canvas.width, 100, "#54341E");
 
         if (Screen.isMobile) {
-            let leftButton = new Button(10, canvas.height - 110, 100, 100);
+            let leftButton = new Button(5, canvas.height - 65, 60, 60);
             leftButton.code = function () { Game.p.moveFlag = true; Game.p.isRight = false; };
-            leftButton.drawOption("rgb(61, 61, 61)", "black", "<", 100, "black");
-            let upButton = new Button(120, canvas.height - 110, 100, 100);
+            leftButton.drawOption("rgb(61, 61, 61)", "black", "<", 80, "black");
+            let upButton = new Button(70, canvas.height - 65, 60, 60);
             upButton.code = function () { Game.p.jump()};
-            upButton.drawOption("rgb(61, 61, 61)", "black", "^", 100, "black");
-            let rightButton = new Button(230, canvas.height - 110, 100, 100);
+            upButton.drawOption("rgb(61, 61, 61)", "black", "^", 80, "black");
+            let rightButton = new Button(135, canvas.height - 65, 60, 60);
             rightButton.code = function () { Game.p.moveFlag = true; Game.p.isRight = true; };
-            rightButton.drawOption("rgb(61, 61, 61)", "black", ">", 100, "black");
+            rightButton.drawOption("rgb(61, 61, 61)", "black", ">", 80, "black");
 
             let keys=["Q","W","E","R"];
             for(let i=0; i<4; i++){
-                let keyButton = new Button(canvas.width-430+i*110,canvas.height-110,100,100);
+                let keyButton = new Button(canvas.width-(5*4+60*4)+i*65,canvas.height-65,60,60);
                 keyButton.code=function(){Magic.doSkill(i);};
                 keyButton.drawCode=function(){
                     ctx.fillStyle="rgb(61, 61, 61)";
@@ -213,13 +252,13 @@ class Screen {
                     ctx.strokeStyle="black";
                     ctx.strokeRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
                     ctx.fillStyle="black";
-                    ctx.font = "bold 80px Arial";
+                    ctx.font = "bold 40px Arial";
                     ctx.textBaseline = "middle";
                     ctx.textAlign = "center";
-                    ctx.fillText(keys[i],keyButton.x+50,keyButton.y+70);
+                    ctx.fillText(keys[i],keyButton.x+30,keyButton.y+40);
                     ctx.fillStyle="rgb(121, 140, 205)";
-                    ctx.font = "bold 20px Arial";
-                    ctx.fillText(Magic.basicMagic[Magic.skillNum[i]][0],keyButton.x+50,keyButton.y+15);
+                    ctx.font = "bold 10px Arial";
+                    ctx.fillText(Magic.basicMagic[Magic.skillNum[i]][0],keyButton.x+30,keyButton.y+10);
                 }
             }
         }

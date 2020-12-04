@@ -33,7 +33,7 @@ class Game {
         Level.loadLevel();
         Screen.menuScreen();
         Game.p = new Player(100, -1000);
-        Game.p.ga = -0.01;
+        Game.p.ga = 0;
     }
 
     static updateWorld() {
