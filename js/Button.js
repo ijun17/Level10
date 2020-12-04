@@ -48,7 +48,7 @@ class Button extends Entity {
         }
     }
 
-    collisionHandler(e) {
-        if (!(e instanceof Button)) new (this.code)();
+    collisionHandler(e,ct) {
+        if (!(e instanceof Button)) new (this.code)(e,ct);
     }
 }

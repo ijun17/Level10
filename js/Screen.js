@@ -29,6 +29,8 @@ function exitFs(element) {
 }
 
 
+
+
 class Screen {
     //const
     static CANVAS_W=1200;
@@ -38,9 +40,8 @@ class Screen {
     //screen status
     static isMobile = false;
     static selectMagic = null;
-    static isFullScreen = false;
 
-    static menuScreen() {
+    static mainScreen() {
         Game.restartGame();
 
         let ashSpray = new MapBlock(-100,-100,0,0,"black",Game.BUTTON_CHENNEL);
@@ -87,32 +88,29 @@ class Screen {
         });
 
         let backButton = new Button(0, 0, 80, 80);
-        backButton.code = function () { Screen.menuScreen() };
+        backButton.code = function () { Screen.mainScreen() };
         backButton.drawOption(null, null, "<", 80, "black");
 
         let fullScreenButton =new Button(canvas.width - 110, canvas.height - 100, 100, 40);
-        if (Screen.isFullScreen) fullScreenButton.temp.push("exit full screen");
-        else fullScreenButton.temp.push("to full screen");
         fullScreenButton.code = function () {
-            if (Screen.isFullScreen) { Screen.isFullScreen = false; fullScreenButton.temp[0] = "to full screen"; exitFs(document);Screen.selectScreen();}
-            else { Screen.isFullScreen = true; fullScreenButton.temp[0] = "exit full screen"; startFs(canvas);Screen.selectScreen();}
+            startFs(canvas);
+            Screen.mainScreen();
+            let full = new Button((canvas.width - 300)/2, (canvas.height-100)/2, 300, 100);
+            Game.channel[Game.BUTTON_CHENNEL].unshift(full);
+            full.code=function(){
+                startFs(canvas);
+                full.x=-1000;
+                Game.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);
+            }
         };
-        fullScreenButton.drawCode=function(){
-            ctx.fillStyle="black";
-            ctx.strokeStyle="black";
-            ctx.strokeRect(fullScreenButton.x, fullScreenButton.y, fullScreenButton.w, fullScreenButton.h);
-            ctx.font = "bold 15px Arial";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            ctx.fillText(fullScreenButton.temp[0], fullScreenButton.x + 50, fullScreenButton.y + 22);
-        }
+        fullScreenButton.drawOption(null, "black", "to full screen", 15, "black");
 
         let mobileButton = new Button(canvas.width - 110, canvas.height - 50, 100, 40);
         if (Screen.isMobile) mobileButton.temp.push("to PC");
         else mobileButton.temp.push("to mobile");
         mobileButton.code = function () {
-            if (Screen.isMobile) { Screen.isMobile = false; mobileButton.temp[0] = "to mobile"; }
-            else { Screen.isMobile = true; mobileButton.temp[0] = "to PC"; }
+            if (Screen.isMobile) { Game.convertMobileMode(false); mobileButton.temp[0] = "to mobile"; }
+            else { Game.convertMobileMode(true); mobileButton.temp[0] = "to PC"; }
         };
         mobileButton.drawCode=function(){
             ctx.fillStyle="black";
@@ -206,8 +204,8 @@ class Screen {
         }
 
         //simulation
-        new MapBlock(canvas.width/2, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "rgb(35, 35, 35)");
-        Game.p = new Player(canvas.width/2+20, 0);
+        new MapBlock(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "rgb(35, 35, 35)");
+        Game.p = new Player(canvas.width*5/9+20, 0);
         let monster = new Monster(0, canvas.width-100, 0);
         monster.life = 100000;
         monster.action = [];
@@ -223,28 +221,27 @@ class Screen {
         backButton.code = function () { Screen.selectScreen() };
         backButton.drawOption(null, null, "<", 80, "black");
 
+        let mobileButtonSize=70;
 
-
-        new MapBlock(-50, 0, 50, canvas.height); //left
-        new MapBlock(canvas.width, 0, 50, canvas.height);//right
-        new MapBlock(0, -50, canvas.width, 50);//top
-        new MapBlock(-200, canvas.height - 90, canvas.width + 400, 20, "#2B650D");//bottom
-        new MapBlock(0, canvas.height - 70, canvas.width, 100, "#54341E");
+        new MapBlock(-50, -1000, 50, canvas.height+1000); //left
+        new MapBlock(canvas.width, -1000, 50, canvas.height+1000);//right
+        new MapBlock(-10, canvas.height - mobileButtonSize-30, canvas.width + 20, 20, "#2B650D");//bottom
+        new MapBlock(0, canvas.height - mobileButtonSize-10, canvas.width, 100, "#54341E");
 
         if (Screen.isMobile) {
-            let leftButton = new Button(5, canvas.height - 65, 60, 60);
-            leftButton.code = function () { Game.p.moveFlag = true; Game.p.isRight = false; };
+            let leftButton = new Button(5, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
+            leftButton.code = function () {  Game.p.moveFlag = true; Game.p.isRight = false; };
             leftButton.drawOption("rgb(61, 61, 61)", "black", "<", 80, "black");
-            let upButton = new Button(70, canvas.height - 65, 60, 60);
+            let upButton = new Button(70, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
             upButton.code = function () { Game.p.jump()};
             upButton.drawOption("rgb(61, 61, 61)", "black", "^", 80, "black");
-            let rightButton = new Button(135, canvas.height - 65, 60, 60);
+            let rightButton = new Button(135, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
             rightButton.code = function () { Game.p.moveFlag = true; Game.p.isRight = true; };
             rightButton.drawOption("rgb(61, 61, 61)", "black", ">", 80, "black");
 
             let keys=["Q","W","E","R"];
             for(let i=0; i<4; i++){
-                let keyButton = new Button(canvas.width-(5*4+60*4)+i*65,canvas.height-65,60,60);
+                let keyButton = new Button(canvas.width-(5*4+mobileButtonSize*4)+i*(mobileButtonSize+5),canvas.height-mobileButtonSize-5,mobileButtonSize,mobileButtonSize);
                 keyButton.code=function(){Magic.doSkill(i);};
                 keyButton.drawCode=function(){
                     ctx.fillStyle="rgb(61, 61, 61)";
@@ -252,12 +249,12 @@ class Screen {
                     ctx.strokeStyle="black";
                     ctx.strokeRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
                     ctx.fillStyle="black";
-                    ctx.font = "bold 40px Arial";
+                    ctx.font = "bold "+(mobileButtonSize-20)+"px Arial";
                     ctx.textBaseline = "middle";
                     ctx.textAlign = "center";
                     ctx.fillText(keys[i],keyButton.x+30,keyButton.y+40);
                     ctx.fillStyle="rgb(121, 140, 205)";
-                    ctx.font = "bold 10px Arial";
+                    ctx.font = "bold 20px Arial";
                     ctx.fillText(Magic.basicMagic[Magic.skillNum[i]][0],keyButton.x+30,keyButton.y+10);
                 }
             }
