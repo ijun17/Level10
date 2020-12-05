@@ -29,18 +29,25 @@ class Level {
         clearBtn.vy=-1.5;
     }
 
+    static perX(percentile){
+        return canvas.width/100*percentile;
+    }
+    static perY(percentile){
+        return canvas.height/100*percentile;
+    }
+
     static makeStage(level) {
         this.stageLevel=level;
         switch (level) {
             case 1:
-                new Monster(0, 900, 200);
+                new Monster(0, Level.perX(90), Level.perY(10));
                 this.stageMonsterCount=1;
                 break;
             case 2:
-                new Monster(0, 900, 200);
-                new Monster(0, 800, 200);
-                new Monster(0, 700, 200);
-                new Monster(3, 800, 0);
+                new Monster(0, Level.perX(90), Level.perY(10));
+                new Monster(0, Level.perX(80), Level.perY(10));
+                new Monster(0, Level.perX(70), Level.perY(10));
+                new Monster(3, Level.perX(80), Level.perY(0));
                 this.stageMonsterCount=4;
                 break;
             case 3:
