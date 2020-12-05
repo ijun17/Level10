@@ -21,9 +21,8 @@ class Monster extends Entity {
         this.img.src = Monster.dir + this.type.name + ".png";
         this.target = Game.p;
         var temp = this;
-
         switch(typenum){
-            case 1:
+            case 0:
                 this.addAction(100, 100, function () { temp.AI(); });
                 this.addAction(100, 100, function () { temp.skill3(); });
                 break;
@@ -81,7 +80,7 @@ class Monster extends Entity {
         if (Level.stageMonsterCount == 0) Level.clearLevel();
     }
 
-    AI() {
+    AI(time=50) {
         var tx = this.target.x;
         var ty = this.target.y;
         if (this.x < tx) this.vx = this.type.speed;
@@ -91,10 +90,10 @@ class Monster extends Entity {
             this.vy = this.type.speed - 0.5;
         }
         var temp = this;
-        this.addAction(50, 50, function () { temp.AI(); });
+        this.addAction(time, time, function () { temp.AI(time); });
     }
 
-    AI2(){
+    AI2(time=10, randomNum=8){
         var tx = this.target.x;
         var ty = this.target.y;
         if (this.x < tx) this.vx = this.type.speed;
@@ -102,14 +101,14 @@ class Monster extends Entity {
         if (this.y < ty) this.vy = -this.type.speed;
         else this.vy = +this.type.speed;
 
-        this.vx+=(1-Math.random()*2)*8;
-        this.vy+=(1-Math.random()*2)*8;
+        this.vx+=(1-Math.random()*2)*randomNum;
+        this.vy+=(1-Math.random()*2)*randomNum;
 
         var temp = this;
-        this.addAction(10, 10, function () { temp.AI2(); });
+        this.addAction(time, time, function () { temp.AI2(time, randomNum); });
     }
 
-    skill(time,speed=6) {
+    skill(time=1000,speed=6) {
         this.x = this.target.x + this.target.w / 2 - this.w / 2;
         this.y = 0;
         this.vx = 0;
@@ -118,23 +117,23 @@ class Monster extends Entity {
         this.addAction(time, time, function () { temp.skill(time,speed); });
     }
 
-    skill2() {
+    skill2(time=200, speed=30) {
         var monster = this;
         var ice;
         var temp = -1;
         if (this.x + this.w / 2 < this.target.x + this.target.w / 2) temp = 1;
         ice = new Matter(2, monster.x + monster.w / 2 + (monster.w + 80) / 2 * temp, monster.y + monster.h / 2, 0, 0);
-        ice.vx = (this.target.x - ice.x) / 30;
-        ice.vy = -(this.target.y - ice.y) / 30;
+        ice.vx = (this.target.x - ice.x) / speed;
+        ice.vy = -(this.target.y - ice.y) / speed;
 
-        this.addAction(200, 200, function () { monster.skill2(); });
+        this.addAction(time, time, function () { monster.skill2(time,speed); });
     }
 
-    skill3() {
+    skill3(time=100, duration=50) {
         var monster = this;
         this.addAction(1, 1, function () { monster.visibility = false; });
-        this.addAction(50, 50, function () { monster.visibility = true; });
-        this.addAction(100, 100, function () { monster.skill3(); });
+        this.addAction(duration, duration, function () { monster.visibility = true; });
+        this.addAction(time, time, function () { monster.skill3(); });
 
     }
 }
