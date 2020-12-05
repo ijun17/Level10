@@ -22,6 +22,7 @@ class Game {
     }
 
     static startGame() {
+
         canvas.addEventListener('browserFullScreen', function(){startFs(canvas);});
 
         document.addEventListener("keydown", keyDownHandler, false);

@@ -3,15 +3,13 @@ class Monster extends Entity {
     static types = [{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 20, speed: 3 },
     { name: "crazyclam", w: 100, h: 100, life: 10000, damage: 10, speed: 2 },
     { name: "오세안", w: 142, h: 297, life: 20000, damage: 40, speed: 2 },
-    { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 60, speed: 4 }];
+    { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 60, speed: 4 },
+    { name: "hellfly", w:30, h:30, life:15000,damage:150, speed:5}];
+    
 
     type;
     target;
     canJump = true;
-    //speed=50;
-
-    //temp
-    bossMode = 0;
 
     constructor(typenum, x, y) {
         super(x, y);
@@ -23,19 +21,23 @@ class Monster extends Entity {
         this.target = Game.p;
         var temp = this;
 
-        this.addAction(100, 100, function () { temp.AI(); });
-
         if (typenum == 0) {
-            //this.addAction(100-time%10,100-time%10,function(){temp.skill();});
+            this.addAction(100, 100, function () { temp.AI(); });
             this.addAction(100, 100, function () { temp.skill3(); });
         }
         if (typenum == 2) {
+            this.addAction(100, 100, function () { temp.AI(); });
             this.addAction(100, 100, function () { temp.skill(500); });
             this.addAction(999, 999, function () { temp.skill2(); });
         }
         if (typenum == 3) {
+            this.addAction(100, 100, function () { temp.AI(); });
             this.addAction(100, 100, function () { temp.skill(500); });
             this.addAction(999, 999, function () { temp.skill2(); });
+        }
+        if(typenum==4){ // fly
+            this.ga=0;
+            this.addAction(100, 100, function () { temp.AI2(); });
         }
     }
 
@@ -67,7 +69,6 @@ class Monster extends Entity {
     }
 
     removeHandler() {
-        //console.log(Level.stageMonsterCounter);
         Level.stageMonsterCount--;
         if (Level.stageMonsterCount == 0) Level.clearLevel();
     }
@@ -83,6 +84,21 @@ class Monster extends Entity {
         }
         var temp = this;
         this.addAction(50, 50, function () { temp.AI(); });
+    }
+
+    AI2(){
+        var tx = this.target.x;
+        var ty = this.target.y;
+        if (this.x < tx) this.vx = this.type.speed;
+        else this.vx = -this.type.speed;
+        if (this.y < ty) this.vy = -this.type.speed;
+        else this.vy = +this.type.speed;
+
+        this.vx+=(1-Math.random()*2)*8;
+        this.vy+=(1-Math.random()*2)*8;
+
+        var temp = this;
+        this.addAction(10, 10, function () { temp.AI2(); });
     }
 
     skill(time) {
