@@ -45,9 +45,9 @@ class Game {
             Game.p.go();
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (var e of Game.channel[0]) { e.update(); }
-        for (var e of Game.channel[1]) { e.update(); }
-        for (var e of Game.channel[2]) { e.update(); }
+        for (let i=Game.channel[0].length-1, c=Game.channel[0]; i>=0; i--) { c[i].update(); }
+        for (let i=Game.channel[1].length-1, c=Game.channel[1]; i>=0; i--) { c[i].update(); }
+        for (let i=Game.channel[2].length-1, c=Game.channel[2]; i>=0; i--) { c[i].update(); }
         Game.removeEntity(0);
         Game.removeEntity(1);
         Game.removeEntity(2);

@@ -56,6 +56,16 @@ class Level {
                 new Monster(4,Screen.perX(10), Screen.perY(10));
                 this.stageMonsterCount=5;
                 break;
+            case 4:
+                let s1 = new Monster(5,Screen.perX(90), Screen.perY(40));
+                let s2 = new Monster(5,Screen.perX(50), Screen.perY(40));
+                let s3 = new Monster(5,Screen.perX(70), Screen.perY(40));
+                s1.addAction(100, 100, function () { s1.skill(1000, 10); });
+                s2.addAction(200, 200, function () { s2.skill(1000, 10); });
+                s3.addAction(300, 300, function () { s3.skill(1000, 10); });
+                new Monster(4,Screen.perX(90), Screen.perY(10));
+                this.stageMonsterCount=4;
+                break;
             default:
                 let clearBtn = new Button(canvas.width/2-150, 0, 300, 100);
                 clearBtn.canAct=true;

@@ -4,7 +4,8 @@ class Monster extends Entity {
     { name: "crazyclam", w: 100, h: 100, life: 10000, damage: 10, speed: 2 },
     { name: "오세안", w: 142, h: 297, life: 20000, damage: 40, speed: 2 },
     { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 60, speed: 4 },
-    { name: "hellfly", w:30, h:30, life:15000,damage:150, speed:5}];
+    { name: "hellfly", w:30, h:30, life:15000,damage:150, speed:5},
+    { name: "strongsword", w:100, h:100,life:10000,damage:5000,speed:0}];
     
 
     type;
@@ -21,23 +22,30 @@ class Monster extends Entity {
         this.target = Game.p;
         var temp = this;
 
-        if (typenum == 0) {
-            this.addAction(100, 100, function () { temp.AI(); });
-            this.addAction(100, 100, function () { temp.skill3(); });
-        }
-        if (typenum == 2) {
-            this.addAction(100, 100, function () { temp.AI(); });
-            this.addAction(100, 100, function () { temp.skill(500); });
-            this.addAction(999, 999, function () { temp.skill2(); });
-        }
-        if (typenum == 3) {
-            this.addAction(100, 100, function () { temp.AI(); });
-            this.addAction(100, 100, function () { temp.skill(500); });
-            this.addAction(999, 999, function () { temp.skill2(); });
-        }
-        if(typenum==4){ // fly
-            this.ga=0;
-            this.addAction(100, 100, function () { temp.AI2(); });
+        switch(typenum){
+            case 1:
+                this.addAction(100, 100, function () { temp.AI(); });
+                this.addAction(100, 100, function () { temp.skill3(); });
+                break;
+            case 2:
+                this.addAction(100, 100, function () { temp.AI(); });
+                this.addAction(100, 100, function () { temp.skill(500); });
+                this.addAction(999, 999, function () { temp.skill2(); });
+                break;
+            case 3:
+                this.addAction(100, 100, function () { temp.AI(); });
+                this.addAction(100, 100, function () { temp.skill(500); });
+                this.addAction(999, 999, function () { temp.skill2(); });
+                break;
+            case 4:
+                this.ga=0;
+                this.addAction(100, 100, function () { temp.AI2(); });
+                break;
+            case 5:
+                //this.addAction(100, 100, function () { temp.skill(500, 10); });
+                break;
+            default:
+                break;
         }
     }
 
@@ -101,13 +109,13 @@ class Monster extends Entity {
         this.addAction(10, 10, function () { temp.AI2(); });
     }
 
-    skill(time) {
+    skill(time,speed=6) {
         this.x = this.target.x + this.target.w / 2 - this.w / 2;
         this.y = 0;
         this.vx = 0;
-        this.vy = -6;
+        this.vy = -speed;
         var temp = this;
-        this.addAction(time, time, function () { temp.skill(time); });
+        this.addAction(time, time, function () { temp.skill(time,speed); });
     }
 
     skill2() {

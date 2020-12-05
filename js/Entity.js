@@ -21,7 +21,8 @@ class Entity {
         this.x = x;
         this.y = y;
         this.channelLevel = channelLevel;
-        Game.channel[channelLevel].push(this);
+        Game.channel[channelLevel][Game.channel[channelLevel].length]=this;
+        //Game.channel[channelLevel]=[this].concat(Game.channel[channelLevel]);
     }
 
     update() {

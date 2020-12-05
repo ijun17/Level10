@@ -134,7 +134,7 @@ class Screen {
             startFs(canvas);
             Screen.mainScreen();
             let full = new Button((canvas.width - 300)/2, (canvas.height-100)/2, 300, 100);
-            Game.channel[Game.BUTTON_CHENNEL].unshift(full);
+            //Game.channel[Game.BUTTON_CHENNEL].unshift(full);
             full.code=function(){
                 startFs(canvas);
                 full.x=-1000;
