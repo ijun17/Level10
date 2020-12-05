@@ -32,7 +32,7 @@ class Game {
 
 
 
-        //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A, 붉은빛밤하늘: #3F3939}
+        //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A, 붉은빛밤하늘: #3F3939, 보라빛밤하늘: #3C3647}
 
         Level.loadLevel();
         Screen.mainScreen()
