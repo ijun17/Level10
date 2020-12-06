@@ -56,6 +56,5 @@ class Matter extends Entity {
             e.addAction(1, 1, function () { e.visibility = false; });
             e.addAction(300, 300, function () { e.visibility = true; });
         }
-
     }
 }

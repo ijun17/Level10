@@ -71,7 +71,55 @@ class Magic{
                 fire.life=50;
             }
         }
-    },1000]];
+    },1000],
+
+    ["chidoritornado",function(){
+        let temp=-1;
+        if(Game.p.isRight)temp=1;
+        for(let i=0; i<12; i++){
+            let x=Game.p.x+200*temp;
+            let y=Game.p.y+29-i*40;
+            let fire = new Matter(1, x-13*i+10,y,0,0 );
+            fire.addAction(1,1000,function(){
+                fire.vx+=(x-fire.x)/(1.1+i/10);
+                fire.vy=0;
+                fire.life=1000;
+            });
+            fire.addAction(1001,1001,function(){fire.life=1;});
+        }
+    },2000],
+
+    ["icetornado",function(){
+        let temp=-1;
+        if(Game.p.isRight)temp=1;
+        for(let i=0; i<12; i++){
+            let x=Game.p.x+200*temp;
+            let y=Game.p.y+29-i*40;
+            let fire = new Matter(2, x-13*i+10,y,0,0 );
+            fire.addAction(1,1000,function(){
+                fire.vx+=(x-fire.x)/(1.1+i/10);
+                fire.vy=0;
+                fire.life=1000;
+            });
+            fire.addAction(1001,1001,function(){fire.life=1;});
+        }
+    },2000],
+
+    ["arrowtornado",function(){
+        let temp=-1;
+        if(Game.p.isRight)temp=1;
+        for(let i=0; i<12; i++){
+            let x=Game.p.x+200*temp;
+            let y=Game.p.y+29-i*40;
+            let fire = new Matter(4, x-13*i+10,y,0,0 );
+            fire.addAction(1,1000,function(){
+                fire.vx+=(x-fire.x)/(1.1+i/10);
+                fire.vy=0;
+                fire.life=1000;
+            });
+            fire.addAction(1001,1001,function(){fire.life=1;});
+        }
+    },2000]];
     //end basicMasic
 
     static doSkill(num){
