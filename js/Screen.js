@@ -222,7 +222,7 @@ class Screen {
             keyButtons[i] = keyButton;
             keyButton.temp.push(null); //temp[0] 은 선택된 마법을 의미
         }
-        new Button(space*8+keyBtnW+magicBtnW, 0, magicBtnW, keyBtnW);
+        let block = new Button(space*8+keyBtnW+magicBtnW, 0, magicBtnW, keyBtnW);
         for (let i = 1; i < Magic.basicMagic.length; i++) {
             let magicButton = new Button(space*8+keyBtnW+magicBtnW, keyBtnW + 50 * i, magicBtnW, magicBtnH);
             magicButton.code = function () { Screen.selectMagic = magicButton; new (Magic.basicMagic[i][1]); };
@@ -242,11 +242,12 @@ class Screen {
             }
         }
 
-        let selectMagigButton = new Button(0, 0, 0, 0);
-        selectMagigButton.drawCode = function () {
+        block.drawCode = function () {
             if (Screen.selectMagic != null) {
-                ctx.strokeStyle = "white";
-                ctx.strokeRect(Screen.selectMagic.x, Screen.selectMagic.y, Screen.selectMagic.w, Screen.selectMagic.h);
+                ctx.fillStyle = "black";
+                ctx.globalAlpha = "0.5";
+                ctx.fillRect(Screen.selectMagic.x, Screen.selectMagic.y, Screen.selectMagic.w, Screen.selectMagic.h);
+                ctx.globalAlpha = "1";
             }
         }
 
