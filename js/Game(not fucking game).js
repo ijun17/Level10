@@ -65,9 +65,10 @@ class Game {
     }
 
     static click(x, y) {
-        for (let e of Game.channel[Game.BUTTON_CHENNEL]) {
-            if (e.x < x && x < e.x + e.w && e.y < y && y < e.y + e.h) {
-                e.collisionHandler(null, "down");
+        let c=Game.channel[Game.BUTTON_CHENNEL];
+        for (let i=c.length-1; i>=0; i--) {
+            if (c[i].x < x && x < c[i].x + c[i].w && c[i].y < y && y < c[i].y + c[i].h) {
+                c[i].collisionHandler(null, "down");
                 break;
             }
         }

@@ -134,13 +134,14 @@ class Screen {
             startFs(canvas);
             Screen.mainScreen();
             let full = new Button((canvas.width - 300)/2, (canvas.height-100)/2, 300, 100);
-            //Game.channel[Game.BUTTON_CHENNEL].unshift(full);
             full.code=function(){
                 startFs(canvas);
-                full.x=-1000;
+                full.x=10000;
                 Game.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);
             }
         };
+       
+
         fullScreenButton.drawOption(null, "black", "to full screen", fullBtnTextSize, "black");
         //mobile button
         let mobileButton = new Button(canvas.width - space - toMobileBtnW, canvas.height - space - toMobileBtnH, toMobileBtnW, toMobileBtnH);
