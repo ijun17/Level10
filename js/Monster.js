@@ -58,8 +58,8 @@ class Monster extends Entity {
     collisionHandler(e) {
         if (this.y + this.h <= e.y) this.canJump = true;
         //공격
-        if (!(e instanceof Monster || e instanceof MapBlock)) {
-            e.life -= this.type.damage;
+        if (!(e instanceof Monster || e instanceof MapBlock || e instanceof Matter)) {
+            e.damage(this.type.damage, "red");
             if (e==this.target) {
                 if (e.x + e.w / 2 > this.x + this.w / 2) e.vx = Math.sqrt(this.type.damage) / 2;
                 else e.vx = -(Math.sqrt(this.type.damage)) / 2;

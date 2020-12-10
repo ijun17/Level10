@@ -37,7 +37,7 @@ class Magic{
         let temp=-1;
         if(Game.p.isRight)temp=1;
         Game.p.x+=300*temp;
-    },100],
+    },200],
 
     ["chidori",function(){
         Game.p.addAction(1,200,function(){
@@ -68,26 +68,10 @@ class Magic{
         for(let i=0; i<4; i++){
             for(let j=0; j<4; j++){
                 let fire = new Matter(0, Game.p.x+i*41, Game.p.y-400+j*41, 10*temp, -10);
-                fire.life=50;
+                fire.life=10;
             }
         }
     },1000],
-
-    ["chidoritornado",function(){
-        let temp=-1;
-        if(Game.p.isRight)temp=1;
-        for(let i=0; i<12; i++){
-            let x=Game.p.x+200*temp;
-            let y=Game.p.y+29-i*40;
-            let fire = new Matter(1, x-13*i+10,y,0,0 );
-            fire.addAction(1,1000,function(){
-                fire.vx+=(x-fire.x)/(1.1+i/10);
-                fire.vy=0;
-                fire.life=1000;
-            });
-            fire.addAction(1001,1001,function(){fire.life=1;});
-        }
-    },2000],
 
     ["icetornado",function(){
         let temp=-1;
@@ -96,6 +80,8 @@ class Magic{
             let x=Game.p.x+200*temp;
             let y=Game.p.y+29-i*40;
             let fire = new Matter(2, x-13*i+10,y,0,0 );
+            //fire.w=38;
+            //fire.h=38;
             fire.addAction(1,1000,function(){
                 fire.vx+=(x-fire.x)/(1.1+i/10);
                 fire.vy=0;
@@ -104,21 +90,24 @@ class Magic{
             fire.addAction(1001,1001,function(){fire.life=1;});
         }
     },2000],
-
-    ["arrowtornado",function(){
+    
+    ["energy-lay",function(){
         let temp=-1;
         if(Game.p.isRight)temp=1;
-        for(let i=0; i<12; i++){
-            let x=Game.p.x+200*temp;
-            let y=Game.p.y+29-i*40;
-            let fire = new Matter(4, x-13*i+10,y,0,0 );
-            fire.addAction(1,1000,function(){
-                fire.vx+=(x-fire.x)/(1.1+i/10);
-                fire.vy=0;
-                fire.life=1000;
-            });
-            fire.addAction(1001,1001,function(){fire.life=1;});
+        for(let i=0; i<2; i++){
+            for(let j=0; j<2; j++){
+                let energy = new Matter(5, Game.p.x, Game.p.y-400, 10*temp, -10);
+                energy.life=20;
+            }
         }
+    },2000],
+    
+    ["sniper", function(){
+        let arrow;
+        let temp=-1;
+        if(Game.p.isRight)temp=1;
+        arrow=new Matter(4,Game.p.x+50*temp, Game.p.y+20, 20*temp, 0.5);
+        arrow.life=10;
     },2000]];
     //end basicMasic
 

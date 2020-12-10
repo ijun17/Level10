@@ -1,10 +1,11 @@
 class Matter extends Entity {
     static types =
-        [{ name: "fire", effect: 0, damage: 300 },
-        { name: "lightning", effect: 1, damage: 100 },
-        { name: "ice", effect: 2, damage: 50 },
-        { name: "explosion", effect: -1, damage: 200 },
-        { name: "arrow", effect: -1, damage: 10 }];
+        [{ name: "fire", num:0, damage: 300 },
+        { name: "lightning", num:1, damage: 100 },
+        { name: "ice", num:2, damage: 50 },
+        { name: "explosion", num:3, damage: 200 },
+        { name: "arrow", num:4, damage: 10 },
+        { name: "energy", num:5, damage: 1000}];
     //effect- -1:none 0:fire 1:Electric shock 2:freezing 3:invisioble
     static dir = "resource/effect/";
 
@@ -12,7 +13,7 @@ class Matter extends Entity {
 
     constructor(typenum, x, y, vx = 0, vy = 0) {
         super(x, y);
-        this.type = Matter.types[typenum];
+        this.type = {name:Matter.types[typenum].name, num:Matter.types[typenum].num, damage:Matter.types[typenum].damage,};
         this.vx = vx;
         this.vy = vy;
         this.w = 30;
@@ -27,34 +28,51 @@ class Matter extends Entity {
     draw() {
         var r = Math.atan2(this.vx, this.vy);
         ctx.save();
-        ctx.translate(this.x + 10, this.y + 10);
+        ctx.translate(this.x + this.w/2, this.y + this.h/2);
         ctx.rotate(r);
-        ctx.drawImage(this.img, -10, -10);
+        ctx.drawImage(this.img, -this.w/2, -this.h/2, this.w, this.h);
         ctx.restore();
     }
 
     collisionHandler(e) {
         this.life--;
-        e.life -= this.type.damage;
-        if (this.type.name == "arrow") {
-            var damage = (this.vx * this.vx + this.vy * this.vy) * 5;
-            e.life -= damage;
-        }
+        if(e instanceof Monster||e instanceof Player)e.damage(this.type.damage,"orange");//e.life -= this.type.damage;
         if (!(e instanceof Block)) {
             e.vx += this.vx / 10;
             e.vy += this.vy / 10 + 1;
         }
-        if (this.type.effect == 0) {
-            //e.addAction(1,100,function(){e.life--;});
-        } else if (this.type.effect == 1) {
-            e.addAction(1, 1, function () { e.vx = 0; e.vy = 0; });
-            e.addAction(300, 300, function () { e.canMove = true; });
-        } else if (this.type.effect == 2) {
-            e.addAction(1, 100, function () { e.vx = 0; e.vy = 0; ctx.fillStyle = "rgba(167, 220, 244, 0.5)"; ctx.fillRect(e.x, e.y, e.w, e.h); });
-            //e.addAction(300,300,function(){e.canMove=true;});
-        } else if (this.type.effect == 3) {
-            e.addAction(1, 1, function () { e.visibility = false; });
-            e.addAction(300, 300, function () { e.visibility = true; });
+
+        switch(this.type.num){
+            case 0://fire
+                break;
+            case 1://lightning
+                e.vx=0;
+                e.vy=0;
+                break;
+            case 2://ice
+                e.addAction(1, 100, function () { e.vx = 0; e.vy = 0; ctx.fillStyle = "rgba(167, 220, 244, 0.5)"; ctx.fillRect(e.x, e.y, e.w, e.h); });
+                break;
+            case 3://explosion
+                break;
+            case 4://arrow
+                var damage = Math.floor(Math.abs(this.vx * this.vx * this.vx + this.vy * this.vy * this.vy))+1;
+                e.damage(damage, "orange");
+                break;
+            case 5://energy
+                if(e instanceof Matter&&e.type.num==5){
+                    e.life=0;
+                    e.x=-10000;
+                    this.w+=e.w;
+                    this.h+=e.h;
+                    this.vx+=e.vx;
+                    this.vy+=e.vy;
+                    this.type.damage+=e.type.damage;
+                }
+                
+                break;
+            default:
+                break;
+
         }
     }
 }

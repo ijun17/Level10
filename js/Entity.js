@@ -11,7 +11,7 @@ class Entity {
     visibility = true; //보일 수 있는가
     canMove = true; //움직일 수 있는가
     canAct = true; //행동을 할 수 있는가
-    canInteraction=true;
+    canInteraction = true;
 
     img = new Image; //엔티티의 이미지
 
@@ -21,14 +21,14 @@ class Entity {
         this.x = x;
         this.y = y;
         this.channelLevel = channelLevel;
-        Game.channel[channelLevel][Game.channel[channelLevel].length]=this;
+        Game.channel[channelLevel][Game.channel[channelLevel].length] = this;
         //Game.channel[channelLevel]=[this].concat(Game.channel[channelLevel]);
     }
 
     update() {
         if (this.visibility) this.draw();
-        if (this.canAct)this.act();
-        if (this.canInteraction)this.interaction();
+        if (this.canAct) this.act();
+        if (this.canInteraction) this.interaction();
     }
 
     draw() {
@@ -56,8 +56,9 @@ class Entity {
     }
 
     interaction() {
-        let collisionType=null;
         if (this.y > canvas.height + 100) this.life = 0;
+        if (this.life < 1) return;
+        let collisionType = null;
 
         for (var e of Game.channel[this.channelLevel]) {//entity collision event
             if (e != this && this.x + this.vx < e.x + e.w && this.x + this.vx + this.w > e.x && this.y - this.vy < e.y + e.h && this.y - this.vy + this.h > e.y) {
@@ -81,16 +82,15 @@ class Entity {
                         this.vx = 0;
                         this.x = e.x + e.w;
                     } else if (collisionType == 'D') { //down collision
-                        this.vy =0;
+                        this.vy = 0;
                         this.y = e.y - this.h;
                     } else if (collisionType == 'U') { //up collision
-                        this.vy =0;
+                        this.vy = 0;
                         this.y = e.y + e.h;
                     }
                 }
             }
         }
-
         if (this.canMove) {
             this.x += this.vx;
             this.y -= this.vy;
@@ -107,6 +107,30 @@ class Entity {
     giveForce(ax, ay) {
         this.vx += ax;
         this.vy += ay;
+    }
+
+    damage(d, textColor=null){
+        this.life-=d;
+        if(textColor!=null){
+            let textSize=50;
+            let damageText = new Button(this.x+this.w/2, this.y-textSize, 0,0,Game.TEXT_CHANNEL);
+            damageText.life=40;
+            damageText.vy=1;
+            damageText.canInteraction=false;
+            //damageText.overlap=false;
+            //damageText.drawOption(null, null, d, 30,"red");
+            damageText.drawCode=function(){
+                ctx.font = "bold 30px Arial";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillStyle = textColor;
+                ctx.fillText(d, damageText.x, damageText.y);
+                ctx.strokeStyle = "black";
+                ctx.strokeText(d, damageText.x, damageText.y);
+                damageText.life--;
+            }
+            
+        }
     }
 
     //event handler

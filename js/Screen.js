@@ -57,9 +57,11 @@ class Screen {
         ashSpray.addAction(1,1000000,function(){
             if(Game.time%10==0){
                 let r = Math.random()*canvas.width;
-                let ash=new Particle(0,r,0);
-                ash.life=200;
-                ash.vy-=2;
+                let ash=new Particle(3,r,0);
+                ash.w=20;
+                ash.h=20;
+                ash.life=400;
+                ash.vy-=1.5;
             }
         });
 
@@ -79,7 +81,6 @@ class Screen {
     }
 
     static selectScreen() {
-        Game.time = 0;
         Game.restartGame();
 
         let space=10;
@@ -119,9 +120,11 @@ class Screen {
         ashSpray.addAction(1,1000000,function(){
             if(Game.time%10==0){
                 let r = Math.random()*canvas.width;
-                let ash=new Particle(0,r,0);
-                ash.life=200;
-                ash.vy-=2;
+                let ash=new Particle(3,r,0);
+                ash.w=20;
+                ash.h=20;
+                ash.life=400;
+                ash.vy-=1.5;
             }
         });
         //back button
@@ -163,7 +166,6 @@ class Screen {
     }
 
     static selectMagicScreen() {
-        Game.time = 0;
         Game.restartGame();
 
         let space=10; //버튼간 간격
@@ -226,7 +228,11 @@ class Screen {
         for (let i = 1; i < Magic.basicMagic.length; i++) {
             let magicButton = new Button(space*8+keyBtnW+magicBtnW, keyBtnW + 50 * i, magicBtnW, magicBtnH);
             magicButton.code = function () { Screen.selectMagic = magicButton; new (Magic.basicMagic[i][1]); };
-            magicButton.drawOption("rgb(121, 140, 205)", "black", Magic.basicMagic[i][0], magicBtnTextSize, "black");
+            let magicColor;
+            if(Magic.basicMagic[i][2]<1000)magicColor="white";
+            else if(Magic.basicMagic[i][2]<2000)magicColor="rgb(121, 140, 205)";
+            else magicColor="rgb(243, 168, 60)";
+            magicButton.drawOption(magicColor, "black", Magic.basicMagic[i][0], magicBtnTextSize, "black");
             magicButton.temp.push(i); //temp[0]=Magic.basicMagic
             magicButton.temp.push(null); //temp[1] is keyButton index
             magicButton.ga = 0.5;
@@ -242,7 +248,7 @@ class Screen {
             }
         }
 
-        block.drawCode = function () {
+        block.drawCode = function () { //선택된 마법의 색을 어둡게
             if (Screen.selectMagic != null) {
                 ctx.fillStyle = "black";
                 ctx.globalAlpha = "0.5";
@@ -261,9 +267,8 @@ class Screen {
     }
 
     static gameScreen() {
-        Game.time = 0;
         Game.restartGame();
-        Magic.clearCoolTime();
+        Game.isCameraOn=true;
 
         let backButton = new Button(0, 0, 80, 80);
         backButton.code = function () { Screen.selectScreen() };
@@ -276,6 +281,19 @@ class Screen {
         new MapBlock(-10, canvas.height - mobileButtonSize-30, canvas.width + 20, 20, "#2B650D");//bottom
         new MapBlock(0, canvas.height - mobileButtonSize-10, canvas.width, 100, "#54341E");
 
+        //cooltime view
+        for(let i=0; i<4; i++){
+            let coolTimeView = new Button(canvas.width-200, i*30, 0,0, Game.TEXT_CHANNEL);
+            coolTimeView.drawCode=function(){
+                ctx.fillStyle="black";
+                ctx.font = "bold 20px Arial";
+                ctx.textBaseline = "top";
+                ctx.textAlign = "left";
+                let coolT = Magic.coolTime[i]-Game.time;
+                ctx.fillText(Magic.basicMagic[Magic.skillNum[i]][0]+": "+(coolT>0 ? (coolT/100) : "ready"), coolTimeView.x, coolTimeView.y);
+            };
+        } 
+        //mobile button
         if (Screen.isMobile) {
             let leftButton = new Button(5, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
             leftButton.code = function () {  Game.p.moveFlag = true; Game.p.isRight = false; };

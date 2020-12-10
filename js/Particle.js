@@ -1,10 +1,11 @@
 class Particle extends Entity{
     static types=[{name:"ember",speed:1,ga:-0.01},
     {name:"spark",speed:1,ga:-0.01},
-    {name:"smoke",speed:0.5,ga:-0.001}];
+    {name:"smoke",speed:0.5,ga:-0.001},
+    {name:"snow",speed:1,ga:-0.01}];
     static particleDir="resource/particle/";
     type;
-    constructor(typeNum,x,y,channelLevel=1){
+    constructor(typeNum,x,y,channelLevel=Game.PARTICLE_CHANNEL){
         super(x,y,channelLevel);
         this.type=Particle.types[typeNum];
         this.w=10;
@@ -20,7 +21,7 @@ class Particle extends Entity{
     update(){
         this.life--;
         //draw
-        ctx.drawImage(this.img, this.x-5, this.y-5);
+        ctx.drawImage(this.img, this.x-5, this.y-5, this.w, this.h);
         //move
         this.x+=this.vx;
         this.y-=this.vy;

@@ -4,11 +4,10 @@ class Button extends Entity {
     temp = new Array();
     isTextBtn = true;
 
-    constructor(x, y, w, h, channelLevel=2) {
+    constructor(x, y, w, h, channelLevel=Game.BUTTON_CHANNEL) {
         super(x, y, channelLevel);
         this.w = w;
         this.h = h;
-        this.canRemoved = false;
         this.canAct = false;
         this.ga = 0;
         this.overlap=false;

@@ -28,7 +28,7 @@ class Level {
         else clearBtn.drawOption(null, null, "CLEAR", 300, "yellow");
         clearBtn.vy = -1.5;
 
-        let click = new Block(canvas.width / 2, canvas.height, 0, 0, "black", Game.BUTTON_CHENNEL);
+        let click = new Block(canvas.width / 2, canvas.height, 0, 0, "black", Game.BUTTON_CHANNEL);
         click.life = 1000;
         click.canInteraction = false;
     }
