@@ -20,6 +20,10 @@ class MapBlock extends Entity{ //안부숴지는
         ctx.fillRect(this.x, this.y, this.w, this.h);
     }
 
+    damage(d, textColor=null){return;}
+    giveForce(ax, ay) {return;}
+    addAction(start, end, code) {return;}
+
     collisionHandler(){
         this.vx=0;
         this.vy=0;

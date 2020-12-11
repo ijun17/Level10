@@ -51,14 +51,14 @@ class Magic{
         if(Game.p.isRight)temp=1;
         for(let i=0; i<12; i++){
             let x=Game.p.x+200*temp;
-            let y=Game.p.y+29-i*40;
+            let y=Game.p.y+29-i*35;
             let fire = new Matter(0, x-13*i+10,y,0,0 );
-            fire.addAction(1,1000,function(){
+            fire.addAction(1,500,function(){
                 fire.vx+=(x-fire.x)/(1.1+i/10);
                 fire.vy=0;
-                fire.life=1000;
+                fire.life=100;
             });
-            fire.addAction(1001,1001,function(){fire.life=1;});
+            fire.addAction(1001,1001,function(){fire.life=0;});
         }
     },2000],
 
@@ -82,12 +82,12 @@ class Magic{
             let fire = new Matter(2, x-13*i+10,y,0,0 );
             //fire.w=38;
             //fire.h=38;
-            fire.addAction(1,1000,function(){
+            fire.addAction(1,500,function(){
                 fire.vx+=(x-fire.x)/(1.1+i/10);
                 fire.vy=0;
-                fire.life=1000;
+                fire.life=100;
             });
-            fire.addAction(1001,1001,function(){fire.life=1;});
+            fire.addAction(501,501,function(){fire.life=1;});
         }
     },2000],
     

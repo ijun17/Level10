@@ -51,9 +51,9 @@ class Screen {
     static mainScreen() {
         Game.restartGame();
 
-        let ashSpray = new MapBlock(-100,-100,0,0,"black",Game.BUTTON_CHENNEL);
+        let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
         ashSpray.canAct=true;
-        ashSpray.canMove=false;
+        ashSpray.canInteraction=false;
         ashSpray.addAction(1,1000000,function(){
             if(Game.time%10==0){
                 let r = Math.random()*canvas.width;
@@ -70,8 +70,12 @@ class Screen {
         startButton.code = function () { 
             for(let i=0; i<30; i++){
                 for(let j=0; j<10; j++){
-                    let e = new Particle(2, startButton.x+i*10, startButton.y+j*10);
+                    let e = new Particle(3, startButton.x+i*10, startButton.y+j*10);
                     e.ga=0;
+                    e.w=15;
+                    e.h=15;
+                    e.vx/=2;
+                    e.vy/=2;
                 }
             }
             startButton.addAction(50,50,function(){Screen.selectScreen();});
@@ -114,9 +118,9 @@ class Screen {
             fullBtnTextSize=10;
         }
 
-        let ashSpray = new MapBlock(-100,-100,0,0,"black",Game.BUTTON_CHENNEL);
+        let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
         ashSpray.canAct=true;
-        ashSpray.canMove=false;
+        ashSpray.canInteraction=false;
         ashSpray.addAction(1,1000000,function(){
             if(Game.time%10==0){
                 let r = Math.random()*canvas.width;
@@ -160,8 +164,9 @@ class Screen {
         for (let i = 1; i <= Level.playerLevel; i++) {
             let levelButton = new Button((canvas.width - levelBtnW) /2, levelBtnW + i * (space+levelBtnH), levelBtnW, levelBtnH);
             levelButton.code = function () { Screen.gameScreen(); Level.makeStage(i); };
-            levelButton.drawOption("white", "black", "LEVEL" + i, levelBtnTextSize, "black");
+            levelButton.drawOption("rgb("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+")", "black", "LEVEL" + i, levelBtnTextSize, "black");
             levelButton.ga = 0.5;
+            console.log(i);
         }
     }
 

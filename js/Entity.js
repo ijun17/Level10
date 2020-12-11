@@ -56,7 +56,7 @@ class Entity {
     }
 
     interaction() {
-        if (this.y > canvas.height + 100) this.life = 0;
+        if (this.y > canvas.height + 500) this.life = 0;
         if (this.life < 1) return;
         let collisionType = null;
 
@@ -117,8 +117,6 @@ class Entity {
             damageText.life=40;
             damageText.vy=1;
             damageText.canInteraction=false;
-            //damageText.overlap=false;
-            //damageText.drawOption(null, null, d, 30,"red");
             damageText.drawCode=function(){
                 ctx.font = "bold 30px Arial";
                 ctx.textBaseline = "middle";

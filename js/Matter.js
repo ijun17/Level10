@@ -34,25 +34,25 @@ class Matter extends Entity {
         ctx.restore();
     }
 
-    collisionHandler(e) {
+    damage(d, textColor=null){
         this.life--;
-        if(e instanceof Monster||e instanceof Player)e.damage(this.type.damage,"orange");//e.life -= this.type.damage;
+    }
+
+    collisionHandler(e) {
+        this.damage();
+        e.damage(this.type.damage,"orange");//e.life -= this.type.damage;
         if (!(e instanceof Block)) {
-            e.vx += this.vx / 10;
-            e.vy += this.vy / 10 + 1;
+            e.vx += this.vx;
+            e.vy += this.vy+1;
         }
 
         switch(this.type.num){
-            case 0://fire
-                break;
             case 1://lightning
                 e.vx=0;
                 e.vy=0;
                 break;
             case 2://ice
                 e.addAction(1, 100, function () { e.vx = 0; e.vy = 0; ctx.fillStyle = "rgba(167, 220, 244, 0.5)"; ctx.fillRect(e.x, e.y, e.w, e.h); });
-                break;
-            case 3://explosion
                 break;
             case 4://arrow
                 var damage = Math.floor(Math.abs(this.vx * this.vx * this.vx + this.vy * this.vy * this.vy))+1;
@@ -62,6 +62,7 @@ class Matter extends Entity {
                 if(e instanceof Matter&&e.type.num==5){
                     e.life=0;
                     e.x=-10000;
+                    this.life++;
                     this.w+=e.w;
                     this.h+=e.h;
                     this.vx+=e.vx;
