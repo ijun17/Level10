@@ -1,7 +1,7 @@
 class Block extends Entity{
     color;
     mass=1;
-    constructor(x,y,w,h,color = "#080808", channelLevel=0){
+    constructor(x,y,w,h,color = "#080808",channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
         this.w=w;
         this.h=h;
@@ -12,7 +12,7 @@ class Block extends Entity{
     draw(){
         this.life--;
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.w, this.h);
+        ctx.fillRect(Camera.getX(this.x), Camera.getY(this.y), this.w, this.h);
     }
 
     collisionHandler(e,ct,isActor){

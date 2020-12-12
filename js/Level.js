@@ -22,11 +22,20 @@ class Level {
         this.stageLevel = 0;
         this.stageMonster = 0;
         //animation
-        let clearBtn = new Button(canvas.width / 2 - 150, 0, 300, 100);
+        let clearBtn = new Button(canvas.width / 2-2,0, 4, 4);
         clearBtn.code = function () { Screen.selectScreen(); };
-        if (Screen.isMobile) clearBtn.drawOption(null, null, "CLEAR", 100, "yellow");
-        else clearBtn.drawOption(null, null, "CLEAR", 300, "yellow");
-        clearBtn.vy = -1.5;
+        //if (Screen.isMobile) clearBtn.drawOption(null, null, "CLEAR", 100, "yellow");
+        //else clearBtn.drawOption(null, null, "CLEAR", 300, "yellow");
+        clearBtn.drawCode = function(){
+            ctx.font = "bold 300px Arial";
+            ctx.fillStyle = "yellow";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            //ctx.fillText("CLEAR",clearBtn.x+clearBtn.w / 2,clearBtn.y);
+            ctx.fillText("CLEAR",Camera.getX(clearBtn.x+clearBtn.w / 2), Camera.getY(clearBtn.y));
+        }
+        clearBtn.vy=-1.5;
+        //Camera.e=clearBtn;
 
         let click = new Block(canvas.width / 2, canvas.height, 0, 0, "black", Game.BUTTON_CHANNEL);
         click.life = 1000;
@@ -36,6 +45,15 @@ class Level {
 
     static makeStage(level) {
         this.stageLevel = level;
+        //준기의 탑 n층
+        let floorText = new Button(-400,200,0,0,Game.TEXT_CHANNEL);
+        floorText.life=200;
+        floorText.drawCode = function(){
+            ctx.font = "bold 50px Arial";
+            ctx.fillStyle = "grey";
+            ctx.fillText("준기의탑 -"+level+"층",Camera.getX(-400),Camera.getY(200));
+            floorText.life--;
+        }
         switch (level) {
             case 1:
                 new Monster(0, Screen.perX(90), Screen.perY(10));
@@ -57,7 +75,7 @@ class Level {
                 this.stageMonsterCount = 5;
                 break;
             case 4:
-                new Monster(6,Screen.perX(80), 200);
+                new Monster(6,Screen.perX(80), Screen.perY(50));
                 this.stageMonsterCount = 1;
                 break;
             case 5:

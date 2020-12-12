@@ -6,10 +6,9 @@ class Game {
     static channel = [[], [], [], []]; //phisics, particle, button
     static time = 0;
     static p;
-    static isCameraOn = false;
 
-    static PHYSICS_CHANNEL = 0;
-    static PARTICLE_CHANNEL = 1;
+    static PHYSICS_CHANNEL = 1;
+    static PARTICLE_CHANNEL = 0;
     static TEXT_CHANNEL = 2;
     static BUTTON_CHANNEL = 3;
 
@@ -21,7 +20,7 @@ class Game {
         Magic.clearCoolTime();
         Level.stageLevel = -1;
         Level.stageMonsterCount = -1;
-        Game.isCameraOn = false;
+        Camera.cameraOn = false;
     }
 
     static startGame() {
@@ -137,22 +136,26 @@ function keyUpHandler(e) {
 }
 
 function clickDownHandler(e) {
+    e.preventDefault();
     Game.click(e.layerX, e.layerY);
 }
 
 function clickUpHandler(e) {
+    e.preventDefault();
     Game.p.moveFlag = false;
 }
 
-function touchStartHandler(evt) {
-    var touchX = evt.touches[0].clientX;
-    var touchY = evt.touches[0].clientY;
+function touchStartHandler(e) {
+    e.preventDefault();
+    var touchX = e.touches[0].clientX;
+    var touchY = e.touches[0].clientY;
 
     Game.click(touchX, touchY);
 }
 
 
-function touchEndHandler(evt) {
+function touchEndHandler(e) {
+    e.preventDefault();
     Game.p.moveFlag = false;
 }
 

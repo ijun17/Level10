@@ -4,17 +4,17 @@ class Monster extends Entity {
     { name: "crazyclam", w: 100, h: 100, life: 10000, damage: 10, speed: 2 },
     { name: "오세안", w: 142, h: 297, life: 20000, damage: 40, speed: 2 },
     { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 60, speed: 4 },
-    { name: "hellfly", w:30, h:30, life:15000,damage:150, speed:5},
+    { name: "hellfly", w:30, h:30, life:20000,damage:200, speed:5},
     { name: "strongsword", w:100, h:100,life:10000,damage:5000,speed:0},
-    { name: "madfish", w:600, h:300, life:1000000, damage:2000,speed:1}];
+    { name: "madfish", w:600, h:300, life:2000000, damage:2000,speed:1}];
     
 
     type;
     target;
     canJump = true;
 
-    constructor(typenum, x, y) {
-        super(x, y);
+    constructor(typenum, x, y,channelLevel=Game.PHYSICS_CHANNEL) {
+        super(x, y,channelLevel);
         this.type = Monster.types[typenum];
         this.w = this.type.w;
         this.h = this.type.h;
@@ -56,10 +56,10 @@ class Monster extends Entity {
     }
 
     draw() {
-        ctx.drawImage(this.img, this.x, this.y, this.w,this.h);
+        ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), this.w,this.h);
         ctx.font = "bold 20px Arial";
         ctx.fillStyle = "black"
-        ctx.fillText("hp: " + (Math.floor(this.life)), this.x, this.y - 20);
+        ctx.fillText("hp: " + (Math.floor(this.life)), Camera.getX(this.x), Camera.getY(this.y-20));
     }
 
     collisionHandler(e) {
@@ -149,11 +149,11 @@ class Monster extends Entity {
         var ice;
         var temp = -1;
         if (this.x + this.w / 2 < this.target.x + this.target.w / 2) temp = 1;
-        ice = new Matter(5, monster.x + monster.w / 2 + (monster.w + 100) / 2 * temp, monster.y/ 2, 0,0);
+        ice = new Matter(5, monster.x + monster.w / 2 + (monster.w + 150) / 2 * temp, monster.y/ 2, 0,0);
         ice.vx = (this.target.x - ice.x)/speed;
         ice.vy = -(this.target.y - ice.y)/speed;
-        //ice.life=10;
-        //new Matter(5, monster.x + monster.w / 2 + (monster.w + 100) / 2 * temp, monster.y/ 2, 0,0);
+        ice.life=2;
+        //new Matter(5, monster.x + monster.w / 2 + (monster.w + 200) / 2 * temp, monster.y/ 2, 0,0);
 
         this.addAction(time, time, function () { monster.skill4(time,speed); });
     }

@@ -7,20 +7,20 @@ class Player extends Entity{
     canJump=true;
     static dir="resource/player/";
 
-    constructor(x,y){
-        super(x,y);
+    constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
+        super(x,y,channelLevel);
         this.w=27;
         this.h=60;
-        this.life=10000;
+        this.life=10000*Level.playerLevel;
         this.img.src = Player.dir+`player2_right.png`;
         this.overlap=false;
     }
 
     draw(){
-        ctx.drawImage(this.img, this.x, this.y);
+        ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y));
         ctx.font="bold 20px Arial";
         ctx.fillStyle="black"
-        ctx.fillText("hp: "+(Math.floor(this.life)),this.x,this.y-20);
+        ctx.fillText("hp: "+(Math.floor(this.life)),Camera.getX(this.x),Camera.getY(this.y-20));
     }
 
     go(){

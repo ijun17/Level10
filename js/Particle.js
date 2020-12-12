@@ -21,7 +21,7 @@ class Particle extends Entity{
     update(){
         this.life--;
         //draw
-        ctx.drawImage(this.img, this.x-5, this.y-5, this.w, this.h);
+        ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), this.w, this.h);
         //move
         this.x+=this.vx;
         this.y-=this.vy;

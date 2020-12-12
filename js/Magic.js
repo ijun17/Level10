@@ -91,7 +91,7 @@ class Magic{
         }
     },2000],
     
-    ["energy-lay",function(){
+    ["one-gi-ok",function(){
         let temp=-1;
         if(Game.p.isRight)temp=1;
         for(let i=0; i<2; i++){

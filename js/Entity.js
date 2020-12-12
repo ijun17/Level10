@@ -56,6 +56,12 @@ class Entity {
     }
 
     interaction() {
+        let maxV=80;
+        if(this.vx>maxV)this.vx=maxV;
+        else if(this.vx<-maxV)this.vx=-maxV;
+        if(this.vy>maxV)this.vy=maxV;
+        else if(this.vy<-maxV)this.vy=-maxV;
+
         if (this.y > canvas.height + 500) this.life = 0;
         if (this.life < 1) return;
         let collisionType = null;
@@ -122,9 +128,9 @@ class Entity {
                 ctx.textBaseline = "middle";
                 ctx.textAlign = "center";
                 ctx.fillStyle = textColor;
-                ctx.fillText(d, damageText.x, damageText.y);
+                ctx.fillText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
                 ctx.strokeStyle = "black";
-                ctx.strokeText(d, damageText.x, damageText.y);
+                ctx.strokeText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
                 damageText.life--;
             }
             

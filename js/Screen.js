@@ -273,7 +273,7 @@ class Screen {
 
     static gameScreen() {
         Game.restartGame();
-        Game.isCameraOn=true;
+        Camera.cameraOn=true;
 
         let backButton = new Button(0, 0, 80, 80);
         backButton.code = function () { Screen.selectScreen() };
@@ -281,8 +281,12 @@ class Screen {
 
         let mobileButtonSize=70;
 
-        new MapBlock(-50, -1000, 50, canvas.height+1000); //left
-        new MapBlock(canvas.width, -1000, 50, canvas.height+1000);//right
+
+
+        //양 끝 맵블럭
+        new MapBlock(0,-1000,canvas.width,100);
+        new MapBlock(-100, -1000, 100, canvas.height+2000); //left
+        new MapBlock(canvas.width, -1000, 100, canvas.height+2000);//right
         new MapBlock(-10, canvas.height - mobileButtonSize-30, canvas.width + 20, 20, "#2B650D");//bottom
         new MapBlock(0, canvas.height - mobileButtonSize-10, canvas.width, 100, "#54341E");
 
@@ -331,7 +335,7 @@ class Screen {
             }
         }
         Game.p = new Player(10, canvas.height - 460);
-
+        Camera.e=Game.p;
         
     }
 }

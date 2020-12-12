@@ -11,8 +11,8 @@ class Matter extends Entity {
 
     type;
 
-    constructor(typenum, x, y, vx = 0, vy = 0) {
-        super(x, y);
+    constructor(typenum, x, y, vx = 0, vy = 0,channelLevel=Game.PHYSICS_CHANNEL) {
+        super(x, y,channelLevel);
         this.type = {name:Matter.types[typenum].name, num:Matter.types[typenum].num, damage:Matter.types[typenum].damage,};
         this.vx = vx;
         this.vy = vy;
@@ -28,7 +28,7 @@ class Matter extends Entity {
     draw() {
         var r = Math.atan2(this.vx, this.vy);
         ctx.save();
-        ctx.translate(this.x + this.w/2, this.y + this.h/2);
+        ctx.translate(Camera.getX(this.x + this.w/2), Camera.getY(this.y + this.h/2));
         ctx.rotate(r);
         ctx.drawImage(this.img, -this.w/2, -this.h/2, this.w, this.h);
         ctx.restore();
@@ -52,7 +52,7 @@ class Matter extends Entity {
                 e.vy=0;
                 break;
             case 2://ice
-                e.addAction(1, 100, function () { e.vx = 0; e.vy = 0; ctx.fillStyle = "rgba(167, 220, 244, 0.5)"; ctx.fillRect(e.x, e.y, e.w, e.h); });
+                e.addAction(1, 100, function () { e.vx = 0; e.vy = 0; ctx.fillStyle = "rgba(167, 220, 244, 0.5)"; ctx.fillRect(Camera.getX(e.x), Camera.getY(e.y), e.w, e.h); });
                 break;
             case 4://arrow
                 var damage = Math.floor(Math.abs(this.vx * this.vx * this.vx + this.vy * this.vy * this.vy))+1;
