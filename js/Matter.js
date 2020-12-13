@@ -30,7 +30,7 @@ class Matter extends Entity {
         ctx.save();
         ctx.translate(Camera.getX(this.x + this.w/2), Camera.getY(this.y + this.h/2));
         ctx.rotate(r);
-        ctx.drawImage(this.img, -this.w/2, -this.h/2, this.w, this.h);
+        ctx.drawImage(this.img, Camera.getS(-this.w/2), Camera.getS(-this.h/2), Camera.getS(this.w), Camera.getS(this.h));
         ctx.restore();
     }
 

@@ -152,7 +152,7 @@ class Screen {
         fullScreenButton.drawOption(null, "black", "to full screen", fullBtnTextSize, "black");
         //mobile button
         let mobileButton = new Button(canvas.width - space - toMobileBtnW, canvas.height - space - toMobileBtnH, toMobileBtnW, toMobileBtnH);
-        mobileButton.code = function () {if(!Screen.isMobile){Game.convertMobileMode(true);Screen.selectScreen();}};
+        mobileButton.code = function () {if(!Screen.isMobile){Game.convertMobileMode(true);Screen.selectScreen();Camera.extension=0.7}};
         mobileButton.drawOption(null,"black","to mobile",mobileBtnTextSize,"black");
         //select magic button
         let magicButton = new Button(canvas.width - selectMagicButtonW-space, space, selectMagicButtonW, selectMagicButtonH);
@@ -190,7 +190,7 @@ class Screen {
             magicBtnW=Screen.perX(100/6);
             magicBtnH=Screen.perX(100/30);
 
-            backBtnTextSize=60;
+            backBtnTextSize=Screen.perX(100/14);
             keyBtnTextSize=60;
             magicBtnTextSize=15;
         }
@@ -234,9 +234,9 @@ class Screen {
             let magicButton = new Button(space*8+keyBtnW+magicBtnW, keyBtnW + 50 * i, magicBtnW, magicBtnH);
             magicButton.code = function () { Screen.selectMagic = magicButton; new (Magic.basicMagic[i][1]); };
             let magicColor;
-            if(Magic.basicMagic[i][2]<1000)magicColor="white";
-            else if(Magic.basicMagic[i][2]<2000)magicColor="rgb(121, 140, 205)";
-            else magicColor="rgb(243, 168, 60)";
+            if(Magic.basicMagic[i][2]<1000)magicColor="rgba(255, 255, 255,0.5)";
+            else if(Magic.basicMagic[i][2]<2000)magicColor="rgba(121, 140, 205,1)";
+            else magicColor="rgba(243, 168, 60,1)";
             magicButton.drawOption(magicColor, "black", Magic.basicMagic[i][0], magicBtnTextSize, "black");
             magicButton.temp.push(i); //temp[0]=Magic.basicMagic
             magicButton.temp.push(null); //temp[1] is keyButton index
@@ -275,24 +275,24 @@ class Screen {
         Game.restartGame();
         Camera.cameraOn=true;
 
-        let backButton = new Button(0, 0, 80, 80);
+        let backBtnW=80;
+        let backBtnTextSize=80;
+
+        if(Screen.isMobile){
+            backBtnW=Screen.perX(100/14);
+            backBtnTextSize=Screen.perX(100/14);
+        }
+        
+
+        let backButton = new Button(0, 0, backBtnW, backBtnW);
         backButton.code = function () { Screen.selectScreen() };
-        backButton.drawOption(null, null, "<", 80, "black");
+        backButton.drawOption(null, null, "<", backBtnTextSize, "black");
 
         let mobileButtonSize=70;
 
-
-
-        //양 끝 맵블럭
-        new MapBlock(0,-1000,canvas.width,100);
-        new MapBlock(-100, -1000, 100, canvas.height+2000); //left
-        new MapBlock(canvas.width, -1000, 100, canvas.height+2000);//right
-        new MapBlock(-10, canvas.height - mobileButtonSize-30, canvas.width + 20, 20, "#2B650D");//bottom
-        new MapBlock(0, canvas.height - mobileButtonSize-10, canvas.width, 100, "#54341E");
-
         //cooltime view
         for(let i=0; i<4; i++){
-            let coolTimeView = new Button(canvas.width-200, i*30, 0,0, Game.TEXT_CHANNEL);
+            let coolTimeView = new Button(canvas.width-200, 10+i*20, 0,0, Game.TEXT_CHANNEL);
             coolTimeView.drawCode=function(){
                 ctx.fillStyle="black";
                 ctx.font = "bold 20px Arial";
@@ -306,20 +306,20 @@ class Screen {
         if (Screen.isMobile) {
             let leftButton = new Button(5, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
             leftButton.code = function () {  Game.p.moveFlag = true; Game.p.isRight = false; };
-            leftButton.drawOption("rgb(61, 61, 61)", "black", "<", 80, "black");
+            leftButton.drawOption("rgba(61, 61, 61,0.5)", "black", "<", 80, "black");
             let upButton = new Button(10+mobileButtonSize, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
             upButton.code = function () { Game.p.jump()};
-            upButton.drawOption("rgb(61, 61, 61)", "black", "^", 80, "black");
+            upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", 80, "black");
             let rightButton = new Button(15+mobileButtonSize*2, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
             rightButton.code = function () { Game.p.moveFlag = true; Game.p.isRight = true; };
-            rightButton.drawOption("rgb(61, 61, 61)", "black", ">", 80, "black");
+            rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", 80, "black");
 
             let keys=["Q","W","E","R"];
             for(let i=0; i<4; i++){
                 let keyButton = new Button(canvas.width-(5*4+mobileButtonSize*4)+i*(mobileButtonSize+5),canvas.height-mobileButtonSize-5,mobileButtonSize,mobileButtonSize);
                 keyButton.code=function(){Magic.doSkill(i);};
                 keyButton.drawCode=function(){
-                    ctx.fillStyle="rgb(61, 61, 61)";
+                    ctx.fillStyle="rgba(61, 61, 61,0.5)";
                     ctx.fillRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
                     ctx.strokeStyle="black";
                     ctx.strokeRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
@@ -334,7 +334,7 @@ class Screen {
                 }
             }
         }
-        Game.p = new Player(10, canvas.height - 460);
+        Game.p = new Player(10, 600- mobileButtonSize-140);
         Camera.e=Game.p;
         
     }

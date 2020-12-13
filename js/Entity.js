@@ -68,7 +68,7 @@ class Entity {
 
         for (var e of Game.channel[this.channelLevel]) {//entity collision event
             if (e != this && this.x + this.vx < e.x + e.w && this.x + this.vx + this.w > e.x && this.y - this.vy < e.y + e.h && this.y - this.vy + this.h > e.y) {
-                if (!(this.overlap && e.overlap)) {
+                if (!(this.overlap && e.overlap)&&this.canMove) {
                     if (this.x + this.w <= e.x) { //right collision
                         collisionType = 'R';
                     } else if (this.x >= e.x + e.w) { //left collision
@@ -80,7 +80,7 @@ class Entity {
                     }
                 }
                 this.collisionHandler(e, collisionType, true);
-                if (!(this.overlap && e.overlap)) {
+                if (!(this.overlap && e.overlap)&&this.canMove) {
                     if (collisionType == 'R') { //right collision
                         this.vx = 0;
                         this.x = e.x - this.w;
@@ -133,7 +133,6 @@ class Entity {
                 ctx.strokeText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
                 damageText.life--;
             }
-            
         }
     }
 

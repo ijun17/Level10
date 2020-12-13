@@ -1,7 +1,7 @@
 class Player extends Entity{
     lv=1;
     mp=40;
-    pv=3;
+    pv=4;
     isRight=true;
     moveFlag=false;
     canJump=true;
@@ -14,10 +14,11 @@ class Player extends Entity{
         this.life=10000*Level.playerLevel;
         this.img.src = Player.dir+`player2_right.png`;
         this.overlap=false;
+        this.ga=-0.2;
     }
 
     draw(){
-        ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y));
+        ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
         ctx.font="bold 20px Arial";
         ctx.fillStyle="black"
         ctx.fillText("hp: "+(Math.floor(this.life)),Camera.getX(this.x),Camera.getY(this.y-20));
@@ -46,6 +47,27 @@ class Player extends Entity{
     removeHandler(){
         console.log("player die");
         Screen.selectScreen();
+    }
+
+    damage(d, textColor=null){
+        this.life-=d;
+        if(textColor!=null){
+            let textSize=50;
+            let damageText = new Button(this.x+this.w/2, this.y-textSize, 0,0,Game.TEXT_CHANNEL);
+            damageText.life=40;
+            damageText.vy=1;
+            damageText.canInteraction=false;
+            damageText.drawCode=function(){
+                ctx.font = "bold 30px Arial";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillStyle = "red";
+                ctx.fillText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
+                ctx.strokeStyle = "black";
+                ctx.strokeText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
+                damageText.life--;
+            }
+        }
     }
 
     

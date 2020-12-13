@@ -75,7 +75,7 @@ class Game {
     static convertMobileMode(a) {
         if (a) {
             canvas.addEventListener("touchstart", touchStartHandler, false);
-            //canvas.addEventListener("touchmove", touchHandler);
+            canvas.addEventListener("touchmove", touchStartHandler, false);
             canvas.addEventListener("touchend", touchEndHandler, false);
             canvas.removeEventListener("mousedown", clickDownHandler, false);
             canvas.removeEventListener("mouseup", clickUpHandler, false);
@@ -147,16 +147,16 @@ function clickUpHandler(e) {
 
 function touchStartHandler(e) {
     e.preventDefault();
-    var touchX = e.touches[0].clientX;
-    var touchY = e.touches[0].clientY;
-
-    Game.click(touchX, touchY);
+    for(let i=0, max=e.touches.length; i<max; i++){
+        Game.click(e.touches[i].clientX, e.touches[i].clientY);
+    }
 }
 
 
 function touchEndHandler(e) {
     e.preventDefault();
-    Game.p.moveFlag = false;
+    if(e.touches.length==0)Game.p.moveFlag = false;
+    
 }
 
 

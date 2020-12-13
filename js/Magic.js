@@ -3,7 +3,7 @@ class Magic{
     static skillNum=[5,7,4,6];
     static coolTime=[0,0,0,0];
     
-    //magic = [magic,coolTime]
+    //magic = [name, magic,coolTime,level]
     static basicMagic=[["null", function(){}, 0],
     ["bullet", function(){
         let bullet;
@@ -94,11 +94,9 @@ class Magic{
     ["one-gi-ok",function(){
         let temp=-1;
         if(Game.p.isRight)temp=1;
-        for(let i=0; i<2; i++){
-            for(let j=0; j<2; j++){
-                let energy = new Matter(5, Game.p.x, Game.p.y-400, 10*temp, -10);
-                energy.life=20;
-            }
+        for(let i=0; i<4; i++){
+            let energy = new Matter(5, Game.p.x, Game.p.y-250, 3*temp, -3);
+            energy.life=20;
         }
     },2000],
     

@@ -12,8 +12,9 @@ class Block extends Entity{
     draw(){
         this.life--;
         ctx.fillStyle = this.color;
-        ctx.fillRect(Camera.getX(this.x), Camera.getY(this.y), this.w, this.h);
+        ctx.fillRect(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
     }
+    damage(d, textColor=null){this.life-=d;}
 
     collisionHandler(e,ct,isActor){
         if(e.canRemoved&&isActor){

@@ -1,9 +1,9 @@
 class Monster extends Entity {
     static dir = "resource/monster/";
-    static types = [{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 20, speed: 3 },
+    static types = [{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 100, speed: 3 },
     { name: "crazyclam", w: 100, h: 100, life: 10000, damage: 10, speed: 2 },
     { name: "오세안", w: 142, h: 297, life: 20000, damage: 40, speed: 2 },
-    { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 60, speed: 4 },
+    { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 200, speed: 4 },
     { name: "hellfly", w:30, h:30, life:20000,damage:200, speed:5},
     { name: "strongsword", w:100, h:100,life:10000,damage:5000,speed:0},
     { name: "madfish", w:600, h:300, life:2000000, damage:2000,speed:1}];
@@ -56,7 +56,7 @@ class Monster extends Entity {
     }
 
     draw() {
-        ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), this.w,this.h);
+        ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w),Camera.getS(this.h));
         ctx.font = "bold 20px Arial";
         ctx.fillStyle = "black"
         ctx.fillText("hp: " + (Math.floor(this.life)), Camera.getX(this.x), Camera.getY(this.y-20));
@@ -85,6 +85,27 @@ class Monster extends Entity {
     removeHandler() {
         Level.stageMonsterCount--;
         if (Level.stageMonsterCount == 0) Level.clearLevel();
+    }
+
+    damage(d, textColor=null){
+        this.life-=d;
+        if(textColor!=null){
+            let textSize=50;
+            let damageText = new Button(this.x+this.w/2, this.y-textSize, 0,0,Game.TEXT_CHANNEL);
+            damageText.life=40;
+            damageText.vy=1;
+            damageText.canInteraction=false;
+            damageText.drawCode=function(){
+                ctx.font = "bold 30px Arial";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillStyle = "orange";
+                ctx.fillText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
+                ctx.strokeStyle = "black";
+                ctx.strokeText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
+                damageText.life--;
+            }
+        }
     }
 
     AI(time=50) {
