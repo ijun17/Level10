@@ -1,7 +1,7 @@
 class Player extends Entity{
     lv=1;
     mp=40;
-    pv=4;
+    pv=3.5;
     isRight=true;
     moveFlag=false;
     canJump=true;
@@ -49,25 +49,25 @@ class Player extends Entity{
         Screen.selectScreen();
     }
 
-    damage(d, textColor=null){
-        this.life-=d;
-        if(textColor!=null){
-            let textSize=50;
-            let damageText = new Button(this.x+this.w/2, this.y-textSize, 0,0,Game.TEXT_CHANNEL);
-            damageText.life=40;
-            damageText.vy=1;
-            damageText.canInteraction=false;
-            damageText.drawCode=function(){
-                ctx.font = "bold 30px Arial";
-                ctx.textBaseline = "middle";
-                ctx.textAlign = "center";
-                ctx.fillStyle = "red";
-                ctx.fillText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
-                ctx.strokeStyle = "black";
-                ctx.strokeText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
-                damageText.life--;
-            }
+    damage(d, textColor = null) {
+        d=Math.floor(d);
+        this.life -= d;
+        let textSize = 50;
+        let damageText = new Button(this.x + this.w / 2, this.y - textSize, 0, 0, Game.TEXT_CHANNEL);
+        damageText.life = 40;
+        damageText.vy = 1;
+        damageText.canInteraction = false;
+        damageText.drawCode = function () {
+            ctx.font = "bold 30px Arial";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "red";
+            ctx.fillText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
+            ctx.strokeStyle = "black";
+            ctx.strokeText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
+            damageText.life--;
         }
+
     }
 
     

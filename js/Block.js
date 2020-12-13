@@ -16,10 +16,10 @@ class Block extends Entity{
     }
     damage(d, textColor=null){this.life-=d;}
 
-    collisionHandler(e,ct,isActor){
-        if(e.canRemoved&&isActor){
+    collisionHandler(e){
+        if(e.canRemoved){
             var damage=this.w*this.h*Math.sqrt(this.vx*this.vx+this.vy*this.vy)*this.mass/40;
-            e.life -= damage;
+            e.damage(damage);
         }
     }
 }

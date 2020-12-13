@@ -106,7 +106,15 @@ class Magic{
         if(Game.p.isRight)temp=1;
         arrow=new Matter(4,Game.p.x+50*temp, Game.p.y+20, 20*temp, 0.5);
         arrow.life=10;
-    },2000]];
+    },2000],
+    ["barricade",function(){
+        let b;
+        let temp=-1;
+        if(Game.p.isRight)temp=1;
+        b=new Block(Game.p.x+Game.p.w/2 + 50*temp-25, Game.p.y-200, 50, 200);
+        b.life=30000;
+        b.mass=30;
+    },1000]];
     //end basicMasic
 
     static doSkill(num){

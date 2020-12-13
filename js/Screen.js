@@ -166,7 +166,6 @@ class Screen {
             levelButton.code = function () { Screen.gameScreen(); Level.makeStage(i); };
             levelButton.drawOption("rgb("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+")", "black", "LEVEL" + i, levelBtnTextSize, "black");
             levelButton.ga = 0.5;
-            console.log(i);
         }
     }
 

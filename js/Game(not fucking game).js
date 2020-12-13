@@ -84,7 +84,7 @@ class Game {
             Screen.isMobile = true;
         } else {
             canvas.removeEventListener("touchstart", touchStartHandler, false);
-            //canvas.addEventListener("touchmove", touchHandler);
+            canvas.addEventListener("touchmove", touchStartHandler,false);
             canvas.removeEventListener("touchend", touchEndHandler, false);
             canvas.addEventListener("mousedown", clickDownHandler, false);
             canvas.addEventListener("mouseup", clickUpHandler, false);
@@ -146,6 +146,13 @@ function clickUpHandler(e) {
 }
 
 function touchStartHandler(e) {
+    // let touch= new Button(e.touches[0].clientX-50, e.touches[0].clientY-50, 100,100,Game.PARTICLE_CHANNEL);
+    // touch.drawCode = function(){
+    //     ctx.fillStyle="black";
+    //     ctx.fillRect(touch.x,touch.y, touch.w, touch.h);
+    //     touch.life--;
+    // }
+    // touch.life=10;
     e.preventDefault();
     for(let i=0, max=e.touches.length; i<max; i++){
         Game.click(e.touches[i].clientX, e.touches[i].clientY);
