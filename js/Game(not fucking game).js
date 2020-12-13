@@ -74,9 +74,9 @@ class Game {
 
     static convertMobileMode(a) {
         if (a) {
-            canvas.addEventListener("touchstart", touchStartHandler, false);
-            canvas.addEventListener("touchmove", touchStartHandler, false);
-            canvas.addEventListener("touchend", touchEndHandler, false);
+            document.addEventListener("touchstart", touchStartHandler, false);
+            canvas.addEventListener("touchmove", touchMoveHandler, false); //캔버스로 해야 더 빠름
+            document.addEventListener("touchend", touchEndHandler, false);
             canvas.removeEventListener("mousedown", clickDownHandler, false);
             canvas.removeEventListener("mouseup", clickUpHandler, false);
             document.removeEventListener("keydown", keyDownHandler, false);
@@ -84,7 +84,7 @@ class Game {
             Screen.isMobile = true;
         } else {
             canvas.removeEventListener("touchstart", touchStartHandler, false);
-            canvas.addEventListener("touchmove", touchStartHandler,false);
+            canvas.removeEventListener("touchmove", touchMoveHandler,false);
             canvas.removeEventListener("touchend", touchEndHandler, false);
             canvas.addEventListener("mousedown", clickDownHandler, false);
             canvas.addEventListener("mouseup", clickUpHandler, false);
@@ -146,13 +146,24 @@ function clickUpHandler(e) {
 }
 
 function touchStartHandler(e) {
-    // let touch= new Button(e.touches[0].clientX-50, e.touches[0].clientY-50, 100,100,Game.PARTICLE_CHANNEL);
-    // touch.drawCode = function(){
-    //     ctx.fillStyle="black";
-    //     ctx.fillRect(touch.x,touch.y, touch.w, touch.h);
-    //     touch.life--;
-    // }
-    // touch.life=10;
+    let touch= new Button(e.touches[0].clientX, e.touches[0].clientY, 0,0,Game.PARTICLE_CHANNEL);
+
+    touch.drawCode = function(){
+        //ctx.fillStyle="green";
+        //ctx.fillCircle(touch.x,touch.y, touch.w, touch.h);
+        //ctx.arc(touch.x,touch.y, 10, 0, 2 * Math.PI);
+        ctx.strokeRect(touch.x-5,touch.y-5, 10, 10);
+        touch.life--;
+    }
+    touch.life=10;
+    
+    e.preventDefault();
+    for(let i=0, max=e.touches.length; i<max; i++){
+        Game.click(e.touches[i].clientX, e.touches[i].clientY);
+    }
+}
+
+function touchMoveHandler(e) {
     e.preventDefault();
     for(let i=0, max=e.touches.length; i<max; i++){
         Game.click(e.touches[i].clientX, e.touches[i].clientY);

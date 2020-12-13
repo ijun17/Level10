@@ -29,7 +29,7 @@ class Level {
             ctx.fillStyle = "yellow";
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
-            ctx.fillText("CLEAR",Screen.perX(50), Camera.getY(clearBtn.y));
+            ctx.fillText("CLEAR",Screen.perX(50), clearBtn.y);
         }
         clearBtn.vy=-1.5;
 

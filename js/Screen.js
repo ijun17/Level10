@@ -326,10 +326,10 @@ class Screen {
                     ctx.font = "bold "+(mobileButtonSize-20)+"px Arial";
                     ctx.textBaseline = "middle";
                     ctx.textAlign = "center";
-                    ctx.fillText(keys[i],keyButton.x+30,keyButton.y+40);
+                    ctx.fillText(keys[i],keyButton.x+35,keyButton.y+40);
                     ctx.fillStyle="rgb(121, 140, 205)";
                     ctx.font = "bold 15px Arial";
-                    ctx.fillText(Magic.basicMagic[Magic.skillNum[i]][0],keyButton.x+30,keyButton.y+10);
+                    ctx.fillText(Magic.basicMagic[Magic.skillNum[i]][0],keyButton.x+35,keyButton.y+10);
                 }
             }
         }
