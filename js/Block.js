@@ -14,12 +14,12 @@ class Block extends Entity{
         ctx.fillStyle = this.color;
         ctx.fillRect(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
     }
-    damage(d, textColor=null){this.life-=d;}
 
     collisionHandler(e){
-        if(e.canRemoved){
-            var damage=this.w*this.h*Math.sqrt(this.vx*this.vx+this.vy*this.vy)*this.mass/40;
-            e.damage(damage);
-        }
+        var damage=this.w*this.h*Math.sqrt(this.vx*this.vx+this.vy*this.vy)*this.mass/40;
+        e.damage(damage);
+        e.giveForce(this.vx/5, this.vy/5);
     }
+
+    giveForce(ax,ay){}
 }

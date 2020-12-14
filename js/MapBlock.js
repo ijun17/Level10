@@ -20,9 +20,9 @@ class MapBlock extends Entity{ //안부숴지는
         ctx.fillRect(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
     }
 
-    damage(d, textColor=null){return;}
-    giveForce(ax, ay) {return;}
-    addAction(start, end, code) {return;}
+    damage(d, textColor=null){}
+    giveForce(ax, ay) {}
+    addAction(start, end, code) {}
 
     collisionHandler(){
         this.vx=0;

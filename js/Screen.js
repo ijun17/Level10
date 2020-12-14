@@ -35,11 +35,12 @@ class Screen {
     //const
     static CANVAS_W=1200;
     static CANVAS_H=600;
-    static M_100BUTTON=80;
+    //static M_100BUTTON=80;
 
     //screen status
     static isMobile = false;
     static selectMagic = null;
+    static bgColor;
 
     static perX(percentile){
         return canvas.width/100*percentile;
@@ -49,7 +50,7 @@ class Screen {
     }
 
     static mainScreen() {
-        Game.restartGame();
+        Game.resetGame();
 
         let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
         ashSpray.canAct=true;
@@ -85,7 +86,7 @@ class Screen {
     }
 
     static selectScreen() {
-        Game.restartGame();
+        Game.resetGame();
 
         let space=10;
         let backBtnW=80;
@@ -170,7 +171,7 @@ class Screen {
     }
 
     static selectMagicScreen() {
-        Game.restartGame();
+        Game.resetGame();
 
         let space=10; //버튼간 간격
         let backBtnW=80;
@@ -271,7 +272,7 @@ class Screen {
     }
 
     static gameScreen() {
-        Game.restartGame();
+        Game.resetGame();
         Camera.cameraOn=true;
 
         let backBtnW=80;

@@ -1,5 +1,3 @@
-//let entitys = new Array();
-
 class Entity {
     channelLevel;
 
@@ -115,25 +113,8 @@ class Entity {
         this.vy += ay;
     }
 
-    damage(d, textColor=null){
+    damage(d){
         this.life-=d;
-        if(textColor!=null){
-            let textSize=50;
-            let damageText = new Button(this.x+this.w/2, this.y-textSize, 0,0,Game.TEXT_CHANNEL);
-            damageText.life=40;
-            damageText.vy=1;
-            damageText.canInteraction=false;
-            damageText.drawCode=function(){
-                ctx.font = "bold 30px Arial";
-                ctx.textBaseline = "middle";
-                ctx.textAlign = "center";
-                ctx.fillStyle = textColor;
-                ctx.fillText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
-                ctx.strokeStyle = "black";
-                ctx.strokeText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
-                damageText.life--;
-            }
-        }
     }
 
     //event handler

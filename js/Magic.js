@@ -112,7 +112,7 @@ class Magic{
         let temp=-1;
         if(Game.p.isRight)temp=1;
         b=new Block(Game.p.x+Game.p.w/2 + 50*temp-25, Game.p.y-200, 50, 200);
-        b.life=30000;
+        b.life=10000;
         b.mass=30;
     },1000]];
     //end basicMasic

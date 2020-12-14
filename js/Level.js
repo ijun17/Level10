@@ -52,8 +52,10 @@ class Level {
             ctx.fillText("준기의탑 -"+level+"층",80,20);
             floorText.life--;
         }
-
-        let mapWSize=1200;
+        //bgColor
+        Screen.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
+        //map size
+        let mapSize=1200;
 
         switch (level) {
             case 1:
@@ -64,24 +66,34 @@ class Level {
                 new Monster(0, 1000, 0);
                 new Monster(0, 900, 0);
                 new Monster(0, 800, 0);
-                new Monster(3, 700, 0);
+                new Monster(1, 700, 0);
                 this.stageMonsterCount = 4;
                 break;
             case 3:
-                mapWSize*=2;
-                new Monster(4, 1100, 50);
-                new Monster(4, 900, 50);
-                new Monster(4, 700, 50);
-                new Monster(4, 500, 50);
-                new Monster(4, 300, 50);
+                new Monster(2, 1100, 50);
+                new Monster(2, 900, 50);
+                new Monster(2, 700, 50);
+                new Monster(2, 500, 50);
+                new Monster(2, 300, 50);
                 this.stageMonsterCount = 5;
                 break;
             case 4:
-                new Monster(6,860, 250);
+                mapSize*=2;
+                new Monster(3,2060, 250);
                 this.stageMonsterCount = 1;
                 break;
             case 5:
                 
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+            case 10:
                 break;
             default:
                 let clearBtn = new Button(canvas.width / 2 - 150, 0, 300, 100);
@@ -93,10 +105,10 @@ class Level {
         }
 
         //양 끝 맵블럭
-        new MapBlock(0,-1000,mapWSize,100,"rgb(48, 48, 48)");
+        new MapBlock(0,-1000,mapSize,100,"rgb(48, 48, 48)");
         new MapBlock(-100, -1000, 100, 600+2000,"rgb(48, 48, 48)"); //left
-        new MapBlock(mapWSize, -1000, 100, 600+2000,"rgb(48, 48, 48)");//right
-        new MapBlock(-10, 600 - 100, mapWSize + 20, 20, "#2B650D");//bottom
-        new MapBlock(0, 600 - 80, mapWSize, 100, "#54341E");
+        new MapBlock(mapSize, -1000, 100, 600+2000,"rgb(48, 48, 48)");//right
+        new MapBlock(-10, 600 - 100, mapSize + 20, 20, "#2B650D");//bottom
+        new MapBlock(0, 600 - 80, mapSize, 100, "#54341E");
     }
 }

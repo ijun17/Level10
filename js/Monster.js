@@ -1,17 +1,15 @@
 class Monster extends Entity {
     static dir = "resource/monster/";
     static types = [{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 100, speed: 3 },
-    { name: "crazyclam", w: 100, h: 100, life: 10000, damage: 10, speed: 2 },
-    { name: "오세안", w: 142, h: 297, life: 20000, damage: 40, speed: 2 },
     { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 200, speed: 4 },
     { name: "hellfly", w: 30, h: 30, life: 20000, damage: 200, speed: 5 },
-    { name: "strongsword", w: 100, h: 100, life: 10000, damage: 5000, speed: 0 },
     { name: "madfish", w: 600, h: 300, life: 2000000, damage: 2000, speed: 1 }];
 
 
     type;
     target;
     canJump = true;
+    totalDamage=0;
 
     constructor(typenum, x, y, channelLevel = Game.PHYSICS_CHANNEL) {
         super(x, y, channelLevel);
@@ -22,29 +20,21 @@ class Monster extends Entity {
         this.img.src = Monster.dir + this.type.name + ".png";
         this.target = Game.p;
         var temp = this;
-        switch (typenum) {
-            case 0:
+        switch (this.type.name) {
+            case "crazymushroom":
                 this.addAction(100, 100, function () { temp.AI(); });
                 this.addAction(100, 100, function () { temp.skill3(); });
                 break;
-            case 2:
+            case "crazymonkey":
                 this.addAction(100, 100, function () { temp.AI(); });
                 this.addAction(100, 100, function () { temp.skill(500); });
                 this.addAction(999, 999, function () { temp.skill2(); });
                 break;
-            case 3:
-                this.addAction(100, 100, function () { temp.AI(); });
-                this.addAction(100, 100, function () { temp.skill(500); });
-                this.addAction(999, 999, function () { temp.skill2(); });
-                break;
-            case 4:
+            case "hellfly":
                 this.ga = 0;
                 this.addAction(100, 100, function () { temp.AI2(); });
                 break;
-            case 5:
-                //this.addAction(100, 100, function () { temp.skill(500, 10); });
-                break;
-            case 6:
+            case "madfish":
                 this.ga = 0;
                 this.canMove = false;
                 this.addAction(300, 300, function () { temp.skill6(300); });
@@ -60,25 +50,34 @@ class Monster extends Entity {
         ctx.font = "bold 20px Arial";
         ctx.fillStyle = "black"
         ctx.fillText("hp: " + (Math.floor(this.life)), Camera.getX(this.x), Camera.getY(this.y - 20));
+        if (this.totalDamage > 0) {
+            let textSize = 50;
+            let damageText = new Button(this.x + this.w / 2, this.y - textSize, 0, 0, Game.TEXT_CHANNEL);
+            damageText.life = 40;
+            damageText.canInteraction = false;
+            let td=this.totalDamage;
+            damageText.drawCode = function () {
+                ctx.font = "bold 30px Arial";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillStyle = "orange";
+                ctx.fillText(td, Camera.getX(damageText.x), Camera.getY(damageText.y));
+                ctx.strokeStyle = "black";
+                ctx.strokeText(td, Camera.getX(damageText.x), Camera.getY(damageText.y));
+                damageText.life--;
+            }
+            this.life-=this.totalDamage;
+            this.totalDamage=0;
+        }
     }
 
-    collisionHandler(e) {
-        if (this.y + this.h <= e.y) this.canJump = true;
+    collisionHandler(e,ct) {
+        if (ct=='D') this.canJump = true;
         //공격
-        if (!(e instanceof Monster || e instanceof MapBlock)) {
-            e.damage(this.type.damage, "red");
-            if (e == this.target) {
-                if (e.x + e.w / 2 > this.x + this.w / 2) e.vx = Math.sqrt(this.type.damage) / 2;
-                else e.vx = -(Math.sqrt(this.type.damage)) / 2;
-                e.vy = 2;
-            }
-            if (e instanceof Block) e.life -= this.type.damage * 10;
-
-            if (this.type.name == "crazymonkey") {
-                this.img.src = Monster.dir + this.type.name + "_attack.png";
-                let m = this;
-                this.addAction(10, 10, function () { m.img.src = Monster.dir + m.type.name + ".png"; });
-            }
+        if(!(e instanceof Monster))e.damage(this.type.damage);
+        if (e == this.target) {
+            if (e.x + e.w / 2 > this.x + this.w / 2) e.giveForce(Math.sqrt(this.type.damage)/3,2);
+            else e.giveForce(-(Math.sqrt(this.type.damage))/3,2);
         }
     }
 
@@ -89,23 +88,7 @@ class Monster extends Entity {
 
     damage(d, textColor = null) {
         d=Math.floor(d);
-        this.life -= d;
-        let textSize = 50;
-        let damageText = new Button(this.x + this.w / 2, this.y - textSize, 0, 0, Game.TEXT_CHANNEL);
-        damageText.life = 40;
-        damageText.vy = 1;
-        damageText.canInteraction = false;
-        damageText.drawCode = function () {
-            ctx.font = "bold 30px Arial";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            ctx.fillStyle = "orange";
-            ctx.fillText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
-            ctx.strokeStyle = "black";
-            ctx.strokeText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
-            damageText.life--;
-
-        }
+        this.totalDamage += d;
     }
 
     AI(time = 50) {

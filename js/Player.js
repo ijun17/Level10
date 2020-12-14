@@ -5,6 +5,7 @@ class Player extends Entity{
     isRight=true;
     moveFlag=false;
     canJump=true;
+    totalDamage=0;
     static dir="resource/player/";
 
     constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
@@ -22,6 +23,26 @@ class Player extends Entity{
         ctx.font="bold 20px Arial";
         ctx.fillStyle="black"
         ctx.fillText("hp: "+(Math.floor(this.life)),Camera.getX(this.x),Camera.getY(this.y-20));
+        //damage
+        if (this.totalDamage > 0) {
+            let textSize = 50;
+            let damageText = new Button(this.x + this.w / 2, this.y - textSize, 0, 0, Game.TEXT_CHANNEL);
+            damageText.life = 40;
+            damageText.canInteraction = false;
+            let td=this.totalDamage;
+            damageText.drawCode = function () {
+                ctx.font = "bold 30px Arial";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillStyle = "red";
+                ctx.fillText(td, Camera.getX(damageText.x), Camera.getY(damageText.y));
+                ctx.strokeStyle = "black";
+                ctx.strokeText(td, Camera.getX(damageText.x), Camera.getY(damageText.y));
+                damageText.life--;
+            }
+            this.life -= this.totalDamage;
+            this.totalDamage = 0;
+        }
     }
 
     go(){
@@ -49,26 +70,8 @@ class Player extends Entity{
         Screen.selectScreen();
     }
 
-    damage(d, textColor = null) {
+    damage(d) {
         d=Math.floor(d);
-        this.life -= d;
-        let textSize = 50;
-        let damageText = new Button(this.x + this.w / 2, this.y - textSize, 0, 0, Game.TEXT_CHANNEL);
-        damageText.life = 40;
-        damageText.vy = 1;
-        damageText.canInteraction = false;
-        damageText.drawCode = function () {
-            ctx.font = "bold 30px Arial";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            ctx.fillStyle = "red";
-            ctx.fillText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
-            ctx.strokeStyle = "black";
-            ctx.strokeText(d, Camera.getX(damageText.x), Camera.getY(damageText.y));
-            damageText.life--;
-        }
-
+        this.totalDamage += d;
     }
-
-    
 }

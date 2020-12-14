@@ -1,6 +1,6 @@
 class Matter extends Entity {
     static types =
-        [{ name: "fire", num:0, damage: 300 },
+        [{ name: "fire", num:0, damage: 300},
         { name: "lightning", num:1, damage: 100 },
         { name: "ice", num:2, damage: 50 },
         { name: "explosion", num:3, damage: 200 },
@@ -21,7 +21,8 @@ class Matter extends Entity {
         this.ga = -0.02;
         this.img.src = Matter.dir + this.type.name + ".png";
         let matter = this;
-        this.addAction(1, 10000, function () { if (Game.time % 10 == 0) { new Particle(2, matter.x, matter.y); new Particle(0, matter.x, matter.y); } });
+        if(typenum==0)this.addAction(1, 10000, function () { 
+            if (Game.time % 10 == 0) { new Particle(2, matter.x, matter.y); new Particle(0, matter.x, matter.y); } });
     }
 
 
@@ -34,17 +35,14 @@ class Matter extends Entity {
         ctx.restore();
     }
 
-    damage(d, textColor=null){
+    damage(){
         this.life--;
     }
 
     collisionHandler(e) {
-        this.damage();
-        e.damage(this.type.damage,"orange");//e.life -= this.type.damage;
-        if (!(e instanceof Block)) {
-            e.vx += this.vx;
-            e.vy += this.vy+1;
-        }
+        this.life--;
+        e.damage(this.type.damage);
+        e.giveForce(this.vx,this.vy+1);
 
         switch(this.type.num){
             case 1://lightning
