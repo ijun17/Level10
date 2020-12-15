@@ -1,7 +1,7 @@
 class Player extends Entity{
     lv=1;
     mp=40;
-    pv=3.5;
+    pv=4;
     isRight=true;
     moveFlag=false;
     canJump=true;

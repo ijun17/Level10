@@ -27,6 +27,7 @@ class Entity {
         if (this.visibility) this.draw();
         if (this.canAct) this.act();
         if (this.canInteraction) this.interaction();
+        if(this.canMove)this.move();
     }
 
     draw() {
@@ -96,17 +97,21 @@ class Entity {
             }
         }
         if (this.canMove) {
-            this.x += this.vx;
-            this.y -= this.vy;
-            this.vy += this.ga;
             if (collisionType == 'D') {
                 if (this.vx > 0) this.vx -= this.friction;
                 else this.vx += this.friction;
                 if (Math.abs(this.vx) < 2) this.vx = 0;
             }
+            
+            
         }
     }
 
+    move(){
+        this.x += this.vx;
+        this.y -= this.vy;
+        this.vy += this.ga;
+    }
 
     giveForce(ax, ay) {
         this.vx += ax;

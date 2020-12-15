@@ -300,6 +300,20 @@ let Screen= {
 
         let mobileButtonSize=70;
 
+        let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
+        ashSpray.canAct=true;
+        ashSpray.canInteraction=false;
+        ashSpray.addAction(1,1000000,function(){
+            if(Game.time%5==0){
+                let r = Math.random()*2000;
+                let ash=new Particle(3,Game.p.x-1000+r,-200);
+                //ash.w=20;
+                //ash.h=20;
+                ash.life=300;
+                ash.vy-=1.5;
+            }
+        });
+
         //cooltime view
         for(let i=0; i<4; i++){
             let coolTimeView = new Button(canvas.width-200, 10+i*20, 0,0, Game.TEXT_CHANNEL);
@@ -345,7 +359,14 @@ let Screen= {
             }
         }
         Game.p = new Player(10, 600- mobileButtonSize-140);
-        Camera.e=Game.p;
+        let camera = new Button(200,200,0,0, Game.TEXT_CHANNEL);
+        camera.overlap=false;
+        //camera
+        camera.drawCode = function(){
+            camera.vx=(Game.p.x-camera.x)/10;
+            camera.vy=-(Game.p.y-camera.y)/10;
+        }
+        Camera.e=camera;
         
     }
 }

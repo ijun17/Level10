@@ -36,6 +36,7 @@ let Level= {
         let click = new Block(canvas.width / 2, canvas.height, 0, 0, "black", Game.BUTTON_CHANNEL);
         click.life = 1000;
         click.canInteraction = false;
+        click.canMove=false;
     },
 
 
