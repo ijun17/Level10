@@ -1,57 +1,57 @@
-class Magic{
+let Magic = {
     //qwer
-    static skillNum=[5,7,4,6];
-    static coolTime=[0,0,0,0];
+    skillNum:[5,7,4,6],
+    coolTime:[0,0,0,0],
     
     //magic = [name, magic,coolTime,level]
-    static basicMagic=[["null", function(){}, 0],
-    ["bullet", function(){
+    basicMagic:[["null", function(){}, 0],
+    ["bullet", function(p){
         let bullet;
         let temp=-1;
-        if(Game.p.isRight)temp=1;
+        if(p.isRight)temp=1;
         for(let i=0; i<3; i++){
 
-            bullet = new Block(Game.p.x+30*temp, Game.p.y+i*14, 10,10);
+            bullet = new Block(p.x+30*temp, p.y+i*14, 10,10);
             bullet.vx=30*temp;
             bullet.life=50;
             bullet.mass=10;
         }
     },50],
 
-    ["ice",function(){
+    ["ice",function(p){
         let ice;
         let temp=-1;
-        if(Game.p.isRight)temp=1;
-        ice=new Matter(2,Game.p.x+50*temp, Game.p.y+20, 10*temp, 0.5);
+        if(p.isRight)temp=1;
+        ice=new Matter(2,p.x+50*temp, p.y+20, 10*temp, 0.5);
     },200],
 
-    ["wall",function(){
+    ["wall",function(p){
         let wall;
         let temp=-1;
-        if(Game.p.isRight)temp=1;
-        wall=new Block(Game.p.x+50*temp, Game.p.y-40, 20, 100);
+        if(p.isRight)temp=1;
+        wall=new Block(p.x+50*temp, p.y-40, 20, 100);
         wall.life=4000;
     },200],
 
-    ["teleport",function(){
+    ["teleport",function(p){
         let temp=-1;
-        if(Game.p.isRight)temp=1;
-        Game.p.x+=300*temp;
+        if(p.isRight)temp=1;
+        p.x+=300*temp;
     },200],
 
-    ["chidori",function(){
-        Game.p.addAction(1,200,function(){
+    ["chidori",function(p){
+        p.addAction(1,200,function(){
             let temp=-1;
-            if(Game.p.isRight)temp=1;
-            new Matter(1,Game.p.x+40*temp, Game.p.y+20, 0, 0);});
+            if(p.isRight)temp=1;
+            new Matter(1,p.x+40*temp, p.y+20, 0, 0);});
     },1000],
 
-    ["firetornado",function(){
+    ["firetornado",function(p){
         let temp=-1;
-        if(Game.p.isRight)temp=1;
+        if(p.isRight)temp=1;
         for(let i=0; i<12; i++){
-            let x=Game.p.x+200*temp;
-            let y=Game.p.y+29-i*35;
+            let x=p.x+200*temp;
+            let y=p.y+29-i*35;
             let fire = new Matter(0, x-13*i+10,y,0,0 );
             fire.addAction(1,500,function(){
                 fire.vx+=(x-fire.x)/(1.1+i/10);
@@ -62,23 +62,23 @@ class Magic{
         }
     },2000],
 
-    ["meteor",function(){
+    ["meteor",function(p){
         let temp=-1;
-        if(Game.p.isRight)temp=1;
+        if(p.isRight)temp=1;
         for(let i=0; i<4; i++){
             for(let j=0; j<4; j++){
-                let fire = new Matter(0, Game.p.x+i*41, Game.p.y-400+j*41, 10*temp, -10);
+                let fire = new Matter(0,p.x+i*41, p.y-400+j*41, 10*temp, -10);
                 fire.life=10;
             }
         }
     },1000],
 
-    ["icetornado",function(){
+    ["icetornado",function(p){
         let temp=-1;
-        if(Game.p.isRight)temp=1;
+        if(p.isRight)temp=1;
         for(let i=0; i<12; i++){
-            let x=Game.p.x+200*temp;
-            let y=Game.p.y+29-i*40;
+            let x=p.x+200*temp;
+            let y=p.y+29-i*40;
             let fire = new Matter(2, x-13*i+10,y,0,0 );
             //fire.w=38;
             //fire.h=38;
@@ -91,41 +91,40 @@ class Magic{
         }
     },2000],
     
-    ["one-gi-ok",function(){
+    ["one-gi-ok",function(p){
         let temp=-1;
-        if(Game.p.isRight)temp=1;
+        if(p.isRight)temp=1;
         for(let i=0; i<4; i++){
-            let energy = new Matter(5, Game.p.x, Game.p.y-250, 3*temp, -3);
+            let energy = new Matter(5, p.x,p.y-250, 3*temp, -3);
             energy.life=20;
         }
     },2000],
     
-    ["sniper", function(){
+    ["sniper", function(p){
         let arrow;
         let temp=-1;
-        if(Game.p.isRight)temp=1;
-        arrow=new Matter(4,Game.p.x+50*temp, Game.p.y+20, 20*temp, 0.5);
+        if(p.isRight)temp=1;
+        arrow=new Matter(4,p.x+50*temp, p.y+20, 20*temp, 0.5);
         arrow.life=10;
     },2000],
-    ["barricade",function(){
+    ["barricade",function(p){
         let b;
         let temp=-1;
-        if(Game.p.isRight)temp=1;
-        b=new Block(Game.p.x+Game.p.w/2 + 50*temp-25, Game.p.y-200, 50, 200);
+        if(p.isRight)temp=1;
+        b=new Block(p.x+p.w/2 + 50*temp-25, p.y-200, 50, 200);
         b.life=10000;
         b.mass=30;
-    },1000]];
+    },1000]],
     //end basicMasic
 
-    static doSkill(num){
+    doSkill:function(p,num){
         if(Magic.coolTime[num]<Game.time){
             let magicNum=Magic.skillNum[num];
-            new (Magic.basicMagic[magicNum][1]);
+            new (Magic.basicMagic[magicNum][1])(p);
             Magic.coolTime[num]=Magic.basicMagic[magicNum][2]+Game.time;
         }
-    }
-
-    static clearCoolTime(){
+    },
+    clearCoolTime:function(){
         this.coolTime=[0,0,0,0];
     }
 }

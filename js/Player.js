@@ -6,19 +6,20 @@ class Player extends Entity{
     moveFlag=false;
     canJump=true;
     totalDamage=0;
-    static dir="resource/player/";
 
     constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
         this.w=27;
         this.h=60;
         this.life=10000*Level.playerLevel;
-        this.img.src = Player.dir+`player2_right.png`;
+        this.img.src = "resource/player/"+`player2_right.png`;
         this.overlap=false;
         this.ga=-0.2;
     }
 
     draw(){
+        if(this.isRight)this.img.src ="resource/player/"+`player2_right.png`;
+        else this.img.src ="resource/player/"+`player2_left.png`;
         ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
         ctx.font="bold 20px Arial";
         ctx.fillStyle="black"
@@ -47,10 +48,8 @@ class Player extends Entity{
 
     go(){
         if(this.isRight){
-            this.img.src =Player.dir+`player2_right.png`;
             this.vx=this.pv;
         }else{
-            this.img.src =Player.dir+`player2_left.png`;
             this.vx=-this.pv;
         }
     }

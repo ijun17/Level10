@@ -1,4 +1,5 @@
 function startFs(element) {
+    //canvas.requestFullScreen();
     if(element.requestFullScreen) {
         element.requestFullScreen();
     } else if(element.webkitRequestFullScreen ) {
@@ -7,7 +8,7 @@ function startFs(element) {
         element.mozRequestFullScreen();
     } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen(); // IE
-    }
+    } else return;
     canvas.width = screen.width;
     canvas.height = screen.height;
 }
@@ -31,25 +32,24 @@ function exitFs(element) {
 
 
 
-class Screen {
+let Screen= {
     //const
-    static CANVAS_W=1200;
-    static CANVAS_H=600;
-    //static M_100BUTTON=80;
+    CANVAS_W:1200,
+    CANVAS_H:600,
 
     //screen status
-    static isMobile = false;
-    static selectMagic = null;
-    static bgColor;
+    isMobile : false,
+    selectMagic : null,
+    bgColor : "black",
 
-    static perX(percentile){
+    perX:function(percentile){
         return canvas.width/100*percentile;
-    }
-    static perY(percentile){
+    },
+    perY:function(percentile){
         return canvas.height/100*percentile;
-    }
+    },
 
-    static mainScreen() {
+    mainScreen:function() {
         Game.resetGame();
 
         let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
@@ -83,9 +83,9 @@ class Screen {
             startButton.drawCode=function(){};
         };
         startButton.drawOption(null, "black", "START", 80, "black");
-    }
+    },
 
-    static selectScreen() {
+    selectScreen:function() {
         Game.resetGame();
 
         let space=10;
@@ -153,7 +153,18 @@ class Screen {
         fullScreenButton.drawOption(null, "black", "to full screen", fullBtnTextSize, "black");
         //mobile button
         let mobileButton = new Button(canvas.width - space - toMobileBtnW, canvas.height - space - toMobileBtnH, toMobileBtnW, toMobileBtnH);
-        mobileButton.code = function () {if(!Screen.isMobile){Game.convertMobileMode(true);Screen.selectScreen();Camera.extension=0.7}};
+        mobileButton.code = function () {
+            if(!Screen.isMobile){Game.convertMobileMode(true);Camera.extension=0.7;}
+            startFs(canvas);
+            if(canvas.width == Screen.CANVAS_W)Camera.extension=1;//전체화면에 실패했을때 그대로
+            Screen.mainScreen();
+            let full = new Button((canvas.width - 300)/2, (canvas.height-100)/2, 300, 100);
+            full.code=function(){
+                startFs(canvas);
+                full.x=10000;
+                Game.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);
+            }
+        };
         mobileButton.drawOption(null,"black","to mobile",mobileBtnTextSize,"black");
         //select magic button
         let magicButton = new Button(canvas.width - selectMagicButtonW-space, space, selectMagicButtonW, selectMagicButtonH);
@@ -168,11 +179,10 @@ class Screen {
             levelButton.drawOption("rgb("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+")", "black", "LEVEL" + i, levelBtnTextSize, "black");
             levelButton.ga = 0.5;
         }
-    }
+    },
 
-    static selectMagicScreen() {
+    selectMagicScreen:function() {
         Game.resetGame();
-
         let space=10; //버튼간 간격
         let backBtnW=80;
         let keyBtnW=100;
@@ -232,7 +242,7 @@ class Screen {
         let block = new Button(space*8+keyBtnW+magicBtnW, 0, magicBtnW, keyBtnW);
         for (let i = 1; i < Magic.basicMagic.length; i++) {
             let magicButton = new Button(space*8+keyBtnW+magicBtnW, keyBtnW + 50 * i, magicBtnW, magicBtnH);
-            magicButton.code = function () { Screen.selectMagic = magicButton; new (Magic.basicMagic[i][1]); };
+            magicButton.code = function () { Screen.selectMagic = magicButton; new (Magic.basicMagic[i][1])(Game.p); };
             let magicColor;
             if(Magic.basicMagic[i][2]<1000)magicColor="rgba(255, 255, 255,0.5)";
             else if(Magic.basicMagic[i][2]<2000)magicColor="rgba(121, 140, 205,1)";
@@ -269,9 +279,9 @@ class Screen {
         monster.life = 100000;
         monster.action = [];
 
-    }
+    },
 
-    static gameScreen() {
+    gameScreen:function() {
         Game.resetGame();
         Camera.cameraOn=true;
 
@@ -317,7 +327,7 @@ class Screen {
             let keys=["Q","W","E","R"];
             for(let i=0; i<4; i++){
                 let keyButton = new Button(canvas.width-(5*4+mobileButtonSize*4)+i*(mobileButtonSize+5),canvas.height-mobileButtonSize-5,mobileButtonSize,mobileButtonSize);
-                keyButton.code=function(){Magic.doSkill(i);};
+                keyButton.code=function(){Magic.doSkill(Game.p,i);};
                 keyButton.drawCode=function(){
                     ctx.fillStyle="rgba(61, 61, 61,0.5)";
                     ctx.fillRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);

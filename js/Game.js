@@ -1,29 +1,28 @@
-class Game {
-    static channel = [[], [], [], []]; //phisics, particle, button
-    static time = 0;
-    static p;
-    static isManager=false;
+let Game = {
+    channel : [[], [], [], []], //phisics, particle, button
+    time : 0,
+    p:null,
+    isManager:false,
 
-    static PHYSICS_CHANNEL = 1;
-    static PARTICLE_CHANNEL = 0;
-    static TEXT_CHANNEL = 2;
-    static BUTTON_CHANNEL = 3;
+    PHYSICS_CHANNEL : 1,
+    PARTICLE_CHANNEL : 0,
+    TEXT_CHANNEL : 2,
+    BUTTON_CHANNEL : 3,
 
-    //static clearEntitys() { entitys = []; }
 
-    static resetGame() {
+    resetGame:function() {
         Game.channel = [[], [], [], []];
         Game.time = 0;
         Magic.clearCoolTime();
         Level.stageLevel = -1;
         Level.stageMonsterCount = -1;
         Camera.cameraOn = false;
-        if(Screen.isMobile)Camera.extension=0.7;
-        else Camera.extension=1;
+        if(canvas.width==1200)Camera.extension=1;
+        else Camera.extension=0.7;
         Screen.bgColor="rgb(121, 155, 206)";
-    }
+    },
 
-    static startGame() {
+    startGame:function() {
         //canvas.addEventListener('browserFullScreen', function () { startFs(canvas); });
         document.addEventListener("keydown", keyDownHandler, false);
         document.addEventListener("keyup", keyUpHandler, false);
@@ -35,8 +34,8 @@ class Game {
         Screen.mainScreen();
         Game.p = new Player(100, -1000);
         Game.p.ga = 0;
-    }
-    static updateWorld() {
+    },
+    updateWorld:function() {
         if (Game.p != null && Game.p.moveFlag) {
             Game.p.go();
         }
@@ -48,9 +47,9 @@ class Game {
         }
         Game.time++;
 
-    }
+    },
 
-    static removeEntity(channelLevel) {
+    removeEntity:function(channelLevel) {
         for (let e of Game.channel[channelLevel]) {
             if (e.life < 1 && e.canRemoved) {
                 e.removeHandler();
@@ -58,9 +57,9 @@ class Game {
                 if (ei >= 0) Game.channel[channelLevel].splice(ei, 1);
             }
         }
-    }
+    },
 
-    static click(x, y) {
+    click:function(x, y) {
         let c = Game.channel[Game.BUTTON_CHANNEL];
         for (let i = c.length - 1; i >= 0; i--) {
             if (c[i].x < x && x < c[i].x + c[i].w && c[i].y < y && y < c[i].y + c[i].h) {
@@ -68,9 +67,9 @@ class Game {
                 break;
             }
         }
-    }
+    },
 
-    static convertMobileMode(a) {
+    convertMobileMode:function(a) {
         if (a) {
             document.addEventListener("touchstart", touchStartHandler, false);
             canvas.addEventListener("touchmove", touchMoveHandler, false); //캔버스로 해야 더 빠름
@@ -108,16 +107,16 @@ function keyDownHandler(e) {
             Game.p.jump();
             break;
         case 81: //q
-            Magic.doSkill(0);
+            Magic.doSkill(Game.p,0);
             break;
         case 87: //w
-            Magic.doSkill(1);
+            Magic.doSkill(Game.p,1);
             break;
         case 69: //e
-            Magic.doSkill(2);
+            Magic.doSkill(Game.p,2);
             break;
         case 82: //r
-            Magic.doSkill(3);
+            Magic.doSkill(Game.p,3);
             break;
     }
 }
@@ -151,7 +150,7 @@ function touchStartHandler(e) {
     }
     touch.life=10;
     
-    e.preventDefault();
+    //e.preventDefault();
     for(let i=0, max=e.touches.length; i<max; i++){
         Game.click(e.touches[i].clientX, e.touches[i].clientY);
     }
@@ -166,7 +165,7 @@ function touchMoveHandler(e) {
 
 
 function touchEndHandler(e) {
-    e.preventDefault();
+    //e.preventDefault();
     if(e.touches.length==0)Game.p.moveFlag = false;
     
 }

@@ -1,20 +1,20 @@
-class Level {
-    static playerLevel;
-    static stageMonsterCount;
-    static stageLevel;
+let Level= {
+    playerLevel:0,
+    stageMonsterCount:0,
+    stageLevel:0,
 
-    static loadLevel() {
+    loadLevel:function() {
         this.playerLevel = localStorage.betalevel;
         if (this.playerLevel == undefined) {
             this.playerLevel = 1;
             this.saveLevel();
         }
-    }
-    static saveLevel() {
+    },
+    saveLevel:function() {
         localStorage.betalevel = this.playerLevel;
-    }
+    },
 
-    static clearLevel() {
+    clearLevel:function() {
         if (this.playerLevel < this.stageLevel + 1) {
             this.playerLevel = this.stageLevel + 1;
             this.saveLevel();
@@ -36,10 +36,10 @@ class Level {
         let click = new Block(canvas.width / 2, canvas.height, 0, 0, "black", Game.BUTTON_CHANNEL);
         click.life = 1000;
         click.canInteraction = false;
-    }
+    },
 
 
-    static makeStage(level) {
+    makeStage:function(level) {
         this.stageLevel = level;
         //준기의 탑 n층
         let floorText = new Button(-400,200,0,0,Game.TEXT_CHANNEL);

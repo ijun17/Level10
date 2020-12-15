@@ -1,5 +1,4 @@
 class MapBlock extends Entity{ //안부숴지는
-    static types=[{},{}];
     color;
 
     constructor(x,y,w,h,color = "#080808",channelLevel=Game.PHYSICS_CHANNEL){
@@ -15,7 +14,7 @@ class MapBlock extends Entity{ //안부숴지는
         this.canInteraction=false;
     }
 
-    draw(){
+    update(){
         ctx.fillStyle = this.color;
         ctx.fillRect(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
     }

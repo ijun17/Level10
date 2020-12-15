@@ -1,11 +1,9 @@
-class Monster extends Entity {
-    static dir = "resource/monster/";
-    static types = [{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 100, speed: 3 },
+let monsterTypes=[{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 100, speed: 3 },
     { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 200, speed: 4 },
     { name: "hellfly", w: 30, h: 30, life: 20000, damage: 200, speed: 5 },
     { name: "madfish", w: 600, h: 300, life: 2000000, damage: 2000, speed: 1 }];
 
-
+class Monster extends Entity {
     type;
     target;
     canJump = true;
@@ -13,11 +11,11 @@ class Monster extends Entity {
 
     constructor(typenum, x, y, channelLevel = Game.PHYSICS_CHANNEL) {
         super(x, y, channelLevel);
-        this.type = Monster.types[typenum];
+        this.type = monsterTypes[typenum];
         this.w = this.type.w;
         this.h = this.type.h;
         this.life = this.type.life;
-        this.img.src = Monster.dir + this.type.name + ".png";
+        this.img.src = "resource/monster/" + this.type.name + ".png";
         this.target = Game.p;
         var temp = this;
         switch (this.type.name) {
