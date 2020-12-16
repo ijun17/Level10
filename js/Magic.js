@@ -33,6 +33,12 @@ let Magic = {
         wall.life=4000;
     },200],
 
+    ["dash", function(p){
+        if(p.isRight)p.vx=20;
+        else p.vx=-20;
+        p.vy=0;
+    },100],
+
     ["teleport",function(p){
         let temp=-1;
         if(p.isRight)temp=1;
@@ -119,6 +125,7 @@ let Magic = {
 
     doSkill:function(p,num){
         if(Magic.coolTime[num]<Game.time){
+            Magic.magicEffect(p);
             let magicNum=Magic.skillNum[num];
             new (Magic.basicMagic[magicNum][1])(p);
             Magic.coolTime[num]=Magic.basicMagic[magicNum][2]+Game.time;
@@ -126,5 +133,20 @@ let Magic = {
     },
     clearCoolTime:function(){
         this.coolTime=[0,0,0,0];
+    },
+
+    magicEffect:function(e){
+        let magicEffect = new Particle(5, e.x+e.w/2-e.h/2, e.y);
+        magicEffect.w=e.h;
+        magicEffect.h=e.h;
+    },
+    convertMagictoJS: function (magicCode) {
+        let magicFactor = 0;
+        let JSCode = "";
+        let codeToJs = function () {
+
+        }
+
     }
+
 }

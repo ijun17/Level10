@@ -2,7 +2,9 @@ let particleTypes=[{name:"ember",speed:1,ga:-0.01},
     {name:"spark",speed:1,ga:-0.01},
     {name:"smoke",speed:0.5,ga:-0.001},
     {name:"snow",speed:1,ga:-0.01},
-    {name:"ash",speed:1,ga:-0.01}];
+    {name:"ash",speed:1,ga:-0.01},
+    {name:"magiceffect",speed:0,ga:0}];
+    
 
 class Particle extends Entity{
     type;

@@ -11,6 +11,8 @@ class Button extends Entity {
         this.canAct = false;
         this.ga = 0;
         this.overlap=false;
+        this.canInteraction=false;
+        this.canMove=false;
     }
 
     draw() {

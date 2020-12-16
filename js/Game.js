@@ -36,9 +36,6 @@ let Game = {
         Game.p.ga = 0;
     },
     updateWorld:function() {
-        if (Game.p != null && Game.p.moveFlag) {
-            Game.p.go();
-        }
         ctx.fillStyle=Screen.bgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < 4; i++) {
@@ -143,6 +140,7 @@ function clickUpHandler(e) {
 }
 
 function touchStartHandler(e) {
+    e.preventDefault();
     let touch= new Button(e.touches[0].clientX, e.touches[0].clientY, 0,0,Game.PARTICLE_CHANNEL);
     touch.drawCode = function(){
         ctx.strokeRect(touch.x-5,touch.y-5, 10, 10);
@@ -150,7 +148,7 @@ function touchStartHandler(e) {
     }
     touch.life=10;
     
-    //e.preventDefault();
+    
     for(let i=0, max=e.touches.length; i<max; i++){
         Game.click(e.touches[i].clientX, e.touches[i].clientY);
     }
@@ -165,7 +163,7 @@ function touchMoveHandler(e) {
 
 
 function touchEndHandler(e) {
-    //e.preventDefault();
+    e.preventDefault();
     if(e.touches.length==0)Game.p.moveFlag = false;
     
 }

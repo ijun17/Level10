@@ -20,7 +20,6 @@ class Entity {
         this.y = y;
         this.channelLevel = channelLevel;
         Game.channel[channelLevel][Game.channel[channelLevel].length] = this;
-        //Game.channel[channelLevel]=[this].concat(Game.channel[channelLevel]);
     }
 
     update() {
@@ -35,23 +34,20 @@ class Entity {
     }
 
     addAction(start, end, code) {
-        var i;
-        for (i = 0; i < this.action.length; i++) {
+        let i,j;
+        for (i = 0, j=this.action.length; i < j; i++) {
             if (this.action[i][1] >= end + Game.time) break;
         }
         this.action.splice(i, 0, [start + Game.time, end + Game.time, code]);
     }
 
     act() {
-        let removed = 0;
-        for (var a of this.action) {
-            if (a[1] < Game.time) {
-                removed++;
-            } else if (a[0] <= Game.time) {
-                new (a[2])();
-            }
+        let i;
+        for(i=this.action.length-1; i>=0; i--){
+            if (this.action[i][1] < Game.time) break;
+            else if (this.action[i][0] <= Game.time) new (this.action[i][2])();  
         }
-        this.action.splice(0, removed);
+        this.action.splice(0, i+1);
     }
 
     interaction() {

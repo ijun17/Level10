@@ -8,7 +8,9 @@ function startFs(element) {
         element.mozRequestFullScreen();
     } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen(); // IE
-    } else return;
+    } else {
+        return;
+    }
     canvas.width = screen.width;
     canvas.height = screen.height;
 }
@@ -167,17 +169,24 @@ let Screen= {
         };
         mobileButton.drawOption(null,"black","to mobile",mobileBtnTextSize,"black");
         //select magic button
-        let magicButton = new Button(canvas.width - selectMagicButtonW-space, space, selectMagicButtonW, selectMagicButtonH);
-        magicButton.code = function () { Screen.selectMagicScreen(); };
-        magicButton.drawOption(null, "black", "select magic", selectMagicBtnTextSize, "black");
+        let selectMagicButton = new Button(canvas.width - selectMagicButtonW-space, space, selectMagicButtonW, selectMagicButtonH);
+        selectMagicButton.code = function () { Screen.selectMagicScreen(); };
+        selectMagicButton.drawOption(null, "black", "select magic", selectMagicBtnTextSize, "black");
+        //make magic button
+        let makeMagicButton = new Button(canvas.width - selectMagicButtonW-space, 2*space+selectMagicButtonH, selectMagicButtonW, selectMagicButtonH);
+        makeMagicButton.code = function () { Screen.makeMagicScreen(); };
+        makeMagicButton.drawOption(null, "black", "make magic", selectMagicBtnTextSize, "black");
 
         //level button
-        new Button((canvas.width - levelBtnW) /2, 0, levelBtnW, space);
+        let block = new Button((canvas.width - levelBtnW) /2, 0, levelBtnW, space);
+        block.canInteraction=true;
         for (let i = 1; i <= Level.playerLevel; i++) {
             let levelButton = new Button((canvas.width - levelBtnW) /2, levelBtnW + i * (space+levelBtnH), levelBtnW, levelBtnH);
             levelButton.code = function () { Screen.gameScreen(); Level.makeStage(i); };
             levelButton.drawOption("rgb("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+")", "black", "LEVEL" + i, levelBtnTextSize, "black");
             levelButton.ga = 0.5;
+            levelButton.canInteraction=true;
+            levelButton.canMove=true;
         }
     },
 
@@ -251,6 +260,8 @@ let Screen= {
             magicButton.temp.push(i); //temp[0]=Magic.basicMagic
             magicButton.temp.push(null); //temp[1] is keyButton index
             magicButton.ga = 0.5;
+            magicButton.canInteraction=true;
+            magicButton.canMove=true;
 
             let keyIndex = Magic.skillNum.findIndex(function (e) { return e == i; });
             if (keyIndex >= 0) {
@@ -281,13 +292,29 @@ let Screen= {
 
     },
 
+    makeMagicScreen:function(){
+        Game.resetGame();
+        let backBtnW=80;
+        let backBtnTextSize=80;
+        if(Screen.isMobile){
+            backBtnW=Screen.perX(100/14);
+            backBtnTextSize=Screen.perX(100/14);
+        }
+        let backButton = new Button(0, 0, backBtnW, backBtnW);
+        backButton.code = function () { Screen.selectScreen() };
+        backButton.drawOption(null, null, "<", backBtnTextSize, "black");
+
+        let comingSoon = new Button(canvas.width/2,canvas.height/2,0,0);
+        comingSoon.drawOption(null, null, "coming soon", 100, "black");
+
+        
+    },
+
     gameScreen:function() {
         Game.resetGame();
         Camera.cameraOn=true;
-
         let backBtnW=80;
         let backBtnTextSize=80;
-
         if(Screen.isMobile){
             backBtnW=Screen.perX(100/14);
             backBtnTextSize=Screen.perX(100/14);
@@ -298,7 +325,7 @@ let Screen= {
         backButton.code = function () { Screen.selectScreen() };
         backButton.drawOption(null, null, "<", backBtnTextSize, "black");
 
-        let mobileButtonSize=70;
+        let mobileButtonSize=canvas.width/10;
 
         let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
         ashSpray.canAct=true;
@@ -343,7 +370,7 @@ let Screen= {
                 let keyButton = new Button(canvas.width-(5*4+mobileButtonSize*4)+i*(mobileButtonSize+5),canvas.height-mobileButtonSize-5,mobileButtonSize,mobileButtonSize);
                 keyButton.code=function(){Magic.doSkill(Game.p,i);};
                 keyButton.drawCode=function(){
-                    ctx.fillStyle="rgba(61, 61, 61,0.5)";
+                    ctx.fillStyle=(Magic.coolTime[i]<Game.time ?"rgb(121, 140, 205)" : "rgba(61, 61, 61,0.5)");//"rgba(61, 61, 61,0.5)";
                     ctx.fillRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
                     ctx.strokeStyle="black";
                     ctx.strokeRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
@@ -351,16 +378,16 @@ let Screen= {
                     ctx.font = "bold "+(mobileButtonSize-20)+"px Arial";
                     ctx.textBaseline = "middle";
                     ctx.textAlign = "center";
-                    ctx.fillText(keys[i],keyButton.x+35,keyButton.y+40);
-                    ctx.fillStyle="rgb(121, 140, 205)";
+                    ctx.fillText(keys[i],keyButton.x+35,keyButton.y+43);
+                    ctx.fillStyle="white";
                     ctx.font = "bold 15px Arial";
-                    ctx.fillText(Magic.basicMagic[Magic.skillNum[i]][0],keyButton.x+35,keyButton.y+10);
+                    ctx.fillText(Magic.basicMagic[Magic.skillNum[i]][0],keyButton.x+35,keyButton.y+11);
                 }
             }
         }
         Game.p = new Player(10, 600- mobileButtonSize-140);
         let camera = new Button(200,200,0,0, Game.TEXT_CHANNEL);
-        camera.overlap=false;
+        camera.canMove=true;
         //camera
         camera.drawCode = function(){
             camera.vx=(Game.p.x-camera.x)/10;

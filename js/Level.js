@@ -32,6 +32,8 @@ let Level= {
             ctx.fillText("CLEAR",Screen.perX(50), clearBtn.y);
         }
         clearBtn.vy=-1.5;
+        clearBtn.canInteraction=true;
+        clearBtn.canMove=true;
 
         let click = new Block(canvas.width / 2, canvas.height, 0, 0, "black", Game.BUTTON_CHANNEL);
         click.life = 1000;
@@ -84,7 +86,7 @@ let Level= {
                 this.stageMonsterCount = 1;
                 break;
             case 5:
-                
+                mapSize*=4;
                 break;
             case 6:
                 break;

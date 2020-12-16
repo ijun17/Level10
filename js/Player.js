@@ -45,14 +45,17 @@ class Player extends Entity{
             this.totalDamage = 0;
         }
     }
-
-    go(){
-        if(this.isRight){
-            this.vx=this.pv;
-        }else{
-            this.vx=-this.pv;
+    move(){
+        
+        this.x += this.vx;
+        this.y -= this.vy;
+        this.vy += this.ga;
+        if (this.moveFlag) {
+            if (this.isRight && this.vx <= this.pv) this.vx = this.pv;
+            else if (!this.isRight && this.vx >= -this.pv) this.vx = -this.pv;
         }
     }
+    
     jump(){
         if(this.canJump){
             this.vy=this.pv;
