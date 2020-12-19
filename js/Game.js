@@ -32,8 +32,21 @@ let Game = {
 
         Level.loadLevel();
         Screen.mainScreen();
-        Game.p = new Player(100, -1000);
-        Game.p.ga = 0;
+        new MapBlock(-10, 600 - 50, 1200 + 20, 20, "white");//bottom
+        new MapBlock(0, 600 - 30, 1200, 100, "white");
+        Game.p=new Player(20,0);
+        
+        Game.p.pv=3;
+        Game.p.ga=-0.15;
+        Game.p.addAction(100,100,function(){Game.p.moveFlag=true;});
+        Game.p.addAction(100,500,function(){Game.p.jump();});
+        Game.p.addAction(180,180,function(){new (Magic.basicMagic[7][1])(Game.p);});
+        Game.p.addAction(130,130,function(){Magic.doSkill(Game.p,2);});
+        Game.p.dieCode=function(){Game.click(canvas.width/2, canvas.height/2);};
+        let m = new Monster(0,canvas.width-200,0);
+        m.canAct=false;
+        //Camera.cameraOn=true;
+        //Camera.e=Game.p;
     },
     updateWorld:function() {
         ctx.fillStyle=Screen.bgColor;

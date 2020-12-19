@@ -25,7 +25,7 @@ class Entity {
     update() {
         if (this.visibility) this.draw();
         if (this.canAct) this.act();
-        if (this.canInteraction) this.interaction();
+        if (this.canInteraction) this.interact();
         if(this.canMove)this.move();
     }
 
@@ -50,7 +50,7 @@ class Entity {
         this.action.splice(0, i+1);
     }
 
-    interaction() {
+    interact() {
         let maxV=80;
         if(this.vx>maxV)this.vx=maxV;
         else if(this.vx<-maxV)this.vx=-maxV;

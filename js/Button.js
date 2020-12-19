@@ -8,9 +8,9 @@ class Button extends Entity {
         super(x, y, channelLevel);
         this.w = w;
         this.h = h;
-        this.canAct = false;
         this.ga = 0;
         this.overlap=false;
+        this.canAct = false;
         this.canInteraction=false;
         this.canMove=false;
     }

@@ -18,12 +18,15 @@ let Level= {
         if (this.playerLevel < this.stageLevel + 1) {
             this.playerLevel = this.stageLevel + 1;
             this.saveLevel();
+
         }
         this.stageLevel = 0;
         this.stageMonster = 0;
         //animation
         let clearBtn = new Button(Screen.perX(50)-2,0, 4, 4);
-        clearBtn.code = function () { Screen.selectScreen();};
+        clearBtn.code = function () { 
+            Screen.selectScreen();
+        };
         clearBtn.drawCode = function(){
             ctx.font = "bold 200px Arial";
             ctx.fillStyle = "yellow";

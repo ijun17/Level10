@@ -250,6 +250,7 @@ let Screen= {
         }
         let block = new Button(space*8+keyBtnW+magicBtnW, 0, magicBtnW, keyBtnW);
         for (let i = 1; i < Magic.basicMagic.length; i++) {
+            if(Magic.basicMagic[i][3]>Level.playerLevel)continue;
             let magicButton = new Button(space*8+keyBtnW+magicBtnW, keyBtnW + 50 * i, magicBtnW, magicBtnH);
             magicButton.code = function () { Screen.selectMagic = magicButton; new (Magic.basicMagic[i][1])(Game.p); };
             let magicColor;

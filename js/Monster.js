@@ -1,5 +1,5 @@
-let monsterTypes=[{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 100, speed: 3 },
-    { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 200, speed: 4 },
+let monsterTypes=[{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 200, speed: 5 },
+    { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 500, speed: 4 },
     { name: "hellfly", w: 30, h: 30, life: 20000, damage: 200, speed: 5 },
     { name: "madfish", w: 600, h: 300, life: 2000000, damage: 2000, speed: 1 }];
 
@@ -103,7 +103,7 @@ class Monster extends Entity {
         this.addAction(time, time, function () { temp.AI(time); });
     }
 
-    AI2(time = 10, randomNum = 10) {
+    AI2(time = 10, randomNum = 5) {
         var tx = this.target.x;
         var ty = this.target.y;
         if (this.x < tx) this.vx = this.type.speed;

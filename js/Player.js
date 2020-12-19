@@ -6,6 +6,7 @@ class Player extends Entity{
     moveFlag=false;
     canJump=true;
     totalDamage=0;
+    dieCode=function(){Screen.selectScreen();};
 
     constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
@@ -68,8 +69,7 @@ class Player extends Entity{
     }
 
     removeHandler(){
-        console.log("player die");
-        Screen.selectScreen();
+        new (this.dieCode);
     }
 
     damage(d) {
