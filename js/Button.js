@@ -16,7 +16,7 @@ class Button extends Entity {
     }
 
     draw() {
-        if (this.isTextBtn) new (this.drawCode)();
+        if (this.isTextBtn) this.drawCode();
         else ctx.drawImage(this.img, this.x, this.y);
     }
 
@@ -50,6 +50,6 @@ class Button extends Entity {
     }
 
     collisionHandler(e,ct) {
-        if (!(e instanceof Button)) new (this.code)(e,ct);
+        if (!(e instanceof Button)) this.code(e,ct);
     }
 }

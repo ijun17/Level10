@@ -13,15 +13,21 @@ class Player extends Entity{
         this.w=27;
         this.h=60;
         this.life=10000*Level.playerLevel;
-        this.img.src = "resource/player/"+`player2_right.png`;
+        this.img.src = "resource/player/"+`player2.png`;
         this.overlap=false;
         this.ga=-0.2;
+        this.friction=0.4;
     }
 
     draw(){
-        if(this.isRight)this.img.src ="resource/player/"+`player2_right.png`;
-        else this.img.src ="resource/player/"+`player2_left.png`;
-        ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+        if(this.isRight){
+            if(this.moveFlag)ctx.drawImage(this.img,0,60,30,60, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+            else ctx.drawImage(this.img,0,0,30,60, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+        }else {
+            if(this.moveFlag)ctx.drawImage(this.img,30,60,30,60, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+            else ctx.drawImage(this.img,30,0,30,60, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+        }
+        
         ctx.font="bold 20px Arial";
         ctx.fillStyle="black"
         ctx.fillText("hp: "+(Math.floor(this.life)),Camera.getX(this.x),Camera.getY(this.y-20));

@@ -1,7 +1,8 @@
 class MapBlock extends Entity{ //안부숴지는
     color;
-
-    constructor(x,y,w,h,color = "#080808",channelLevel=Game.PHYSICS_CHANNEL){
+    drawCode=function(){ctx.fillStyle = this.color;Camera.fillRect(this.x, this.y, this.w, this.h);}
+    
+    constructor(x,y,w,h,color = "rgb(48, 48, 48)",channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
         this.w=w;
         this.h=h;
@@ -15,8 +16,33 @@ class MapBlock extends Entity{ //안부숴지는
     }
 
     update(){
-        ctx.fillStyle = this.color;
-        ctx.fillRect(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+        this.drawCode();
+    }
+
+    static getTexture(textureType){
+        // let textureCode={"grass":function(){
+        //         ctx.fillStyle="#2B650D";
+        //         Camera.fillRect(this.x,this.y,this.w,20);
+        //         ctx.fillStyle="#54341E"
+        //         Camera.fillRect(this.x,this.y+20,this.w,this.h-20);
+        //     }
+        // }
+        // return textureCode[textureType];
+        switch(textureType){
+            case "wall":
+                return function(){ctx.fillStyle = "#080808";Camera.fillRect(this.x, this.y, this.w, this.h);};
+            case "grass":
+                return function(){
+                            ctx.fillStyle="#2B650D";
+                            Camera.fillRect(this.x,this.y,this.w,15);
+                            ctx.fillStyle="#54341E"
+                            Camera.fillRect(this.x,this.y+15,this.w,this.h-15);
+                        };
+            case "":
+                return;
+            default:
+                break;
+        }
     }
 
     damage(d, textColor=null){}

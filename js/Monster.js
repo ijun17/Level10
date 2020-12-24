@@ -103,7 +103,7 @@ class Monster extends Entity {
         this.addAction(time, time, function () { temp.AI(time); });
     }
 
-    AI2(time = 10, randomNum = 5) {
+    AI2(time = 10, randomNum = 10) {
         var tx = this.target.x;
         var ty = this.target.y;
         if (this.x < tx) this.vx = this.type.speed;
@@ -118,9 +118,9 @@ class Monster extends Entity {
         this.addAction(time, time, function () { temp.AI2(time, randomNum); });
     }
 
-    skill(time = 1000, speed = 6) {
+    skill(time = 1000, speed = 10) {
         this.x = this.target.x + this.target.w / 2 - this.w / 2;
-        this.y = 0;
+        this.y = this.target.y -600;
         this.vx = 0;
         this.vy = -speed;
         var temp = this;
@@ -152,10 +152,10 @@ class Monster extends Entity {
         var ice;
         var temp = -1;
         if (this.x + this.w / 2 < this.target.x + this.target.w / 2) temp = 1;
-        ice = new Matter(5, monster.x + monster.w / 2 + (monster.w + 150) / 2 * temp, monster.y / 2, 0, 0);
+        ice = new Matter(5, monster.x + monster.w / 2 + (monster.w + 150) / 2 * temp, monster.y , 0, 0);
         ice.vx = (this.target.x - ice.x) / speed;
         ice.vy = -(this.target.y - ice.y) / speed;
-        ice.life = 2;
+        ice.life = 1;
         //new Matter(5, monster.x + monster.w / 2 + (monster.w + 200) / 2 * temp, monster.y/ 2, 0,0);
 
         this.addAction(time, time, function () { monster.skill4(time, speed); });

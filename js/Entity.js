@@ -58,7 +58,7 @@ class Entity {
         else if(this.vy<-maxV)this.vy=-maxV;
 
         if (this.y > canvas.height + 500) this.life = 0;
-        if (this.life < 1) return;
+        //if (this.life < 1) return;
         let collisionType = null;
 
         for (var e of Game.channel[this.channelLevel]) {//entity collision event

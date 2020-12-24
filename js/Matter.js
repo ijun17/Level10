@@ -19,6 +19,7 @@ class Matter extends Entity {
         let matter = this;
         if(typenum==0)this.addAction(1, 10000, function () { 
             if (Game.time % 10 == 0) { new Particle(2, matter.x, matter.y); new Particle(0, matter.x, matter.y); } });
+        
     }
 
 

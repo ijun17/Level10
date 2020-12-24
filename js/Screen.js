@@ -297,17 +297,89 @@ let Screen= {
         Game.resetGame();
         let backBtnW=80;
         let backBtnTextSize=80;
+        
+        //모바일이면 나감
         if(Screen.isMobile){
             backBtnW=Screen.perX(100/14);
             backBtnTextSize=Screen.perX(100/14);
+            let text = new Button(canvas.width/2,canvas.height/2,0,0);
+            text.drawOption(null, null, "make magic not work mobile mode", 20, "black");
+            return;
         }
+        const namebox=document.querySelector(".namebox");
+        const textbox=document.querySelector(".textbox");
+        const compileBtn=document.querySelector(".compilebutton");
+        
+
+        //전체화면 해제
+        //exitFs(document);
+        //텍스트박스 생성
+        tb.style.display="block";
+        //키보드 눌러도 스킬 안되게
+        Magic.coolTime=[99999999,99999999,99999999,99999999];
+        //백버튼
         let backButton = new Button(0, 0, backBtnW, backBtnW);
-        backButton.code = function () { Screen.selectScreen() };
+        backButton.code = function () { Screen.selectScreen();tb.style.display="none"; };
         backButton.drawOption(null, null, "<", backBtnTextSize, "black");
+        //control system
+        let cs=new Button(0,0,0,0);
+        cs.temp=null;
+        cs.drawCode=function(){if(cs.temp!=null){ctx.fillStyle="rgba(0, 0, 0,0.5)";ctx.fillRect(cs.temp.x,cs.temp.y,200,40);} };
+        
+        //스킬 리스트
+        function makeMagicButton(x,y,num){
+            let magicBtn = new Button(x,y,200,40);
+            magicBtn.drawCode=function(){
+                ctx.fillStyle="rgb(104, 194, 255)";
+                ctx.fillRect(magicBtn.x, magicBtn.y, magicBtn.w, magicBtn.h);
+                ctx.strokeStyle="black";
+                ctx.strokeRect(magicBtn.x, magicBtn.y, magicBtn.w, magicBtn.h);
+                ctx.fillStyle="black";
+                ctx.font = "bold 30px Arial";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillText(Magic.customMagic[num][0],magicBtn.x+magicBtn.w/2, magicBtn.y+magicBtn.h/2);
+            }
+            magicBtn.code = function () {
+                (Magic.basicMagic[num + Magic.basicMagicCount][1]) (Game.p);
+                namebox.value = Magic.customMagic[num][0];
+                textbox.value = Magic.customMagic[num][1];
+                cs.temp = magicBtn;
+            }
+            magicBtn.temp = num;
+            magicBtn.ga = 0.5;
+            magicBtn.vy = 20;
+            magicBtn.canMove = true;
+            magicBtn.canInteraction = true;
+            
+        }
+        let plusButton = new Button(10, backBtnTextSize+10, 200, 40);
+        plusButton.drawOption(null,"black","+ magic",30,"black");
+        plusButton.code=function(){ 
+            Magic.addEmptyMagic();
+            makeMagicButton(10,1000,Magic.customMagic.length-1);
+        };
+        for(let i=0; i<Magic.customMagic.length; i++){
+            makeMagicButton(10,200+50*i,i);
+        }
+        //compile button click event
+        compileBtn.onclick = function(){
+            if(cs.temp==null)return;
+            let cusMag=Magic.customMagic[cs.temp.temp];//현재 선택된 커스텀 매직
+            let magic=Magic.convertMagictoJS(namebox.value, textbox.value);
+            if(magic!=null){ //마법이 성공적으로 변환되면
+                cusMag[0]=namebox.value;
+                cusMag[1]=textbox.value;
+                Magic.basicMagic[Magic.basicMagicCount+cs.temp.temp]=magic;
+            }
+        };
+        
+        //test map
+        new MapBlock(0,canvas.height-80,canvas.width,80).drawCode=MapBlock.getTexture("grass");
+        Game.p=new Player(canvas.width/2,0);
+        Game.p.dieCode=function(){};
 
-        let comingSoon = new Button(canvas.width/2,canvas.height/2,0,0);
-        comingSoon.drawOption(null, null, "coming soon", 100, "black");
-
+        
         
     },
 
@@ -326,7 +398,7 @@ let Screen= {
         backButton.code = function () { Screen.selectScreen() };
         backButton.drawOption(null, null, "<", backBtnTextSize, "black");
 
-        let mobileButtonSize=canvas.width/10;
+        let mobileButtonSize=80;
 
         let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
         ashSpray.canAct=true;
@@ -334,7 +406,7 @@ let Screen= {
         ashSpray.addAction(1,1000000,function(){
             if(Game.time%5==0){
                 let r = Math.random()*2000;
-                let ash=new Particle(3,Game.p.x-1000+r,-200);
+                let ash=new Particle(3,Game.p.x-1000+r,-Game.p.y-600);
                 //ash.w=20;
                 //ash.h=20;
                 ash.life=300;
@@ -386,15 +458,5 @@ let Screen= {
                 }
             }
         }
-        Game.p = new Player(10, 600- mobileButtonSize-140);
-        let camera = new Button(200,200,0,0, Game.TEXT_CHANNEL);
-        camera.canMove=true;
-        //camera
-        camera.drawCode = function(){
-            camera.vx=(Game.p.x-camera.x)/10;
-            camera.vy=-(Game.p.y-camera.y)/10;
-        }
-        Camera.e=camera;
-        
     }
 }

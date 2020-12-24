@@ -47,49 +47,73 @@ let Level= {
 
     makeStage:function(level) {
         this.stageLevel = level;
-        //준기의 탑 n층
-        let floorText = new Button(-400,200,0,0,Game.TEXT_CHANNEL);
-        floorText.life=200;
-        floorText.drawCode = function(){
-            ctx.font = "bold 50px Arial";
-            ctx.fillStyle = "white";
-            ctx.textBaseline = "top";
-            ctx.textAlign = "left";
-            ctx.fillText("준기의탑 -"+level+"층",80,20);
-            floorText.life--;
+        //player
+        Game.p = new Player(10, -60);
+        //camera
+        let camera = new Button(200,200,0,0, Game.TEXT_CHANNEL);
+        camera.canMove=true;
+        camera.drawCode = function(){
+            camera.vx=(Game.p.x-camera.x)/10;
+            camera.vy=-(Game.p.y-camera.y)/10;
         }
+        Camera.e=camera;
+        //준기의 탑 n층 text
+        // let floorText = new Button(-400,200,0,0,Game.TEXT_CHANNEL);
+        // floorText.life=200;
+        // floorText.drawCode = function(){
+        //     ctx.font = "bold 50px Arial";
+        //     ctx.fillStyle = "white";
+        //     ctx.textBaseline = "top";
+        //     ctx.textAlign = "left";
+        //     ctx.fillText("준기의탑 -"+level+"층",80,20);
+        //     floorText.life--;
+        // }
         //bgColor
         Screen.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
         //map size
-        let mapSize=1200;
+        let mapSizeW=1200;
+        let mapSizeH=1000;
+        let wallSize=100;
 
         switch (level) {
             case 1:
-                new Monster(0, 1000, 0);
+                new Monster(0, 1000, -1000);
                 this.stageMonsterCount = 1;
                 break;
             case 2:
-                new Monster(0, 1000, 0);
-                new Monster(0, 900, 0);
-                new Monster(0, 800, 0);
-                new Monster(1, 700, 0);
+                new Monster(0, 1000, -1000);
+                new Monster(0, 900, -1000);
+                new Monster(0, 800, -1000);
+                new Monster(1, 700, -1000);
                 this.stageMonsterCount = 4;
                 break;
             case 3:
-                new Monster(2, 1100, 50);
-                new Monster(2, 900, 50);
-                new Monster(2, 700, 50);
-                new Monster(2, 500, 50);
-                new Monster(2, 300, 50);
+                new Monster(2, 1100, -1000);
+                new Monster(2, 900, -1000);
+                new Monster(2, 700, -1000);
+                new Monster(2, 500, -1000);
+                new Monster(2, 300, -1000);
                 this.stageMonsterCount = 5;
                 break;
             case 4:
-                mapSize*=2;
-                new Monster(3,2060, 250);
+                mapSizeW*=2;
+                new Monster(3,2060, -250);
                 this.stageMonsterCount = 1;
                 break;
             case 5:
-                mapSize*=4;
+                mapSizeW*=4;
+                new Monster(2, 1100, -1000);
+                new Monster(2, 900, -1000);
+                new Monster(2, 700, -1000);
+                new Monster(2, 500, -1000);
+                new Monster(2, 300, -1000);
+                for(let i=1; i<10; i++){
+                    new MapBlock(50*i,-40*i,50,30);//.drawCode=MapBlock.getTexture("grass");
+                    (new MapBlock(500*i,-400,350,30)).drawCode=MapBlock.getTexture("grass");
+                }
+                
+                //(new MapBlock(500,-400,350,30)).drawCode=MapBlock.getTexture("grass");
+                //(new MapBlock(1000,-400,350,30)).drawCode=MapBlock.getTexture("grass");
                 break;
             case 6:
                 break;
@@ -111,10 +135,9 @@ let Level= {
         }
 
         //양 끝 맵블럭
-        new MapBlock(0,-1000,mapSize,100,"rgb(48, 48, 48)");
-        new MapBlock(-100, -1000, 100, 600+2000,"rgb(48, 48, 48)"); //left
-        new MapBlock(mapSize, -1000, 100, 600+2000,"rgb(48, 48, 48)");//right
-        new MapBlock(-10, 600 - 100, mapSize + 20, 20, "#2B650D");//bottom
-        new MapBlock(0, 600 - 80, mapSize, 100, "#54341E");
+        new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"rgb(48, 48, 48)");//top
+        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2,"rgb(48, 48, 48)"); //left
+        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2,"rgb(48, 48, 48)");//right
+        (new MapBlock(0,0,mapSizeW,wallSize*2)).drawCode=MapBlock.getTexture("grass");
     }
 }

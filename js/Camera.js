@@ -13,5 +13,9 @@ let Camera={
     getS:function(w){ //size
         if(Camera.cameraOn)return w*Camera.extension;
         else return w;
+    },
+    fillRect:function(x,y,w,h){
+        if(Camera.cameraOn)ctx.fillRect(Camera.getX(x), Camera.getY(y), Camera.getS(w), Camera.getS(h));
+        else ctx.fillRect(x,y,w,h);
     }
 }

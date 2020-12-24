@@ -1,38 +1,93 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <title>WebGame</title>
     <style>
-    	* { padding: 0; margin: 0; }
-    	canvas { background :rgb(121, 155, 206); display: block; margin: 0 auto; }
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas {
+            background: rgb(121, 155, 206);
+            display: block;
+            margin: 0 auto;
+        }
+
+        .namebox {
+            width: 600px;
+            height:20px;
+            margin: 5px;
+            padding: 10px;
+            background-color: black;
+            resize: none;
+            color: brown;
+        }
+
+        .textbox {
+            width: 600px;
+            height: 300px;
+            margin: 5px;
+            padding: 10px;
+            background-color: black;
+            color: royalblue;
+            resize: none;
+        }
+
+        .compilebutton {
+            width: 100px;
+            height: 40px;
+            background-color: royalblue;
+            color: white;
+        }
+        .box {
+            display:none;
+            text-align: center;
+        }
     </style>
 </head>
+
 <body style="background-color:black">
 
-<canvas id="myCanvas" width="1200" height="600"></canvas>
+    <canvas id="myCanvas" width="1200" height="600"></canvas>
 
-<script>
-    "use strict";
-    const canvas = document.getElementById("myCanvas");
-    const ctx = canvas.getContext("2d");
-</script>
-<!---->
-<script src="js/Resource.js"></script>
-<script src="js/Entity.js"></script>
-<script src="js/Matter.js"></script>
-<script src="js/Player.js"></script>
-<script src="js/Monster.js"></script>
-<script src="js/Block.js"></script>
-<script src="js/MapBlock.js"></script>
-<script src="js/Particle.js"></script>
-<script src="js/Button.js"></script>
+    <div  class="box">
+        <div style="text-align: center;">
+            <p style="color: cornsilk;">magic name</p>
+            <textarea class="namebox"></textarea>
+            <p style="color: cornsilk;">magic code</p>
+            <textarea class="textbox"></textarea>
+        </div>
+        <button class="compilebutton">compile</button>
+    </div>
 
-<script src="js/Level.js"></script>
-<script src="js/Camera.js"></script>
-<script src="js/Magic.js"></script>
-<script src="js/Screen.js"></script>
-<script src="js/Game.js"></script>
+
+
+    <script>
+        "use strict";
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+        const tb = document.querySelector(".box");
+    </script>
+    <!---->
+    <script src="js/Resource.js"></script>
+    <script src="js/Entity.js"></script>
+    <script src="js/Matter.js"></script>
+    <script src="js/Player.js"></script>
+    <script src="js/Monster.js"></script>
+    <script src="js/Block.js"></script>
+    <script src="js/MapBlock.js"></script>
+    <script src="js/Particle.js"></script>
+    <script src="js/Button.js"></script>
+
+    <script src="js/Level.js"></script>
+    <script src="js/Camera.js"></script>
+    <script src="js/Magic.js"></script>
+    <script src="js/Screen.js"></script>
+    <script src="js/Game.js"></script>
 
 </body>
+
 </html>

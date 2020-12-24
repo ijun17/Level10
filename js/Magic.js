@@ -2,7 +2,9 @@ let Magic = {
     //qwer
     skillNum:[1,2,3,4],
     coolTime:[0,0,0,0],
-    
+    basicMagicCount:13,
+    customMagicCount:0,
+    customMagic:[],
     //magic = [name, magic,coolTime,level]
     basicMagic:[["null", function(){}, 0,0],
     ["bullet", function(p){
@@ -25,11 +27,11 @@ let Magic = {
         ice=new Matter(2,p.x+50*temp, p.y+20, 10*temp, 0.5);
     },200,1],
 
-    ["teleport",function(p){
-        let temp=-1;
-        if(p.isRight)temp=1;
-        p.x+=300*temp;
-    },200,1],
+    ["dash", function(p){
+        if(p.isRight)p.vx=20;
+        else p.vx=-20;
+        p.vy=0;
+    },100,1],
 
     ["wall",function(p){
         let wall;
@@ -39,11 +41,11 @@ let Magic = {
         wall.life=4000;
     },200,1],
 
-    ["dash", function(p){
-        if(p.isRight)p.vx=20;
-        else p.vx=-20;
-        p.vy=0;
-    },100,1],
+    ["teleport",function(p){
+        let temp=-1;
+        if(p.isRight)temp=1;
+        p.x+=300*temp;
+    },200,1],
 
     ["chidori",function(p){
         p.addAction(1,200,function(){
@@ -128,7 +130,7 @@ let Magic = {
         if(Magic.coolTime[num]<Game.time){
             Magic.magicEffect(p);
             let magicNum=Magic.skillNum[num];
-            new (Magic.basicMagic[magicNum][1])(p);
+            (Magic.basicMagic[magicNum][1])(p);
             Magic.coolTime[num]=Magic.basicMagic[magicNum][2]+Game.time;
         }
     },
@@ -141,13 +143,59 @@ let Magic = {
         magicEffect.w=e.h;
         magicEffect.h=e.h;
     },
-    convertMagictoJS: function (magicCode) {
+    saveMagic:function(){
+        localStorage.customMagic=Magic.customMagic;
+    },
+    loadMagic:function(){
+        Magic.basicMagicCount=Magic.basicMagic.length;
+        // Magic.customMagic=JSON.stringify(localStorage.customMagic);
+        // Magic.customMagicCount=Magic.customMagic.length;
+        // for(let i=0,j=Magic.customMagicCount; i<j; i++){
+        //     Magic.basicMagic.push(Magic.customMagic[])
+        // }
+    },
+    addEmptyMagic:function(){
+        Magic.customMagicCount++;
+        Magic.customMagic.push(["none", ""]);
+        Magic.basicMagic.push(["none", function(){},0,0]);
+    },
+    convertMagictoJS: function (name, magicCode) {
         let magicFactor = 0;
-        let JSCode = "";
-        let codeToJs = function () {
-
+        let jsCode="";
+        let temp =""; //문자열이 일시적으로 담기는곳
+        function isEnglish(c){return (64<c&&c<91)||(96<c&&c<123);}
+        let prohibitedWord=["Game", "Magic", "MapBlock", "Screen", "Level", "Button", "Camera","Entity", "Particle", "Player", "Monster","new","document","canvas","ctx"];
+        let prohibitedSymbol=["$","@","~","#"];
+        let keyword={"createBlock":"new Block", "createMatter":"new Matter"};
+        for(let i=0, j=magicCode.length;i<j; i++){
+            if(isEnglish(magicCode.charCodeAt(i)))temp+=magicCode[i];
+            else{
+                if(prohibitedWord.includes(temp)){
+                    console.log("err: your code have prohibited word");
+                    return null;
+                }
+                if(prohibitedSymbol.includes(magicCode[i])){
+                    console.log("err: your code have @ or ~ or $");
+                    return null;
+                }
+                if(temp in keyword)jsCode+=keyword[temp];
+                else jsCode+=temp;
+                jsCode+=magicCode[i];
+                temp="";
+            }
         }
-
+        if(temp!="")jsCode+=temp;
+        console.log("js code: ",jsCode);
+        let magic=function(){};
+        try {
+            magic = eval("(function(player){"+jsCode+"})");
+            let tester = new Player(0,10000);
+            tester.dieCode=function(){};
+            magic(tester);
+        }catch(e){
+            console.log("err: syntex");
+            return null;
+        }
+        return [name,magic, 100,1];
     }
-
 }
