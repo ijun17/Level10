@@ -144,15 +144,15 @@ let Magic = {
         magicEffect.h=e.h;
     },
     saveMagic:function(){
-        localStorage.customMagic=Magic.customMagic;
+        localStorage.CUSTOM_MAGIC=JSON.stringify(Magic.customMagic);
     },
     loadMagic:function(){
         Magic.basicMagicCount=Magic.basicMagic.length;
-        // Magic.customMagic=JSON.stringify(localStorage.customMagic);
-        // Magic.customMagicCount=Magic.customMagic.length;
-        // for(let i=0,j=Magic.customMagicCount; i<j; i++){
-        //     Magic.basicMagic.push(Magic.customMagic[])
-        // }
+        if(localStorage.CUSTOM_MAGIC!=null)Magic.customMagic=JSON.parse(localStorage.CUSTOM_MAGIC);
+        Magic.customMagicCount=Magic.customMagic.length;
+        for(let i=0,j=Magic.customMagicCount; i<j; i++){
+            Magic.basicMagic.push(Magic.convertMagictoJS(Magic.customMagic[i][0],Magic.customMagic[i][1]));
+        }
     },
     addEmptyMagic:function(){
         Magic.customMagicCount++;

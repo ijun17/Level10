@@ -356,8 +356,10 @@ let Screen= {
         let plusButton = new Button(10, backBtnTextSize+10, 200, 40);
         plusButton.drawOption(null,"black","+ magic",30,"black");
         plusButton.code=function(){ 
-            Magic.addEmptyMagic();
+            if(Magic.customMagicCount<10){
+                Magic.addEmptyMagic();
             makeMagicButton(10,1000,Magic.customMagic.length-1);
+            }
         };
         for(let i=0; i<Magic.customMagic.length; i++){
             makeMagicButton(10,200+50*i,i);
@@ -371,6 +373,7 @@ let Screen= {
                 cusMag[0]=namebox.value;
                 cusMag[1]=textbox.value;
                 Magic.basicMagic[Magic.basicMagicCount+cs.temp.temp]=magic;
+                Magic.saveMagic();
             }
         };
         
