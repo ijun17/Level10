@@ -1,11 +1,13 @@
 let Magic = {
+    magicPoint:0,
     //qwer
     skillNum:[1,2,3,4],
     coolTime:[0,0,0,0],
     basicMagicCount:13,
     customMagicCount:0,
     customMagic:[],
-    //magic = [name, magic,coolTime,level]
+    //magic = [name, magic,coolTime,needed MagicPoint]
+    magicList:[],
     basicMagic:[["null", function(){}, 0,0],
     ["bullet", function(p){
         let bullet;
@@ -16,7 +18,6 @@ let Magic = {
             bullet = new Block(p.x+30*temp, p.y+i*14, 10,10);
             bullet.vx=30*temp;
             bullet.life=50;
-            bullet.mass=10;
         }
     },50,1],
 
@@ -71,7 +72,6 @@ let Magic = {
         if(p.isRight)temp=1;
         b=new Block(p.x+p.w/2 + 50*temp-25, p.y-200, 50, 200);
         b.life=10000;
-        b.mass=30;
     },1000,4],
 
     ["firetornado",function(p){
@@ -159,14 +159,38 @@ let Magic = {
         Magic.customMagic.push(["none", ""]);
         Magic.basicMagic.push(["none", function(){},0,0]);
     },
+    isCompile:false,
+    magicFactor:[0,0], //temp
     convertMagictoJS: function (name, magicCode) {
-        let magicFactor = 0;
+        Magic.isCompile=true;
+        Magic.magicFactor = [0,0]; //[cooltime, power]
         let jsCode="";
         let temp =""; //문자열이 일시적으로 담기는곳
         function isEnglish(c){return (64<c&&c<91)||(96<c&&c<123);}
-        let prohibitedWord=["Game", "Magic", "MapBlock", "Screen", "Level", "Button", "Camera","Entity", "Particle", "Player", "Monster","new","document","canvas","ctx"];
-        let prohibitedSymbol=["$","@","~","#"];
-        let keyword={"createBlock":"new Block", "createMatter":"new Matter"};
+        function addMF(mf){if(Magic.isCompile){Magic.magicFactor[0]+=Math.abs(mf[0]);Magic.magicFactor[1]+=Math.abs(mf[1]);}}
+        //
+        function giveForce(e,ax,ay){e.vx+=ax;e.vy+=ay;addMF([100, ax*ax+ay*ay]);}
+        function damage(e,d){e.life-=d;addMF([0,d/10]);}
+        function invisible(e,time){e.visibility=false;e.addAction(time,time,function(){e.visibility=true;});addMF([time*2,100]);}
+        function freeze(e,time){e.canMove=false;e.addAction(time,time,function(){e.visibility=true;});addMF([time*2,100]);}
+        function setGravity(e,time,ga){let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});addMF([time*2,Math.abs(ga*100)]);}
+        function setLocation(e,x,y){e.x=x;e.y=y;addMF([200,20]);}
+        function move(e,vx,vy){e.x+=vx;e.y-=vy;addMF([200,vx+vy]);}
+        function time(e,startTime,endTime,f){addMF([endTime-startTime,0]);e.addAction(startTime,endTime,f);}
+        //
+        function getX(e){return e.x;}
+        function getY(e){return e.y;}
+        function getVX(e){return e.vx;}
+        function getVY(e){return e.vy;}
+        function getFront(){return (Game.p.isRight ? 1 : -1);}
+        //
+        function createBlock(w,h,color){let b=new Block(Game.p.x+15+getFront()*(w/2+25)-w/2,Game.p.y,w,h,color);addMF([0,w*h]);return b;}
+        function createMatter(type){addMF([0,100]);return new Matter(type,Game.p.x+getFront()*40,Game.p.y);}
+        //
+        let prohibitedWord=["new","function"];
+        let prohibitedSymbol=["$","[","."];
+        let keyword={"createBlocke":"new Block", "createMatter":"new Matter"};
+        let symbol={"@":"let ","$":"function()"};
         for(let i=0, j=magicCode.length;i<j; i++){
             if(isEnglish(magicCode.charCodeAt(i)))temp+=magicCode[i];
             else{
@@ -180,7 +204,11 @@ let Magic = {
                 }
                 if(temp in keyword)jsCode+=keyword[temp];
                 else jsCode+=temp;
-                jsCode+=magicCode[i];
+
+                if(magicCode[i] in symbol)jsCode+=symbol[magicCode[i]];
+                else jsCode+=magicCode[i];
+
+                //jsCode+=magicCode[i];
                 temp="";
             }
         }
@@ -189,13 +217,17 @@ let Magic = {
         let magic=function(){};
         try {
             magic = eval("(function(player){"+jsCode+"})");
-            let tester = new Player(0,10000);
-            tester.dieCode=function(){};
-            magic(tester);
+            let temp = Game.p;
+            Game.p = new Player(0,10000);
+            Game.p.dieCode=function(){};
+            magic(Game.p);
+            Game.p=temp;
         }catch(e){
             console.log("err: syntex");
             return null;
         }
-        return [name,magic, 100,1];
+        console.log(Magic.magicFactor);
+        this.isCompile=false
+        return [name,magic, Magic.magicFactor[0],1];
     }
 }

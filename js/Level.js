@@ -49,6 +49,7 @@ let Level= {
         this.stageLevel = level;
         //player
         Game.p = new Player(10, -60);
+        Magic.magicPoint=10000;
         //camera
         let camera = new Button(200,200,0,0, Game.TEXT_CHANNEL);
         camera.canMove=true;
@@ -88,11 +89,11 @@ let Level= {
                 this.stageMonsterCount = 4;
                 break;
             case 3:
-                new Monster(2, 1100, -1000);
-                new Monster(2, 900, -1000);
-                new Monster(2, 700, -1000);
-                new Monster(2, 500, -1000);
-                new Monster(2, 300, -1000);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
                 this.stageMonsterCount = 5;
                 break;
             case 4:

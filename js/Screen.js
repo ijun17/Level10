@@ -175,7 +175,7 @@ let Screen= {
         //make magic button
         let makeMagicButton = new Button(canvas.width - selectMagicButtonW-space, 2*space+selectMagicButtonH, selectMagicButtonW, selectMagicButtonH);
         makeMagicButton.code = function () { Screen.makeMagicScreen(); };
-        makeMagicButton.drawOption(null, "black", "make magic", selectMagicBtnTextSize, "black");
+        makeMagicButton.drawOption(null, "black", "create magic", selectMagicBtnTextSize, "black");
 
         //level button
         let block = new Button((canvas.width - levelBtnW) /2, 0, levelBtnW, space);
@@ -248,7 +248,7 @@ let Screen= {
             keyButtons[i] = keyButton;
             keyButton.temp.push(null); //temp[0] 은 선택된 마법을 의미
         }
-        let block = new Button(space*8+keyBtnW+magicBtnW, 0, magicBtnW, keyBtnW);
+        let block = new Button(space*8+keyBtnW+magicBtnW, 0, magicBtnW, 10);
         for (let i = 1; i < Magic.basicMagic.length; i++) {
             if(Magic.basicMagic[i][3]>Level.playerLevel)continue;
             let magicButton = new Button(space*8+keyBtnW+magicBtnW, keyBtnW + 50 * i, magicBtnW, magicBtnH);
@@ -417,18 +417,39 @@ let Screen= {
             }
         });
 
+        //hp mp view 200px
+        let hpGage = new Button(canvas.width-400,10,200,20,Game.TEXT_CHANNEL);
+        hpGage.drawCode=function(){
+            ctx.fillStyle="brown";
+            ctx.fillRect(canvas.width-400,10,200*(Game.p.life/Level.playerLevel/10000),20);
+            ctx.strokeStyle="black";
+            ctx.strokeRect(canvas.width-400,10,200,20);
+        }
+        let mpGage = new Button(canvas.width-400,40,200,20,Game.TEXT_CHANNEL);
+        mpGage.drawCode=function(){
+            if(Magic.magicPoint<10000)Magic.magicPoint++;
+            ctx.fillStyle="rgb(0, 212, 255)";
+            ctx.fillRect(canvas.width-400,40,200*(Magic.magicPoint/10000),20);
+            ctx.strokeStyle="black";
+            ctx.strokeRect(canvas.width-400,40,200,20);
+        }
+
         //cooltime view
-        for(let i=0; i<4; i++){
-            let coolTimeView = new Button(canvas.width-200, 10+i*20, 0,0, Game.TEXT_CHANNEL);
-            coolTimeView.drawCode=function(){
-                ctx.fillStyle="black";
-                ctx.font = "bold 20px Arial";
-                ctx.textBaseline = "top";
-                ctx.textAlign = "left";
-                let coolT = Magic.coolTime[i]-Game.time;
-                ctx.fillText(Magic.basicMagic[Magic.skillNum[i]][0]+": "+(coolT>0 ? (coolT/100) : "ready"), coolTimeView.x, coolTimeView.y);
-            };
-        } 
+        let coolTimeView = new Button(canvas.width - 150, 10, 0, 0, Game.TEXT_CHANNEL);
+        coolTimeView.drawCode = function () {
+            ctx.fillStyle = "black";
+            ctx.font = "bold 20px Arial";
+            ctx.textBaseline = "top";
+            ctx.textAlign = "left";
+            let coolT = Magic.coolTime[0] - Game.time;
+            ctx.fillText(Magic.basicMagic[Magic.skillNum[0]][0] + ": " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-150, 10);
+            coolT = Magic.coolTime[1] - Game.time;
+            ctx.fillText(Magic.basicMagic[Magic.skillNum[1]][0] + ": " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-150, 30);
+            coolT = Magic.coolTime[2] - Game.time;
+            ctx.fillText(Magic.basicMagic[Magic.skillNum[2]][0] + ": " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-150, 50);
+            coolT = Magic.coolTime[3] - Game.time;
+            ctx.fillText(Magic.basicMagic[Magic.skillNum[3]][0] + ": " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-150, 70);
+        };
         //mobile button
         if (Screen.isMobile) {
             let leftButton = new Button(5, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);

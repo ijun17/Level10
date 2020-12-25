@@ -36,7 +36,6 @@ class Player extends Entity{
             let textSize = 50;
             let damageText = new Button(this.x + this.w / 2, this.y - textSize, 0, 0, Game.TEXT_CHANNEL);
             damageText.life = 40;
-            damageText.canInteraction = false;
             let td=this.totalDamage;
             damageText.drawCode = function () {
                 ctx.font = "bold 30px Arial";

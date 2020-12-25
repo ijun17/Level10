@@ -34,8 +34,9 @@ let Game = {
         
         Screen.mainScreen();
         Level.loadLevel();
-        Game.p=new Player(20,300);
         Magic.loadMagic();
+        Game.p=new Player(20,300);
+        
         
 
 
@@ -49,7 +50,6 @@ let Game = {
         Game.p.addAction(150,150,function(){Magic.doSkill(Game.p,2);});
         Game.p.dieCode=function(){Game.click(canvas.width/2, canvas.height/2);};
         let m = new Monster(0,canvas.width-200,0);
-        
         m.canAct=false;
     },
     updateWorld:function() {
