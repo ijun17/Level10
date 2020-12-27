@@ -27,7 +27,8 @@ class Player extends Entity{
             if(this.moveFlag)ctx.drawImage(this.img,30,60,30,60, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
             else ctx.drawImage(this.img,30,0,30,60, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
         }
-        
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
         ctx.font="bold 20px Arial";
         ctx.fillStyle="black"
         ctx.fillText("hp: "+(Math.floor(this.life)),Camera.getX(this.x),Camera.getY(this.y-20));
@@ -35,12 +36,12 @@ class Player extends Entity{
         if (this.totalDamage > 0) {
             let textSize = 50;
             let damageText = new Button(this.x + this.w / 2, this.y - textSize, 0, 0, Game.TEXT_CHANNEL);
+            damageText.canRemoved=true;
             damageText.life = 40;
             let td=this.totalDamage;
             damageText.drawCode = function () {
                 ctx.font = "bold 30px Arial";
-                ctx.textBaseline = "middle";
-                ctx.textAlign = "center";
+                
                 ctx.fillStyle = "red";
                 ctx.fillText(td, Camera.getX(damageText.x), Camera.getY(damageText.y));
                 ctx.strokeStyle = "black";

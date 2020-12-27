@@ -1,9 +1,10 @@
 let matterTypes=[{ name: "fire", num:0, damage: 300},
-        { name: "lightning", num:1, damage: 100 },
+        { name: "lightning", num:1, damage: 500 },
         { name: "ice", num:2, damage: 50 },
         { name: "explosion", num:3, damage: 200 },
         { name: "arrow", num:4, damage: 10 },
-        { name: "energy", num:5, damage: 1000}];
+        { name: "energy", num:5, damage: 400},
+        { name: "sword", num:6, damage: 700}];
 
 class Matter extends Entity {
     type;
@@ -19,7 +20,10 @@ class Matter extends Entity {
         let matter = this;
         if(typenum==0)this.addAction(1, 10000, function () { 
             if (Game.time % 10 == 0) { new Particle(2, matter.x, matter.y); new Particle(0, matter.x, matter.y); } });
-        
+        if(typenum==6){
+            this.w*=Math.sqrt(this.vx*this.vx+ this.vy*this.vy)/5;
+            this.h=this.w;
+        }
     }
 
 
@@ -38,7 +42,7 @@ class Matter extends Entity {
 
     collisionHandler(e) {
         this.life--;
-        e.damage(this.type.damage);
+        e.damage(this.type.damage*this.w/30);
         e.giveForce(this.vx,this.vy+1);
 
         switch(this.type.num){
@@ -47,13 +51,15 @@ class Matter extends Entity {
                 e.vy=0;
                 break;
             case 2://ice
+                var damage = Math.floor(Math.sqrt(this.vx * this.vx + this.vy * this.vy))+1;
+                e.damage(damage);
                 e.addAction(1, 100, function () { 
-                    e.vx = 0; e.vy = 0; ctx.fillStyle = "rgba(167, 220, 244, 0.5)"; 
-                    ctx.fillRect(Camera.getX(e.x), Camera.getY(e.y), Camera.getS(e.w), Camera.getS(e.h)); });
+                e.vx = 0; e.vy = 0; ctx.fillStyle = "rgba(167, 220, 244, 0.5)"; 
+                ctx.fillRect(Camera.getX(e.x), Camera.getY(e.y), Camera.getS(e.w), Camera.getS(e.h)); });
                 break;
             case 4://arrow
                 var damage = Math.floor(Math.abs(this.vx * this.vx * this.vx + this.vy * this.vy * this.vy))+1;
-                e.damage(damage, "orange");
+                e.damage(damage);
                 break;
             case 5://energy
                 if(e instanceof Matter&&e.type.num==5){
@@ -66,7 +72,10 @@ class Matter extends Entity {
                     this.vy+=e.vy;
                     this.type.damage+=e.type.damage;
                 }
-                
+                break;
+            case 6:
+                var damage = Math.sqrt(this.vx * this.vx + this.vy * this.vy)+1;
+                e.damage(damage);
                 break;
             default:
                 break;

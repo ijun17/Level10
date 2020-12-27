@@ -32,25 +32,28 @@ let Game = {
         //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A, 붉은빛밤하늘: #3F3939, 보라빛밤하늘: #3C3647, 겨울아침:rgb(179, 211, 244)}
         
         
+
         Screen.mainScreen();
+
         Level.loadLevel();
+        Game.p=new Player(20,10000);
         Magic.loadMagic();
-        Game.p=new Player(20,300);
+        
         
         
 
 
-        new MapBlock(-10, 600 - 50, 1200 + 20, 20, "white");//bottom
-        new MapBlock(0, 600 - 30, 1200, 100, "white");
-        Game.p.pv=2;
-        Game.p.ga=-0.1;
-        Game.p.addAction(100,100,function(){Game.p.moveFlag=true;});
-        Game.p.addAction(100,600,function(){Game.p.jump();});
-        Game.p.addAction(200,200,function(){new (Magic.basicMagic[7][1])(Game.p);});
-        Game.p.addAction(150,150,function(){Magic.doSkill(Game.p,2);});
-        Game.p.dieCode=function(){Game.click(canvas.width/2, canvas.height/2);};
-        let m = new Monster(0,canvas.width-200,0);
-        m.canAct=false;
+        // new MapBlock(-10, 600 - 50, 1200 + 20, 20, "white");//bottom
+        // new MapBlock(0, 600 - 30, 1200, 100, "white");
+        // Game.p.pv=2;
+        // Game.p.ga=-0.1;
+        // Game.p.addAction(100,100,function(){Game.p.moveFlag=true;});
+        // Game.p.addAction(100,600,function(){Game.p.jump();});
+        // Game.p.addAction(200,200,function(){new (Magic.magicList[7][1])(Game.p);});
+        // Game.p.addAction(150,150,function(){Magic.doSkill(Game.p,2);});
+        // Game.p.dieCode=function(){Game.click(canvas.width/2, canvas.height/2);};
+        // let m = new Monster(0,canvas.width-200,0);
+        // m.canAct=false;
     },
     updateWorld:function() {
         ctx.fillStyle=Screen.bgColor;

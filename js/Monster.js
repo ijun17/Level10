@@ -1,4 +1,4 @@
-let monsterTypes=[{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 200, speed: 5 },
+let monsterTypes=[{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 200, speed: 3 },
     { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 500, speed: 4 },
     { name: "hellfly", w: 30, h: 30, life: 20000, damage: 200, speed: 5 },
     { name: "madfish", w: 600, h: 300, life: 2000000, damage: 2000, speed: 1 }];
@@ -45,20 +45,21 @@ class Monster extends Entity {
 
     draw() {
         ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
         ctx.font = "bold 20px Arial";
         ctx.fillStyle = "black"
         ctx.fillText("hp: " + (Math.floor(this.life)), Camera.getX(this.x), Camera.getY(this.y - 20));
         if (this.totalDamage > 0) {
             let textSize = 50;
             let damageText = new Button(this.x + this.w / 2, this.y - textSize, 0, 0, Game.TEXT_CHANNEL);
+            damageText.canRemoved=true;
             damageText.life = 40;
             damageText.canInteraction = false;
             damageText.canMove=false;
             let td=this.totalDamage;
             damageText.drawCode = function () {
                 ctx.font = "bold 30px Arial";
-                ctx.textBaseline = "middle";
-                ctx.textAlign = "center";
                 ctx.fillStyle = "orange";
                 ctx.fillText(td, Camera.getX(damageText.x), Camera.getY(damageText.y));
                 ctx.strokeStyle = "black";

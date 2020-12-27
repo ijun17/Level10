@@ -49,7 +49,7 @@ let Level= {
         this.stageLevel = level;
         //player
         Game.p = new Player(10, -60);
-        Magic.magicPoint=10000;
+        Magic.magicPoint=10000*Level.playerLevel;
         //camera
         let camera = new Button(200,200,0,0, Game.TEXT_CHANNEL);
         camera.canMove=true;
