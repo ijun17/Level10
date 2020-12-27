@@ -1,4 +1,4 @@
-let matterTypes=[{ name: "fire", num:0, damage: 300},
+let matterTypes=[{ name: "fire", num:0, damage: 500},
         { name: "lightning", num:1, damage: 500 },
         { name: "ice", num:2, damage: 50 },
         { name: "explosion", num:3, damage: 200 },
@@ -46,6 +46,17 @@ class Matter extends Entity {
         e.giveForce(this.vx,this.vy+1);
 
         switch(this.type.num){
+            // case 0:
+            //     //let size=30;
+            //     let explosion = new Button(this.x,this.y,this.w,this.h,Game.PARTICLE_CHANNEL);
+            //     let temp=Game.time;
+            //     explosion.animation=new Animation("resource/particle/explosion.png",40,40,function(){
+            //         return Math.floor(((Game.time-temp)%60)/10);
+            //     })
+            //     explosion.canRemoved=true;
+            //     explosion.life=60;
+            //     explosion.drawCode=function(){explosion.life--;explosion.animation.draw(Camera.getX(explosion.x), Camera.getY(explosion.y), Camera.getS(explosion.w), Camera.getS(explosion.h))}
+            //     break;
             case 1://lightning
                 e.vx=0;
                 e.vy=0;
@@ -57,15 +68,17 @@ class Matter extends Entity {
                 e.vx = 0; e.vy = 0; ctx.fillStyle = "rgba(167, 220, 244, 0.5)"; 
                 ctx.fillRect(Camera.getX(e.x), Camera.getY(e.y), Camera.getS(e.w), Camera.getS(e.h)); });
                 break;
+            case 3:
+                e.damage(this.w);
             case 4://arrow
                 var damage = Math.floor(Math.abs(this.vx * this.vx * this.vx + this.vy * this.vy * this.vy))+1;
                 e.damage(damage);
                 break;
             case 5://energy
                 if(e instanceof Matter&&e.type.num==5){
-                    e.life=0;
                     e.x=-10000;
-                    this.life++;
+                    this.life+=e.life+1;
+                    e.life=0;
                     this.w+=e.w;
                     this.h+=e.h;
                     this.vx+=e.vx;

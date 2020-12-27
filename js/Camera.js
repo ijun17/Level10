@@ -17,5 +17,15 @@ let Camera={
     fillRect:function(x,y,w,h){
         if(Camera.cameraOn)ctx.fillRect(Camera.getX(x), Camera.getY(y), Camera.getS(w), Camera.getS(h));
         else ctx.fillRect(x,y,w,h);
+    },
+    makeMovingCamera:function(target,x,y,movingDelay=10){
+        Camera.cameraOn=true;
+        Camera.e=new Button(x,y,0,0, Game.TEXT_CHANNEL);
+        Camera.e.canMove=true;
+        Camera.e.temp=target;
+        Camera.e.drawCode = function(){
+            Camera.e.vx=(Camera.e.temp.x-Camera.e.x)/movingDelay;
+            Camera.e.vy=-(Camera.e.temp.y-Camera.e.y)/movingDelay;
+        }
     }
 }

@@ -6,27 +6,30 @@ class Player extends Entity{
     moveFlag=false;
     canJump=true;
     totalDamage=0;
-    dieCode=function(){Screen.selectScreen();};
+    dieCode=function(){};
 
     constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
-        this.w=27;
+        this.w=30;
         this.h=60;
         this.life=10000*Level.playerLevel;
-        this.img.src = "resource/player/"+`player2.png`;
         this.overlap=false;
         this.ga=-0.2;
         this.friction=0.4;
+        let p=this;
+        this.animation = new Animation("resource/player/"+`player.png`,30,60,function(){
+            if(p.moveFlag){
+                if(p.isRight)return 2;
+                else return 3;
+            }else{
+                if(p.isRight)return 0;
+                else return 1;
+            }
+        });
     }
 
     draw(){
-        if(this.isRight){
-            if(this.moveFlag)ctx.drawImage(this.img,0,60,30,60, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
-            else ctx.drawImage(this.img,0,0,30,60, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
-        }else {
-            if(this.moveFlag)ctx.drawImage(this.img,30,60,30,60, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
-            else ctx.drawImage(this.img,30,0,30,60, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
-        }
+        this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
         ctx.font="bold 20px Arial";
@@ -53,7 +56,6 @@ class Player extends Entity{
         }
     }
     move(){
-        
         this.x += this.vx;
         this.y -= this.vy;
         this.vy += this.ga;

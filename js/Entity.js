@@ -12,6 +12,7 @@ class Entity {
     canInteraction = true;
 
     img = new Image; //엔티티의 이미지
+    animation
 
     action = new Array(); //한 틱마다 행위들 [시작시간, 종료시간-1, 코드]
 

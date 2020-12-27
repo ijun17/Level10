@@ -49,15 +49,10 @@ let Level= {
         this.stageLevel = level;
         //player
         Game.p = new Player(10, -60);
+        Game.p.dieCode=function(){Screen.selectScreen();};
         Magic.magicPoint=10000*Level.playerLevel;
         //camera
-        let camera = new Button(200,200,0,0, Game.TEXT_CHANNEL);
-        camera.canMove=true;
-        camera.drawCode = function(){
-            camera.vx=(Game.p.x-camera.x)/10;
-            camera.vy=-(Game.p.y-camera.y)/10;
-        }
-        Camera.e=camera;
+        Camera.makeMovingCamera(Game.p,0,0,10);
         //준기의 탑 n층 text
         // let floorText = new Button(-400,200,0,0,Game.TEXT_CHANNEL);
         // floorText.life=200;

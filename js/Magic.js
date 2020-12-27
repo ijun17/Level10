@@ -15,71 +15,78 @@ let Magic = {
     },0,0,0]],
     basicMagic:[
     ["fire ball",`
-    createMatter(0,front()*10,0);
+createMatter(0,front()*10,0);
     `,1],
 
     ["wall", `
-    createBlock(20,60,"black");
+createBlock(20,60,"black");
     `,1],
 
     ["dash",`
-    giveForce(player,front()*20,0);
+giveForce(player,front()*20,0);
     `,2],
 
-    ["teleport",`
-    move(player,front()*300,0);
+    ["heal",`
+damage(player,-1000);
     `,2],
 
     ["fire tornado",`
-    @x=getX(player)+front()*200;
-    for(@i=0;i<12;i++){
-        @fire = createMatter(0,0,0);
-        move(fire,front()*(200-13*i-15), i*35);
-        setGravity(fire,500,0);
-        damage(fire,-100)
-        time(fire,1,500,#{
-            giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
-        });
-    }
+@x=getX(player)+front()*200;
+for(@i=0;i<12;i++){
+    @fire = createMatter(0,0,0);
+    move(fire,front()*(200-13*i-15), i*35);
+    //setGravity(fire,500,0);
+    damage(fire,-500)
+    time(fire,1,500,#{
+        giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
+    });
+}
     `,3],
 
     ["meteor",`
-    for(@i=0;i<4;i++){
-        for(@j=0;j<4;j++){
-            @fire=createMatter(0,front()*10,-10);
-            move(fire, front()*i*40,200-j*40);
-        }
+for(@i=0;i<4;i++){
+    for(@j=0;j<4;j++){
+        @fire=createMatter(0,front()*10,-10);
+        move(fire, front()*i*40,200-j*40);
     }
+}
     `,3],
 
     ["sniper",`
-    createMatter(4,front()*40,0);
+createMatter(4,front()*40,0);
     `,4],
 
     ["one-gi-oc",`
-    for(@i=0;i<4;i++){
-        @e=createMatter(5,front()*3,-3);
-        move(e,0,300);
-    }
+for(@i=0;i<4;i++){
+    @e=createMatter(5,front()*3,-3);
+    move(e,0,300);
+}
     `,4],
     ["chi-do-ri",`
-    time(player,1,501,#{
-        @e=createMatter(1,0,0);
-        move(e,front()*20,0)
-    });
+time(player,1,501,#{
+    @e=createMatter(1,0,0);
+    move(e,front()*20,0)
+});
     `,5],
-    ["sword",`
-        @e=createMatter(6,front()*20,0)
-        damage(e,-2);
+    ["detection",`
+@block=createBlock(10,10,"blue");
+@dt=150;
+damage(block,-dt+100);
+setGravity(block,dt,0);
+move(block,0,100);
+giveForce(block,front()*20,0);
+setCamera(block,getX(block),getY(block),10);
+time(player,dt,dt,#{setCamera(player,getX(player),getY(player),10);});
     `,5]],
     //end basicMasic
 
     doSkill:function(p,num){
-        if(Magic.coolTime[num]<Game.time){
+        if(Magic.coolTime[num]<Game.time&&Magic.magicPoint-Magic.magicList[Magic.skillNum[num]][3]>0){
             Magic.magicList[0][1](p);
             let magicNum=Magic.skillNum[num];
             (Magic.magicList[magicNum][1])(p);
             Magic.coolTime[num]=Magic.magicList[magicNum][2]+Game.time;
+            Magic.magicPoint-=Magic.magicList[magicNum][3];
         }
     },
     clearCoolTime:function(){
@@ -117,16 +124,38 @@ let Magic = {
         let testCode="";
         let temp =""; //문자열이 일시적으로 담기는곳
         function isEnglish(c){return (64<c&&c<91)||(96<c&&c<123);}
-        function addMF(mf){if(Magic.isCompile){if(Magic.magicFactor[0]<Math.abs(mf[0]))Magic.magicFactor[0]=Math.abs(mf[0]);Magic.magicFactor[1]+=Math.abs(mf[1]);}}
+        function addMF(mf){
+            if(Magic.isCompile){
+                Magic.magicFactor[0]=Math.floor(Math.sqrt(Magic.magicFactor[0]*Magic.magicFactor[0]+mf[0]*mf[0]));
+                Magic.magicFactor[1]+=Math.floor(Math.abs(mf[1]));
+            }
+        }
         //
-        function giveForce(e,ax,ay){e.vx+=ax;e.vy+=ay;addMF([0, (ax*ax+ay*ay)]);}
-        function damage(e,d){e.life-=d;addMF([0,d/10]);}
-        function invisible(e,time){e.visibility=false;e.addAction(time,time,function(){e.visibility=true;});addMF([time*2,100]);}
-        function freeze(e,time){e.canMove=false;e.addAction(time,time,function(){e.visibility=true;});addMF([time*2,100]);}
-        function setGravity(e,time,ga){let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});addMF([time*2,Math.abs(ga*100)]);}
-        function setLocation(e,x,y){e.x=x-e.w/2;e.y=y-e.h/2;addMF([200,20]);}
-        function move(e,vx,vy){e.x+=vx;e.y-=vy;addMF([200,vx+vy]);}
-        function time(e,startTime,endTime,f){addMF([(endTime-startTime)*2,0]);e.addAction(startTime,endTime,f);}
+        function test_giveForce(e,ax,ay){addMF([0, Math.sqrt(ax*ax+ay*ay)]);e.vx+=ax;e.vy+=ay;}
+        function test_damage(e,d){addMF([0,d/10]);e.life-=d;}
+        function test_invisible(e,time){addMF([time*2,100]);e.visibility=false;e.addAction(time,time,function(){e.visibility=true;});}
+        function test_freeze(e,time){addMF([time*2,100]);e.canMove=false;e.addAction(time,time,function(){e.visibility=true;});}
+        function test_setGravity(e,time,ga){addMF([time*2,ga*100]);let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
+        function test_setLocation(e,x,y){addMF([0,200]);e.x=x-e.w/2;e.y=y-e.h/2;}
+        function test_move(e,vx,vy){addMF([0,vx+vy]);e.x+=vx;e.y-=vy;}
+        function test_time(e,startTime,endTime,f){addMF([(endTime-startTime)*2,100]);for(let i=0,j=(endTime-startTime)/10;i<j;i++)f();}
+        function test_createBlock(w,h,color){addMF([0,w*h/10]);let b=new Block(Game.p.x+15+front()*(w/2+25)-w/2,getY(Game.p)+w/2,w,h,color);return b;}
+        function test_createMatter(type,vx,vy){
+            addMF([50,Math.sqrt(vx*vx+vy*vy)+100]);
+            let m=new Matter(type,0,0,vx,vy);
+            m.x=getX(Game.p)+front()*(m.w/2+15)-m.w/2;
+            m.y=getY(Game.p)-m.h/2;
+            return m;}
+        //
+        function giveForce(e,ax,ay){e.vx+=ax;e.vy+=ay;}
+        function damage(e,d){e.life-=d;}
+        function invisible(e,time){e.visibility=false;e.addAction(time,time,function(){e.visibility=true;});}
+        function freeze(e,time){e.canMove=false;e.addAction(time,time,function(){e.visibility=true;});}
+        function setGravity(e,time,ga){let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
+        function setLocation(e,x,y){e.x=x-e.w/2;e.y=y-e.h/2;}
+        function move(e,vx,vy){e.x+=vx;e.y-=vy;}
+        function time(e,startTime,endTime,f){e.addAction(startTime,endTime,f);}
+        function setCamera(target,x,y,delay){Camera.makeMovingCamera(target,x,y,delay);}
         //
         function getX(e){return e.x+e.w/2;}
         function getY(e){return e.y+e.h/2;}
@@ -134,9 +163,8 @@ let Magic = {
         function getVY(e){return e.vy;}
         function front(){return (Game.p.isRight ? 1 : -1);}
         //
-        function createBlock(w,h,color){let b=new Block(Game.p.x+15+front()*(w/2+25)-w/2,Game.p.y,w,h,color);addMF([0,w*h/10]);return b;}
+        function createBlock(w,h,color="black"){let b=new Block(Game.p.x+15+front()*(w/2+25)-w/2,Game.p.y,w,h,color);return b;}
         function createMatter(type,vx,vy){
-            addMF([50,(vx*vx+vy*vy)+100]);
             let m=new Matter(type,0,0,vx,vy);
             m.x=getX(Game.p)+front()*(m.w/2+15)-m.w/2;
             m.y=getY(Game.p)-m.h/2;
@@ -145,8 +173,9 @@ let Magic = {
         //
         let prohibitedWord=["new","function"];
         let prohibitedSymbol=["[",".","$"];
-        let keyword={};
+        let testKeyword=["giveForce","damage","invisible", "freeze", "setGravity","setLocation","move","time","createBlock","createMatter"];
         let symbol={"@":"let ","#":"function()"};
+        //
         for(let i=0, j=magicCode.length;i<j; i++){
             if(isEnglish(magicCode.charCodeAt(i)))temp+=magicCode[i];
             else{
@@ -158,23 +187,34 @@ let Magic = {
                     console.log("err: your code have @ or ~ or $");
                     return null;
                 }
-                if(temp in keyword)jsCode+=keyword[temp];
-                else jsCode+=temp;
+                if(testKeyword.includes(temp))testCode+="test_"+temp;
+                else testCode+=temp;
+                jsCode+=temp;
 
-                if(magicCode[i] in symbol)jsCode+=symbol[magicCode[i]];
-                else jsCode+=magicCode[i];
+                if(magicCode[i] in symbol){
+                    testCode+=symbol[magicCode[i]];
+                    jsCode+=symbol[magicCode[i]];
+                }else {
+                    testCode+=magicCode[i];
+                    jsCode+=magicCode[i];
+                }
                 temp="";
             }
         }
-        if(temp!="")jsCode+=temp;
-        console.log("js code: ",jsCode);
+        if(temp!=""){
+            testCode+=te
+            jsCode+=temp;
+        }
+        //
+        console.log("js code: ",testCode);
         let magic=function(){};
         try {
             magic = eval("(function(player){"+jsCode+"})");
+            let testMagic=eval("(function(player){"+testCode+"})");
             let temp = Game.p;
             Game.p = new Player(0,10000);
             Game.p.dieCode=function(){};
-            magic(Game.p);
+            testMagic(Game.p);
             Game.p=temp;
         }catch(e){
             console.log("err: syntex");

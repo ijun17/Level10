@@ -275,10 +275,8 @@ let Screen= {
             if(listStart==-1)listStart=Game.channel[Game.BUTTON_CHANNEL].length;
             let magicButton = new Button(space*8+keyBtnW+magicBtnW, keyBtnW + 50 * i, magicBtnW, magicBtnH);
             magicButton.code = function () { Screen.selectMagic = magicButton; new (Magic.magicList[i][1])(Game.p); };
-            let magicColor;
-            if(Magic.magicList[i][2]<1000)magicColor="rgba(255, 255, 255,1)";
-            else if(Magic.magicList[i][2]<2000)magicColor="rgba(121, 140, 205,1)";
-            else magicColor="rgba(243, 168, 60,1)";
+            let magicColor="rgba(119, 138, 202,0.8)";
+            if(i>Magic.basicMagicCount)magicColor="rgba(65, 105, 225,0.8)";
             magicButton.drawOption(magicColor, "black", Magic.magicList[i][0], magicBtnTextSize, "black");
             magicButton.temp.push(i); //temp[0]=Magic.magicList
             magicButton.temp.push(null); //temp[1] is keyButton index
@@ -321,11 +319,14 @@ let Screen= {
 
         //simulation
         new MapBlock(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "rgb(35, 35, 35)");
-        Game.p = new Player(canvas.width*5/9+20, 0);
+        function makePlayer(){Game.p=new Player(canvas.width*5/9+20, 0);Camera.e.temp=Game.p;Game.p.dieCode=function(){makePlayer();}}
+        makePlayer();
         let monster = new Monster(0, canvas.width-100, 0);
         monster.life = 100000;
         monster.action = [];
-
+        //키보드 눌러도 스킬 안되게
+        //Magic.coolTime=[99999999,99999999,99999999,99999999];
+        Magic.magicPoint=0;
     },
 
     makeMagicScreen:function(){
@@ -356,7 +357,8 @@ let Screen= {
         //텍스트박스 생성
         tb.style.display="block";
         //키보드 눌러도 스킬 안되게
-        Magic.coolTime=[99999999,99999999,99999999,99999999];
+        //Magic.coolTime=[99999999,99999999,99999999,99999999];
+        Magic.magicPoint=0;
         
         //control system
         let cs=new Button(0,0,0,0);
@@ -365,10 +367,6 @@ let Screen= {
             if(cs.temp!=null){
                 ctx.fillStyle="rgba(0, 0, 0,0.5)";
                 ctx.fillRect(cs.temp.x,cs.temp.y,200,40);
-            } 
-            if(Game.p.life<1){
-                Game.p=new Player(canvas.width/2,0);
-                Game.p.dieCode=function(){};
             }
         };
         
@@ -376,7 +374,7 @@ let Screen= {
         function makeMagicButton(x,y,num){
             let magicBtn = new Button(x,y,200,40);
             magicBtn.drawCode=function(){
-                ctx.fillStyle="rgb(104, 194, 255)";
+                ctx.fillStyle="rgba(65, 105, 225,0.8)";
                 ctx.fillRect(magicBtn.x, magicBtn.y, magicBtn.w, magicBtn.h);
                 ctx.strokeStyle="black";
                 ctx.strokeRect(magicBtn.x, magicBtn.y, magicBtn.w, magicBtn.h);
@@ -387,7 +385,7 @@ let Screen= {
                 ctx.fillText(Magic.customMagic[num][0],magicBtn.x+magicBtn.w/2, magicBtn.y+magicBtn.h/2);
             }
             magicBtn.code = function () {
-                (Magic.magicList[num + Magic.basicMagicCount][1]) (Game.p);
+                (Magic.magicList[num + Magic.basicMagicCount+1][1]) (Game.p);
                 namebox.value = Magic.customMagic[num][0];
                 textbox.value = Magic.customMagic[num][1];
                 cs.temp = magicBtn;
@@ -425,10 +423,8 @@ let Screen= {
         
         //test map
         new MapBlock(0,canvas.height-80,canvas.width,80).drawCode=MapBlock.getTexture("grass");
-        Game.p=new Player(canvas.width/2,0);
-        Game.p.dieCode=function(){};
-
-        
+        function makePlayer(){Game.p=new Player(canvas.width/2, 0);Camera.e.temp=Game.p;Game.p.dieCode=function(){makePlayer();}}
+        makePlayer();
         
     },
 
@@ -478,6 +474,7 @@ let Screen= {
             ctx.fillRect(canvas.width-450,35,200*(Magic.magicPoint/10000/Level.playerLevel),20);
             ctx.strokeStyle="black";
             ctx.strokeRect(canvas.width-450,35,200,20);
+            Magic.magicPoint++;
         }
 
         //cooltime view
