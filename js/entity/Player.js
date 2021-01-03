@@ -64,7 +64,7 @@ class Player extends Entity{
             else if (!this.isRight && this.vx >= -this.pv) this.vx = -this.pv;
         }
     }
-    
+
     jump(){
         if(this.canJump){
             this.vy=this.pv;
@@ -77,7 +77,7 @@ class Player extends Entity{
     }
 
     removeHandler(){
-        new (this.dieCode);
+        this.dieCode();
     }
 
     damage(d) {

@@ -47,19 +47,21 @@ for(@i=0;i<12;i++){
 for(@i=0;i<4;i++){
     for(@j=0;j<4;j++){
         @fire=createMatter(0,front()*10,-10);
-        move(fire, front()*i*40,200-j*40);
+        move(fire, front()*i*40,300-j*40);
+        damage(fire,-10);
     }
 }
     `,3],
 
     ["sniper",`
-createMatter(4,front()*40,0);
+createMatter(4,front()*20,0);
     `,4],
 
     ["one-gi-oc",`
 for(@i=0;i<4;i++){
-    @e=createMatter(5,front()*3,-3);
-    move(e,0,300);
+    @e=createMatter(5,front()*1,-1);
+    move(e,-60,200);
+    damage(e,-2);
 }
     `,4],
     ["chi-do-ri",`
@@ -119,20 +121,27 @@ time(player,dt,dt,#{setCamera(player,getX(player),getY(player),10);});
     magicFactor:[0,0], //temp
     convertMagictoJS: function (name, magicCode) {
         Magic.isCompile=true;
-        Magic.magicFactor = [0,0]; //[cooltime, power]
+        Magic.magicFactor = [100,100]; //[cooltime, power]
         let jsCode="";
         let testCode="";
         let temp =""; //문자열이 일시적으로 담기는곳
         function isEnglish(c){return (64<c&&c<91)||(96<c&&c<123);}
+        function getEnergy(e){ //엔티티가 가지고 있는 에너지를 획득
+            let test = new Entity(0,10000,Game.PHYSICS_CHANNEL);
+            test.life=0;
+            e.collisionHandler(test,'D',true);
+            return Math.abs(test.life);
+        }
         function addMF(mf){
             if(Magic.isCompile){
                 Magic.magicFactor[0]=Math.floor(Math.sqrt(Magic.magicFactor[0]*Magic.magicFactor[0]+mf[0]*mf[0]));
-                Magic.magicFactor[1]+=Math.floor(Math.abs(mf[1]));
+                //Magic.magicFactor[1]+=Math.floor(Math.abs(mf[1]));
+                Magic.magicFactor[1]=Math.floor(Math.sqrt(Magic.magicFactor[1]*Magic.magicFactor[1]+mf[1]*mf[1]));
             }
         }
         //
-        function test_giveForce(e,ax,ay){addMF([0, Math.sqrt(ax*ax+ay*ay)]);e.vx+=ax;e.vy+=ay;}
-        function test_damage(e,d){addMF([0,d/10]);e.life-=d;}
+        function test_giveForce(e,ax,ay){addMF([0, getEnergy(e)+Math.sqrt(e.vx*e.vx+e.vy*e.vy)]);e.vx+=ax;e.vy+=ay;}
+        function test_damage(e,d){addMF([0,d]);e.life-=d;}
         function test_invisible(e,time){addMF([time*2,100]);e.visibility=false;e.addAction(time,time,function(){e.visibility=true;});}
         function test_freeze(e,time){addMF([time*2,100]);e.canMove=false;e.addAction(time,time,function(){e.visibility=true;});}
         function test_setGravity(e,time,ga){addMF([time*2,ga*100]);let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
@@ -141,10 +150,10 @@ time(player,dt,dt,#{setCamera(player,getX(player),getY(player),10);});
         function test_time(e,startTime,endTime,f){addMF([(endTime-startTime)*2,100]);for(let i=0,j=(endTime-startTime)/10;i<j;i++)f();}
         function test_createBlock(w,h,color){addMF([0,w*h/10]);let b=new Block(Game.p.x+15+front()*(w/2+25)-w/2,getY(Game.p)+w/2,w,h,color);return b;}
         function test_createMatter(type,vx,vy){
-            addMF([50,Math.sqrt(vx*vx+vy*vy)+100]);
             let m=new Matter(type,0,0,vx,vy);
             m.x=getX(Game.p)+front()*(m.w/2+15)-m.w/2;
             m.y=getY(Game.p)-m.h/2;
+            addMF([50,getEnergy(m)+100]);
             return m;}
         //
         function giveForce(e,ax,ay){e.vx+=ax;e.vy+=ay;}

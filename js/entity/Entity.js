@@ -12,7 +12,6 @@ class Entity {
     canInteraction = true;
 
     img = new Image; //엔티티의 이미지
-    animation
 
     action = new Array(); //한 틱마다 행위들 [시작시간, 종료시간-1, 코드]
 
@@ -63,7 +62,7 @@ class Entity {
         let collisionType = null;
 
         for (var e of Game.channel[this.channelLevel]) {//entity collision event
-            if (e != this && this.x + this.vx < e.x + e.w && this.x + this.vx + this.w > e.x && this.y - this.vy < e.y + e.h && this.y - this.vy + this.h > e.y) {
+            if (e != this && this.x + this.vx < e.x + e.w&& this.x + this.vx + this.w > e.x && this.y - this.vy < e.y + e.h && this.y - this.vy + this.h > e.y) {
                 if (!(this.overlap && e.overlap)&&this.canMove) {
                     if (this.x + this.w <= e.x) { //right collision
                         collisionType = 'R';
@@ -111,12 +110,14 @@ class Entity {
     }
 
     giveForce(ax, ay) {
-        this.vx += ax;
-        this.vy += ay;
+        if(this.canMove){
+            this.vx += ax;
+            this.vy += ay;
+        }
     }
 
     damage(d){
-        this.life-=d;
+        this.life-=Math.floor(d);
     }
 
     //event handler

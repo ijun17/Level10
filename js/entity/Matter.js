@@ -3,7 +3,7 @@ let matterTypes=[{ name: "fire", num:0, damage: 500},
         { name: "ice", num:2, damage: 50 },
         { name: "explosion", num:3, damage: 200 },
         { name: "arrow", num:4, damage: 10 },
-        { name: "energy", num:5, damage: 400},
+        { name: "energy", num:5, damage: 1000},
         { name: "sword", num:6, damage: 700}];
 
 class Matter extends Entity {
@@ -42,7 +42,7 @@ class Matter extends Entity {
 
     collisionHandler(e) {
         this.life--;
-        e.damage(this.type.damage*this.w/30);
+        e.damage(this.type.damage);
         e.giveForce(this.vx,this.vy+1);
 
         switch(this.type.num){
@@ -70,8 +70,9 @@ class Matter extends Entity {
                 break;
             case 3:
                 e.damage(this.w);
+                break;
             case 4://arrow
-                var damage = Math.floor(Math.abs(this.vx * this.vx * this.vx + this.vy * this.vy * this.vy))+1;
+                var damage = Math.floor(Math.abs(this.vx * this.vx* this.vx) + Math.abs(this.vy * this.vy* this.vy))+1;
                 e.damage(damage);
                 break;
             case 5://energy
@@ -87,7 +88,7 @@ class Matter extends Entity {
                 }
                 break;
             case 6:
-                var damage = Math.sqrt(this.vx * this.vx + this.vy * this.vy)+1;
+                var damage = Math.sqrt(this.vx * this.vx + this.vy * this.vy)*this.w;
                 e.damage(damage);
                 break;
             default:
