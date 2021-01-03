@@ -2,7 +2,6 @@ class Button extends Entity {
     code = function () { };
     drawCode = function () { };
     temp = new Array();
-    isTextBtn = true;
 
     constructor(x, y, w, h, channelLevel=Game.BUTTON_CHANNEL) {
         super(x, y, channelLevel);
@@ -17,8 +16,7 @@ class Button extends Entity {
     }
 
     draw() {
-        if (this.isTextBtn) this.drawCode();
-        else ctx.drawImage(this.img, this.x, this.y);
+        this.drawCode();
     }
 
     drawOption(boxFill = null, boxLine = null, text = null, px = 10, textFill = null, textLine = null) {

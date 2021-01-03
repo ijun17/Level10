@@ -85,6 +85,9 @@ let Screen= {
             startButton.drawCode=function(){};
         };
         startButton.drawOption(null, "black", "START", 80, "black");
+        
+        let clickHereText = new Button(Screen.perX(50),Screen.perY(62),0,0);
+        clickHereText.drawOption(null, null, "click here",20,"black");
     },
 
     selectScreen:function() {
@@ -138,21 +141,7 @@ let Screen= {
         let backButton = new Button(0, 0, backBtnW, backBtnW);
         backButton.code = function () { Screen.mainScreen() };
         backButton.drawOption(null, null, "<", backBtnTextSize, "black");
-        //full screen button
-        let fullScreenButton =new Button(canvas.width - space-toMobileBtnW, canvas.height - toMobileBtnH*2-space*2, toMobileBtnW, toMobileBtnH);
-        fullScreenButton.code = function () {
-            startFs(canvas);
-            Screen.mainScreen();
-            let full = new Button((canvas.width - 300)/2, (canvas.height-100)/2, 300, 100);
-            full.code=function(){
-                startFs(canvas);
-                full.x=10000;
-                Game.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);
-            }
-        };
-       
 
-        fullScreenButton.drawOption(null, "black", "to full screen", fullBtnTextSize, "black");
         //mobile button
         let mobileButton = new Button(canvas.width - space - toMobileBtnW, canvas.height - space - toMobileBtnH, toMobileBtnW, toMobileBtnH);
         mobileButton.code = function () {
@@ -171,11 +160,11 @@ let Screen= {
         //select magic button
         let selectMagicButton = new Button(canvas.width - selectMagicButtonW-space, space, selectMagicButtonW, selectMagicButtonH);
         selectMagicButton.code = function () { Screen.selectMagicScreen(); };
-        selectMagicButton.drawOption(null, "black", "select magic", selectMagicBtnTextSize, "black");
+        selectMagicButton.drawOption(null, "black", "select magic", selectMagicBtnTextSize, "black");//"rgb(119, 138, 202)"
         //make magic button
         let makeMagicButton = new Button(canvas.width - selectMagicButtonW-space, 2*space+selectMagicButtonH, selectMagicButtonW, selectMagicButtonH);
         makeMagicButton.code = function () { Screen.makeMagicScreen(); };
-        makeMagicButton.drawOption(null, "black", "create magic", selectMagicBtnTextSize, "black");
+        makeMagicButton.drawOption(null, "black", "create magic", selectMagicBtnTextSize, "black");//"rgb(65, 105, 225)"
 
         //level button
         let block = new Button((canvas.width - levelBtnW) /2, 0, levelBtnW, space);
@@ -274,7 +263,7 @@ let Screen= {
             if(Magic.magicList[i][4]>Level.playerLevel)continue;
             if(listStart==-1)listStart=Game.channel[Game.BUTTON_CHANNEL].length;
             let magicButton = new Button(space*8+keyBtnW+magicBtnW, keyBtnW + 50 * i, magicBtnW, magicBtnH);
-            magicButton.code = function () { Screen.selectMagic = magicButton; new (Magic.magicList[i][1])(Game.p); };
+            magicButton.code = function () { Screen.selectMagic = magicButton; (Magic.magicList[i][1])(Game.p); };
             let magicColor="rgba(119, 138, 202,0.8)";
             if(i>Magic.basicMagicCount)magicColor="rgba(65, 105, 225,0.8)";
             magicButton.drawOption(magicColor, "black", Magic.magicList[i][0], magicBtnTextSize, "black");

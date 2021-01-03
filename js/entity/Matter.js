@@ -1,22 +1,23 @@
-let matterTypes=[{ name: "fire", num:0, damage: 500},
-        { name: "lightning", num:1, damage: 500 },
-        { name: "ice", num:2, damage: 50 },
-        { name: "explosion", num:3, damage: 200 },
-        { name: "arrow", num:4, damage: 10 },
-        { name: "energy", num:5, damage: 1000},
-        { name: "sword", num:6, damage: 700}];
+const matterTypes=[{ type:function(){return {name: "fire", num:0, damage: 500}} },
+        { type:function(){return {name: "lightning", num:1, damage: 500}} },
+        { type:function(){return {name: "ice", num:2, damage: 50}} },
+        { type:function(){return {name: "explosion", num:3, damage: 20}} },
+        { type:function(){return {name: "arrow", num:4, damage: 10}} },
+        { type:function(){return {name: "energy", num:5, damage: 1000}} },
+        { type:function(){return {name: "sword", num:6, damage: 700}} }];
 
 class Matter extends Entity {
+    img = new Image; //엔티티의 이미지
     type;
     constructor(typenum, x, y, vx = 0, vy = 0,channelLevel=Game.PHYSICS_CHANNEL) {
         super(x, y,channelLevel);
-        this.type = {name:matterTypes[typenum].name, num:matterTypes[typenum].num, damage:matterTypes[typenum].damage,};
+        this.type = matterTypes[typenum].type();
         this.vx = vx;
         this.vy = vy;
         this.w = 30;
         this.h = 30;
         this.ga = -0.02;
-        this.img.src = "resource/effect/" + this.type.name + ".png";
+        this.img.src = "resource/matter/" + this.type.name + ".png";
         let matter = this;
         if(typenum==0)this.addAction(1, 10000, function () { 
             if (Game.time % 10 == 0) { new Particle(2, matter.x, matter.y); new Particle(0, matter.x, matter.y); } });
@@ -82,8 +83,7 @@ class Matter extends Entity {
                     e.life=0;
                     this.w+=e.w;
                     this.h+=e.h;
-                    this.vx+=e.vx;
-                    this.vy+=e.vy;
+                    this.giveForce(e.vx, e.vy);
                     this.type.damage+=e.type.damage;
                 }
                 break;

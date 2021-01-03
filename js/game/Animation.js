@@ -9,7 +9,14 @@ class Animation {
         this.imageH=h;
         this.condition=cdt;
     }
-    draw(x,y,w,h){
-        ctx.drawImage(this.image, this.condition()*this.imageW, 0, this.imageW,this.imageH,x,y,w,h);
+    draw(x,y,w,h,isNotInverse){
+        if(isNotInverse)ctx.drawImage(this.image, 0, this.condition()*this.imageH, this.imageW,this.imageH,x,y,w,h);
+        else {
+            ctx.save();
+            ctx.translate(x, y);
+			ctx.scale(-1, 1);
+            ctx.drawImage(this.image, 0,this.condition()*this.imageH,  this.imageW,this.imageH,-w,0,w,h);
+            ctx.restore();
+        }
     }
 }

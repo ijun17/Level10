@@ -15,21 +15,36 @@ let Magic = {
     },0,0,0]],
     basicMagic:[
     ["fire ball",`
-createMatter(0,front()*10,0);
+createMatter(0,front()*10,1);
     `,1],
 
     ["wall", `
-createBlock(20,60,"black");
+@block = createBlock(40,100,"black");
+move(block,0,100);
     `,1],
 
     ["dash",`
 giveForce(player,front()*20,0);
-    `,2],
+    `,1],
 
     ["heal",`
 damage(player,-1000);
+    `,1],
+
+    ["no gravity",`
+setGravity(player,200,0);    
+    
     `,2],
 
+    ["meteor",`
+for(@i=0;i<4;i++){
+    for(@j=0;j<4;j++){
+        @fire=createMatter(0,front()*10,-10);
+        move(fire, front()*i*40,300-j*40);
+        damage(fire,-10);
+    }
+}
+    `,2],
     ["fire tornado",`
 @x=getX(player)+front()*200;
 for(@i=0;i<12;i++){
@@ -43,19 +58,10 @@ for(@i=0;i<12;i++){
 }
     `,3],
 
-    ["meteor",`
-for(@i=0;i<4;i++){
-    for(@j=0;j<4;j++){
-        @fire=createMatter(0,front()*10,-10);
-        move(fire, front()*i*40,300-j*40);
-        damage(fire,-10);
-    }
-}
-    `,3],
 
     ["sniper",`
 createMatter(4,front()*20,0);
-    `,4],
+    `,3],
 
     ["one-gi-oc",`
 for(@i=0;i<4;i++){

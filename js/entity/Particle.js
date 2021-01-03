@@ -1,4 +1,4 @@
-let particleTypes=[{name:"ember",speed:1,ga:-0.01},
+const particleTypes=[{name:"ember",speed:1,ga:-0.01},
     {name:"spark",speed:1,ga:-0.01},
     {name:"smoke",speed:0.5,ga:-0.001},
     {name:"snow",speed:1,ga:-0.01},
@@ -7,6 +7,7 @@ let particleTypes=[{name:"ember",speed:1,ga:-0.01},
     
 
 class Particle extends Entity{
+    img=new Image();
     type;
     constructor(typeNum,x,y,channelLevel=Game.PARTICLE_CHANNEL){
         super(x,y,channelLevel);

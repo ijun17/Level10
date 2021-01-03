@@ -11,8 +11,6 @@ class Entity {
     canAct = true; //행동을 할 수 있는가
     canInteraction = true;
 
-    img = new Image; //엔티티의 이미지
-
     action = new Array(); //한 틱마다 행위들 [시작시간, 종료시간-1, 코드]
 
     constructor(x, y, channelLevel = 0) {

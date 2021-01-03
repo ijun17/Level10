@@ -6,7 +6,7 @@ class Block extends Entity{
         this.h=h;
         this.color = color;
         this.overlap=false;
-        this.life=w*h;
+        this.life=w*h*2;
     }
 
     draw(){

@@ -37,8 +37,15 @@ let Game = {
 
         Level.loadLevel();
         Magic.loadMagic();
-        Game.p=new Player(20,10000);
         Screen.mainScreen();
+
+        new MapBlock(0,Screen.perY(80),Screen.perX(20),Screen.perY(30));
+        new MapBlock(Screen.perX(80),Screen.perY(80),Screen.perX(20),Screen.perY(30));
+        Game.p = new Player(Screen.perX(10),Screen.perY(50));
+        Game.p.dieCode=function(){Game.click(Screen.perX(50), Screen.perY(50));};
+        Game.p.addAction(50,50,function(){Magic.magicList[1][1](Game.p);}); //fire ball;
+        let m1=new Monster(0,Screen.perX(90),Screen.perY(50));
+        m1.canAct=false;
     },
     updateWorld:function() {
         ctx.fillStyle=Screen.bgColor;
@@ -147,6 +154,7 @@ function clickUpHandler(e) {
 function touchStartHandler(e) {
     e.preventDefault();
     let touch= new Button(e.touches[0].clientX, e.touches[0].clientY, 0,0,Game.PARTICLE_CHANNEL);
+    touch.canRemoved=true;
     touch.drawCode = function(){
         ctx.strokeRect(touch.x-5,touch.y-5, 10, 10);
         touch.life--;

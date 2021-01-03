@@ -18,18 +18,13 @@ class Player extends Entity{
         this.friction=0.4;
         let p=this;
         this.animation = new Animation("resource/player/"+`player.png`,30,60,function(){
-            if(p.moveFlag){
-                if(p.isRight)return 2;
-                else return 3;
-            }else{
-                if(p.isRight)return 0;
-                else return 1;
-            }
+            if(p.moveFlag)return 1;
+            else return 0;
         });
     }
 
     draw(){
-        this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+        this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h),this.isRight);
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
         ctx.font="bold 20px Arial";

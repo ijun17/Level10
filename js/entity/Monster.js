@@ -1,13 +1,18 @@
-let monsterTypes=[{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 200, speed: 3 },
-    { name: "crazymonkey", w: 125, h: 200, life: 50000, damage: 500, speed: 4 },
+const monsterTypes=[{ name: "crazymushroom", w: 30, h: 30, life: 10000, damage: 200, speed: 3 },
+    { name: "crazymonkey", w: 120, h: 200, life: 50000, damage: 500, speed: 4 },
     { name: "hellfly", w: 30, h: 30, life: 20000, damage: 200, speed: 5 },
-    { name: "madfish", w: 600, h: 300, life: 2000000, damage: 2000, speed: 1 }];
+    { name: "madfish", w: 200, h: 100, life: 2000000, damage: 2000, speed: 1 }];
 
 class Monster extends Entity {
     type;
+    animation;
     target;
-    canJump = true;
+
     totalDamage=0;
+    canJump = true;
+    isRight=true;
+    attackTick=0; //Animation에서 얼마나 공격 이미지를 유지 하는가
+    //moveFlag=false;
 
     constructor(typenum, x, y, channelLevel = Game.PHYSICS_CHANNEL) {
         super(x, y, channelLevel);
@@ -15,9 +20,18 @@ class Monster extends Entity {
         this.w = this.type.w;
         this.h = this.type.h;
         this.life = this.type.life;
-        this.img.src = "resource/monster/" + this.type.name + ".png";
         this.target = Game.p;
-        var temp = this;
+
+        let temp = this;
+        this.animation=new Animation("resource/monster/" + temp.type.name + ".png",this.w,this.h,function(){
+            if(temp.attackTick>0){
+                temp.attackTick--;
+                return 1;
+            }
+            else return 0;
+        })
+
+        
         switch (this.type.name) {
             case "crazymushroom":
                 this.addAction(100, 100, function () { temp.AI(); });
@@ -35,6 +49,8 @@ class Monster extends Entity {
             case "madfish":
                 this.ga = 0;
                 this.canMove = false;
+                this.w=600;
+                this.h=300;
                 this.addAction(300, 300, function () { temp.skill6(300); });
                 this.addAction(150, 150, function () { temp.skill4(50); });
                 break;
@@ -44,7 +60,7 @@ class Monster extends Entity {
     }
 
     draw() {
-        ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+        this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h),this.isRight);
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
         ctx.font = "bold 20px Arial";
@@ -76,6 +92,7 @@ class Monster extends Entity {
         //공격
         if(!(e instanceof Monster))e.damage(this.type.damage);
         if (e == this.target) {
+            this.attackTick=10;
             if (e.x + e.w / 2 > this.x + this.w / 2) e.giveForce(Math.sqrt(this.type.damage)/3,2);
             else e.giveForce(-(Math.sqrt(this.type.damage))/3,2);
         }
@@ -94,8 +111,13 @@ class Monster extends Entity {
     AI(time = 50) {
         var tx = this.target.x;
         var ty = this.target.y;
-        if (this.x < tx) this.vx = this.type.speed;
-        else this.vx = -this.type.speed;
+        if (this.x < tx) {
+            this.isRight=true;
+            this.vx = this.type.speed;
+        }else {
+            this.isRight=false;
+            this.vx = -this.type.speed;
+        }
         if (this.canJump) {
             this.canJump = false;
             this.vy = this.type.speed - 0.5;
