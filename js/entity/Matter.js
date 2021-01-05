@@ -9,6 +9,7 @@ const matterTypes=[{ type:function(){return {name: "fire", num:0, damage: 500}} 
 class Matter extends Entity {
     img = new Image; //엔티티의 이미지
     type;
+    sound = new Audio();
     constructor(typenum, x, y, vx = 0, vy = 0,channelLevel=Game.PHYSICS_CHANNEL) {
         super(x, y,channelLevel);
         this.type = matterTypes[typenum].type();
@@ -19,6 +20,10 @@ class Matter extends Entity {
         this.ga = -0.02;
         this.img.src = "resource/matter/" + this.type.name + ".png";
         let matter = this;
+
+        this.sound.src="resource/sound/explosion.mp3";
+        this.sound.volume=0.1;
+
         if(typenum==0)this.addAction(1, 10000, function () { 
             if (Game.time % 10 == 0) { new Particle(2, matter.x, matter.y); new Particle(0, matter.x, matter.y); } });
         if(typenum==6){
@@ -45,6 +50,10 @@ class Matter extends Entity {
         this.life--;
         e.damage(this.type.damage);
         e.giveForce(this.vx,this.vy+1);
+
+        // this.sound.pause();
+        // this.sound.currentTime = 0;
+        // this.sound.play();
 
         switch(this.type.num){
             // case 0:

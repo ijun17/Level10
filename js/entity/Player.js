@@ -32,20 +32,7 @@ class Player extends Entity{
         ctx.fillText("hp: "+(Math.floor(this.life)),Camera.getX(this.x),Camera.getY(this.y-20));
         //damage
         if (this.totalDamage > 0) {
-            let textSize = 50;
-            let damageText = new Button(this.x + this.w / 2, this.y - textSize, 0, 0, Game.TEXT_CHANNEL);
-            damageText.canRemoved=true;
-            damageText.life = 40;
-            let td=this.totalDamage;
-            damageText.drawCode = function () {
-                ctx.font = "bold 30px Arial";
-                
-                ctx.fillStyle = "red";
-                ctx.fillText(td, Camera.getX(damageText.x), Camera.getY(damageText.y));
-                ctx.strokeStyle = "black";
-                ctx.strokeText(td, Camera.getX(damageText.x), Camera.getY(damageText.y));
-                damageText.life--;
-            }
+            new Text(this.x + this.w / 2, this.y - 50,this.totalDamage,30,"red","black",40);
             this.life -= this.totalDamage;
             this.totalDamage = 0;
         }

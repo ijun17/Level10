@@ -276,11 +276,7 @@ let Screen= {
             let keyIndex = Magic.skillNum.findIndex(function (e) { return e == i; });
             if (keyIndex >= 0) {
                 Screen.selectMagic = magicButton;
-                let clickE = new Block(0, 0, 0, 0);
-                clickE.life = 1;
-                clickE.collisionLevel = -8;
-                clickE.canMove = false;
-                keyButtons[keyIndex].collisionHandler(clickE);
+                keyButtons[keyIndex].collisionHandler();
             }
         }
         listEnd=Game.channel[Game.BUTTON_CHANNEL].length;
@@ -447,7 +443,7 @@ let Screen= {
         backButton.code = function () { Screen.selectScreen() };
         backButton.drawOption(null, null, "<", backBtnTextSize, "black");
 
-        let mobileButtonSize=80;
+        let mobileButtonSize=70;
 
         let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
         ashSpray.canAct=true;
@@ -488,14 +484,13 @@ let Screen= {
             ctx.font = "bold 20px Arial";
             ctx.textBaseline = "top";
             ctx.textAlign = "left";
-            let coolT = Magic.coolTime[0] - Game.time;
-            ctx.fillText(Magic.magicList[Magic.skillNum[0]][0] + ": " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-200, 10);
-            coolT = Magic.coolTime[1] - Game.time;
-            ctx.fillText(Magic.magicList[Magic.skillNum[1]][0] + ": " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-200, 30);
-            coolT = Magic.coolTime[2] - Game.time;
-            ctx.fillText(Magic.magicList[Magic.skillNum[2]][0] + ": " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-200, 50);
-            coolT = Magic.coolTime[3] - Game.time;
-            ctx.fillText(Magic.magicList[Magic.skillNum[3]][0] + ": " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-200, 70);
+            
+            for(let i=0; i<4; i++){
+                if(Magic.skillNum[i]==0)continue;
+                let coolT = Magic.coolTime[i] - Game.time;
+                ctx.fillText(Magic.magicList[Magic.skillNum[i]][0] + ": " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-200, 10+20*i);
+                
+            }
         };
         //mobile button
         if (Screen.isMobile) {

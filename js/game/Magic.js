@@ -6,16 +6,20 @@ let Magic = {
     basicMagicCount:1,
     customMagicCount:0,
     customMagic:[],
+    magicEffectSound : new Audio(),
     //magicFrame=[magic name, magic code, needed Level] : basicMagic, customMagic
     //magicList = [name, magic function, coolTime, needed MagicPoint, needed Level] : magicList
-    magicList:[["magicEffect",function(p){
+    magicList:[["magic effect",function(p){
         let magicEffect = new Particle(5, p.x+p.w/2-p.h/2, p.y);
         magicEffect.w=p.h;
         magicEffect.h=p.h;
+        //Magic.magicEffectSound.pause();
+        Magic.magicEffectSound.currentTime=0;
+        Magic.magicEffectSound.play();
     },0,0,0]],
     basicMagic:[
     ["fire ball",`
-createMatter(0,front()*10,1);
+createMatter(0,front()*10,3/4);
     `,1],
 
     ["wall", `
@@ -60,7 +64,7 @@ for(@i=0;i<12;i++){
 
 
     ["sniper",`
-createMatter(4,front()*20,0);
+@arrow = createMatter(4,front()*20,0);
     `,3],
 
     ["one-gi-oc",`
@@ -71,7 +75,7 @@ for(@i=0;i<4;i++){
 }
     `,4],
     ["chi-do-ri",`
-time(player,1,501,#{
+time(player,1,401,#{
     @e=createMatter(1,0,0);
     move(e,front()*20,0)
 });
@@ -104,12 +108,15 @@ time(player,dt,dt,#{setCamera(player,getX(player),getY(player),10);});
         localStorage.CUSTOM_MAGIC=JSON.stringify(Magic.customMagic);
     },
     loadMagic:function(){
+        //sound
+        Magic.magicEffectSound.src="resource/sound/magic effect2.mp3";
+        Magic.magicEffectSound.volume=0.3;
         //load basic magic
         Magic.basicMagicCount=Magic.basicMagic.length;
         for(let i=0,j=Magic.basicMagicCount; i<j; i++){
-            Magic.magicList.push(Magic.convertMagictoJS(Magic.basicMagic[i][0],Magic.basicMagic[i][1]));
-            Magic.magicList[i][4]=Magic.basicMagic[i][2]; //제한 레벨을 지정
-            //console.log(Magic.basicMagic[i]);
+            let magic = Magic.convertMagictoJS(Magic.basicMagic[i][0],Magic.basicMagic[i][1]);
+            magic[4]=Magic.basicMagic[i][2];//제한 레벨을 지정
+            Magic.magicList.push(magic); 
         }
         //load custom magic
         if(localStorage.CUSTOM_MAGIC!=null)Magic.customMagic=JSON.parse(localStorage.CUSTOM_MAGIC);
@@ -141,18 +148,19 @@ time(player,dt,dt,#{setCamera(player,getX(player),getY(player),10);});
         function addMF(mf){
             if(Magic.isCompile){
                 Magic.magicFactor[0]=Math.floor(Math.sqrt(Magic.magicFactor[0]*Magic.magicFactor[0]+mf[0]*mf[0]));
-                //Magic.magicFactor[1]+=Math.floor(Math.abs(mf[1]));
-                Magic.magicFactor[1]=Math.floor(Math.sqrt(Magic.magicFactor[1]*Magic.magicFactor[1]+mf[1]*mf[1]));
+                Magic.magicFactor[1]+=Math.floor(Math.abs(mf[1]));
+                //Magic.magicFactor[1]=Math.floor(Math.sqrt(Magic.magicFactor[1]*Magic.magicFactor[1]+mf[1]*mf[1]));
             }
         }
         //
-        function test_giveForce(e,ax,ay){addMF([0, getEnergy(e)+Math.sqrt(e.vx*e.vx+e.vy*e.vy)]);e.vx+=ax;e.vy+=ay;}
+        function test_giveForce(e,ax,ay){let oldE = getEnergy(e);e.vx+=ax;e.vy+=ay;let newE=getEnergy(e);addMF([0, newE-oldE]);}
         function test_damage(e,d){addMF([0,d]);e.life-=d;}
         function test_invisible(e,time){addMF([time*2,100]);e.visibility=false;e.addAction(time,time,function(){e.visibility=true;});}
         function test_freeze(e,time){addMF([time*2,100]);e.canMove=false;e.addAction(time,time,function(){e.visibility=true;});}
         function test_setGravity(e,time,ga){addMF([time*2,ga*100]);let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
         function test_setLocation(e,x,y){addMF([0,200]);e.x=x-e.w/2;e.y=y-e.h/2;}
         function test_move(e,vx,vy){addMF([0,vx+vy]);e.x+=vx;e.y-=vy;}
+        function test_camera(target,x,y,delay){addMF([500,1000]);Camera.makeMovingCamera(target,x,y,delay);}
         function test_time(e,startTime,endTime,f){addMF([(endTime-startTime)*2,100]);for(let i=0,j=(endTime-startTime)/10;i<j;i++)f();}
         function test_createBlock(w,h,color){addMF([0,w*h/10]);let b=new Block(Game.p.x+15+front()*(w/2+25)-w/2,getY(Game.p)+w/2,w,h,color);return b;}
         function test_createMatter(type,vx,vy){

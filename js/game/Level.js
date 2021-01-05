@@ -15,10 +15,11 @@ let Level= {
     },
 
     clearLevel:function() {
+        let isLevelUp = false;
         if (this.playerLevel < this.stageLevel + 1) {
             this.playerLevel = this.stageLevel + 1;
             this.saveLevel();
-
+            isLevelUp = true;
         }
         this.stageLevel = 0;
         this.stageMonster = 0;
@@ -26,6 +27,13 @@ let Level= {
         let clearBtn = new Button(Screen.perX(50)-2,0, 4, 4);
         clearBtn.code = function () { 
             Screen.selectScreen();
+            if(isLevelUp){
+                let newSkillText = new Button(Screen.perX(50), Screen.perY(50),0,0,Game.TEXT_CHANNEL);
+                newSkillText.drawOption(null,null, "new magic",100, "yellow");
+                newSkillText.canRemoved=true;
+                newSkillText.canMove=true;
+                newSkillText.ga=-0.02;
+            }
         };
         clearBtn.drawCode = function(){
             ctx.font = "bold 200px Arial";

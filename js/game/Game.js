@@ -15,6 +15,7 @@ let Game = {
         Game.channel = [[], [], [], []];
         Game.time = 0;
         Magic.clearCoolTime();
+        Magic.magicPoint=0;
         Level.stageLevel = -1;
         Level.stageMonsterCount = -1;
         Camera.cameraOn = false;
@@ -24,15 +25,11 @@ let Game = {
     },
 
     startGame:function() {
-        //canvas.addEventListener('browserFullScreen', function () { startFs(canvas); });
         document.addEventListener("keydown", keyDownHandler, false);
         document.addEventListener("keyup", keyUpHandler, false);
         canvas.addEventListener("mousedown", clickDownHandler, false);
         canvas.addEventListener("mouseup", clickUpHandler, false);
         //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A, 붉은빛밤하늘: #3F3939, 보라빛밤하늘: #3C3647, 겨울아침:rgb(179, 211, 244)}
-        
-        
-
         
 
         Level.loadLevel();
@@ -43,7 +40,7 @@ let Game = {
         new MapBlock(Screen.perX(80),Screen.perY(80),Screen.perX(20),Screen.perY(30));
         Game.p = new Player(Screen.perX(10),Screen.perY(50));
         Game.p.dieCode=function(){Game.click(Screen.perX(50), Screen.perY(50));};
-        Game.p.addAction(50,50,function(){Magic.magicList[1][1](Game.p);}); //fire ball;
+        //Game.p.addAction(50,50,function(){Magic.magicList[1][1](Game.p);}); //fire ball;
         let m1=new Monster(0,Screen.perX(90),Screen.perY(50));
         m1.canAct=false;
     },

@@ -67,21 +67,7 @@ class Monster extends Entity {
         ctx.fillStyle = "black"
         ctx.fillText("hp: " + (Math.floor(this.life)), Camera.getX(this.x), Camera.getY(this.y - 20));
         if (this.totalDamage > 0) {
-            let textSize = 50;
-            let damageText = new Button(this.x + this.w / 2, this.y - textSize, 0, 0, Game.TEXT_CHANNEL);
-            damageText.canRemoved=true;
-            damageText.life = 40;
-            damageText.canInteraction = false;
-            damageText.canMove=false;
-            let td=this.totalDamage;
-            damageText.drawCode = function () {
-                ctx.font = "bold 30px Arial";
-                ctx.fillStyle = "orange";
-                ctx.fillText(td, Camera.getX(damageText.x), Camera.getY(damageText.y));
-                ctx.strokeStyle = "black";
-                ctx.strokeText(td, Camera.getX(damageText.x), Camera.getY(damageText.y));
-                damageText.life--;
-            }
+            new Text(this.x + this.w / 2, this.y - 50,this.totalDamage,30,"orange","black",40);
             this.life-=this.totalDamage;
             this.totalDamage=0;
         }
@@ -199,9 +185,10 @@ class Monster extends Entity {
         var temp = -1;
         if (this.x + this.w / 2 < this.target.x + this.target.w / 2) temp = 1;
         for (let i = 0; i < 15; i++) {
-            ice = new Matter(2, monster.x + monster.w / 2 + temp * 400 - 15 + temp * i * 70, -100 - i * 70, 0, -20);
+            ice = new Matter(2, monster.x + monster.w / 2 + temp * 400 - 15 + temp * i * 120, -100 - i * 70, 0, -20);
             ice.w = 60;
             ice.h = 60;
+            ice.type.damage=2000;
         }
         this.addAction(time, time, function () { monster.skill6(time, speed); });
     }
