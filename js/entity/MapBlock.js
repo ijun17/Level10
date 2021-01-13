@@ -20,14 +20,6 @@ class MapBlock extends Entity{ //안부숴지는
     }
 
     static getTexture(textureType){
-        // let textureCode={"grass":function(){
-        //         ctx.fillStyle="#2B650D";
-        //         Camera.fillRect(this.x,this.y,this.w,20);
-        //         ctx.fillStyle="#54341E"
-        //         Camera.fillRect(this.x,this.y+20,this.w,this.h-20);
-        //     }
-        // }
-        // return textureCode[textureType];
         switch(textureType){
             case "wall":
                 return function(){ctx.fillStyle = "#080808";Camera.fillRect(this.x, this.y, this.w, this.h);};
@@ -35,7 +27,7 @@ class MapBlock extends Entity{ //안부숴지는
                 return function(){
                             ctx.fillStyle="#2B650D";
                             Camera.fillRect(this.x,this.y,this.w,15);
-                            ctx.fillStyle="#54341E"
+                            ctx.fillStyle="#382113";
                             Camera.fillRect(this.x,this.y+15,this.w,this.h-15);
                         };
             case "":

@@ -17,7 +17,7 @@ class Player extends Entity{
         this.ga=-0.2;
         this.friction=0.4;
         let p=this;
-        this.animation = new Animation("resource/player/"+`player.png`,30,60,function(){
+        this.animation = new Animation("resource/player/"+`player.png`,30,60,[1,1],function(){
             if(p.moveFlag)return 1;
             else return 0;
         });

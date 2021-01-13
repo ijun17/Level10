@@ -47,14 +47,13 @@ class Matter extends Entity {
     }
 
     collisionHandler(e) {
+        if(!e.canCollision)return;
         this.life--;
         e.damage(this.type.damage);
         e.giveForce(this.vx,this.vy+1);
 
-        // this.sound.pause();
-        // this.sound.currentTime = 0;
-        // this.sound.play();
-
+        //effect
+        
         switch(this.type.num){
             // case 0:
             //     //let size=30;

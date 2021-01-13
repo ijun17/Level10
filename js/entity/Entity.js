@@ -1,10 +1,11 @@
 class Entity {
     channelLevel;
 
-    x = 0; y = 0; w = 0; h = 0; vx = 0; vy = 0; ga = -0.15; friction = 0.4; //phisics;
+    x = 0; y = 0; w = 0; h = 0; vx = 0; vy = 0; ga = -0.2; friction = 0.4; //phisics;
     life = 1;
 
     overlap = true;
+    canCollision=true;
     canRemoved = true; //삭제될 수 있는가
     visibility = true; //보일 수 있는가
     canMove = true; //움직일 수 있는가
@@ -12,7 +13,7 @@ class Entity {
     canInteraction = true;
 
     action = new Array(); //한 틱마다 행위들 [시작시간, 종료시간-1, 코드]
-
+    
     constructor(x, y, channelLevel = 0) {
         this.x = x;
         this.y = y;
@@ -28,7 +29,6 @@ class Entity {
     }
 
     draw() {
-        ctx.drawImage(this.img, this.x, this.y);
     }
 
     addAction(start, end, code) {
@@ -55,7 +55,7 @@ class Entity {
         if(this.vy>maxV)this.vy=maxV;
         else if(this.vy<-maxV)this.vy=-maxV;
 
-        if (this.y > canvas.height + 500) this.life = 0;
+        if (this.y > 2000) this.life = 0;
         //if (this.life < 1) return;
         let collisionType = null;
 
@@ -73,7 +73,7 @@ class Entity {
                     }
                 }
                 this.collisionHandler(e, collisionType, true);
-                if (!(this.overlap && e.overlap)&&this.canMove) {
+                if (this.canCollision&&e.canCollision&&!(this.overlap && e.overlap)&&this.canMove) {
                     if (collisionType == 'R') { //right collision
                         this.vx = 0;
                         this.x = e.x - this.w;

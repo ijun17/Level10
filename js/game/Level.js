@@ -28,11 +28,7 @@ let Level= {
         clearBtn.code = function () { 
             Screen.selectScreen();
             if(isLevelUp){
-                let newSkillText = new Button(Screen.perX(50), Screen.perY(50),0,0,Game.TEXT_CHANNEL);
-                newSkillText.drawOption(null,null, "new magic",100, "yellow");
-                newSkillText.canRemoved=true;
-                newSkillText.canMove=true;
-                newSkillText.ga=-0.02;
+                new Text(Screen.perX(50), Screen.perY(50),"Level Up",100,"yellow",null,100,false);
             }
         };
         clearBtn.drawCode = function(){
@@ -100,24 +96,17 @@ let Level= {
                 this.stageMonsterCount = 5;
                 break;
             case 4:
-                mapSizeW*=2;
-                new Monster(3,2060, -250);
+                new Monster(4,1000, -250);
                 this.stageMonsterCount = 1;
                 break;
             case 5:
-                mapSizeW*=4;
-                new Monster(2, 1100, -1000);
-                new Monster(2, 900, -1000);
-                new Monster(2, 700, -1000);
-                new Monster(2, 500, -1000);
-                new Monster(2, 300, -1000);
-                for(let i=1; i<10; i++){
-                    new MapBlock(50*i,-40*i,50,30);//.drawCode=MapBlock.getTexture("grass");
-                    (new MapBlock(500*i,-400,350,30)).drawCode=MapBlock.getTexture("grass");
-                }
-                
-                //(new MapBlock(500,-400,350,30)).drawCode=MapBlock.getTexture("grass");
-                //(new MapBlock(1000,-400,350,30)).drawCode=MapBlock.getTexture("grass");
+                mapSizeW*=1;
+                new Monster(5,Screen.perX(50), -400);
+                this.stageMonsterCount = 1;
+                // for(let i=1; i<10; i++){
+                //     new MapBlock(50*i,-40*i,50,30);//.drawCode=MapBlock.getTexture("grass");
+                //     (new MapBlock(500*i,-400,350,30)).drawCode=MapBlock.getTexture("grass");
+                // }
                 break;
             case 6:
                 break;
@@ -142,6 +131,6 @@ let Level= {
         new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"rgb(48, 48, 48)");//top
         new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2,"rgb(48, 48, 48)"); //left
         new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2,"rgb(48, 48, 48)");//right
-        (new MapBlock(0,0,mapSizeW,wallSize*2)).drawCode=MapBlock.getTexture("grass");
+        (new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize*2)).drawCode=MapBlock.getTexture("grass");
     }
 }

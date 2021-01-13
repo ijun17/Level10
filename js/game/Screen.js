@@ -172,7 +172,7 @@ let Screen= {
         for (let i = 1; i <= Level.playerLevel; i++) {
             let levelButton = new Button((canvas.width - levelBtnW) /2, levelBtnW + i * (space+levelBtnH), levelBtnW, levelBtnH);
             levelButton.code = function () { Screen.gameScreen(); Level.makeStage(i); };
-            levelButton.drawOption("rgb("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+")", "black", "LEVEL" + i, levelBtnTextSize, "black");
+            levelButton.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)", "black", "LEVEL" + i, levelBtnTextSize, "black");
             levelButton.ga = 0.5;
             levelButton.canInteraction=true;
             levelButton.canMove=true;
@@ -247,14 +247,22 @@ let Screen= {
                 //선택된 마법의 색을 어둡게
                 ctx.fillStyle = "rgba(0,0,0,0.5)";
                 ctx.fillRect(Screen.selectMagic.x, Screen.selectMagic.y, Screen.selectMagic.w, Screen.selectMagic.h);
+                //mobile
+                let temp1=300;
+                let temp2=30;
+                if(Screen.isMobile){
+                    temp1=200;
+                    temp2=20;
+                }
                 //magic explanation
                 ctx.fillStyle = "black";
-                ctx.font = "bold 20px Arial";
+                ctx.font = "bold "+temp2+"px Arial";
                 ctx.textBaseline = "top";
                 ctx.textAlign = "left";
-                ctx.fillText("name: "+Magic.magicList[Screen.selectMagic.temp[0]][0], canvas.width-200, 10);
-                ctx.fillText("cooltime: "+(Magic.magicList[Screen.selectMagic.temp[0]][2]/100)+"s", canvas.width-200, 30);
-                ctx.fillText("mana: "+(Magic.magicList[Screen.selectMagic.temp[0]][3]), canvas.width-200,50);
+                
+                ctx.fillText("name: "+Magic.magicList[Screen.selectMagic.temp[0]][0], canvas.width-temp1, 10);
+                ctx.fillText("cooltime: "+(Magic.magicList[Screen.selectMagic.temp[0]][2]/100)+"sec", canvas.width-temp1, 10+temp2);
+                ctx.fillText("MP: "+(Magic.magicList[Screen.selectMagic.temp[0]][3]), canvas.width-temp1,10+temp2*2);
             }
         }
 
@@ -320,31 +328,37 @@ let Screen= {
         Game.resetGame();
         let backBtnW=80;
         let backBtnTextSize=80;
+        const namebox=document.querySelector(".namebox");
+        const textbox=document.querySelector(".textbox");
+        const compileBtn=document.querySelector(".compilebutton");
+        const successInfo=document.querySelector(".successInfo");
+        const magicInfo = document.querySelector(".magicInfo");
+        function printInfo(text1="", text2=""){
+            successInfo.innerText = text1;
+            magicInfo.innerText = text2;
+        }
 
         //백버튼
         let backButton = new Button(0, 0, backBtnW, backBtnW);
-        backButton.code = function () { Screen.selectScreen();tb.style.display="none"; };
+        backButton.code = function () { 
+            namebox.value="";
+            textbox.value="";
+            successInfo.innerText="";
+            magicInfo.innerText="";
+            Screen.selectScreen();tb.style.display="none"; 
+        };
         backButton.drawOption(null, null, "<", backBtnTextSize, "black");
 
-        //모바일이면 나감
+        //모바일 모드이면 엘레멘트 생성 중단
         if(Screen.isMobile){
-            //backBtnW=Screen.perX(100/14);
-            //backBtnTextSize=Screen.perX(100/14);
             let text = new Button(canvas.width/2,canvas.height/2,0,0);
             text.drawOption(null, null, "make magic not work mobile mode", 20, "black");
             return;
         }
-        const namebox=document.querySelector(".namebox");
-        const textbox=document.querySelector(".textbox");
-        const compileBtn=document.querySelector(".compilebutton");
         
-
-        //전체화면 해제
-        //exitFs(document);
         //텍스트박스 생성
         tb.style.display="block";
         //키보드 눌러도 스킬 안되게
-        //Magic.coolTime=[99999999,99999999,99999999,99999999];
         Magic.magicPoint=0;
         
         //control system
@@ -378,10 +392,12 @@ let Screen= {
                     namebox.value = Magic.customMagic[num-Magic.basicMagicCount-1][0];
                     textbox.value = Magic.customMagic[num-Magic.basicMagicCount-1][1];
                     cs.temp = magicBtn;
+                    printInfo("", "cooltime: "+(Magic.magicList[num][2]/100)+"sec\nMP: "+Magic.magicList[num][3]);
                 }else{
                     namebox.value = "(basic)"+Magic.basicMagic[num-1][0];
                     textbox.value = Magic.basicMagic[num-1][1];
                     cs.temp = null;
+                    printInfo("Basic magic can not edit.", "cooltime: "+(Magic.magicList[num][2]/100)+"sec\nMP: "+Magic.magicList[num][3]);
                 }
                 
             }
@@ -397,7 +413,7 @@ let Screen= {
         plusButton.code=function(){ 
             if(Magic.customMagicCount<10){
                 Magic.addEmptyMagic();
-            makeMagicButton(Magic.customMagic,10,1000,Magic.magicList.length-1);
+                makeMagicButton(Magic.customMagic,10,1000,Magic.magicList.length-1);
             }
         };
         for(let i=0; i<Magic.customMagic.length; i++){
@@ -406,6 +422,7 @@ let Screen= {
         let basic = new Button(canvas.width-210, 10, 200, 60);
         basic.drawOption(null,null,"basic",30,"black");
         for(let i=0; i<Magic.basicMagicCount; i++){
+            if(Magic.magicList[i+1][4]>Level.playerLevel)continue;
             makeMagicButton(false,canvas.width-210,200+50*i,i+1);
         }
         //compile button click event
@@ -418,6 +435,7 @@ let Screen= {
                 cusMag[1]=textbox.value;
                 Magic.magicList[cs.temp.temp]=magic;
                 Magic.saveMagic();
+                printInfo("SUCCESS", "cooltime: "+(magic[2]/100)+"sec\nMP: "+magic[3]);
             }
         };
         
@@ -459,7 +477,7 @@ let Screen= {
             }
         });
 
-        //hp mp view 200px
+        //hp mp gage 200px
         let hpGage = new Button(canvas.width-450,10,200,20,Game.TEXT_CHANNEL);
         hpGage.drawCode=function(){
             ctx.fillStyle="brown";
@@ -469,8 +487,12 @@ let Screen= {
         }
         let mpGage = new Button(canvas.width-450,35,200,20,Game.TEXT_CHANNEL);
         const MAX_MP = 10000*Level.playerLevel;
+        const plusMP = Level.playerLevel*1; //*1 to Equalize number format of Magic.magicPoint 
+        
         mpGage.drawCode=function(){
-            if(Magic.magicPoint<MAX_MP)Magic.magicPoint+=3;
+            if(Magic.magicPoint<MAX_MP){
+                Magic.magicPoint+=plusMP;
+            }
             ctx.fillStyle="royalblue";
             ctx.fillRect(canvas.width-450,35,200*(Magic.magicPoint/MAX_MP),20);
             ctx.strokeStyle="black";

@@ -7,20 +7,29 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body style="background-color:black">
+<body style="background-color:black;">
 
     <canvas id="myCanvas" width="1200" height="600"></canvas>
-
-    <div  class="box">
-        <div style="text-align: center;">
-            <p style="color: cornsilk;">magic name</p>
-            <textarea class="namebox"></textarea>
-            <p style="color: cornsilk;">magic code</p>
-            <textarea class="textbox"></textarea>
+    <div class="box">
+        <div class="box-inner">
+            <!--input-->
+            <div class="input" style="text-align:center;flex:1;">
+                <div>
+                    <p style="color: cornsilk;">magic name</p>
+                    <textarea class="namebox"></textarea>
+                    <p style="color: cornsilk;">magic code</p>
+                    <textarea class="textbox"></textarea>
+                </div>
+                <button class="compilebutton">compile</button>
+            </div>
+            <!--output-->
+            <div class="output" style="text-align: center;background:#1C1C1C;flex:1;">
+                <h1 style="color:blanchedalmond">Info</h1>
+                <h2 class="successInfo" style="margin:20px;text-align:left;color:royalblue"></p>
+                <h2 class="magicInfo" style="margin:20px;text-align:left;color:blanchedalmond"></p>
+            </div>
         </div>
-        <button class="compilebutton">compile</button>
     </div>
-
     <script>
         "use strict";
         const canvas = document.getElementById("myCanvas");
@@ -30,14 +39,17 @@
     <!---->
     <script src="js/game/Resource.js"></script>
     <script src="js/entity/Entity.js"></script>
-    <script src="js/entity/Matter.js"></script>
+    
     <script src="js/entity/Player.js"></script>
     <script src="js/entity/Monster.js"></script>
     <script src="js/entity/Block.js"></script>
+    <script src="js/entity/Matter.js"></script>
     <script src="js/entity/MapBlock.js"></script>
     <script src="js/entity/Particle.js"></script>
     <script src="js/entity/Button.js"></script>
     <script src="js/entity/Text.js"></script>
+    <script src="js/entity/Trigger.js"></script>
+
 
     <script src="js/game/Animation.js"></script>
     <script src="js/game/Level.js"></script>

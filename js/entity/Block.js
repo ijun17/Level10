@@ -9,7 +9,7 @@ class Block extends Entity{
         this.overlap=false;
         this.life=w*h*2;
         this.brokenSound.src="resource/sound/broken.mp3";
-        this.brokenSound.volume=w*h/100000;
+        
     }
 
     draw(){
@@ -25,6 +25,9 @@ class Block extends Entity{
         
     }
     removeHandler(){
+        let temp = this.w*this.h/1000/Math.sqrt((Game.p.x+Game.p.w/2-this.x-this.w/2)**2+(Game.p.y+Game.p.h/2-this.y-this.h/2)**2)
+        this.brokenSound.volume=(temp > 1 ? 1 :temp);
+        console.log(this.brokenSound.volume);
         this.brokenSound.pause();
         this.brokenSound.currentTime = 0;
         this.brokenSound.play();
