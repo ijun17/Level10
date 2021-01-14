@@ -71,9 +71,9 @@ let Level= {
         //bgColor
         Screen.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
         //map size
-        let mapSizeW=1200;
+        let mapSizeW=2000;
         let mapSizeH=1000;
-        let wallSize=100;
+        let wallSize=200;
 
         switch (level) {
             case 1:

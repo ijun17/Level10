@@ -19,21 +19,21 @@ attack:{}
 const MONSTERS = [{
     name: "crazymushroom",
     draw: { imageW: 60, imageH: 60, frame: 8, animation_MAX_X: [3, 1] },
-    status: { w: 60, h: 60, life: 10000, damage: 200, speed: 3 },
+    status: { w: 60, h: 60, life: 10000, damage: 200, speed: 3, inv_mass:1 },
     skillList: [function(e){}],
     attack: {}
 },
 {
     name: "crazymonkey",
     draw: { imageW: 120, imageH: 200, frame: 8, animation_MAX_X: [1, 1] },
-    status: { w: 120, h: 200, life: 50000, damage: 500, speed: 5 },
+    status: { w: 120, h: 200, life: 50000, damage: 900, speed: 5, inv_mass:0.5 },
     skillList: [],
     attack: {}
 },
 {
     name: "hellfly",
     draw: {imageW:30,imageH:30,frame:8,animaion_MAX_X:[1,1]},
-    status: {w: 30, h: 30, life: 20000, damage: 200, speed: 5},
+    status: {w: 30, h: 30, life: 20000, damage: 500, speed: 5, inv_mass:2},
     skillList: [],
     attack: {}
 }
@@ -42,8 +42,8 @@ const MONSTERS = [{
 
 
 const monsterTypes=[{ name: "crazymushroom", w: 60, h: 60, life: 10000, damage: 200, speed: 3, inv_mass:1 },
-    { name: "crazymonkey", w: 120, h: 200, life: 50000, damage: 500, speed: 5, inv_mass:0.5 },
-    { name: "hellfly", w: 30, h: 30, life: 20000, damage: 200, speed: 5, inv_mass:2 },
+    { name: "crazymonkey", w: 120, h: 200, life: 50000, damage: 900, speed: 5, inv_mass:0.5 },
+    { name: "hellfly", w: 30, h: 30, life: 20000, damage: 500, speed: 5, inv_mass:2 },
     { name: "madfish", w: 200, h: 100, life: 2000000, damage: 2000, speed: 1, inv_mass:0.1 },
     { name: "golem", w: 128, h: 128, life: 10000000, damage: 4000, speed: 3, inv_mass:0.01 },
     { name: "wyvern", w: 80, h: 80, life: 10000000, damage: 4000, speed: 3, inv_mass:0.1 }];
@@ -52,7 +52,6 @@ class Monster extends Entity {
     type;
     animation;
     target;
-    inv_mass=1;
 
     //draw
     totalDamage=0;
@@ -109,8 +108,8 @@ class Monster extends Entity {
                 this.ga=0;
                 this.w=300;
                 this.h=300;
-                this.addSkill(111,function(e){let m=temp.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.type.damage=2000;m.w=60;m.h=60;});
-                this.addSkill(500,function(e){e.vx=e.getTargetDir()*40;})
+                this.addSkill(300,function(e){let m=temp.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.type.damage=2000;m.w=60;m.h=60;return 111;});
+                this.addSkill(300,function(e){e.vx=e.getTargetDir()*40;return 500;})
                 this.addAction(300,300, function(){temp.AI2(50,4);})
                 this.addAction(300, 300, function () { temp.skill(500); });
                 animation_MAX_X=[4,4];
@@ -144,11 +143,11 @@ class Monster extends Entity {
     collisionHandler(e,ct) {
         if (ct=='D') this.canJump = true;
         //공격
-        if(!(e instanceof Monster))e.damage(this.type.damage);
-        if (e == this.target) {
+        if(!(e instanceof Monster||e instanceof MapBlock)){
+            e.damage(this.type.damage);
             this.attackTick=10;
-            if (e.x + e.w / 2 > this.x + this.w / 2) e.giveForce(Math.sqrt(this.type.damage)/3,2);
-            else e.giveForce(-(Math.sqrt(this.type.damage))/3,2);
+            if (e.x + e.w / 2 > this.x + this.w / 2) e.giveForce(Math.sqrt(this.type.damage)/10,0.5);
+            else e.giveForce(-(Math.sqrt(this.type.damage))/10,0.5);
         }
     }
 
@@ -161,17 +160,10 @@ class Monster extends Entity {
         d=Math.floor(d);
         this.totalDamage += d;
     }
-    giveForce(ax,ay){
-        if(this.canMove){
-            this.vx+=ax*this.inv_mass;
-            this.vy+=ay*this.inv_mass;
-        }
-    }
 
     addSkill(time,f){ //f = f(e){}
         let temp=this;
-        this.addAction(time,time,function(){f(temp);});
-        this.addAction(time,time,function(){temp.addSkill(time,f)});
+        this.addAction(time,time,function(){let cooltime = f(temp);temp.addSkill(cooltime,f)});
     }
     getTargetDir(){return (this.x+this.w/2 < this.target.x+this.target.w/2 ? 1 : -1)}
     createMatterToTarget(type,xDir,yDir,power){

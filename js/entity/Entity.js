@@ -1,7 +1,9 @@
 class Entity {
     channelLevel;
 
-    x = 0; y = 0; w = 0; h = 0; vx = 0; vy = 0; ga = -0.2; friction = 0.4; //phisics;
+    x = 0; y = 0; w = 0; h = 0; vx = 0; vy = 0; 
+    ga = -0.2; friction = 0.4; inv_mass=1;//phisics;
+    
     life = 1;
 
     overlap = true;
@@ -109,8 +111,8 @@ class Entity {
 
     giveForce(ax, ay) {
         if(this.canMove){
-            this.vx += ax;
-            this.vy += ay;
+            this.vx += ax*this.inv_mass;
+            this.vy += ay*this.inv_mass;
         }
     }
 

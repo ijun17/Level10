@@ -6,6 +6,7 @@ class Player extends Entity{
     moveFlag=false;
     canJump=true;
     totalDamage=0;
+    damageTick=0;
     dieCode=function(){};
 
     constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
@@ -13,7 +14,7 @@ class Player extends Entity{
         this.w=30;
         this.h=60;
         this.life=10000*Level.playerLevel;
-        this.overlap=false;
+        //this.overlap=false;
         this.ga=-0.2;
         this.friction=0.4;
         let p=this;
@@ -36,6 +37,7 @@ class Player extends Entity{
             this.life -= this.totalDamage;
             this.totalDamage = 0;
         }
+        if(this.damageTick>0)this.damageTick--;
     }
     move(){
         this.x += this.vx;
@@ -63,7 +65,9 @@ class Player extends Entity{
     }
 
     damage(d) {
+        if(this.damageTick>0)return;
         d=Math.floor(d);
         this.totalDamage += d;
+        if(d>0)this.damageTick=10;
     }
 }
