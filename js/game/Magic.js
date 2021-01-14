@@ -119,14 +119,24 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         Magic.basicMagicCount=Magic.basicMagic.length;
         for(let i=0,j=Magic.basicMagicCount; i<j; i++){
             let magic = Magic.convertMagictoJS(Magic.basicMagic[i][0],Magic.basicMagic[i][1]);
-            magic[4]=Magic.basicMagic[i][2];//제한 레벨을 지정
-            Magic.magicList.push(magic); 
+            if(magic==null){
+                Magic.magicList.push([Magic.basicMagic[i][0], function(){}, 100,100,Magic.basicMagic[i][2]]);
+            }else{
+                magic[4]=Magic.basicMagic[i][2];//제한 레벨을 지정
+                Magic.magicList.push(magic); 
+            }
+            
         }
         //load custom magic
         if(localStorage.CUSTOM_MAGIC!=null)Magic.customMagic=JSON.parse(localStorage.CUSTOM_MAGIC);
         Magic.customMagicCount=Magic.customMagic.length;
         for(let i=0,j=Magic.customMagicCount; i<j; i++){
-            Magic.magicList.push(Magic.convertMagictoJS(Magic.customMagic[i][0],Magic.customMagic[i][1]));
+            let magic = Magic.convertMagictoJS(Magic.customMagic[i][0],Magic.customMagic[i][1]);
+            if(magic==null){
+                Magic.magicList.push([Magic.customMagic[i][0], function(){},100,100,1]);
+            }else {
+                Magic.magicList.push(magic);
+            }
         }
     },
     addEmptyMagic:function(){
@@ -158,21 +168,21 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         function setGravity(e,time,ga){let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
         function move(e,vx,vy){if(e instanceof Monster)return;e.x+=vx;e.y-=vy;}
         function time(e,startTime,endTime,f){e.addAction(startTime,endTime,f);}
-        function setCamera(target,x,y,delay){Camera.makeMovingCamera(target,x,y,delay);}
+        function setCamera(target,x,y,delay){Camera.makeMovingCamera(target,x,-y,delay);}
         function getX(e){return e.x+e.w/2;}
-        function getY(e){return e.y+e.h/2;}
+        function getY(e){return -(e.y+e.h/2);}
         function getVX(e){return e.vx;}
         function getVY(e){return e.vy;}
         function front(){return (Game.p.isRight ? 1 : -1);}
-        function createBlock(w,h,color="black"){let b=new Block(Game.p.x+15+front()*(w/2+25)-w/2,getY(Game.p)-h/2,w,h,color);return b;}
+        function createBlock(w,h,color="black"){let b=new Block(Game.p.x+15+front()*(w/2+25)-w/2,-getY(Game.p)-h/2,w,h,color);return b;}
         function createMatter(type,vx,vy){
             let m=new Matter(type,0,0,vx,vy);
             m.x=getX(Game.p)+front()*(m.w/2+15)-m.w/2;
-            m.y=getY(Game.p)-m.h/2;
+            m.y=-getY(Game.p)-m.h/2;
             return m;
         }
         function createTrigger(w,h,time,f){
-            let t=new Trigger(Game.p.x+15+front()*(w/2+25)-w/2,getY(Game.p)-h/2,w,h,time,f);
+            let t=new Trigger(Game.p.x+15+front()*(w/2+25)-w/2,-getY(Game.p)-h/2,w,h,time,f);
             return t;
         }
         //test function
@@ -218,11 +228,11 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             if(isEnglish(magicCode.charCodeAt(i)))temp+=magicCode[i];
             else{
                 if(prohibitedWord.includes(temp)){
-                    printError("Fail", " : your code have prohibited keyword(new, function)\n'function' change to '#'");
+                    printError("Fail: "+name, " : your code have prohibited keyword(new, function)\n'function' change to '#'");
                     return null;
                 }
                 if(prohibitedSymbol.includes(magicCode[i])){
-                    printError("Fail", " : your code have prohibited symbol('[', '.', '$')");
+                    printError("Fail: "+name, " : your code have prohibited symbol('[', '.', '$')");
                     return null;
                 }
                 if(testKeyword.includes(temp))testCode+="test_"+temp;
@@ -255,7 +265,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             testMagic(Game.p);
             Game.p=temp;
         }catch(e){
-            printError("Fail"," : syntex error")
+            printError("Fail: "+name," : syntex error")
             return null;
         }
         console.log(magicFactor);

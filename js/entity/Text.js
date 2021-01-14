@@ -14,6 +14,7 @@ class Text extends Entity{
         this.camera=camera;
         this.canInteraction=false;
         this.ga=0;
+        this.canRemoved=false;
     }
     draw(){
         ctx.font = this.font;
@@ -34,6 +35,7 @@ class Text extends Entity{
             ctx.fillText(this.text, textX, textY);
         }
 
-        if(this.canRemoved)this.life--;
+        if(this.life>0)this.life--;
+        if(this.life==0) this.canRemoved=true;
     }
 }
