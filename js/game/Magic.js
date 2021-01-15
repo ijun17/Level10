@@ -58,7 +58,8 @@ for(@i=0;i<4;i++){
     ["fire tornado",`
 //불꽃 토네이도 생성
 @x=getX(player)+front()*200;
-for(@i=0;i<12;i++){
+@i=0;
+time(player, 1,12,#(){
     @fire = createMatter(0,0,0);
     move(fire,front()*(200-13*i-15), i*35);
     //setGravity(fire,500,0);
@@ -66,7 +67,8 @@ for(@i=0;i<12;i++){
     time(fire,1,500,#(){
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
     });
-}
+    i++;
+});
     `,3],
 
     ["reflection",`
