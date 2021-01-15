@@ -39,6 +39,9 @@ class Player extends Entity{
         }
         if(this.damageTick>0)this.damageTick--;
     }
+    // giveForce(){
+    //     if(this.damageTick=0)super.giveForce();
+    // }
     move(){
         this.x += this.vx;
         this.y -= this.vy;
@@ -68,6 +71,6 @@ class Player extends Entity{
         if(this.damageTick>0)return;
         d=Math.floor(d);
         this.totalDamage += d;
-        if(d>0)this.damageTick=10;
+        if(d>0)this.damageTick=20;
     }
 }
