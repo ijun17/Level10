@@ -13,7 +13,7 @@ let Magic = {
         let magicEffect = new Particle(5, p.x+p.w/2-p.h/2, p.y);
         magicEffect.w=p.h;
         magicEffect.h=p.h;
-        Magic.magicEffectSound.pause();
+        //Magic.magicEffectSound.pause();
         Magic.magicEffectSound.currentTime=0;
         Magic.magicEffectSound.play();
     },0,0,0]],
