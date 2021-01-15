@@ -146,14 +146,10 @@ class Monster extends Entity {
         if(!(e instanceof Monster||e instanceof MapBlock)){
             e.damage(this.type.damage);
             this.attackTick = 10;
-            if (!(e instanceof Block)) {
-                if (e.x + e.w / 2 > this.x + this.w / 2) {
-                    e.vx = Math.sqrt(this.type.damage) / 3;
-                    e.vy = 0.5;
-                } else {
-                    e.vx = -Math.sqrt(this.type.damage) / 3;
-                    e.vy = 0.5;
-                }
+            if (e.x + e.w / 2 > this.x + this.w / 2) {
+                e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.type.damage) / 3,0.3);
+            } else {
+                e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.type.damage) / 3,0.3);
             }
         }
     }

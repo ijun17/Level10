@@ -502,8 +502,8 @@ let Screen= {
             btn.code=f;
             
         }
-        makeMenuButton("Move",howToMovePanel);
-        makeMenuButton("Use Magic",howToUseMagic);
+        makeMenuButton("움직이는법",howToMovePanel);
+        makeMenuButton("마법을쓰는법",howToUseMagic);
         makeMenuButton("Select Magic",howToSelectMagicPanel);
         makeMenuButton("Create Magic",howToCreateMagicPanel);
         makeMenuButton("GAME INFO",gameInfoPanel);
