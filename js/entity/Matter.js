@@ -71,7 +71,7 @@ class Matter extends Entity {
                 e.vy=0;
                 break;
             case 2://ice
-                var damage = Math.floor(Math.sqrt(this.vx * this.vx + this.vy * this.vy))+1;
+                var damage = Math.floor(this.getVectorLength())+1;
                 e.damage(damage);
                 e.addAction(1, 100, function () { 
                 e.vx = 0; e.vy = 0; ctx.fillStyle = "rgba(167, 220, 244, 0.5)"; 
@@ -96,7 +96,7 @@ class Matter extends Entity {
                 }
                 break;
             case 6:
-                var damage = Math.sqrt(this.vx * this.vx + this.vy * this.vy)*this.w;
+                var damage = this.getVectorLength()*this.w;
                 e.damage(damage);
                 break;
             default:

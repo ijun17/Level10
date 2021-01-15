@@ -42,7 +42,7 @@ const MONSTERS = [{
 
 
 const monsterTypes=[{ name: "crazymushroom", w: 60, h: 60, life: 10000, damage: 200, speed: 3, inv_mass:1 },
-    { name: "crazymonkey", w: 120, h: 200, life: 50000, damage: 900, speed: 5, inv_mass:0.5 },
+    { name: "crazymonkey", w: 120, h: 200, life: 50000, damage: 500, speed: 5, inv_mass:0.5 },
     { name: "hellfly", w: 30, h: 30, life: 20000, damage: 500, speed: 5, inv_mass:2 },
     { name: "madfish", w: 200, h: 100, life: 2000000, damage: 2000, speed: 1, inv_mass:0.1 },
     { name: "golem", w: 128, h: 128, life: 10000000, damage: 4000, speed: 3, inv_mass:0.01 },
@@ -74,7 +74,7 @@ class Monster extends Entity {
             case "crazymushroom":
 
                 this.addAction(100, 100, function () { temp.AI(); });
-                this.addAction(100, 100, function () { temp.skill3(); });
+                //this.addAction(100, 100, function () { temp.skill3(); });
                 animation_MAX_X=[3,1];
                 break;
             case "crazymonkey":

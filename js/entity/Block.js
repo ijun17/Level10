@@ -19,7 +19,7 @@ class Block extends Entity{
     }
 
     collisionHandler(e){
-        var damage=this.w*this.h*Math.sqrt(this.vx*this.vx+this.vy*this.vy)/20;
+        var damage=this.w*this.h*this.getVectorLength()/20;
         e.damage(damage);
         e.giveForce(this.vx/5, this.vy/5);
         
@@ -27,10 +27,12 @@ class Block extends Entity{
     removeHandler(){
         let temp = this.w*this.h/1000/Math.sqrt((Game.p.x+Game.p.w/2-this.x-this.w/2)**2+(Game.p.y+Game.p.h/2-this.y-this.h/2)**2)
         this.brokenSound.volume=(temp > 1 ? 1 :temp);
-        console.log(this.brokenSound.volume);
-        this.brokenSound.pause();
-        this.brokenSound.currentTime = 0;
-        this.brokenSound.play();
+        if(this.brokenSound.volume>0.01){
+            this.brokenSound.pause();
+            this.brokenSound.currentTime = 0;
+            this.brokenSound.play();
+        }
+        
     }
 
     giveForce(ax,ay){}

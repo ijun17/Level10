@@ -4,6 +4,8 @@ class Text extends Entity{
     strokeColor;
     fillColor;
     camera;
+    textBaseline="middle";
+    textAlign="center";
     constructor(x,y,text,size,fillColor=null,strokeColor=null,life=100,camera=true){
         super(x,y,Game.TEXT_CHANNEL);
         this.text=text;
@@ -17,9 +19,9 @@ class Text extends Entity{
         this.canRemoved=false;
     }
     draw(){
+        ctx.textBaseline = this.textBaseline;
+        ctx.textAlign = this.textAlign;
         ctx.font = this.font;
-        ctx.textBaseline = "middle";
-        ctx.textAlign = "center";
         let textX=this.x;
         let textY = this.y;
         if (this.camera) {

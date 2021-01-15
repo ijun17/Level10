@@ -19,28 +19,34 @@ let Magic = {
     },0,0,0]],
     basicMagic:[
     ["fire ball",`
+//전방에 파이어볼을 발사
 createMatter(0,front()*10,3/4);
     `,1],
 
     ["wall", `
+//길쭉한 블럭을 생성
 @block = createBlock(40,100,"black");
 move(block,0,100);
     `,1],
 
     ["dash",`
+//플레이어가 빠른 속도로 앞으로 이동
 giveForce(player,front()*20,0);
     `,1],
 
     ["heal",`
+//플레이어 hp를 1000회복
 damage(player,-1000);
     `,1],
 
     ["zero gravity",`
+//플레이어의 중력을 2초동안 없앰
 setGravity(player,200,0);    
     
     `,2],
 
     ["meteor",`
+//머리위에서 앞으로 여러개의 파이어볼을 발사
 for(@i=0;i<4;i++){
     for(@j=0;j<4;j++){
         @fire=createMatter(0,front()*10,-10);
@@ -50,6 +56,7 @@ for(@i=0;i<4;i++){
 }
     `,2],
     ["fire tornado",`
+//불꽃 토네이도 생성
 @x=getX(player)+front()*200;
 for(@i=0;i<12;i++){
     @fire = createMatter(0,0,0);
@@ -62,8 +69,8 @@ for(@i=0;i<12;i++){
 }
     `,3],
 
-
     ["reflection",`
+//플레이어 제외 충돌시 튕겨나가는 장막 생성
 @barrier = createTrigger(20,200,400,#(e){
     if(e!=player){
         giveForce(e, 0, 5);
@@ -72,6 +79,7 @@ for(@i=0;i<12;i++){
     `,3],
 
     ["one-gi-oc",`
+//원기옥 생성
 for(@i=0;i<4;i++){
     @e=createMatter(5,front()*1,-1);
     move(e,-60,200);
@@ -79,12 +87,14 @@ for(@i=0;i<4;i++){
 }
     `,4],
     ["chi-do-ri",`
+//치도리!!
 time(player,1,401,#(){
     @e=createMatter(1,0,0);
     move(e,front()*20,0)
 });
     `,5],
     ["detection",`
+//전방으로 카메라 발사
 @block=createBlock(10,10,"blue");
 @dt=150;
 damage(block,-dt+100);

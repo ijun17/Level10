@@ -120,6 +120,10 @@ class Entity {
         this.life-=Math.floor(d);
     }
 
+    getVectorLength(){
+        return Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+    }
+
     //event handler
     collisionHandler(e, collisionType, isActor) { }
     removeHandler() { }

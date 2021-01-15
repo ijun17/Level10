@@ -51,14 +51,6 @@ let Screen= {
         return canvas.height/100*percentile;
     },
 
-    btnSize(size){
-        if(Screen.isMobile){
-            return Screen.perX(100/1200*size);
-        }else {
-            return size;
-        }
-    },
-
     mainScreen:function() {
         Game.resetGame();
 
@@ -76,10 +68,10 @@ let Screen= {
             }
         });
 
-        var startButton = new Button((canvas.width - Screen.btnSize(300))/2, (canvas.height-Screen.btnSize(100))/2, Screen.btnSize(300), Screen.btnSize(100));
+        var startButton = new Button((canvas.width - Screen.perX(25))/2, (canvas.height-Screen.perX(8))/2, Screen.perX(25), Screen.perX(8));
         startButton.canAct=true;
         startButton.code = function () { 
-            const ash_interval = Screen.btnSize(300)/30;
+            const ash_interval = Screen.perX(25/30);
             for(let i=0; i<30; i++){
                 for(let j=0; j<10; j++){
                     let e = new Particle(3, startButton.x+i*ash_interval, startButton.y+j*ash_interval);
@@ -93,10 +85,10 @@ let Screen= {
             startButton.addAction(50,50,function(){Screen.selectScreen();});
             startButton.drawCode=function(){};
         };
-        startButton.drawOption(null, "black", "START", Screen.btnSize(80), "black");
+        startButton.drawOption(null, "black", "START", Screen.perX(6), "black");
         
         let clickHereText = new Button(Screen.perX(50),Screen.perY(62),0,0);
-        clickHereText.drawOption(null, null, "click here",Screen.btnSize(20),"black");
+        clickHereText.drawOption(null, null, "click here",Screen.perX(1.6),"black");
     },
 
     selectScreen:function() {
@@ -118,16 +110,16 @@ let Screen= {
             }
         });
         //BACK
-        let backButton = new Button(0, 0, Screen.btnSize(80), Screen.btnSize(80));
+        let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.code = function () { Screen.mainScreen() };
-        backButton.drawOption(null, null, "<", Screen.btnSize(80), "black");
+        backButton.drawOption(null, null, "<", Screen.perX(6), "black");
         //HELP BUTTON
-        let helpButton = new Button(space, canvas.height-space-Screen.btnSize(40), Screen.btnSize(40), Screen.btnSize(40));
+        let helpButton = new Button(space, canvas.height-space-Screen.perX(3), Screen.perX(3), Screen.perX(3));
         helpButton.code = function () { Screen.helpScreen() };
-        helpButton.drawOption(null, "white", "?", Screen.btnSize(40),"white");
+        helpButton.drawOption(null, "white", "?", Screen.perX(3),"white");
 
         //MOBILE MODE BUTTON
-        let mobileButton = new Button(canvas.width - space - Screen.btnSize(100), canvas.height - space - Screen.btnSize(40), Screen.btnSize(100), Screen.btnSize(40));
+        let mobileButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
         mobileButton.code = function () {
             if(!Screen.isMobile){Game.convertMobileMode(true);Camera.extension=0.7;}
             startFs(canvas);
@@ -140,23 +132,23 @@ let Screen= {
                 Game.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);
             }
         };
-        mobileButton.drawOption(null,"black","to mobile",Screen.btnSize(20),"black");
+        mobileButton.drawOption(null,"black","to mobile",Screen.perX(1.7),"black");
         //SELECT MAGIC BUTTON
-        let selectMagicButton = new Button(canvas.width - Screen.btnSize(200)-space, space, Screen.btnSize(200), Screen.btnSize(50));
+        let selectMagicButton = new Button(canvas.width - Screen.perX(16)-space, space, Screen.perX(16), Screen.perX(4));
         selectMagicButton.code = function () { Screen.selectMagicScreen(); };
-        selectMagicButton.drawOption(null, "black", "select magic", Screen.btnSize(30), "black");//"rgb(119, 138, 202)"
+        selectMagicButton.drawOption(null, "black", "select magic", Screen.perX(2.5), "black");//"rgb(119, 138, 202)"
         //MAKE MAGIC BUTTON
-        let makeMagicButton = new Button(canvas.width - Screen.btnSize(200)-space, 2*space+Screen.btnSize(50), Screen.btnSize(200), Screen.btnSize(50));
+        let makeMagicButton = new Button(canvas.width - Screen.perX(16)-space, 2*space+Screen.perX(4), Screen.perX(16), Screen.perX(4));
         makeMagicButton.code = function () { Screen.makeMagicScreen(); };
-        makeMagicButton.drawOption(null, "black", "create magic", Screen.btnSize(30), "black");//"rgb(65, 105, 225)"
+        makeMagicButton.drawOption(null, "black", "create magic", Screen.perX(2.5), "black");//"rgb(65, 105, 225)"
 
         //LEVEL BUTTON
-        let block = new Button((canvas.width - Screen.btnSize(200)) /2, 0, Screen.btnSize(200), space);
+        let block = new Button((canvas.width - Screen.perX(16)) /2, -100, Screen.perX(16), space+100);
         block.canInteraction=true;
         for (let i = 1; i <= Level.playerLevel; i++) {
-            let levelButton = new Button((canvas.width - Screen.btnSize(200)) /2, Screen.btnSize(200) + i * (space+Screen.btnSize(50)), Screen.btnSize(200), Screen.btnSize(50));
+            let levelButton = new Button((canvas.width - Screen.perX(16)) /2, Screen.perX(16) + i * (space+Screen.perX(4)), Screen.perX(16), Screen.perX(4));
             levelButton.code = function () { Screen.gameScreen(); Level.makeStage(i); };
-            levelButton.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)", "black", "LEVEL" + i, Screen.btnSize(40), "black");
+            levelButton.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)", "black", "LEVEL" + i, Screen.perX(3), "black");
             levelButton.ga = 0.5;
             levelButton.canInteraction=true;
             levelButton.canMove=true;
@@ -167,22 +159,22 @@ let Screen= {
         Game.resetGame();
         const space=(Screen.isMobile ? 5 : 10); //버튼 간격
 
-        let backBtn = new Button(0, 0, Screen.btnSize(80), Screen.btnSize(80));
+        let backBtn = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backBtn.code = function () { Screen.selectScreen() };
-        backBtn.drawOption(null, null, "<", Screen.btnSize(80), "black");
+        backBtn.drawOption(null, null, "<", Screen.perX(6), "black");
 
         //KEYBORAD BUTTON
         let key = ['Q', 'W', 'E', 'R'];
         let keyButtons = new Array(4);
         for (let i = 0; i < 4; i++) {
-            let temp = new Button(Screen.btnSize(100)+space*2, Screen.btnSize(100)-Screen.btnSize(40) + (Screen.btnSize(100)+space) * i, Screen.btnSize(200), Screen.btnSize(40));
+            let temp = new Button(Screen.perX(8)+space*2, Screen.perX(8)-Screen.perX(4) + (Screen.perX(8)+space) * i, Screen.perX(16), Screen.perX(4));
 
-            let keyBtn = new Button(space, Screen.btnSize(100) + (Screen.btnSize(100)+space) * i, Screen.btnSize(100), Screen.btnSize(100))
+            let keyBtn = new Button(space, Screen.perX(8) + (Screen.perX(8)+space) * i, Screen.perX(8), Screen.perX(8))
             keyBtn.code = function () {
                 if (Screen.selectMagic != null && Screen.selectMagic.temp[1] != i) {
                     if (keyBtn.temp[0] != null) { //키버튼에 마법이 있으면
-                        keyBtn.temp[0].x = space*8+Screen.btnSize(100)+Screen.btnSize(200);
-                        keyBtn.temp[0].y = Screen.btnSize(40)*(Magic.basicMagicCount+Magic.customMagicCount+1);
+                        keyBtn.temp[0].x = space*8+Screen.perX(8)+Screen.perX(16);
+                        keyBtn.temp[0].y = Screen.perX(4)*(Magic.basicMagicCount+Magic.customMagicCount+1);
                         keyBtn.temp[0].vy =0;
                         (keyBtn.temp[0]).temp[1] = null;//마법 기록 삭제
                     }
@@ -190,7 +182,7 @@ let Screen= {
                         Magic.skillNum[Screen.selectMagic.temp[1]] = 0;
                         keyButtons[Screen.selectMagic.temp[1]].temp[0] = null;//이전 키버튼의 선택 기록 삭제
                     }
-                    Screen.selectMagic.x = Screen.btnSize(100)+space*2; Screen.selectMagic.y = Screen.btnSize(100) + (Screen.btnSize(100)+space) * i;
+                    Screen.selectMagic.x = Screen.perX(8)+space*2; Screen.selectMagic.y = Screen.perX(8) + (Screen.perX(8)+space) * i;
                     Magic.skillNum[i] = Screen.selectMagic.temp[0];
                     Screen.selectMagic.temp[1] = i;
                     keyBtn.temp[0] = Screen.selectMagic;
@@ -198,7 +190,7 @@ let Screen= {
                 }
                 console.log(Magic.skillNum);
             };
-            keyBtn.drawOption("rgb(88, 88, 88)", "black", key[i], Screen.btnSize(80), "black");
+            keyBtn.drawOption("rgb(60, 60, 60)", "black", key[i],Screen.perX(7), "black");
 
             keyButtons[i] = keyBtn;
             keyBtn.temp.push(null); //temp[0] 은 선택된 마법을 의미
@@ -215,8 +207,8 @@ let Screen= {
                 ctx.fillRect(Screen.selectMagic.x, Screen.selectMagic.y, Screen.selectMagic.w, Screen.selectMagic.h);
                 
                 //magic explanation
-                let temp1=Screen.btnSize(300);
-                let temp2=Screen.btnSize(30);
+                let temp1=Screen.perX(24);
+                let temp2=Screen.perX(2.4);
                 ctx.fillStyle = "black";
                 ctx.font = "bold "+temp2+"px Arial";
                 ctx.textBaseline = "top";
@@ -232,11 +224,11 @@ let Screen= {
         for (let i = 1; i < Magic.magicList.length; i++) {
             if(Magic.magicList[i][4]>Level.playerLevel)continue;
             if(listStart==-1)listStart=Game.channel[Game.BUTTON_CHANNEL].length;
-            let magicBtn = new Button(space*8+Screen.btnSize(100)+Screen.btnSize(200), Screen.btnSize(100) + 50 * i, Screen.btnSize(200), Screen.btnSize(40));
+            let magicBtn = new Button(space*8+Screen.perX(8)+Screen.perX(16), Screen.perX(3) + 50 * i, Screen.perX(16), Screen.perX(3));
             magicBtn.code = function () { Screen.selectMagic = magicBtn; (Magic.magicList[i][1])(Game.p); };
             let magicColor="rgba(119, 138, 202,0.8)";
             if(i>Magic.basicMagicCount)magicColor="rgba(65, 105, 225,0.8)";
-            magicBtn.drawOption(magicColor, "black", Magic.magicList[i][0], Screen.btnSize(30), "black");
+            magicBtn.drawOption(magicColor, "black", Magic.magicList[i][0], Screen.perX(2.4), "black");
             magicBtn.temp.push(i); //temp[0]=Magic.magicList
             magicBtn.temp.push(null); //temp[1] is keyButton index
             magicBtn.ga = 0.5;
@@ -252,12 +244,12 @@ let Screen= {
         listEnd=Game.channel[Game.BUTTON_CHANNEL].length;
         
         //MAGIC LIST SCROLL
-        let magicList = new Button(space*8+Screen.btnSize(100)+Screen.btnSize(200), -Screen.btnSize(100), Screen.btnSize(200), Screen.btnSize(100)+space);
+        let magicList = new Button(space*8+Screen.perX(8)+Screen.perX(16), -Screen.perX(8), Screen.perX(16), Screen.perX(8)+space);
         magicList.drawCode = function () { 
             //magic list
                 ctx.fillStyle = "rgba(0,0,0,0.2)";
                 //ctx.fillRect(magicList.x-space,magicList.y,space*2+magicBtnW,40*(listEnd-listStart));
-                ctx.fillRect(magicList.x-space,0,space*2+Screen.btnSize(200),canvas.height);
+                ctx.fillRect(magicList.x-space,0,space*2+Screen.perX(16),canvas.height);
 
         }
         function move(d){
@@ -265,11 +257,11 @@ let Screen= {
                 if(Game.channel[Game.BUTTON_CHANNEL][i].temp[1]==null)Game.channel[Game.BUTTON_CHANNEL][i].y+=d;
             }
         }
-        let upButton = new Button(space*9+Screen.btnSize(100)+Screen.btnSize(200)*2,0,Screen.btnSize(50),Screen.btnSize(50));
-        upButton.drawOption("rgba(0,0,0,0.5)",null,"▲", Screen.btnSize(40),"white");
+        let upButton = new Button(space*9+Screen.perX(8)+Screen.perX(16)*2,0,Screen.perX(4),Screen.perX(4));
+        upButton.drawOption("rgba(0,0,0,0.5)",null,"▲", Screen.perX(3),"white");
         upButton.code=function(){if(Game.channel[Game.BUTTON_CHANNEL][listEnd].y<0)move(200);};
-        let downButton = new Button(space*9+Screen.btnSize(100)+Screen.btnSize(200)*2,canvas.height-Screen.btnSize(50),Screen.btnSize(50),Screen.btnSize(50));
-        downButton.drawOption("rgba(0,0,0,0.5)",null,"▼", Screen.btnSize(40),"white");
+        let downButton = new Button(space*9+Screen.perX(8)+Screen.perX(16)*2,canvas.height-Screen.perX(4),Screen.perX(4),Screen.perX(4));
+        downButton.drawOption("rgba(0,0,0,0.5)",null,"▼", Screen.perX(3),"white");
         downButton.code=function(){if(40*(listEnd-listStart)+Game.channel[Game.BUTTON_CHANNEL][listEnd].y>canvas.height)move(-200);};
 
         //TEST WORLD
@@ -296,7 +288,7 @@ let Screen= {
         }
 
         //BACK
-        let backButton = new Button(0, 0, Screen.btnSize(80), Screen.btnSize(80));
+        let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.code = function () { 
             namebox.value="";
             textbox.value="";
@@ -305,7 +297,7 @@ let Screen= {
             Screen.selectScreen();
             tb.style.display="none"; 
         };
-        backButton.drawOption(null, null, "<", Screen.btnSize(80), "black");
+        backButton.drawOption(null, null, "<", Screen.perX(6), "black");
 
         //모바일 모드이면 엘레멘트 생성 중단
         if(Screen.isMobile){
@@ -356,7 +348,7 @@ let Screen= {
             magicBtn.canInteraction = true;
             
         }
-        let plusButton = new Button(10, Screen.btnSize(80)+10, 200, 40);
+        let plusButton = new Button(10, Screen.perX(6)+10, 200, 40);
         plusButton.drawOption(null,"black","+ magic",30,"black");
         plusButton.code=function(){ 
             if(Magic.customMagicCount<10){
@@ -400,9 +392,9 @@ let Screen= {
         Game.resetGame();
         Camera.cameraOn=true;
 
-        let backButton = new Button(0, 0, Screen.btnSize(80), Screen.btnSize(80));
+        let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.code = function () { Screen.selectScreen() };
-        backButton.drawOption(null, null, "<", Screen.btnSize(80), "black");
+        backButton.drawOption(null, null, "<", Screen.perX(6), "black");
 
         let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
         ashSpray.canAct=true;
@@ -489,38 +481,59 @@ let Screen= {
     },
     helpScreen:function(){
         Game.resetGame();
-        let backButton = new Button(0, 0, Screen.btnSize(80), Screen.btnSize(80));
+        //MENU BAR
+        let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.code = function () { Screen.selectScreen() };
-        backButton.drawOption(null, null, "<", Screen.btnSize(80), "black");
+        backButton.drawOption(null, null, "<", Screen.perX(6), "black");
+        let howToText = new Text(Screen.perX(15), Screen.perY(5),"How to",20,"white",null,-1,false);
+        let nextBtnY=Screen.perX(6);
+        function makeMenuButton(text,f=function(){clearPanel();}){
+            let btn = new Button(0,nextBtnY,Screen.perX(20),Screen.perX(4));
+            btn.drawOption(null,null,text, Screen.perX(2.5), "white");
+            btn.code=f;
+            nextBtnY+=Screen.perX(4);
+        }
+        makeMenuButton("Create Magic",howToCreateMagicPanel);
+        makeMenuButton("Select Magic");
+        makeMenuButton("Move");
+        makeMenuButton("Use Magic");
+        makeMenuButton("GAME INFO",gameInfoPanel);
+        new MapBlock(0,0,Screen.perX(20), Screen.perY(100));
 
-        let hs=40; //head size
-        let bs=30; //body size
+        //PANEL FUNCTION
+        let nextLine=Screen.perX(3);
+        function clearPanel(){
+            Game.channel[Game.TEXT_CHANNEL]=[howToText];
+            nextLine=Screen.perX(3);
+        }
+        function writeText(text, type){ //type은 제목인지(1) 본문인지(0)
+            let textSize=(type==0 ? Screen.perX(2):Screen.perX(3));
+            let textColor=(type==0 ? "black":"white");
+            let textE = new Text(Screen.perX(25), nextLine, text, textSize, textColor,null,-1,false);
+            textE.textBaseline = "top";
+            textE.textAlign="left";
+            nextLine+=(type==0 ? Screen.perX(2.5):Screen.perX(4));
+        }
 
-        let nextLine=Screen.perX(5);
+        function gameInfoPanel(){
+            clearPanel();
+            writeText("GAME INFO",1);
+            writeText("screen width: "+canvas.width,0);
+            writeText("screen height: "+canvas.height,0);
+        }
+        function howToCreateMagicPanel(){
+            clearPanel();
+            writeText("How To Create Magic", 1);
+            writeText("1. create magic 화면으로 이동",0);
+            writeText("2. +magic 버튼 클릭",0)
+            writeText("3. 새로 만들어진 파란색 버튼 클릭",0)
+            writeText("4. 마법의 이름과 코드를 스크린 하단에 박스에 적음",0);
+            writeText("5. 그 밑에 있는 compile 버튼 클릭",0);
+            nextLine+=Screen.perX(10);
+            writeText("*마법 코드에 대한 내용은 Unit Magic을 참고하세요",0);
+            writeText("*자바스크립트와 다른 점은 Magic Code를 참고하세요",0);
+        }
 
-        new Text(Screen.perX(50), nextLine, "1.create magic",Screen.btnSize(hs),"black", null,-1,false);
-        nextLine+=Screen.btnSize(hs);
-        new Text(Screen.perX(50), nextLine, "How to create magic: click '+magic' button -> click blue button ->",Screen.btnSize(bs),"black", null,-1,false);
-        nextLine+=Screen.btnSize(bs+10);
-        new Text(Screen.perX(50), nextLine, " write name and code -> click compile button",Screen.btnSize(bs),"black", null,-1,false);
-        nextLine+=Screen.btnSize(bs+10);
 
-        nextLine+=Screen.btnSize(hs);
-
-        new Text(Screen.perX(50), nextLine, "2.select magic",Screen.btnSize(hs),"black", null,-1,false);
-        nextLine+=Screen.btnSize(hs);
-        new Text(Screen.perX(50), nextLine, "How to select magic: click magic button(blue ans purple button) ->",Screen.btnSize(bs),"black", null,-1,false);
-        nextLine+=Screen.btnSize(bs);
-        new Text(Screen.perX(50), nextLine, "click keyborad Button(Q,W,E,R)",Screen.btnSize(bs),"black", null,-1,false);
-        nextLine+=Screen.btnSize(bs);
-
-        nextLine+=Screen.btnSize(60);
-
-        new Text(Screen.perX(50), nextLine, "3.fight",Screen.btnSize(hs),"black", null,-1,false);
-        nextLine+=Screen.btnSize(hs);
-        new Text(Screen.perX(50), nextLine, "How to move: left(<), jump(^), right(>)",Screen.btnSize(bs),"black", null,-1,false);
-        nextLine+=Screen.btnSize(bs);
-        new Text(Screen.perX(50), nextLine, "How to use magic: click keyboard q,w,e,r",Screen.btnSize(bs),"black", null,-1,false);
-        nextLine+=Screen.btnSize(bs);
     }
 }
