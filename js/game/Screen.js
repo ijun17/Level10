@@ -168,7 +168,7 @@ let Screen= {
         let keyButtons = new Array(4);
         for (let i = 0; i < 4; i++) {
             let temp = new Button(Screen.perX(8)+space*2, Screen.perX(8)-Screen.perX(4) + (Screen.perX(8)+space) * i, Screen.perX(16), Screen.perX(4));
-
+            //temp.drawOption("black");
             let keyBtn = new Button(space, Screen.perX(8) + (Screen.perX(8)+space) * i, Screen.perX(8), Screen.perX(8))
             keyBtn.code = function () {
                 if (Screen.selectMagic != null && Screen.selectMagic.temp[1] != i) {
@@ -182,7 +182,8 @@ let Screen= {
                         Magic.skillNum[Screen.selectMagic.temp[1]] = 0;
                         keyButtons[Screen.selectMagic.temp[1]].temp[0] = null;//이전 키버튼의 선택 기록 삭제
                     }
-                    Screen.selectMagic.x = Screen.perX(8)+space*2; Screen.selectMagic.y = Screen.perX(8) + (Screen.perX(8)+space) * i;
+                    Screen.selectMagic.x = Screen.perX(8)+space*2; 
+                    Screen.selectMagic.y = Screen.perX(8) + (Screen.perX(8)+space) * i+space;
                     Magic.skillNum[i] = Screen.selectMagic.temp[0];
                     Screen.selectMagic.temp[1] = i;
                     keyBtn.temp[0] = Screen.selectMagic;
@@ -482,23 +483,35 @@ let Screen= {
     helpScreen:function(){
         Game.resetGame();
         //MENU BAR
+        new MapBlock(0,0,Screen.perX(20), Screen.perY(100)); //어두운 바탕
         let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.code = function () { Screen.selectScreen() };
         backButton.drawOption(null, null, "<", Screen.perX(6), "black");
-        let howToText = new Text(Screen.perX(15), Screen.perY(5),"How to",20,"white",null,-1,false);
+        let howToText = new Text(Screen.perX(15), Screen.perY(5),"About",Screen.perX(2),"white",null,-1,false);
         let nextBtnY=Screen.perX(6);
-        function makeMenuButton(text,f=function(){clearPanel();}){
+        function makeMenuButton(text,f=function(){clearPanel();},isEmphasis=true){
             let btn = new Button(0,nextBtnY,Screen.perX(20),Screen.perX(4));
-            btn.drawOption(null,null,text, Screen.perX(2.5), "white");
+            if(isEmphasis){
+                btn.drawOption(null,null,text, Screen.perX(2.5), "white");
+                nextBtnY+=Screen.perX(4);
+            }
+            else {
+                btn.drawOption(null,null,text,Screen.perX(2),"black");
+                nextBtnY+=Screen.perX(2.5);
+            }
             btn.code=f;
-            nextBtnY+=Screen.perX(4);
+            
         }
+        makeMenuButton("Move",howToMovePanel);
+        makeMenuButton("Use Magic",howToUseMagic);
+        makeMenuButton("Select Magic",howToSelectMagicPanel);
         makeMenuButton("Create Magic",howToCreateMagicPanel);
-        makeMenuButton("Select Magic");
-        makeMenuButton("Move");
-        makeMenuButton("Use Magic");
         makeMenuButton("GAME INFO",gameInfoPanel);
-        new MapBlock(0,0,Screen.perX(20), Screen.perY(100));
+        nextBtnY += Screen.perX(4);
+        makeMenuButton("unit magic",function(){},false);
+        makeMenuButton("prohibited code",function(){},false);
+        makeMenuButton("magic evaluation",function(){},false);
+
 
         //PANEL FUNCTION
         let nextLine=Screen.perX(3);
@@ -529,11 +542,45 @@ let Screen= {
             writeText("3. 새로 만들어진 파란색 버튼 클릭",0)
             writeText("4. 마법의 이름과 코드를 스크린 하단에 박스에 적음",0);
             writeText("5. 그 밑에 있는 compile 버튼 클릭",0);
-            nextLine+=Screen.perX(10);
-            writeText("*마법 코드에 대한 내용은 Unit Magic을 참고하세요",0);
-            writeText("*자바스크립트와 다른 점은 Magic Code를 참고하세요",0);
+            nextLine+=Screen.perX(5);
+            writeText("마법 코드는 자바스크립트를 기반으로 만들어졌습니다.",0);
+            writeText("자바스크립트에 대한 지식은 마법을 만드는데 도움이 됩니다.",0);
+            nextLine+=Screen.perX(2);
+            writeText("*마법 코드에 대한 내용은 unit magic을 참고하세요",0);
+            writeText("*마법 코드와 자바스크립트의 차이점은 prohibited code를 참고하세요",0);
+            writeText("*마법 평가에 대한 내용은 magic evaluation를 참고하세요",0);
+        }
+        function howToSelectMagicPanel(){
+            clearPanel();
+            writeText("How To Select Magic", 1);
+            writeText("1. select magic 화면으로 이동",0);
+            writeText("2. 마법 버튼(파란색 또는 보라색 버튼)을 클릭",0);
+            writeText("3. 원하는 키 버튼(Q,W,E,R) 클릭",0);
+            writeText("4. 키버튼을 누르면 선택된 스킬을 사용할 수 있음",0);
+            nextLine+=Screen.perX(2);
+            writeText("*마법 버튼이 정상적으로 클릭되면 버튼이 어두워짐",0);
         }
 
+        function howToMovePanel(){
+            clearPanel();
+            writeText("How To Move(pc mode)",1);
+            writeText("방향키를 클릭",0);
+            writeText("left move(<), jump(^), right move(>)",0);
+            nextLine+=Screen.perX(5);
+            writeText("How To Move(mobile mode)",1);
+            writeText("던전에 들어가면 좌측 하단에 버튼이 생성",0);
+            writeText("left move(<), jump(^), right move(>)",0);
+        }
 
+        function howToUseMagic(){
+            clearPanel();
+            writeText("How To Use Magic(pc mode)",1);
+            writeText("키보드 q,w,e,r 버튼 클릭 ",0);
+            nextLine+=Screen.perX(5);
+            writeText("How To Use Magic(mobile mode)",1);
+            writeText("던전에 들어가면 우측 하단에 Q,W,E,R 버튼이 생성",0);
+            nextLine+=Screen.perX(10);
+            writeText("*cooltime이 0보다 크고 mp가 부족하면 마법을 쓰지 못합니다. ",0)
+        }
     }
 }
