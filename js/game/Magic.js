@@ -13,7 +13,7 @@ let Magic = {
         let magicEffect = new Particle(5, p.x+p.w/2-p.h/2, p.y);
         magicEffect.w=p.h;
         magicEffect.h=p.h;
-        //Magic.magicEffectSound.pause();
+        Magic.magicEffectSound.pause();
         Magic.magicEffectSound.currentTime=0;
         Magic.magicEffectSound.play();
     },0,0,0]],
@@ -126,7 +126,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
     loadMagic:function(){
         //sound
         Magic.magicEffectSound.src="resource/sound/magic effect2.mp3";
-        Magic.magicEffectSound.volume=0.3;
+        Magic.magicEffectSound.volume=0.1;
         //load basic magic
         Magic.basicMagicCount=Magic.basicMagic.length;
         for(let i=0,j=Magic.basicMagicCount; i<j; i++){
