@@ -7,7 +7,6 @@ class Player extends Entity{
     canJump=true;
     totalDamage=0;
     damageTick=0;
-    dieCode=function(){};
 
     constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
@@ -63,14 +62,10 @@ class Player extends Entity{
         if(ct=='D'&&!this.canJump)this.canJump=true;
     }
 
-    removeHandler(){
-        this.dieCode();
-    }
-
     damage(d) {
         if(this.damageTick>0)return;
-        d=Math.floor(d);
-        this.totalDamage += d;
+        this.totalDamage += Math.floor(d);
         if(d>0)this.damageTick=20;
+        Camera.vibrate((d<4000 ? d/200 : 20)+4);
     }
 }

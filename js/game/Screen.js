@@ -267,10 +267,10 @@ let Screen= {
 
         //TEST WORLD
         new MapBlock(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "rgb(35, 35, 35)");
-        function makePlayer(){Game.p=new Player(canvas.width*5/9+20, 0);Camera.e.temp=Game.p;Game.p.dieCode=function(){makePlayer();}}
+        function makePlayer(){Game.p=new Player(canvas.width*5/9+20, 0);Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();}}
         makePlayer();
         Magic.magicPoint=0; //스킬 못쓰게
-        let monster = new Monster(0, canvas.width-100, 0);
+        let monster = new Monster(MONSTERS[0], canvas.width-100, 0);
         monster.life = 1000000;
         monster.action = [];
         monster.addAction(100,100,function(){monster.canMove=false;});
@@ -384,7 +384,7 @@ let Screen= {
         //TEST MAP
         Magic.magicPoint=0;
         new MapBlock(0,canvas.height-80,canvas.width,80).drawCode=MapBlock.getTexture("grass");
-        function makePlayer(){Game.p=new Player(canvas.width/2, 0);Camera.e.temp=Game.p;Game.p.dieCode=function(){makePlayer();}}
+        function makePlayer(){Game.p=new Player(canvas.width/2, 0);Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();}}
         makePlayer();
         
     },

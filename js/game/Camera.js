@@ -36,5 +36,9 @@ let Camera={
             Camera.e.vx=(Camera.e.temp.x-Camera.e.x)/movingDelay;
             Camera.e.vy=-(Camera.e.temp.y-Camera.e.y)/movingDelay;
         }
+    },
+    vibrate: function(power){
+        Camera.e.x+=(1-Math.random()*2)*power;
+        Camera.e.y+=(1-Math.random()*2)*power;
     }
 }

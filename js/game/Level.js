@@ -53,7 +53,13 @@ let Level= {
         this.stageLevel = level;
         //player
         Game.p = new Player(10, -60);
-        Game.p.dieCode=function(){Screen.selectScreen();};
+        Game.p.removeHandler=function(){
+            
+            let text = new Text(Screen.perX(50),Screen.perY(50),"you die",Screen.perX(10),"red",null,-1,false);
+            text.canAct=true;
+            text.addAction(100,100,function(){Screen.selectScreen();})
+            Magic.magicPoint=0;
+        };
         Magic.magicPoint=10000*Level.playerLevel;
         //camera
         Camera.makeMovingCamera(Game.p,0,0,10);
@@ -77,31 +83,32 @@ let Level= {
 
         switch (level) {
             case 1:
-                new Monster(0, 1000, -1000);
+                new Monster(MONSTERS[0], 1000, -1000);
                 this.stageMonsterCount = 1;
                 break;
             case 2:
-                new Monster(0, 1000, -1000);
-                new Monster(0, 900, -1000);
-                new Monster(0, 800, -1000);
-                new Monster(1, 700, -1000);
+                new Monster(MONSTERS[0], 1000, -1000);
+                new Monster(MONSTERS[0], 900, -1000);
+                new Monster(MONSTERS[0], 800, -1000);
+                new Monster(MONSTERS[1], 700, -1000);
                 this.stageMonsterCount = 4;
                 break;
             case 3:
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
                 this.stageMonsterCount = 5;
                 break;
             case 4:
-                new Monster(4,1000, -250);
+                
+                new Monster(MONSTERS[3],1000, -250);
                 this.stageMonsterCount = 1;
                 break;
             case 5:
-                mapSizeW*=1;
-                new Monster(5,Screen.perX(50), -400);
+                
+                new Monster(MONSTERS[4],Screen.perX(50), -400).addAction(1,100,function(){Camera.vibrate(10);});
                 this.stageMonsterCount = 1;
                 // for(let i=1; i<10; i++){
                 //     new MapBlock(50*i,-40*i,50,30);//.drawCode=MapBlock.getTexture("grass");

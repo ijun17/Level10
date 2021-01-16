@@ -18,40 +18,62 @@ attack:{}
 //const MONSTER_SKILL={""};
 const MONSTERS = [{
     name: "crazymushroom",
-    draw: { imageW: 60, imageH: 60, frame: 8, animation_MAX_X: [3, 1] },
-    status: { w: 60, h: 60, life: 10000, damage: 200, speed: 3, inv_mass:1 },
-    skillList: [function(e){}],
-    attack: {}
+    image: { w: 60, h: 60, frame: 8, MAX_X: [3, 1] },
+    setStatus: function(e){ e.w=60; e.h=60; e.life=10000; e.power=200; e.speed=3; e.inv_mass=1},
+    attackEffect: function(e,v){},
+    skillList: [
+        function(e){e.AI(2);return 50;}
+    ]
 },
 {
     name: "crazymonkey",
-    draw: { imageW: 120, imageH: 200, frame: 8, animation_MAX_X: [1, 1] },
-    status: { w: 120, h: 200, life: 50000, damage: 900, speed: 5, inv_mass:0.5 },
-    skillList: [],
-    attack: {}
+    image: { w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
+    setStatus: function(e){ e.w=120;e.h=200;e.life=50000;e.power=1000;e.speed=5;e.inv_mass=0.5},
+    attackEffect: function(e,v){},
+    skillList: [
+        function(e){e.AI(10);return 50;},
+        function(e){e.createMatterToTarget(2,e.getTargetDir()*2,0,10);return 200;}
+    ]
 },
 {
     name: "hellfly",
-    draw: {imageW:30,imageH:30,frame:8,animaion_MAX_X:[1,1]},
-    status: {w: 30, h: 30, life: 20000, damage: 500, speed: 5, inv_mass:2},
-    skillList: [],
-    attack: {}
+    image: {w:30,h:30,frame:8,MAX_X:[1,1]},
+    setStatus: function(e){e.w=30;e.h=30;e.life=20000;e.power=500;e.speed=5;e.inv_mass=2;e.ga=0;},
+    attackEffect: function(e,v){},
+    skillList: [
+        function(e){e.AI2(5);return 10;}
+    ]
+},
+{
+    name: "golem",
+    image: {w:128,h:128,frame:32,MAX_X:[4,1]},
+    setStatus: function(e){e.w=200;e.h=200;e.life=10000000;e.power=4000;e.speed=3;e.inv_mass=0.01;e.ga=-1;},
+    attackEffect: function(e,v){},
+    skillList: [
+        function(e){e.AI();return 50;},
+        function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -10;return 500;}
+    ]
+},
+{
+    name: "wyvern",
+    image: {w:80,h:80,frame:16,MAX_X:[4,1]},
+    setStatus: function(e){e.w=300;e.h=300;e.life=10000000;e.power=4000;e.speed=3;e.inv_mass=0.1;e.ga=0;},
+    attackEffect: function(e,v){},
+    skillList: [
+        function(e){e.AI2(4);return 50;},
+        function(e){let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.type.damage=2000;m.w=60;m.h=60;return 111;},
+        function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -10;return 500;}
+    ]
 }
 ];
 
-
-
-const monsterTypes=[{ name: "crazymushroom", w: 60, h: 60, life: 10000, damage: 200, speed: 3, inv_mass:1 },
-    { name: "crazymonkey", w: 120, h: 200, life: 50000, damage: 500, speed: 5, inv_mass:0.5 },
-    { name: "hellfly", w: 30, h: 30, life: 20000, damage: 500, speed: 5, inv_mass:2 },
-    { name: "madfish", w: 200, h: 100, life: 2000000, damage: 2000, speed: 1, inv_mass:0.1 },
-    { name: "golem", w: 128, h: 128, life: 10000000, damage: 4000, speed: 3, inv_mass:0.01 },
-    { name: "wyvern", w: 80, h: 80, life: 10000000, damage: 4000, speed: 3, inv_mass:0.1 }];
-
 class Monster extends Entity {
-    type;
     animation;
+    //상태
     target;
+    power;
+    speed;
+    attackEffect=function(){};
 
     //draw
     totalDamage=0;
@@ -59,71 +81,25 @@ class Monster extends Entity {
     isRight=true;
     attackTick=0;
 
-    constructor(typenum, x, y, channelLevel = Game.PHYSICS_CHANNEL) {
+    constructor(type, x, y, channelLevel = Game.PHYSICS_CHANNEL) {
         super(x, y, channelLevel);
-        this.type = monsterTypes[typenum];
-        this.w = this.type.w;
-        this.h = this.type.h;
-        this.life = this.type.life;
-        this.inv_mass=this.type.inv_mass;
+        type.setStatus(this);
+        this.attackTick=type.attackEffect;
         this.target = Game.p;
-
-        let temp = this;
-        let animation_MAX_X;        
-        switch (this.type.name) {
-            case "crazymushroom":
-
-                this.addAction(100, 100, function () { temp.AI(); });
-                //this.addAction(100, 100, function () { temp.skill3(); });
-                animation_MAX_X=[3,1];
-                break;
-            case "crazymonkey":
-                this.addAction(100, 100, function () { temp.AI(); });
-                this.addAction(999, 999, function () { temp.skill2(); });
-                animation_MAX_X=[1,1];
-                break;
-            case "hellfly":
-                this.ga = 0;
-                this.addAction(100, 100, function () { temp.AI2(); });
-                animation_MAX_X=[1,1];
-                break;
-            case "madfish":
-                this.ga = 0;
-                this.canMove = false;
-                this.w=600;
-                this.h=300;
-                this.addAction(300, 300, function () { temp.skill6(300); });
-                this.addAction(150, 150, function () { temp.skill4(50); });
-                animation_MAX_X=[1,1];
-                break;
-            case "golem":
-                this.ga=-1;
-                this.w=200;
-                this.h=200;
-                this.addAction(300,300, function(){temp.AI(50,4);})
-                this.addAction(300, 300, function () { temp.skill(500); });
-                animation_MAX_X=[4,1];
-                break;
-            case "wyvern":
-                this.ga=0;
-                this.w=300;
-                this.h=300;
-                this.addSkill(300,function(e){let m=temp.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.type.damage=2000;m.w=60;m.h=60;return 111;});
-                this.addSkill(300,function(e){e.vx=e.getTargetDir()*40;return 500;})
-                this.addAction(300,300, function(){temp.AI2(50,4);})
-                this.addAction(300, 300, function () { temp.skill(500); });
-                animation_MAX_X=[4,4];
-                break;
-            default:
-                break;
+        //skill set
+        for(let i=type.skillList.length-1; i>=0;i--){
+            this.addSkill(200,type.skillList[i]);
         }
-        this.animation=new Animation("resource/monster/" + temp.type.name + ".png",monsterTypes[typenum].w,monsterTypes[typenum].h,animation_MAX_X,function(){
+        //image
+        let temp = this;
+        this.animation=new Animation("resource/monster/" + type.name + ".png",type.image.w,type.image.h,type.image.MAX_X,function(){
             if(temp.attackTick>0){
                 temp.attackTick--;
                 return 1;
             }
             else return 0;
         })
+        this.animation.fps=type.image.frame;
     }
 
     draw() {
@@ -144,12 +120,12 @@ class Monster extends Entity {
         if (ct=='D') this.canJump = true;
         //공격
         if(!(e instanceof Monster||e instanceof MapBlock)){
-            e.damage(this.type.damage);
+            e.damage((1 - Math.random()*2)*this.power/10+this.power);
             this.attackTick = 10;
             if (e.x + e.w / 2 > this.x + this.w / 2) {
-                e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.type.damage) / 3,0.3);
+                e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.power) / 3,0.3);
             } else {
-                e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.type.damage) / 3,0.3);
+                e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.power) / 3,0.3);
             }
         }
     }
@@ -162,9 +138,10 @@ class Monster extends Entity {
     damage(d) {
         d=Math.floor(d);
         this.totalDamage += d;
+        Camera.vibrate(2);
     }
 
-    addSkill(time,f){ //f = f(e){}
+    addSkill(time,f){ 
         let temp=this;
         this.addAction(time,time,function(){let cooltime = f(temp);temp.addSkill(cooltime,f)});
     }
@@ -177,82 +154,24 @@ class Monster extends Entity {
         let vector_length = Math.sqrt(matter_vx**2+matter_vy**2);
         return  new Matter(type, matter_x, matter_y, matter_vx*power/vector_length, matter_vy*power/vector_length);
     }
+    createMatter(type,xDir,yDir,vx,vy){
+        let matter_x = this.x+this.w/2+(this.w/2+15)*xDir-15;
+        let matter_y = this.y+this.h/2+(this.h/2+15)*yDir-15;
+        return  new Matter(type, matter_x, matter_y,vx,vy);
+    }
 
-    AI(time = 50, jumpSpeed) {
-        this.vx = this.type.speed*this.getTargetDir();
+    AI(noise = 0) { //걸어 댕기는 놈
         this.isRight=(this.getTargetDir()>0);
+        this.vx = this.speed*(this.isRight ? 1 : -1)+(1 - Math.random()*2)*noise;
         if (this.canJump) {
             this.canJump = false;
-            this.vy = this.type.speed - 0.5;
+            this.vy = this.speed - 0.5;
         }
-        var temp = this;
-        this.addAction(time, time, function () { temp.AI(time); });
     }
-
-    AI2(time = 10, randomNum = 10) {
-        var tx = this.target.x;
-        var ty = this.target.y;
-        this.isRight = (this.x < tx);
-        if (this.isRight) this.vx = this.type.speed;
-        else this.vx = -this.type.speed;
-        if (this.y < ty) this.vy = -this.type.speed;
-        else this.vy = +this.type.speed;
-
-        this.vx += (1 - Math.random() * 2) * randomNum;
-        this.vy += (1 - Math.random() * 2) * randomNum;
-
-        var temp = this;
-        this.addAction(time, time, function () { temp.AI2(time, randomNum); });
-    }
-
-    skill(time = 1000, speed = 10) {
-        this.x = this.target.x + this.target.w / 2 - this.w / 2;
-        this.y = this.target.y -600;
-        this.vx = 0;
-        this.vy = -speed;
-        var temp = this;
-        this.addAction(time, time, function () { temp.skill(time, speed); });
-    }
-
-    skill2(time = 200, speed = 30) {
-        var monster = this;
-        this.createMatterToTarget(2,this.getTargetDir()*2,0,10);
-        this.addAction(time, time, function () { monster.skill2(time, speed); });
-    }
-
-    skill3(time = 100, duration = 50) {
-        var monster = this;
-        this.addAction(1, 1, function () { monster.visibility = false; });
-        this.addAction(duration, duration, function () { monster.visibility = true; });
-        this.addAction(time, time, function () { monster.skill3(); });
-
-    }
-
-    skill4(time = 50, speed = 30) {
-        var monster = this;
-        this.createMatterToTarget(5,this.getTargetDir()*1.3,1,30);
-        this.addAction(time, time, function () { monster.skill4(time, speed); });
-    }
-
-    skill5(time = 200, speed = 10) {
-        var monster = this;
-        var ice;
-        ice = new Matter(2, this.target.x, -200, 0, -speed);
-        ice.w = 100;
-        ice.h = 100;
-        ice.life = 3;
-        this.addAction(time, time, function () { monster.skill5(time, speed); });
-    }
-    skill6(time = 200, speed = 10) {
-        var monster = this;
-        let ice;
-        let temp = this.getTargetDir();
-        for (let i = 0; i < 15; i++) {
-            ice = new Matter(2, monster.x + monster.w / 2 + temp * 400 - 15 + temp * i * 120, -100 - i * 70, 0, -20);
-            ice.w = 60;
-            ice.h = 60;
-            ice.type.damage=2000;
-        }
-        this.addAction(time, time, function () { monster.skill6(time, speed); });
+    AI2(noise = 0) {// 날아 댕기는 놈
+        this.isRight=(this.getTargetDir()>0);
+        this.vx=this.speed*(this.isRight ? 1 : -1);
+        this.vy=this.speed*(this.y<this.target.y ? -1 : 1);
+        this.giveForce((1 - Math.random()*2)*noise, (1 - Math.random()*2)*noise);
     }
 }
