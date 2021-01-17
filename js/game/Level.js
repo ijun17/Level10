@@ -60,7 +60,7 @@ let Level= {
             Magic.magicPoint=0;
             Level.stageMonsterCount=0;
         };
-        Magic.magicPoint=10000*Level.playerLevel;
+        Magic.magicPoint=20000*Level.playerLevel;
         Camera.makeMovingCamera(Game.p,0,0,10);
 
         function printMonsterName(name=""){

@@ -20,7 +20,8 @@ let Magic = {
     basicMagic:[
     ["fire ball",`
 //전방에 파이어볼을 발사
-createMatter(0,front()*10,3/4);
+@e=createMatter(0,front()*10,3/4);
+damage(e,-10);
     `,1],
 
     ["wall", `
@@ -40,9 +41,8 @@ damage(player,-1000);
     `,1],
 
     ["zero gravity",`
-//플레이어의 중력을 2초동안 없앰
-setGravity(player,200,0);    
-    
+//플레이어의 중력을 3초동안 없앰
+setGravity(player,300,0);    
     `,2],
 
     ["meteor",`
@@ -70,6 +70,11 @@ time(player, 1,12,#(){
     i++;
 });
     `,3],
+    ["sword energy",`
+//검기 발사
+@e=createMatter(6,front()*20,0);
+damage(e,-10);
+    `,3],
 
     ["reflection",`
 //플레이어 제외 충돌시 튕겨나가는 장막 생성
@@ -78,13 +83,9 @@ time(player, 1,12,#(){
         giveForce(e, 0, 5);
     }
 })
-    `,3],
-
-    ["sword energy",`
-//검기 발사
-@e=createMatter(6,front()*20,0);
-damage(e,-10);
     `,4],
+
+    
     ["chi-do-ri",`
 //치도리!!
 time(player,1,401,#(){

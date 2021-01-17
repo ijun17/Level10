@@ -418,8 +418,8 @@ let Screen= {
             ctx.strokeRect(canvas.width-450,10,200,20);
         }
         let mpGage = new Button(canvas.width-450,35,200,20,Game.TEXT_CHANNEL);
-        const MAX_MP = 10000*Level.playerLevel;
-        const plusMP = Level.playerLevel*1; //*1 to Equalize number format of Magic.magicPoint 
+        const MAX_MP = 20000*Level.playerLevel;
+        const plusMP = Level.playerLevel*2; //*1 to Equalize number format of Magic.magicPoint 
         
         mpGage.drawCode=function(){
             if(Magic.magicPoint<MAX_MP){
