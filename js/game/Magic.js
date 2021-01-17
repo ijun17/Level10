@@ -76,13 +76,9 @@ time(player, 1,12,#(){
 damage(e,-10);
     `,3],
 
-    ["reflection",`
-//플레이어 제외 충돌시 튕겨나가는 장막 생성
-@barrier = createTrigger(20,200,400,#(e){
-    if(e!=player){
-        giveForce(e, 0, 5);
-    }
-})
+    ["teleport",`
+//텔레포트
+move(player, front()*300, 0);
     `,4],
 
     

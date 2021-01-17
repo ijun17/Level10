@@ -430,6 +430,7 @@ let Screen= {
             ctx.strokeStyle="black";
             ctx.strokeRect(canvas.width-450,35,200,20);
         }
+        
 
         //COOLTIME VIEW
         let coolTimeView = new Button(canvas.width - 150, 10, 0, 0, Game.TEXT_CHANNEL);
@@ -438,11 +439,10 @@ let Screen= {
             ctx.font = "bold 20px Arial";
             ctx.textBaseline = "top";
             ctx.textAlign = "left";
-            
             for(let i=0; i<4; i++){
                 if(Magic.skillNum[i]==0)continue;
                 let coolT = Magic.coolTime[i] - Game.time;
-                ctx.fillText(Magic.magicList[Magic.skillNum[i]][0] + ": " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-200, 10+20*i);
+                ctx.fillText(Magic.magicList[Magic.skillNum[i]][0] + "("+Magic.magicList[Magic.skillNum[i]][3]+"): " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-230, 10+20*i);
                 
             }
         };
