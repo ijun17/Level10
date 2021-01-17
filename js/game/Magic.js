@@ -36,8 +36,8 @@ giveForce(player,front()*20,0);
     `,1],
 
     ["heal",`
-//플레이어 hp를 1000회복
-damage(player,-1000);
+//플레이어 hp를 2000회복
+damage(player,-2000);
     `,1],
 
     ["zero gravity",`
