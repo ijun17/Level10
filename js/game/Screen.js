@@ -409,40 +409,48 @@ let Screen= {
         backButton.code = function () { Screen.selectScreen() };
         backButton.drawOption(null, null, "<", Screen.perX(6), "black");
 
+
+        const viewTextSize=Screen.perX(1.5);
         //HP, MP GAGE
-        let hpGage = new Button(canvas.width-450,10,200,20,Game.TEXT_CHANNEL);
+        let hpGage = new Button(Screen.perX(55),Screen.perX(1),Screen.perX(18),Screen.perX(2),Game.TEXT_CHANNEL);
         hpGage.drawCode=function(){
             ctx.fillStyle="brown";
-            ctx.fillRect(canvas.width-450,10,200*(Game.p.life/Level.playerLevel/10000),20);
+            ctx.fillRect(hpGage.x,hpGage.y,hpGage.w*(Game.p.life/Level.playerLevel/10000),hpGage.h);
             ctx.strokeStyle="black";
-            ctx.strokeRect(canvas.width-450,10,200,20);
+            ctx.strokeRect(hpGage.x,hpGage.y,hpGage.w,hpGage.h);
+            ctx.fillStyle="black";
+            ctx.font="bold "+viewTextSize+"px Arial";
+            ctx.fillText(Game.p.life, hpGage.x+Screen.perX(0.5),hpGage.y+Screen.perX(0.5))
         }
-        let mpGage = new Button(canvas.width-450,35,200,20,Game.TEXT_CHANNEL);
+        let mpGage = new Button(Screen.perX(55),Screen.perX(3.5),Screen.perX(18),Screen.perX(2),Game.TEXT_CHANNEL);
         const MAX_MP = 20000*Level.playerLevel;
         const plusMP = Level.playerLevel*2; //*1 to Equalize number format of Magic.magicPoint 
-        
         mpGage.drawCode=function(){
             if(Magic.magicPoint<MAX_MP){
                 Magic.magicPoint+=plusMP;
             }
             ctx.fillStyle="royalblue";
-            ctx.fillRect(canvas.width-450,35,200*(Magic.magicPoint/MAX_MP),20);
+            ctx.fillRect(mpGage.x,mpGage.y,mpGage.w*(Magic.magicPoint/MAX_MP),mpGage.h);
             ctx.strokeStyle="black";
-            ctx.strokeRect(canvas.width-450,35,200,20);
+            ctx.strokeRect(mpGage.x,mpGage.y,mpGage.w,mpGage.h);
+            ctx.fillStyle="black";
+            ctx.font="bold "+viewTextSize+"px Arial";
+            ctx.fillText(Magic.magicPoint, mpGage.x+Screen.perX(0.5),mpGage.y+Screen.perX(0.5))
         }
         
 
         //COOLTIME VIEW
-        let coolTimeView = new Button(canvas.width - 150, 10, 0, 0, Game.TEXT_CHANNEL);
+        let coolTimeView = new Button(Screen.perX(75), Screen.perX(1), 0, 0, Game.TEXT_CHANNEL);
         coolTimeView.drawCode = function () {
             ctx.fillStyle = "black";
-            ctx.font = "bold 20px Arial";
+            ctx.font = "bold "+viewTextSize+"px Arial";
             ctx.textBaseline = "top";
             ctx.textAlign = "left";
             for(let i=0; i<4; i++){
                 if(Magic.skillNum[i]==0)continue;
                 let coolT = Magic.coolTime[i] - Game.time;
-                ctx.fillText(Magic.magicList[Magic.skillNum[i]][0] + "("+Magic.magicList[Magic.skillNum[i]][3]+"): " + (coolT > 0 ? (coolT / 100) : "ready"), canvas.width-230, 10+20*i);
+                ctx.fillText(Magic.magicList[Magic.skillNum[i]][0] + "("+Magic.magicList[Magic.skillNum[i]][3]+"): " + (coolT > 0 ? (coolT / 100) : "ready")
+                , coolTimeView.x, Screen.perX(1)+Screen.perX(2)*i);
                 
             }
         };
