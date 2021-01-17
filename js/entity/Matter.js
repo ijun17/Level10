@@ -4,7 +4,7 @@ const matterTypes=[{ type:function(){return {name: "fire", num:0, damage: 500}} 
         { type:function(){return {name: "explosion", num:3, damage: 20}} },
         { type:function(){return {name: "arrow", num:4, damage: 10}} },
         { type:function(){return {name: "energy", num:5, damage: 1000}} },
-        { type:function(){return {name: "sword", num:6, damage: 700}} }];
+        { type:function(){return {name: "sword", num:6, damage: 200}} }];
 
 class Matter extends Entity {
     img = new Image; //엔티티의 이미지
@@ -99,7 +99,7 @@ class Matter extends Entity {
                 }
                 break;
             case 6:
-                var damage = this.getVectorLength()*this.w;
+                var damage = this.getVectorLength()*this.w/3;
                 e.damage(damage);
                 break;
             default:

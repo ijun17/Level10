@@ -55,7 +55,7 @@ const MONSTERS = [{
     ]
 },
 {
-    name: "심연의지옥룡",
+    name: "심연의흑염룡",
     image: {name:"wyvern",w:80,h:80,frame:16,MAX_X:[4,1]},
     setStatus: function(e){e.w=300;e.h=300;e.life=10000000;e.power=4000;e.speed=3;e.inv_mass=0.1;e.ga=0;},
     attackEffect: function(e,v){},

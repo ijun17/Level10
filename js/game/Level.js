@@ -72,7 +72,7 @@ let Level= {
         let mapSizeW=2000;
         let mapSizeH=1000;
         let wallSize=200;
-        let mainMonster;
+        let mainMonster={name:"Coming soon"};
         let weatherNum=3;
         switch (level) {
             case 1:
@@ -87,8 +87,12 @@ let Level= {
                 mainMonster=new Monster(MONSTERS[1], 700, -1000);
                 break;
             case 3:
-                this.stageMonsterCount = 5;
+                this.stageMonsterCount = 9;
                 mainMonster=new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
                 new Monster(MONSTERS[2], 400, -300);
                 new Monster(MONSTERS[2], 400, -300);
                 new Monster(MONSTERS[2], 400, -300);
