@@ -104,6 +104,9 @@ function keyDownHandler(e) {
         case 38:
             Game.p.jump();
             break;
+        case 32:
+            Game.p.jump();
+            break;
         case 81: //q
             Magic.doSkill(Game.p,0);
             break;
