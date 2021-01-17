@@ -58,6 +58,7 @@ let Level= {
             text.canAct=true;
             text.addAction(100,100,function(){Screen.selectScreen();})
             Magic.magicPoint=0;
+            Level.stageMonsterCount=0;
         };
         Magic.magicPoint=10000*Level.playerLevel;
         Camera.makeMovingCamera(Game.p,0,0,10);
@@ -87,8 +88,10 @@ let Level= {
                 mainMonster=new Monster(MONSTERS[1], 700, -1000);
                 break;
             case 3:
-                this.stageMonsterCount = 9;
+                this.stageMonsterCount = 11;
                 mainMonster=new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
                 new Monster(MONSTERS[2], 400, -300);
                 new Monster(MONSTERS[2], 400, -300);
                 new Monster(MONSTERS[2], 400, -300);

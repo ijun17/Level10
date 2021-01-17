@@ -7,7 +7,7 @@ let Camera={
         else return x;
     },
     getY:function(y){
-        if(Camera.cameraOn)return ((y-Camera.e.y)*Camera.extension+Screen.perY(70));
+        if(Camera.cameraOn)return ((y-Camera.e.y)*Camera.extension+Screen.perY(65));
         else return y;
     },
     getS:function(w){ //size

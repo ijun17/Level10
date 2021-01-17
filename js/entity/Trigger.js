@@ -8,6 +8,7 @@ class Trigger extends Entity{
         this.code=f;
         this.ga=0;
         this.canCollision=false;
+        this.canRemoved = true;
     }
 
     draw(){
@@ -22,5 +23,6 @@ class Trigger extends Entity{
     collisionHandler(e){
         if(e instanceof MapBlock||!e.canCollision)return;
         this.code(e);
+        this.life=0;
     }
 }

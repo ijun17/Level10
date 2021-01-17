@@ -89,6 +89,17 @@ let Screen= {
         
         let clickHereText = new Button(Screen.perX(50),Screen.perY(62),0,0);
         clickHereText.drawOption(null, null, "click here",Screen.perX(1.6),"black");
+        //decorate
+        new Text(Screen.perX(50), Screen.perY(90), "Top of JUNGI", Screen.perX(5),"rgb(42, 42, 42)",null,-1,false);
+        new MapBlock(Screen.perX(5),Screen.perY(62),Screen.perX(15),Screen.perY(30));
+        new MapBlock(Screen.perX(27),Screen.perY(70),Screen.perX(15),Screen.perY(30));
+        new MapBlock(Screen.perX(58),Screen.perY(70),Screen.perX(15),Screen.perY(30));
+        new MapBlock(Screen.perX(80),Screen.perY(62),Screen.perX(15),Screen.perY(30));
+        new MapBlock(Screen.perX(5),Screen.perY(80),Screen.perX(90),Screen.perY(20));
+        Game.p = new Player(Screen.perX(10),Screen.perY(50));
+        Game.p.removeHandler=function(){Game.click(Screen.perX(50), Screen.perY(50));};
+        let m1=new Monster(MONSTERS[0],Screen.perX(85),Screen.perY(50));
+        m1.canAct=false;
     },
 
     selectScreen:function() {
@@ -274,6 +285,7 @@ let Screen= {
         monster.life = 1000000;
         monster.action = [];
         monster.addAction(100,100,function(){monster.canMove=false;});
+        monster.canRemoved = false;
     },
 
     makeMagicScreen:function(){

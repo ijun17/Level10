@@ -53,7 +53,7 @@ class Player extends Entity{
 
     jump(){
         if(this.canJump){
-            this.vy=this.pv;
+            this.vy=this.pv+1;
             this.canJump=false;
         }
     }

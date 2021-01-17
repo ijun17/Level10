@@ -17,7 +17,7 @@ attack:{}
 */
 //const MONSTER_SKILL={""};
 const MONSTERS = [{
-    name: "미친버섯",
+    name: "뾰족버섯",
     image: { name: "crazymushroom",w: 60, h: 60, frame: 8, MAX_X: [3, 3] },
     setStatus: function(e){ e.w=60; e.h=60; e.life=10000; e.power=200; e.speed=3; e.inv_mass=1},
     attackEffect: function(e,v){},
@@ -26,7 +26,7 @@ const MONSTERS = [{
     ]
 },
 {
-    name: "심연의 망나니 Varrc-Minok",
+    name: "심연의 망나니 <Varrc Minok>",
     image: { name: "crazymonkey", w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
     setStatus: function(e){ e.w=120;e.h=200;e.life=50000;e.power=500;e.speed=5;e.inv_mass=0.5},
     attackEffect: function(e,v){},
@@ -71,8 +71,10 @@ class Monster extends Entity {
     animation;
     name;
     target;
-    power;
-    speed;
+
+    defense=100;
+    power=100;
+    speed=1;
     attackEffect=function(){};
 
     //draw
@@ -137,9 +139,11 @@ class Monster extends Entity {
     }
 
     damage(d) {
-        d=Math.floor(d);
-        this.totalDamage += d;
-        Camera.vibrate(2);
+        if(d>this.defense){
+            d=Math.floor(d);
+            this.totalDamage += d;
+            Camera.vibrate(2);
+        }
     }
 
     addSkill(time,f){ 

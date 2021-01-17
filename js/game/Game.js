@@ -35,19 +35,6 @@ let Game = {
         Level.loadLevel();
         Magic.loadMagic();
         Screen.mainScreen();
-
-        new Text(Screen.perX(50), Screen.perY(90), "Top of JUNGI", Screen.perX(5),"rgb(42, 42, 42)",null,-1,false);
-
-        new MapBlock(Screen.perX(5),Screen.perY(62),Screen.perX(15),Screen.perY(30));
-        new MapBlock(Screen.perX(25),Screen.perY(70),Screen.perX(15),Screen.perY(30));
-        new MapBlock(Screen.perX(60),Screen.perY(70),Screen.perX(15),Screen.perY(30));
-        new MapBlock(Screen.perX(80),Screen.perY(62),Screen.perX(15),Screen.perY(30));
-        new MapBlock(Screen.perX(5),Screen.perY(80),Screen.perX(90),Screen.perY(20));
-        Game.p = new Player(Screen.perX(10),Screen.perY(50));
-        Game.p.removeHandler=function(){Game.click(Screen.perX(50), Screen.perY(50));};
-        //Game.p.addAction(50,50,function(){Magic.magicList[1][1](Game.p);}); //fire ball;
-        let m1=new Monster(MONSTERS[0],Screen.perX(85),Screen.perY(50));
-        m1.canAct=false;
     },
     updateWorld:function() {
         ctx.fillStyle=Screen.bgColor;

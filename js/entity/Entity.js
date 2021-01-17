@@ -58,10 +58,10 @@ class Entity {
         else if(this.vy<-maxV)this.vy=-maxV;
 
         if (this.y > 2000) this.life = 0;
-        //if (this.life < 1) return;
         let collisionType = null;
 
-        for (var e of Game.channel[this.channelLevel]) {//entity collision event
+        for(let i=Game.channel[this.channelLevel].length-1; i>=0; i--){ //check collision
+            let e = Game.channel[this.channelLevel][i];
             if (e != this && this.x + this.vx < e.x + e.w&& this.x + this.vx + this.w > e.x && this.y - this.vy < e.y + e.h && this.y - this.vy + this.h > e.y) {
                 if (!(this.overlap && e.overlap)&&this.canMove) {
                     if (this.x + this.w <= e.x) { //right collision

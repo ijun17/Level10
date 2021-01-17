@@ -80,13 +80,10 @@ time(player, 1,12,#(){
 })
     `,3],
 
-    ["one-gi-oc",`
-//원기옥 생성
-for(@i=0;i<4;i++){
-    @e=createMatter(5,front()*1,-1);
-    move(e,-60,200);
-    damage(e,-2);
-}
+    ["sword energy",`
+//검기 발사
+@e=createMatter(6,front()*20,0);
+damage(e,-10);
     `,4],
     ["chi-do-ri",`
 //치도리!!
@@ -205,7 +202,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         function test_setGravity(e,time,ga){addMF([time*2,ga*100]);let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
         function test_move(e,vx,vy){addMF([0,(vx+vy)**2/1000]);e.x+=vx;e.y-=vy;}
         function test_camera(target,x,y,delay){addMF([500,1000]);Camera.makeMovingCamera(target,x,y,delay);}
-        function test_time(e,startTime,endTime,f){addMF([(endTime-startTime)*2,100]);for(let i=0,j=(endTime-startTime)/10;i<j;i++)f();}
+        function test_time(e,startTime,endTime,f){addMF([endTime*2,(endTime-startTime)]);for(let i=0,j=(endTime-startTime);i<j;i++)f();}
         function test_createBlock(w,h,color){
             addMF([0,(w*h/100)**2]);let b=new Block(Game.p.x+15+front()*(w/2+25)-w/2,getY(Game.p)+h/2,w,h,color);return b;}
         function test_createMatter(type,vx,vy){
@@ -219,7 +216,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             let t=new Trigger(Game.p.x+15+front()*(w/2+25)-w/2,Game.p.y,w,h,time,f);
             addMF([time*2,w*h*time/1000+(getEnergy(t)+1)]);
             let a = new Entity(0,0,Game.PHYSICS_CHANNEL);
-            for(let i=0; i<100; i++)f(a);
+            //for(let i=0; i<100; i++)f(a);
             return t;
         }    
         
