@@ -20,13 +20,13 @@ let Magic = {
     basicMagic:[
     ["fire ball",`
 //전방에 파이어볼을 발사
-@e=createMatter(0,front()*10,3/4);
+@e=createMatter(0,front()*10,1);
 damage(e,-10);
     `,1],
 
     ["wall", `
 //길쭉한 블럭을 생성
-@block = createBlock(40,100,"black");
+@block = createBlock(40,80,"black");
 move(block,0,100);
     `,1],
 
