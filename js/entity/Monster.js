@@ -47,11 +47,11 @@ const MONSTERS = [{
 {
     name: "마법골렘",
     image: {name:"golem",w:128,h:128,frame:32,MAX_X:[4,1]},
-    setStatus: function(e){e.w=200;e.h=200;e.life=10000000;e.power=4000;e.speed=3;e.inv_mass=0.01;e.ga=-1;},
+    setStatus: function(e){e.w=200;e.h=200;e.life=10000000;e.power=4000;e.speed=3;e.inv_mass=0.01;e.ga=-1;e.canFallDie=false;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI();return 50;},
-        function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -10;return 500;}
+        function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -11;return 500;}
     ]
 },
 {

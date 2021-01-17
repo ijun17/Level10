@@ -13,6 +13,8 @@ class Entity {
     canMove = true; //움직일 수 있는가
     canAct = true; //행동을 할 수 있는가
     canInteraction = true;
+    
+    canFallDie=true;
 
     action = new Array(); //한 틱마다 행위들 [시작시간, 종료시간-1, 코드]
     
@@ -57,7 +59,7 @@ class Entity {
         if(this.vy>maxV)this.vy=maxV;
         else if(this.vy<-maxV)this.vy=-maxV;
 
-        if (this.y > 2000) this.life = 0;
+        if (this.canFallDie&&this.y > 2000) this.life = 0;
         let collisionType = null;
 
         for(let i=Game.channel[this.channelLevel].length-1; i>=0; i--){ //check collision
