@@ -63,9 +63,10 @@ class Player extends Entity{
     }
 
     damage(d) {
-        if(this.damageTick>0)return;
-        this.totalDamage += Math.floor(d);
-        if(d>0)this.damageTick=20;
-        Camera.vibrate((d<4000 ? d/200 : 20)+4);
+        if(this.damageTick==0){
+            this.totalDamage += Math.floor(d);
+            if(d>0)this.damageTick=20;
+            Camera.vibrate((d<4000 ? d/200 : 20)+5);
+        }
     }
 }

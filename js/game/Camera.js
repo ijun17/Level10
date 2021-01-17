@@ -38,7 +38,7 @@ let Camera={
         }
     },
     vibrate: function(power){
-        Camera.e.x+=(1-Math.random()*2)*power;
-        Camera.e.y+=(1-Math.random()*2)*power;
+        Camera.e.x+=power*(Math.random()-0.5>0 ? 1 : -1);
+        Camera.e.y+=power*(Math.random()-0.5>0 ? 1 : -1);
     }
 }

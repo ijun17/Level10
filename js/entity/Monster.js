@@ -17,8 +17,8 @@ attack:{}
 */
 //const MONSTER_SKILL={""};
 const MONSTERS = [{
-    name: "crazymushroom",
-    image: { w: 60, h: 60, frame: 8, MAX_X: [3, 1] },
+    name: "미친버섯",
+    image: { name: "crazymushroom",w: 60, h: 60, frame: 8, MAX_X: [3, 3] },
     setStatus: function(e){ e.w=60; e.h=60; e.life=10000; e.power=200; e.speed=3; e.inv_mass=1},
     attackEffect: function(e,v){},
     skillList: [
@@ -26,9 +26,9 @@ const MONSTERS = [{
     ]
 },
 {
-    name: "crazymonkey",
-    image: { w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
-    setStatus: function(e){ e.w=120;e.h=200;e.life=50000;e.power=1000;e.speed=5;e.inv_mass=0.5},
+    name: "심연의 망나니 Varrc-Minok",
+    image: { name: "crazymonkey", w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
+    setStatus: function(e){ e.w=120;e.h=200;e.life=50000;e.power=500;e.speed=5;e.inv_mass=0.5},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI(10);return 50;},
@@ -36,8 +36,8 @@ const MONSTERS = [{
     ]
 },
 {
-    name: "hellfly",
-    image: {w:30,h:30,frame:8,MAX_X:[1,1]},
+    name: "지옥파리",
+    image: {name:"hellfly",w:30,h:30,frame:8,MAX_X:[1,1]},
     setStatus: function(e){e.w=30;e.h=30;e.life=20000;e.power=500;e.speed=5;e.inv_mass=2;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
@@ -45,8 +45,8 @@ const MONSTERS = [{
     ]
 },
 {
-    name: "golem",
-    image: {w:128,h:128,frame:32,MAX_X:[4,1]},
+    name: "마법골렘",
+    image: {name:"golem",w:128,h:128,frame:32,MAX_X:[4,1]},
     setStatus: function(e){e.w=200;e.h=200;e.life=10000000;e.power=4000;e.speed=3;e.inv_mass=0.01;e.ga=-1;},
     attackEffect: function(e,v){},
     skillList: [
@@ -55,13 +55,13 @@ const MONSTERS = [{
     ]
 },
 {
-    name: "wyvern",
-    image: {w:80,h:80,frame:16,MAX_X:[4,1]},
+    name: "심연의지옥룡",
+    image: {name:"wyvern",w:80,h:80,frame:16,MAX_X:[4,1]},
     setStatus: function(e){e.w=300;e.h=300;e.life=10000000;e.power=4000;e.speed=3;e.inv_mass=0.1;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
-        function(e){let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.type.damage=2000;m.w=60;m.h=60;return 111;},
+        function(e){let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.type.damage=2000;m.w=60;m.h=60;return 70;},
         function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -10;return 500;}
     ]
 }
@@ -69,7 +69,7 @@ const MONSTERS = [{
 
 class Monster extends Entity {
     animation;
-    //상태
+    name;
     target;
     power;
     speed;
@@ -83,6 +83,7 @@ class Monster extends Entity {
 
     constructor(type, x, y, channelLevel = Game.PHYSICS_CHANNEL) {
         super(x, y, channelLevel);
+        this.name=type.name;
         type.setStatus(this);
         this.attackTick=type.attackEffect;
         this.target = Game.p;
@@ -92,7 +93,7 @@ class Monster extends Entity {
         }
         //image
         let temp = this;
-        this.animation=new Animation("resource/monster/" + type.name + ".png",type.image.w,type.image.h,type.image.MAX_X,function(){
+        this.animation=new Animation("resource/monster/" + type.image.name + ".png",type.image.w,type.image.h,type.image.MAX_X,function(){
             if(temp.attackTick>0){
                 temp.attackTick--;
                 return 1;

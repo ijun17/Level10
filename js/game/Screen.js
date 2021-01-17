@@ -397,18 +397,6 @@ let Screen= {
         backButton.code = function () { Screen.selectScreen() };
         backButton.drawOption(null, null, "<", Screen.perX(6), "black");
 
-        let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
-        ashSpray.canAct=true;
-        ashSpray.canInteraction=false;
-        ashSpray.addAction(1,1000000,function(){
-            if(Game.time%5==0){
-                let r = Math.random()*2000;
-                let ash=new Particle(3,Game.p.x-1000+r,-Game.p.y-600);
-                ash.life=300;
-                ash.vy-=1.5;
-            }
-        });
-
         //HP, MP GAGE
         let hpGage = new Button(canvas.width-450,10,200,20,Game.TEXT_CHANNEL);
         hpGage.drawCode=function(){

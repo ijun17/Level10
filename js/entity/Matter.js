@@ -74,8 +74,11 @@ class Matter extends Entity {
                 var damage = Math.floor(this.getVectorLength())+1;
                 e.damage(damage);
                 e.addAction(1, 100, function () { 
-                e.vx = 0; e.vy = 0; ctx.fillStyle = "rgba(167, 220, 244, 0.5)"; 
-                ctx.fillRect(Camera.getX(e.x), Camera.getY(e.y), Camera.getS(e.w), Camera.getS(e.h)); });
+                    e.vx = 0; e.vy = 0; 
+                    ctx.fillStyle = "rgba(92, 150, 212,0.5)";
+                    ctx.fillRect(Camera.getX(e.x), Camera.getY(e.y), Camera.getS(e.w), Camera.getS(e.h)); 
+                    
+                });
                 break;
             case 3:
                 e.damage(this.w);

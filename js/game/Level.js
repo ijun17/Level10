@@ -54,62 +54,56 @@ let Level= {
         //player
         Game.p = new Player(10, -60);
         Game.p.removeHandler=function(){
-            
             let text = new Text(Screen.perX(50),Screen.perY(50),"you die",Screen.perX(10),"red",null,-1,false);
             text.canAct=true;
             text.addAction(100,100,function(){Screen.selectScreen();})
             Magic.magicPoint=0;
         };
         Magic.magicPoint=10000*Level.playerLevel;
-        //camera
         Camera.makeMovingCamera(Game.p,0,0,10);
-        //준기의 탑 n층 text
-        // let floorText = new Button(-400,200,0,0,Game.TEXT_CHANNEL);
-        // floorText.life=200;
-        // floorText.drawCode = function(){
-        //     ctx.font = "bold 50px Arial";
-        //     ctx.fillStyle = "white";
-        //     ctx.textBaseline = "top";
-        //     ctx.textAlign = "left";
-        //     ctx.fillText("준기의탑 -"+level+"층",80,20);
-        //     floorText.life--;
-        // }
-        //bgColor
+
+        function printMonsterName(name=""){
+            let textE = new Text(Screen.perX(10),Screen.perY(3),"vs "+name,Screen.perX(3), "black", null, 400, false);
+            textE.textBaseline = "top";
+            textE.textAlign="left";
+        }
+        //level에 따라 달라지는 변수
         Screen.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
-        //map size
         let mapSizeW=2000;
         let mapSizeH=1000;
         let wallSize=200;
-
+        let mainMonster;
+        let weatherNum=3;
         switch (level) {
             case 1:
-                new Monster(MONSTERS[0], 1000, -1000);
                 this.stageMonsterCount = 1;
+                mainMonster=new Monster(MONSTERS[0], 1000, -1000);
                 break;
             case 2:
+                this.stageMonsterCount = 4;
                 new Monster(MONSTERS[0], 1000, -1000);
                 new Monster(MONSTERS[0], 900, -1000);
                 new Monster(MONSTERS[0], 800, -1000);
-                new Monster(MONSTERS[1], 700, -1000);
-                this.stageMonsterCount = 4;
+                mainMonster=new Monster(MONSTERS[1], 700, -1000);
                 break;
             case 3:
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
                 this.stageMonsterCount = 5;
+                mainMonster=new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
+                new Monster(MONSTERS[2], 400, -300);
                 break;
             case 4:
-                
-                new Monster(MONSTERS[3],1000, -250);
                 this.stageMonsterCount = 1;
+                mainMonster=new Monster(MONSTERS[3],1000, -250);
                 break;
             case 5:
-                
-                new Monster(MONSTERS[4],Screen.perX(50), -400).addAction(1,100,function(){Camera.vibrate(10);});
                 this.stageMonsterCount = 1;
+                mainMonster=new Monster(MONSTERS[4],Screen.perX(50), -400)
+                mainMonster.addAction(1,100,function(){Camera.vibrate(10);});
+                weatherNum=0;
+                
                 // for(let i=1; i<10; i++){
                 //     new MapBlock(50*i,-40*i,50,30);//.drawCode=MapBlock.getTexture("grass");
                 //     (new MapBlock(500*i,-400,350,30)).drawCode=MapBlock.getTexture("grass");
@@ -133,7 +127,20 @@ let Level= {
                 clearBtn.vy = -1.5;
                 break;
         }
-
+        //vs text코드 출력
+        printMonsterName(mainMonster.name);
+        //날씨 뿌리기
+        let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
+        ashSpray.canAct=true;
+        ashSpray.canInteraction=false;
+        ashSpray.addAction(1,1000000,function(){
+            if(Game.time%5==0){
+                let r = Math.random()*2000;
+                let ash=new Particle(weatherNum,Game.p.x-1000+r,-Game.p.y-600);
+                ash.life=300;
+                ash.vy-=1.5;
+            }
+        });
         //양 끝 맵블럭
         new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"rgb(48, 48, 48)");//top
         new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2,"rgb(48, 48, 48)"); //left

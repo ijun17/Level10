@@ -42,12 +42,12 @@ class Animation {
             this.imageY = tempY;
         }
         //draw 
-        if(isNotInverse)ctx.drawImage(this.image, this.imageX*this.imageW, this.imageY*this.imageH, this.imageW,this.imageH,x,y,w,h);
+        if(isNotInverse)ctx.drawImage(this.image, this.imageX*this.imageW, Math.floor(this.imageY*this.imageH), this.imageW,this.imageH,x,y,w,h);
         else {
             ctx.save();
             ctx.translate(x, y);
 			ctx.scale(-1, 1);
-            ctx.drawImage(this.image, this.imageX*this.imageW, this.imageY*this.imageH,  this.imageW,this.imageH,-w,0,w,h);
+            ctx.drawImage(this.image, this.imageX*this.imageW, Math.floor(this.imageY*this.imageH),  this.imageW,this.imageH,-w,0,w,h);
             ctx.restore();
         }
     }
