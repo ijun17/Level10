@@ -15,18 +15,21 @@ let Camera={
         else return w;
     },
     fillRect:function(x,y,w,h){
-        if(Camera.cameraOn)ctx.fillRect(Camera.getX(x), Camera.getY(y), Camera.getS(w), Camera.getS(h));
+        if(this.cameraOn)ctx.fillRect(this.getX(x), this.getY(y), this.getS(w), this.getS(h));
         else ctx.fillRect(x,y,w,h);
     },
-    // setCamera:function(target,movingDelay=10){
-    //     if(Camera.e==null)return;
-    //     Camera.cameraOn=true;
-    //     Camera.e.temp=target;
-    //     Camera.e.drawCode = function(){
-    //         Camera.e.vx=(Camera.e.temp.x-Camera.e.x)/movingDelay;
-    //         Camera.e.vy=-(Camera.e.temp.y-Camera.e.y)/movingDelay;
-    //     }
-    // },
+    strokeRect:function(x,y,w,h){
+        if(this.cameraOn)ctx.strokeRect(this.getX(x), this.getY(y), this.getS(w), this.getS(h));
+        else ctx.strokeRect(x,y,w,h);
+    },
+    fillText:function(text,x,y){
+        if(this.cameraOn)ctx.fillText(text,this.getX(x), this.getY(y));
+        else ctx.fillText(text,x,y);
+    },
+    strokeText:function(text,x,y){
+        if(this.cameraOn)ctx.strokeText(text,this.getX(x), this.getY(y));
+        else ctx.strokeText(text,x,y);
+    },
     makeMovingCamera:function(target,x,y, movingDelay=10){
         Camera.cameraOn=true;
         Camera.e=new Button(x,y,0,0, Game.TEXT_CHANNEL);

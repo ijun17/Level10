@@ -40,21 +40,16 @@ giveForce(player,front()*20,0);
 damage(player,-2000);
     `,1],
 
-    ["zero gravity",`
-//플레이어의 중력을 3초동안 없앰
-setGravity(player,300,0);    
+    ["invisioble",`
+//플레이어의 투명화
+invisible(player,300);    
     `,2],
 
-    ["meteor",`
-//머리위에서 앞으로 여러개의 파이어볼을 발사
-for(@i=0;i<4;i++){
-    for(@j=0;j<4;j++){
-        @fire=createMatter(0,front()*10,-10);
-        move(fire, front()*i*40,300-j*40);
-        damage(fire,-10);
-    }
-}
+    ["teleport",`
+//텔레포트
+move(player, front()*300, 0);
     `,2],
+
     ["fire tornado",`
 //불꽃 토네이도 생성
 @x=getX(player)+front()*200;
@@ -75,19 +70,16 @@ time(player, 1,12,#(){
 @e=createMatter(6,front()*20,0);
 damage(e,-10);
     `,3],
-
-    ["teleport",`
-//텔레포트
-move(player, front()*300, 0);
+    ["zero gravity", `
+//플레이어를 무중력 상태로 만듦
+setGravity(player,200,0);
     `,4],
-
-    
-    ["chi-do-ri",`
-//치도리!!
-time(player,1,401,#(){
-    @e=createMatter(1,0,0);
-    move(e,front()*20,0)
-});
+    ["Knockback",`
+//넉백
+@e = createTrigger(20,100,100,#(e){
+    giveForce(e, front()*20, 0);
+})
+giveForce(e,front()*20,0);
     `,5],
     ["detection",`
 //전방으로 카메라 발사
@@ -166,62 +158,45 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             magicFactor[0] = Math.floor(Math.sqrt(magicFactor[0] * magicFactor[0] + mf[0] * mf[0]));
             magicFactor[1] += Math.floor(Math.abs(mf[1]));
         }
-        //magic function
+        //UNIT MAGIC FUNCTION
         function giveForce(e,ax,ay){e.vx+=ax;e.vy+=ay;}
         function damage(e,d){if(e.canCollision)e.life-=d;}
-        function invisible(e,time){e.visibility=false;e.addAction(time,time,function(){e.visibility=true;});}
-        function freeze(e,time){e.canMove=false;e.addAction(time,time,function(){e.visibility=true;});}
+        function invisible(e,time){e.canDraw=false;e.addAction(time,time,function(){e.canDraw=true;});}
+        function freeze(e,time){e.canMove=false;e.addAction(time,time,function(){e.canMove=true;});}
         function setGravity(e,time,ga){let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
         function move(e,vx,vy){if(e instanceof Monster)return;e.x+=vx;e.y-=vy;}
         function time(e,startTime,endTime,f){e.addAction(startTime,endTime,f);}
-        function setCamera(target,x,y,delay){Camera.makeMovingCamera(target,x,-y,delay);}
-        function getX(e){return e.x+e.w/2;}
-        function getY(e){return -(e.y+e.h/2);}
+        function setCamera(p,target,x,y,delay){Camera.makeMovingCamera(target,x+p.x,p.y-y,delay);}
+        function getX(p,e){return e.x+e.w/2-(p.x+p.w/2);}
+        function getY(p,e){return p.y+p.h/2-(e.y+e.h/2);}
         function getVX(e){return e.vx;}
         function getVY(e){return e.vy;}
-        function front(){return (Game.p.isRight ? 1 : -1);}
-        function createBlock(w,h,color="black"){let b=new Block(Game.p.x+15+front()*(w/2+25)-w/2,-getY(Game.p)-h/2,w,h,color);return b;}
-        function createMatter(type,vx,vy){
-            let m=new Matter(type,0,0,vx,vy);
-            m.x=getX(Game.p)+front()*(m.w/2+15)-m.w/2;
-            m.y=-getY(Game.p)-m.h/2;
-            return m;
-        }
-        function createTrigger(w,h,time,f){
-            let t=new Trigger(Game.p.x+15+front()*(w/2+25)-w/2,-getY(Game.p)-h/2,w,h,time,f);
-            return t;
-        }
-        //test function
-        function test_giveForce(e,ax,ay){let oldE = getEnergy(e);e.vx+=ax;e.vy+=ay;let newE=getEnergy(e);addMF([0, newE-oldE]);}
-        function test_damage(e,d){addMF([0,d]);if(e.canCollision)e.life-=d;}
-        function test_invisible(e,time){addMF([time*2,100]);e.visibility=false;e.addAction(time,time,function(){e.visibility=true;});}
-        function test_freeze(e,time){addMF([time*2,100]);e.canMove=false;e.addAction(time,time,function(){e.visibility=true;});}
-        function test_setGravity(e,time,ga){addMF([time*2,ga*100]);let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
-        function test_move(e,vx,vy){addMF([0,(vx+vy)**2/1000]);e.x+=vx;e.y-=vy;}
-        function test_camera(target,x,y,delay){addMF([500,1000]);Camera.makeMovingCamera(target,x,y,delay);}
+        function front(p){return (p.isRight ? 1 : -1);}
+        function createBlock(p,w,h,color="black"){let b=new Block(p.x+p.w/2+front(p)*(w/2+p.w/2)-w/2,p.y+p.h/2-w/2,w,h,color);return b;}
+        function createMatter(p,type,vx,vy){let m=new Matter(type,0,0,vx,vy);m.x=p.x+p.w/2+front(p)*(m.w/2+15)-m.w/2;m.y=(p.y+p.h/2)-m.h/2;return m;}
+        function createTrigger(p,w,h,time,f){let t=new Trigger(p.x+p.w/2+front(p)*(w/2+25)-w/2,p.y+p.h/2-h/2,w,h,time,f);return t;}
+        //TEST FUNCTION
+        function test_giveForce(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMF([0, newE-oldE]);}
+        function test_damage(e,d){addMF([0,d]);damage(e,d);}
+        function test_invisible(e,time){addMF([time*2,(time**2)/100]);}
+        function test_freeze(e,time){addMF([time*2,(time**2)/100]);}
+        function test_setGravity(e,time,ga){addMF([time*2,time*10]);}
+        function test_move(e,vx,vy){addMF([0,(vx+vy)**2/1000]);}
+        function test_camera(target,x,y,delay){addMF([500,1000]);}
         function test_time(e,startTime,endTime,f){addMF([endTime*2,(endTime-startTime)]);for(let i=0,j=(endTime-startTime);i<j;i++)f();}
-        function test_createBlock(w,h,color){
-            addMF([0,(w*h/100)**2]);let b=new Block(Game.p.x+15+front()*(w/2+25)-w/2,getY(Game.p)+h/2,w,h,color);return b;}
-        function test_createMatter(type,vx,vy){
-            let m=new Matter(type,0,0,vx,vy);
-            m.x=getX(Game.p)+front()*(m.w/2+15)-m.w/2;
-            m.y=getY(Game.p)-m.h/2;
-            addMF([50,getEnergy(m)]);
-            return m;
-        }
-        function test_createTrigger(w,h,time,f){
-            let t=new Trigger(Game.p.x+15+front()*(w/2+25)-w/2,Game.p.y,w,h,time,f);
-            addMF([time*2,w*h*time/1000+(getEnergy(t)+1)]);
-            let a = new Entity(0,0,Game.PHYSICS_CHANNEL);
-            //for(let i=0; i<100; i++)f(a);
-            return t;
-        }    
-        
-        //keyword
+        function test_createBlock(p,w,h,color){addMF([0,(w*h/100)**2]);let b=createBlock(p,w,h,color);return b;}
+        function test_createMatter(p,type,vx,vy){let m=createMatter(p,type,vx,vy);addMF([50,getEnergy(m)]);return m;}
+        function test_createTrigger(p,w,h,time,f){let t=createTrigger(p,w,h,time,f);addMF([time*2,w*h*time/1000+(getEnergy(t)+1)]);return t;}    
+        //prohibited keyword
         let prohibitedWord=["new","function"];
         let prohibitedSymbol=["[",".","$"];
+        //test
         let testKeyword=["giveForce","damage","invisible", "freeze", "setGravity","createTrigger","move","time","createBlock","createMatter"];
+        //convert symbol to word
         let symbol={"@":"let ","#":"function"};
+        //매개변수로 x,y를 가지거나 player의 isRight에 접근하는 메소드 - 사용자는 물리엔진의 절대 좌표를 알 수 없게함.
+        let playerInsertionList=["getX","getY","front","setCamera","createMatter","createBlock","createTrigger"];
+        let playerInsertion=false;
         //convert magic code to js code
         function isEnglish(c){return (64<c&&c<91)||(96<c&&c<123);}
         function printError(text1,text2){
@@ -233,6 +208,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         for(let i=0, j=magicCode.length;i<j; i++){
             if(isEnglish(magicCode.charCodeAt(i)))temp+=magicCode[i];
             else{
+                //prohibit
                 if(prohibitedWord.includes(temp)){
                     printError("Fail: "+name, " : your code have prohibited keyword(new, function)\n'function' change to '#'");
                     return null;
@@ -241,14 +217,21 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
                     printError("Fail: "+name, " : your code have prohibited symbol('[', '.', '$')");
                     return null;
                 }
+                //convert code to test code
                 if(testKeyword.includes(temp))testCode+="test_"+temp;
                 else testCode+=temp;
                 jsCode+=temp;
-
+                if(playerInsertionList.includes(temp)){
+                    playerInsertion=true;
+                }
                 if(magicCode[i] in symbol){
                     testCode+=symbol[magicCode[i]];
                     jsCode+=symbol[magicCode[i]];
-                }else {
+                }else if(magicCode[i]=="("&&playerInsertion){
+                    testCode+="(player,";
+                    jsCode+="(player,";
+                    playerInsertion=false;
+                }else{
                     testCode+=magicCode[i];
                     jsCode+=magicCode[i];
                 }
@@ -261,6 +244,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         }
         //running test
         console.log("js code: ",testCode);
+        console.log("js code: ",jsCode);
         let magic=function(){};
         try {
             magic = eval("(function(player){"+jsCode+"})");

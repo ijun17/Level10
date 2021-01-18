@@ -3,18 +3,16 @@ class Entity {
 
     x = 0; y = 0; w = 0; h = 0; vx = 0; vy = 0; 
     ga = -0.2; friction = 0.4; inv_mass=1;//phisics;
-    
     life = 1;
-
-    overlap = true;
-    canCollision=true;
-    canRemoved = true; //삭제될 수 있는가
-    visibility = true; //보일 수 있는가
+    
+    canDraw = true; //보일 수 있는가
     canMove = true; //움직일 수 있는가
     canAct = true; //행동을 할 수 있는가
-    canInteraction = true;
-    
-    canFallDie=true;
+    canInteract = true;//다른 물체 상호작용할 수 있는지
+    overlap = true;//다른 물체와 겹칠 수 있는지
+    canCollision=true; //물리적 충돌을 하는지(flase여도 collisionHandler 작동)
+    canRemoved = true; //삭제될 수 있는가
+    canFallDie=true;//낙사하는지
 
     action = new Array(); //한 틱마다 행위들 [시작시간, 종료시간-1, 코드]
     
@@ -26,9 +24,9 @@ class Entity {
     }
 
     update() {
-        if (this.visibility) this.draw();
+        if (this.canDraw) this.draw();
         if (this.canAct) this.act();
-        if (this.canInteraction) this.interact();
+        if (this.canInteract) this.interact();
         if(this.canMove)this.move();
     }
 
@@ -60,18 +58,20 @@ class Entity {
         else if(this.vy<-maxV)this.vy=-maxV;
 
         if (this.canFallDie&&this.y > 2000) this.life = 0;
-        let collisionType = null;
+        let downCollision=false;
 
         for(let i=Game.channel[this.channelLevel].length-1; i>=0; i--){ //check collision
             let e = Game.channel[this.channelLevel][i];
             if (e != this && this.x + this.vx < e.x + e.w&& this.x + this.vx + this.w > e.x && this.y - this.vy < e.y + e.h && this.y - this.vy + this.h > e.y) {
-                if (!(this.overlap && e.overlap)&&this.canMove) {
+                let collisionType = null;
+                if (!(this.overlap && e.overlap)) {
                     if (this.x + this.w <= e.x) { //right collision
                         collisionType = 'R';
                     } else if (this.x >= e.x + e.w) { //left collision
                         collisionType = 'L';
                     } else if (this.y + this.h <= e.y) { //down collision
                         collisionType = 'D';
+                        downCollision=true;
                     } else if (this.y >= e.y + e.h) { //up collision
                         collisionType = 'U';
                     }
@@ -95,13 +95,11 @@ class Entity {
             }
         }
         if (this.canMove) {
-            if (collisionType == 'D') {
+            if (downCollision) {
                 if (this.vx > 0) this.vx -= this.friction;
                 else this.vx += this.friction;
                 if (Math.abs(this.vx) < 2) this.vx = 0;
             }
-            
-            
         }
     }
 

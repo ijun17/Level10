@@ -24,27 +24,20 @@ let Level= {
         this.stageLevel = 0;
         this.stageMonster = 0;
         //animation
-        let clearBtn = new Button(Screen.perX(50)-2,0, 4, 4);
+        Game.p.canRemoved=false;
+        let clearBtn = new Button(Screen.perX(50)-2,0, 4, 4,Game.TEXT_CHANNEL);
         clearBtn.code = function () { 
             Screen.selectScreen();
-            if(isLevelUp){
-                new Text(Screen.perX(50), Screen.perY(50),"Level Up",100,"yellow",null,100,false);
-            }
+            if(isLevelUp)new Text(Screen.perX(50), Screen.perY(50),"Level Up",100,"yellow",null,100,false);
         };
-        clearBtn.drawCode = function(){
-            ctx.font = "bold 200px Arial";
-            ctx.fillStyle = "yellow";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            ctx.fillText("CLEAR",Screen.perX(50), clearBtn.y);
-        }
+        clearBtn.drawOption(null,null,"CLEAR",Screen.perX(20),"yellow");
         clearBtn.vy=-1.5;
-        clearBtn.canInteraction=true;
+        clearBtn.canInteract=true;
         clearBtn.canMove=true;
 
-        let click = new Block(canvas.width / 2, canvas.height, 0, 0, "black", Game.BUTTON_CHANNEL);
+        let click = new Block(canvas.width / 2, canvas.height, 0, 0, "black", Game.TEXT_CHANNEL);
         click.life = 1000;
-        click.canInteraction = false;
+        click.canInteract = false;
         click.canMove=false;
     },
 
@@ -54,9 +47,13 @@ let Level= {
         //player
         Game.p = new Player(10, -60);
         Game.p.removeHandler=function(){
+            Game.channel[Game.BUTTON_CHANNEL]=[];
+            Game.channel[Game.TEXT_CHANNEL]=[];
+
             let text = new Text(Screen.perX(50),Screen.perY(50),"you die",Screen.perX(10),"red",null,-1,false);
             text.canAct=true;
-            text.addAction(100,100,function(){Screen.selectScreen();})
+            text.addAction(200,200,function(){Screen.selectScreen();});
+            
             Magic.magicPoint=0;
             Level.stageMonsterCount=0;
         };
@@ -139,7 +136,7 @@ let Level= {
         //날씨 뿌리기
         let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
         ashSpray.canAct=true;
-        ashSpray.canInteraction=false;
+        ashSpray.canInteract=false;
         ashSpray.addAction(1,1000000,function(){
             if(Game.time%5==0){
                 let r = Math.random()*2000;

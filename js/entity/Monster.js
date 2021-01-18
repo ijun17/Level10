@@ -32,7 +32,7 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI(10);return 50;},
-        function(e){e.createMatterToTarget(2,e.getTargetDir()*2,0,10);return 200;}
+        function(e){if(e.canTarget())e.createMatterToTarget(2,e.getTargetDir()*2,0,10);return 200;}
     ]
 },
 {
@@ -61,7 +61,7 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
-        function(e){let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.type.damage=2000;m.w=60;m.h=60;return 70;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.type.damage=2000;m.w=60;m.h=60;return 70;},
         function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -10;return 500;}
     ]
 }
@@ -70,7 +70,7 @@ const MONSTERS = [{
 class Monster extends Entity {
     animation;
     name;
-    target;
+    target=null;
 
     defense=100;
     power=100;
@@ -124,7 +124,7 @@ class Monster extends Entity {
         //공격
         if(!(e instanceof Monster||e instanceof MapBlock)){
             e.damage((1 - Math.random()*2)*this.power/10+this.power);
-            this.attackTick = 10;
+            this.attackTick = this.animation.fps*this.animation.MAX_X[1];
             if (e.x + e.w / 2 > this.x + this.w / 2) {
                 e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.power) / 3,0.3);
             } else {
@@ -150,7 +150,13 @@ class Monster extends Entity {
         let temp=this;
         this.addAction(time,time,function(){let cooltime = f(temp);temp.addSkill(cooltime,f)});
     }
-    getTargetDir(){return (this.x+this.w/2 < this.target.x+this.target.w/2 ? 1 : -1)}
+    //편의기능
+    canTarget(){return (this.target!=null&&this.target.canDraw)}
+    getTargetDir(){
+        if(this.canTarget())return (this.x+this.w/2 < this.target.x+this.target.w/2 ? 1 : -1);
+        else return (Math.random()-0.5>0 ? 1 : -1);
+        
+    }
     createMatterToTarget(type,xDir,yDir,power){
         let matter_x = this.x+this.w/2+(this.w/2+15)*xDir-15;
         let matter_y = this.y+this.h/2+(this.h/2+15)*yDir-15;
@@ -164,7 +170,7 @@ class Monster extends Entity {
         let matter_y = this.y+this.h/2+(this.h/2+15)*yDir-15;
         return  new Matter(type, matter_x, matter_y,vx,vy);
     }
-
+    //MONSTER MOVING
     AI(noise = 0) { //걸어 댕기는 놈
         this.isRight=(this.getTargetDir()>0);
         this.vx = this.speed*(this.isRight ? 1 : -1)+(1 - Math.random()*2)*noise;

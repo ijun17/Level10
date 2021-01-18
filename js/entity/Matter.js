@@ -1,8 +1,8 @@
 const matterTypes=[{ type:function(){return {name: "fire", num:0, damage: 500}} },
         { type:function(){return {name: "lightning", num:1, damage: 500}} },
-        { type:function(){return {name: "ice", num:2, damage: 50}} },
-        { type:function(){return {name: "explosion", num:3, damage: 20}} },
-        { type:function(){return {name: "arrow", num:4, damage: 10}} },
+        { type:function(){return {name: "ice", num:2, damage: 200}} },
+        { type:function(){return {name: "explosion", num:3, damage: 200}} },
+        { type:function(){return {name: "arrow", num:4, damage: 200}} },
         { type:function(){return {name: "energy", num:5, damage: 1000}} },
         { type:function(){return {name: "sword", num:6, damage: 200}} }];
 
@@ -10,6 +10,8 @@ class Matter extends Entity {
     img = new Image; //엔티티의 이미지
     type;
     sound = new Audio();
+
+    effect=function(){};
     constructor(typenum, x, y, vx = 0, vy = 0,channelLevel=Game.PHYSICS_CHANNEL) {
         super(x, y,channelLevel);
         this.type = matterTypes[typenum].type();

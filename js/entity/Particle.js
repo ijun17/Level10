@@ -14,7 +14,6 @@ class Particle extends Entity{
         this.type=particleTypes[typeNum];
         this.w=10;
         this.h=10;
-        this.canAct=false;
         this.ga=this.type.ga;
         this.life=50;
         this.img.src="resource/particle/"+this.type.name+".png";
@@ -24,12 +23,9 @@ class Particle extends Entity{
 
     update(){
         this.life--;
-        //draw
         ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
-        //move
         this.x+=this.vx;
         this.y-=this.vy;
         this.vy+=this.ga;
-        //remove는 Game에서 관리
     }
 }

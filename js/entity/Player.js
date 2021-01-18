@@ -13,7 +13,6 @@ class Player extends Entity{
         this.w=30;
         this.h=60;
         this.life=10000*Level.playerLevel;
-        //this.overlap=false;
         this.ga=-0.2;
         this.friction=0.4;
         let p=this;
@@ -28,8 +27,8 @@ class Player extends Entity{
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
         ctx.font="bold 20px Arial";
-        ctx.fillStyle="black"
-        ctx.fillText("hp: "+(Math.floor(this.life)),Camera.getX(this.x),Camera.getY(this.y-20));
+        ctx.fillStyle="black";
+        Camera.fillText("hp: "+(Math.floor(this.life)),this.x,this.y-20);
         //damage
         if (this.totalDamage > 0) {
             new Text(this.x + this.w / 2, this.y - 50,this.totalDamage,30,"red","black",40);
@@ -38,9 +37,6 @@ class Player extends Entity{
         }
         if(this.damageTick>0)this.damageTick--;
     }
-    // giveForce(){
-    //     if(this.damageTick=0)super.giveForce();
-    // }
     move(){
         this.x += this.vx;
         this.y -= this.vy;
@@ -60,6 +56,7 @@ class Player extends Entity{
 
     collisionHandler(e,ct){
         if(ct=='D'&&!this.canJump)this.canJump=true;
+        else if(ct==null&&e instanceof MapBlock)this.damage(10000);
     }
 
     damage(d) {

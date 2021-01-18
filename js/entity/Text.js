@@ -6,7 +6,7 @@ class Text extends Entity{
     camera;
     textBaseline="middle";
     textAlign="center";
-    constructor(x,y,text,size,fillColor=null,strokeColor=null,life=100,camera=true){
+    constructor(x,y,text="",size="1",fillColor=null,strokeColor=null,life=100,camera=true){
         super(x,y,Game.TEXT_CHANNEL);
         this.text=text;
         this.font="bold " + size + "px Arial";
@@ -14,7 +14,7 @@ class Text extends Entity{
         this.fillColor=fillColor;
         this.life=life;
         this.camera=camera;
-        this.canInteraction=false;
+        this.canInteract=false;
         this.ga=0;
         this.canRemoved=false;
     }

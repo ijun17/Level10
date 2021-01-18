@@ -91,11 +91,11 @@ let Screen= {
         clickHereText.drawOption(null, null, "click here",Screen.perX(1.6),"black");
         //decorate
         new Text(Screen.perX(50), Screen.perY(90), "Top of JUNGI", Screen.perX(5),"rgb(42, 42, 42)",null,-1,false);
-        new MapBlock(Screen.perX(5),Screen.perY(62),Screen.perX(15),Screen.perY(30));
-        new MapBlock(Screen.perX(27),Screen.perY(70),Screen.perX(15),Screen.perY(30));
-        new MapBlock(Screen.perX(58),Screen.perY(70),Screen.perX(15),Screen.perY(30));
-        new MapBlock(Screen.perX(80),Screen.perY(62),Screen.perX(15),Screen.perY(30));
-        new MapBlock(Screen.perX(5),Screen.perY(80),Screen.perX(90),Screen.perY(20));
+        new MapBlock(Screen.perX(5),Screen.perY(62),Screen.perX(15),Screen.perY(50));
+        new MapBlock(Screen.perX(27),Screen.perY(70),Screen.perX(15),Screen.perY(50));
+        new MapBlock(Screen.perX(58),Screen.perY(70),Screen.perX(15),Screen.perY(50));
+        new MapBlock(Screen.perX(80),Screen.perY(62),Screen.perX(15),Screen.perY(50));
+        new MapBlock(Screen.perX(5),Screen.perY(80),Screen.perX(90),Screen.perY(50));
         Game.p = new Player(Screen.perX(10),Screen.perY(50));
         Game.p.removeHandler=function(){Game.click(Screen.perX(50), Screen.perY(50));};
         let m1=new Monster(MONSTERS[0],Screen.perX(85),Screen.perY(50));
@@ -109,7 +109,7 @@ let Screen= {
 
         let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
         ashSpray.canAct=true;
-        ashSpray.canInteraction=false;
+        ashSpray.canInteract=false;
         ashSpray.addAction(1,1000000,function(){
             if(Game.time%10==0){
                 let r = Math.random()*canvas.width;
@@ -132,9 +132,8 @@ let Screen= {
         //MOBILE MODE BUTTON
         let mobileButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
         mobileButton.code = function () {
-            if(!Screen.isMobile){Game.convertMobileMode(true);Camera.extension=0.7;}
+            if(!Screen.isMobile){Game.convertMobileMode(true);}
             startFs(canvas);
-            if(canvas.width == Screen.CANVAS_W)Camera.extension=1;//전체화면에 실패했을때 그대로
             Screen.mainScreen();
             let full = new Button((canvas.width - 300)/2, (canvas.height-100)/2, 300, 100);
             full.code=function(){
@@ -155,13 +154,13 @@ let Screen= {
 
         //LEVEL BUTTON
         let block = new Button((canvas.width - Screen.perX(16)) /2, -100, Screen.perX(16), space+100);
-        block.canInteraction=true;
+        block.canInteract=true;
         for (let i = 1; i <= Level.playerLevel; i++) {
             let levelButton = new Button((canvas.width - Screen.perX(16)) /2, Screen.perX(16) + i * (space+Screen.perX(4)), Screen.perX(16), Screen.perX(4));
             levelButton.code = function () { Screen.gameScreen(); Level.makeStage(i); };
             levelButton.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)", "black", "LEVEL" + i, Screen.perX(3), "black");
             levelButton.ga = 0.5;
-            levelButton.canInteraction=true;
+            levelButton.canInteract=true;
             levelButton.canMove=true;
         }
     },
@@ -244,7 +243,7 @@ let Screen= {
             magicBtn.temp.push(i); //temp[0]=Magic.magicList
             magicBtn.temp.push(null); //temp[1] is keyButton index
             magicBtn.ga = 0.5;
-            magicBtn.canInteraction=true;
+            magicBtn.canInteract=true;
             magicBtn.canMove=true;
 
             let keyIndex = Magic.skillNum.findIndex(function (e) { return e == i; });
@@ -279,7 +278,10 @@ let Screen= {
         //TEST WORLD
         new MapBlock(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "rgb(35, 35, 35)");
         function makePlayer(){Game.p=new Player(canvas.width*5/9+20, 0);Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();}}
+        Camera.makeMovingCamera(Game.p,0,0,10);
+        Camera.cameraOn=false;
         makePlayer();
+        Game.keyboardOn=true;
         Magic.magicPoint=0; //스킬 못쓰게
         let monster = new Monster(MONSTERS[0], canvas.width-100, 0);
         monster.life = 1000000;
@@ -358,7 +360,7 @@ let Screen= {
             magicBtn.ga = 0.5;
             magicBtn.vy = 20;
             magicBtn.canMove = true;
-            magicBtn.canInteraction = true;
+            magicBtn.canInteract = true;
             
         }
         let plusButton = new Button(10, Screen.perX(6)+10, 200, 40);
@@ -396,20 +398,21 @@ let Screen= {
         //TEST MAP
         Magic.magicPoint=0;
         new MapBlock(0,canvas.height-80,canvas.width,80).drawCode=MapBlock.getTexture("grass");
+        Camera.makeMovingCamera(Game.p,0,0,10);
+        Camera.cameraOn=false;
         function makePlayer(){Game.p=new Player(canvas.width/2, 0);Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();}}
         makePlayer();
-        
+        Game.keyboardOn=true;
     },
 
     gameScreen:function() {
         Game.resetGame();
         Camera.cameraOn=true;
-
+        Game.keyboardOn=true;
         let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.code = function () { Screen.selectScreen() };
         backButton.drawOption(null, null, "<", Screen.perX(6), "black");
-
-
+        //VIEW
         const viewTextSize=Screen.perX(1.5);
         const MAX_HP = 10000*Level.playerLevel;
         const MAX_MP = 20000*Level.playerLevel;
@@ -438,7 +441,6 @@ let Screen= {
                 ctx.fillText(magic[0] + "("+magic[3]+"): " + (coolT > 0 ? (coolT / 100) : "ready"), Screen.perX(75), Screen.perX(1)+Screen.perX(2)*i);
             }
         }
-
         
         //MOBILE BUTTON 
         let mobileButtonSize=70;
@@ -452,7 +454,6 @@ let Screen= {
             let rightButton = new Button(15+mobileButtonSize*2, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
             rightButton.code = function () { Game.p.moveFlag = true; Game.p.isRight = true; };
             rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", 80, "black");
-
             let keys=["Q","W","E","R"];
             for(let i=0; i<4; i++){
                 let keyButton = new Button(canvas.width-(5*4+mobileButtonSize*4)+i*(mobileButtonSize+5),canvas.height-mobileButtonSize-5,mobileButtonSize,mobileButtonSize);

@@ -12,7 +12,7 @@ class MapBlock extends Entity{ //안부숴지는
         this.canRemoved=false;
         this.canAct=false;
         this.canMove=false;
-        this.canInteraction=false;
+        this.canInteract=false;
     }
 
     update(){
@@ -40,9 +40,4 @@ class MapBlock extends Entity{ //안부숴지는
     damage(d, textColor=null){}
     giveForce(ax, ay) {}
     addAction(start, end, code) {}
-
-    collisionHandler(){
-        this.vx=0;
-        this.vy=0;
-    }
 }
