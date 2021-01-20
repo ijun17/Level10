@@ -5,7 +5,7 @@ const MATTERS=[
             e.power=500;
             e.addAction(1,10000,function (){if(Game.time%10==0){new Particle(2,e.x,e.y);new Particle(0,e.x,e.y);}});
         },
-        effect:function(e,v){v.giveDamage(e.power);v.giveForce(e.vx,e.vy+1);}
+        effect:function(e,v){v.giveDamage(e.power);v.giveForce(e.vx/e.inv_mass,(e.vy+1)/e.inv_mass);}
     },
     {
         name:"electricity",
@@ -16,23 +16,23 @@ const MATTERS=[
         name:"ice",
         setStatus:function(e){e.power=200;},
         effect:function(e,v){
-            v.giveDamage(Math.floor(this.getVectorLength())+1);
+            v.giveDamage(Math.floor(this.getVectorLength())+e.power);
             v.addAction(1,150,function(){v.vx=0;v.vy=0;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
         }
     },
     {
         name:"arrow",
-        setStatus:function(e){e.power=200;},
-        effect:function(e,v){v.giveDamage(Math.floor(Math.abs(e.vx**3)+Math.abs(e.vy**3))+e.power);v.giveForce(e.vx,e.vy+1);}
+        setStatus:function(e){e.power=100;},
+        effect:function(e,v){v.giveDamage(Math.floor(e.getVectorLength()*e.power));v.giveForce(e.vx/e.inv_mass,(e.vy+1)/e.inv_mass);}
     },
     {
         name:"energy",
         setStatus:function(e){e.power=1000;},
         effect:function(e,v){
-            if(v instanceof Matter&&e.typenum==4){
+            if(v instanceof Matter&&v.typenum==4){
                 v.x=-10000;e.life+=v.life+1;v.life=0;e.w+=v.w;e.h+=v.h;
                 e.giveForce(v.vx, v.vy);
-                e.type.power+=e.type.power;
+                e.power+=v.power;
             }else{
                 v.giveDamage(e.power);
                 v.giveForce(e.vx,e.vy+1);
@@ -41,9 +41,9 @@ const MATTERS=[
     },
     {
         name:"sword",
-        setStatus:function(e){e.power=200;e.w*=e.getVectorLength()/5;e.h=e.w;},
+        setStatus:function(e){e.power=20;e.w*=e.getVectorLength()/5;e.h=e.w;},
         effect:function(e,v){
-            v.giveDamage(e.getVectorLength()*e.w/3+e.power);
+            v.giveDamage(e.w*e.power);
             v.giveForce(e.vx,e.vy+1);
         }
     }
@@ -61,6 +61,7 @@ class Matter extends Entity {
         this.w = 30;
         this.h = 30;
         this.ga = -0.02;
+        this.inv_mass=5;
         let type=MATTERS[typenum];
         this.typenum=typenum;
         this.img.src = "resource/matter/" + type.name + ".png";

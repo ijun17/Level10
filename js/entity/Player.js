@@ -10,11 +10,13 @@ class Player extends Entity{
 
     constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
+        //default
         this.w=30;
         this.h=60;
         this.life=10000*Level.playerLevel;
         this.ga=-0.2;
         this.friction=0.4;
+        this.inv_mass=1;
         let p=this;
         this.animation = new Animation("resource/player/"+`player.png`,30,60,[1,1],function(){
             if(p.moveFlag)return 1;

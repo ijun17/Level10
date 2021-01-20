@@ -30,6 +30,7 @@ let Game = {
         document.addEventListener("keyup", this.keyUpHandler, false);
         canvas.addEventListener("mousedown", this.clickDownHandler, false);
         //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A, 붉은빛밤하늘: #3F3939, 보라빛밤하늘: #3C3647, 겨울아침:rgb(179, 211, 244)}
+        
         Level.loadLevel();
         Magic.loadMagic();
         Screen.mainScreen();
@@ -128,4 +129,4 @@ let Game = {
 }
 
 Game.startGame();
-setInterval(Game.updateWorld, 10);
+let systemclock = setInterval(Game.updateWorld, 10);

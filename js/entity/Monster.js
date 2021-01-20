@@ -28,7 +28,7 @@ const MONSTERS = [{
 {
     name: "심연의 망나니 <Varrc Minok>",
     image: { name: "crazymonkey", w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
-    setStatus: function(e){ e.w=120;e.h=200;e.life=50000;e.power=500;e.speed=5;e.inv_mass=0.5},
+    setStatus: function(e){ e.w=120;e.h=200;e.life=50000;e.power=500;e.speed=5;e.inv_mass=0.2},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI(10);return 50;},
@@ -61,7 +61,7 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
-        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.power=2000;m.w=60;m.h=60;return 70;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 70;},
         function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -10;return 500;}
     ]
 }
@@ -129,9 +129,9 @@ class Monster extends Entity {
             e.giveDamage((1 - Math.random()*2)*this.power/10+this.power);
             this.attackTick = this.animation.fps*this.animation.MAX_X[1];
             if (e.x + e.w / 2 > this.x + this.w / 2) {
-                e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.power) / 3,0.3);
+                e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.power)/5/e.inv_mass,0.3);
             } else {
-                e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.power) / 3,0.3);
+                e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.power)/5/e.inv_mass,0.3);
             }
         }
     }

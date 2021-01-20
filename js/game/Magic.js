@@ -20,13 +20,14 @@ let Magic = {
     basicMagic:[
     ["fire ball",`
 //전방에 파이어볼을 발사
-@e=createMatter(0,front()*10,1);
-damage(e,-10);
+@e=createMatter(FIRE,front()*10,1);
+giveLife(e,10);
+move(e,front()*30, 0);
     `,1],
 
     ["wall", `
 //길쭉한 블럭을 생성
-@block = createBlock(40,80,"black");
+@block = createBlock(30,100,"black");
 move(block,0,100);
     `,1],
 
@@ -37,7 +38,7 @@ giveForce(player,front()*20,0);
 
     ["heal",`
 //플레이어 hp를 2000회복
-damage(player,-2000);
+giveLife(player,2000);
     `,1],
 
     ["invisible",`
@@ -55,10 +56,10 @@ move(player, front()*300, 0);
 @x=getX(player)+front()*200;
 @i=0;
 time(player, 1,12,#(){
-    @fire = createMatter(0,0,0);
+    @fire = createMatter(FIRE,0,0);
     move(fire,front()*(200-13*i-15), i*35);
     //setGravity(fire,500,0);
-    damage(fire,-500)
+    giveLife(fire,500)
     time(fire,1,500,#(){
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
     });
@@ -67,8 +68,8 @@ time(player, 1,12,#(){
     `,3],
     ["sword energy",`
 //검기 발사
-@e=createMatter(5,front()*20,0);
-damage(e,-10);
+@e=createMatter(SWORD,front()*20,0);
+giveLife(e,10);
     `,3],
     ["zero gravity", `
 //플레이어를 무중력 상태로 만듦
@@ -85,7 +86,7 @@ giveForce(e,front()*20,0);
 //전방으로 카메라 발사
 @block=createBlock(10,10,"blue");
 @dt=150;
-damage(block,-dt+100);
+giveLife(block,dt-100);
 setGravity(block,dt,0);
 move(block,0,100);
 giveForce(block,front()*20,0);
@@ -155,12 +156,18 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             return Math.abs(test.life);
         }
         function addMF(mf) {
-            magicFactor[0] = Math.floor(Math.sqrt(magicFactor[0] * magicFactor[0] + mf[0] * mf[0]));
+            magicFactor[0] = Math.floor(Math.sqrt(magicFactor[0]**2 + mf[0]**2));
             magicFactor[1] += Math.floor(Math.abs(mf[1]));
         }
         //UNIT MAGIC FUNCTION
+        const FIRE=0;
+        const ELECTRICITY=1;
+        const ICE=2;
+        const ARROW=3;
+        const ENERGY=4;
+        const SWORD=5;
         function giveForce(e,ax,ay){e.vx+=ax;e.vy+=ay;}
-        function damage(e,d){if(e.canCollision)e.life-=d;}
+        function giveLife(e,d){if(e.canCollision)e.life+=d;}
         function invisible(e,time){e.canDraw=false;e.addAction(time,time,function(){e.canDraw=true;});}
         function freeze(e,time){e.canMove=false;e.addAction(time,time,function(){e.canMove=true;});}
         function setGravity(e,time,ga){let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
@@ -177,13 +184,33 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         function createTrigger(p,w,h,time,f){let t=new Trigger(p.x+p.w/2+front(p)*(w/2+25)-w/2,p.y+p.h/2-h/2,w,h,time,f);return t;}
         //TEST FUNCTION
         function test_giveForce(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMF([0, newE-oldE]);}
-        function test_damage(e,d){addMF([0,d]);damage(e,d);}
+        function test_giveLife(e,d){addMF([0,d]);giveLife(e,d);}
         function test_invisible(e,time){addMF([time*2,(time**2)/100]);}
         function test_freeze(e,time){addMF([time*2,(time**2)/100]);}
         function test_setGravity(e,time,ga){addMF([time*2,time*10]);}
         function test_move(e,vx,vy){addMF([0,(vx+vy)**2/1000]);}
         function test_camera(target,x,y,delay){addMF([500,1000]);}
-        function test_time(e,startTime,endTime,f){addMF([endTime*2,(endTime-startTime)]);for(let i=0,j=(endTime-startTime);i<j;i++)f();}
+        function test_time(e,startTime,endTime,f){
+            /*
+            컴파일 시간의 99%가 test_time 함수 때문임
+            따라서 진행시간에 따라 magicFactor 계산 방법을 분리
+            기존 - [3315, 72496] [10611,176634]
+            새로운 방법 - 기존 값에서 +-200
+            기존의 결과와 매우 근접한 결과가 나온 동시에 컴파일시간을 매우 줄임
+            단점-함수가 무시되는 시간대가 있으므로 사용자가 이 시간대를 악용해 magicfactor를 줄일 수 있음.
+            */
+            if(endTime-startTime>100){
+                let oldM0 = magicFactor[0];
+                let oldM1 = magicFactor[1];
+                for(let i=0,j=(endTime-startTime)/10;i<j;i++)f();
+                let newM0 = magicFactor[0];
+                let newM1 = magicFactor[1];
+                addMF([Math.sqrt((newM0**2-oldM0**2)*9), (newM1-oldM1)*9]);
+            }else{
+                for(let i=0,j=(endTime-startTime);i<j;i++)f();
+            }
+            addMF([endTime*2,(endTime-startTime)]);
+        }
         function test_createBlock(p,w,h,color){addMF([0,(w*h/100)**2]);let b=createBlock(p,w,h,color);return b;}
         function test_createMatter(p,type,vx,vy){let m=createMatter(p,type,vx,vy);addMF([50,getEnergy(m)]);return m;}
         function test_createTrigger(p,w,h,time,f){let t=createTrigger(p,w,h,time,f);addMF([time*2,w*h*time/1000+(getEnergy(t)+1)]);return t;}    
@@ -191,7 +218,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         let prohibitedWord=["new","function"];
         let prohibitedSymbol=["[",".","$"];
         //test
-        let testKeyword=["giveForce","damage","invisible", "freeze", "setGravity","createTrigger","move","time","createBlock","createMatter"];
+        let testKeyword=["giveForce","giveLife","invisible", "freeze", "setGravity","createTrigger","move","time","createBlock","createMatter"];
         //convert symbol to word
         let symbol={"@":"let ","#":"function"};
         //매개변수로 x,y를 가지거나 player의 isRight에 접근하는 메소드 - 사용자는 물리엔진의 절대 좌표를 알 수 없게함.
@@ -247,6 +274,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         console.log("js code: ",jsCode);
         let magic=function(){};
         try {
+            //clearInterval(systemclock);
             magic = eval("(function(player){"+jsCode+"})");
             let testMagic=eval("(function(player){"+testCode+"})");
             let temp = Game.p;
@@ -254,6 +282,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             Game.p.dieCode=function(){};
             testMagic(Game.p);
             Game.p=temp;
+            //systemclock = setInterval(Game.updateWorld, 10);
         }catch(e){
             printError("Fail: "+name," : syntex error")
             return null;

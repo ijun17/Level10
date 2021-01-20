@@ -25,20 +25,9 @@ let Level= {
         this.stageMonster = 0;
         //animation
         Game.p.canRemoved=false;
-        let clearBtn = new Button(Screen.perX(50)-2,0, 4, 4,Game.TEXT_CHANNEL);
-        clearBtn.code = function () { 
-            Screen.selectScreen();
-            if(isLevelUp)new Text(Screen.perX(50), Screen.perY(50),"Level Up",100,"yellow",null,100,false);
-        };
-        clearBtn.drawOption(null,null,"CLEAR",Screen.perX(20),"yellow");
-        clearBtn.vy=-1.5;
-        clearBtn.canInteract=true;
-        clearBtn.canMove=true;
-
-        let click = new Block(canvas.width / 2, canvas.height, 0, 0, "black", Game.TEXT_CHANNEL);
-        click.life = 1000;
-        click.canInteract = false;
-        click.canMove=false;
+        let clearText = new Text(Screen.perX(50),Screen.perY(0), "CLEAR", Screen.perX(20), "yellow", null,300,false);
+        clearText.vy=-Screen.perY(100)/300;
+        clearText.removeHandler=function(){Screen.selectScreen();};
     },
 
 
@@ -49,11 +38,9 @@ let Level= {
         Game.p.removeHandler=function(){
             Game.channel[Game.BUTTON_CHANNEL]=[];
             Game.channel[Game.TEXT_CHANNEL]=[];
-
-            let text = new Text(Screen.perX(50),Screen.perY(50),"you die",Screen.perX(10),"red",null,-1,false);
+            let text = new Text(Screen.perX(50),Screen.perY(50),"you die",Screen.perX(10),"red",null,200,false);
             text.canAct=true;
-            text.addAction(200,200,function(){Screen.selectScreen();});
-            
+            text.removeHandler=function(){Screen.selectScreen();};
             Magic.magicPoint=0;
             Level.stageMonsterCount=0;
         };
