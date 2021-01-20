@@ -123,6 +123,7 @@ class Entity {
         }
         return false;
     }
+    enlarge(per){this.w*=per; this.h*=per;}
     
 
     getVectorLength(){

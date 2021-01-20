@@ -86,6 +86,7 @@ let Screen= {
             startButton.drawCode=function(){};
         };
         startButton.drawOption(null, "black", "START", Screen.perX(6), "black");
+        //Camera.makeMovingCamera({x:Screen.perX(50), y:Screen.perY(50)},Screen.perY(50),Screen.perY(50), movingDelay=1);
         
         let clickHereText = new Button(Screen.perX(50),Screen.perY(62),0,0);
         clickHereText.drawOption(null, null, "click here",Screen.perX(1.6),"black");
@@ -98,8 +99,10 @@ let Screen= {
         new MapBlock(Screen.perX(5),Screen.perY(80),Screen.perX(90),Screen.perY(50));
         Game.p = new Player(Screen.perX(10),Screen.perY(50));
         Game.p.removeHandler=function(){Game.click(Screen.perX(50), Screen.perY(50));};
+        Game.p.enlarge(Screen.perX(100)/Screen.CANVAS_W);
         let m1=new Monster(0,Screen.perX(85),Screen.perY(50));
         m1.canAct=false;
+        m1.enlarge(Screen.perX(100)/Screen.CANVAS_W);
     },
 
     selectScreen:function() {

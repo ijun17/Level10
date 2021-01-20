@@ -22,7 +22,7 @@ let Game = {
         Level.stageLevel = -1;
         Level.stageMonsterCount = -1;
         Camera.cameraOn = false;
-        Camera.extension=canvas.width/1200;
+        Camera.extension=canvas.width/1400;
         Screen.bgColor="rgb(121, 155, 206)";
     },
     startGame:function() {
