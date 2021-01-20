@@ -61,7 +61,7 @@ class Matter extends Entity {
         this.w = 30;
         this.h = 30;
         this.ga = -0.02;
-        this.inv_mass=5;
+        this.inv_mass=4;
         let type=MATTERS[typenum];
         this.typenum=typenum;
         this.img.src = "resource/matter/" + type.name + ".png";

@@ -123,6 +123,7 @@ class Entity {
         }
         return false;
     }
+    
 
     getVectorLength(){
         return Math.sqrt(this.vx*this.vx+this.vy*this.vy);

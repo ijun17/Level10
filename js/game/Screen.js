@@ -136,11 +136,7 @@ let Screen= {
             startFs(canvas);
             Screen.mainScreen();
             let full = new Button((canvas.width - 300)/2, (canvas.height-100)/2, 300, 100);
-            full.code=function(){
-                startFs(canvas);
-                full.x=10000;
-                Game.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);
-            }
+            full.code=function(){startFs(canvas);full.x=10000;Game.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);}
         };
         mobileButton.drawOption(null,"black","to mobile",Screen.perX(1.7),"black");
         //SELECT MAGIC BUTTON
@@ -151,6 +147,10 @@ let Screen= {
         let makeMagicButton = new Button(canvas.width - Screen.perX(16)-space, 2*space+Screen.perX(4), Screen.perX(16), Screen.perX(4));
         makeMagicButton.code = function () { Screen.makeMagicScreen(); };
         makeMagicButton.drawOption(null, "black", "create magic", Screen.perX(2.5), "black");//"rgb(65, 105, 225)"
+        //MULTIPLAY
+        let multiplayButton =new Button(canvas.width - Screen.perX(16)-space, 3*space+Screen.perX(8),Screen.perX(16), Screen.perX(4));
+        multiplayButton.code = function () { Screen.multiplayScreen(); };
+        multiplayButton.drawOption(null, "purple", "multiplay", Screen.perX(2.5), "purple");//"rgb(65, 105, 225)"
 
         //LEVEL BUTTON
         let block = new Button((canvas.width - Screen.perX(16)) /2, -100, Screen.perX(16), space+100);
@@ -235,7 +235,7 @@ let Screen= {
         for (let i = 1; i < Magic.magicList.length; i++) {
             if(Magic.magicList[i][4]>Level.playerLevel)continue;
             if(listStart==-1)listStart=Game.channel[Game.BUTTON_CHANNEL].length;
-            let magicBtn = new Button(space*8+Screen.perX(8)+Screen.perX(16), Screen.perX(3) + 50 * i, Screen.perX(16), Screen.perX(3));
+            let magicBtn = new Button(space*8+Screen.perX(8)+Screen.perX(16), Screen.perX(3) + Screen.perX(4) * i, Screen.perX(16), Screen.perX(3));
             magicBtn.code = function () { Screen.selectMagic = magicBtn; (Magic.magicList[i][1])(Game.p); };
             let magicColor="rgba(119, 138, 202,0.8)";
             if(i>Magic.basicMagicCount)magicColor="rgba(65, 105, 225,0.8)";
@@ -330,16 +330,16 @@ let Screen= {
         cs.drawCode=function(){
             if(cs.temp!=null){
                 ctx.fillStyle="rgba(0, 0, 0,0.5)";
-                ctx.fillRect(cs.temp.x,cs.temp.y,200,40);
+                ctx.fillRect(cs.temp.x,cs.temp.y,cs.temp.w,cs.temp.h);
             }
         };
         
         //MAGIC LIST
         function makeMagicButton(isCustom, x,y,num){
-            let magicBtn = new Button(x,y,200,40);
+            let magicBtn = new Button(x,y,Screen.perX(16),Screen.perX(3));
             let color = "rgba(119, 138, 202,0.8)";
             if(isCustom) color = "rgba(65, 105, 225,0.8)";
-            magicBtn.drawOption(color,"black",Magic.magicList[num][0],30,"black");
+            magicBtn.drawOption(color,"black",Magic.magicList[num][0],Screen.perX(2.4),"black");
 
             magicBtn.code = function () {
                 (Magic.magicList[num][1]) (Game.p);
@@ -363,8 +363,8 @@ let Screen= {
             magicBtn.canInteract = true;
             
         }
-        let plusButton = new Button(10, Screen.perX(6)+10, 200, 40);
-        plusButton.drawOption(null,"black","+ magic",30,"black");
+        let plusButton = new Button(10, Screen.perX(6)+10, Screen.perX(16), Screen.perX(3));
+        plusButton.drawOption(null,"black","+ magic",Screen.perX(2.4),"black");
         plusButton.code=function(){ 
             if(Magic.customMagicCount<10){
                 Magic.addEmptyMagic();
@@ -397,11 +397,16 @@ let Screen= {
         
         //TEST MAP
         Magic.magicPoint=0;
-        new MapBlock(0,canvas.height-80,canvas.width,80).drawCode=MapBlock.getTexture("grass");
+        
+        new MapBlock(Screen.perX(100),Screen.perY(50),100,Screen.perX(100)).drawCode=MapBlock.getTexture("grass");
+        new MapBlock(-100,Screen.perY(50),100,Screen.perX(100)).drawCode=MapBlock.getTexture("grass");
+        new MapBlock(-50,Screen.perY(80),Screen.perX(100)+100,Screen.perX(50)).drawCode=MapBlock.getTexture("grass");
         Camera.makeMovingCamera(Game.p,0,0,10);
-        Camera.cameraOn=false;
-        function makePlayer(){Game.p=new Player(canvas.width/2, 0);Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();}}
+        Camera.cameraOn=true;
+        function makePlayer(){Game.p=new Player(Screen.perX(30), 0);Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();}}
+        function makeTester(){new Player(Screen.perX(60), 0).removeHandler=function(){makeTester();}}
         makePlayer();
+        makeTester();
         Game.keyboardOn=true;
     },
 
@@ -474,6 +479,14 @@ let Screen= {
                 }
             }
         }
+    },
+    multiplayScreen:function(){
+        Game.resetGame();
+        let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
+        backButton.code = function () { Screen.selectScreen() };
+        backButton.drawOption(null, null, "<", Screen.perX(6), "black");
+
+        new Text(Screen.perX(50), Screen.perY(50), "coming soom", Screen.perX(10), "purple", "black",-1, false );
     },
     helpScreen:function(){
         Game.resetGame();
