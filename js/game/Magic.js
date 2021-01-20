@@ -40,7 +40,7 @@ giveForce(player,front()*20,0);
 damage(player,-2000);
     `,1],
 
-    ["invisioble",`
+    ["invisible",`
 //플레이어의 투명화
 invisible(player,300);    
     `,2],
@@ -67,7 +67,7 @@ time(player, 1,12,#(){
     `,3],
     ["sword energy",`
 //검기 발사
-@e=createMatter(6,front()*20,0);
+@e=createMatter(5,front()*20,0);
 damage(e,-10);
     `,3],
     ["zero gravity", `

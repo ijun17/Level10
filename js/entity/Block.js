@@ -20,7 +20,7 @@ class Block extends Entity{
 
     collisionHandler(e){
         var damage=this.w*this.h*this.getVectorLength()/20;
-        e.damage(damage);
+        e.giveDamage(damage);
         e.giveForce(this.vx/5, this.vy/5);
         
     }

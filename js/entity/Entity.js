@@ -3,7 +3,7 @@ class Entity {
 
     x = 0; y = 0; w = 0; h = 0; vx = 0; vy = 0; 
     ga = -0.2; friction = 0.4; inv_mass=1;//phisics;
-    life = 1;
+    life = 1;defense=100;
     
     canDraw = true; //보일 수 있는가
     canMove = true; //움직일 수 있는가
@@ -116,8 +116,12 @@ class Entity {
         }
     }
 
-    damage(d){
-        this.life-=Math.floor(d);
+    giveDamage(d){
+        if(this.defense<d){
+            this.life-=Math.floor(d);
+            return true;
+        }
+        return false;
     }
 
     getVectorLength(){

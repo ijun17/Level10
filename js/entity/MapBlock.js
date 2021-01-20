@@ -37,7 +37,7 @@ class MapBlock extends Entity{ //안부숴지는
         }
     }
 
-    damage(d, textColor=null){}
+    giveDamage(d, textColor=null){}
     giveForce(ax, ay) {}
     addAction(start, end, code) {}
 }

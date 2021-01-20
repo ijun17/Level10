@@ -26,9 +26,9 @@ class Player extends Entity{
         this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h),this.isRight);
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
-        ctx.font="bold 20px Arial";
+        ctx.font="bold 15px Arial";
         ctx.fillStyle="black";
-        Camera.fillText("hp: "+(Math.floor(this.life)),this.x,this.y-20);
+        Camera.fillText("hp:"+(Math.floor(this.life)),this.x+this.w/2,this.y-20);
         //damage
         if (this.totalDamage > 0) {
             new Text(this.x + this.w / 2, this.y - 50,this.totalDamage,30,"red","black",40);
@@ -56,10 +56,10 @@ class Player extends Entity{
 
     collisionHandler(e,ct){
         if(ct=='D'&&!this.canJump)this.canJump=true;
-        else if(ct==null&&e instanceof MapBlock)this.damage(10000);
+        else if(ct==null&&e instanceof MapBlock)this.giveDamage(10000);
     }
 
-    damage(d) {
+    giveDamage(d) {
         if(this.damageTick==0){
             this.totalDamage += Math.floor(d);
             if(d>0)this.damageTick=20;

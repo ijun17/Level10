@@ -4,14 +4,14 @@ let Level= {
     stageLevel:0,
 
     loadLevel:function() {
-        this.playerLevel = localStorage.betalevel;
+        this.playerLevel = localStorage.betalevel2;
         if (this.playerLevel == undefined) {
             this.playerLevel = 1;
             this.saveLevel();
         }
     },
     saveLevel:function() {
-        localStorage.betalevel = this.playerLevel;
+        localStorage.betalevel2 = this.playerLevel;
     },
 
     clearLevel:function() {
@@ -75,36 +75,36 @@ let Level= {
         switch (level) {
             case 1:
                 this.stageMonsterCount = 1;
-                mainMonster=new Monster(MONSTERS[0], 1000, -1000);
+                mainMonster=new Monster(0, 1000, -1000);
                 break;
             case 2:
                 this.stageMonsterCount = 4;
-                new Monster(MONSTERS[0], 1000, -1000);
-                new Monster(MONSTERS[0], 900, -1000);
-                new Monster(MONSTERS[0], 800, -1000);
-                mainMonster=new Monster(MONSTERS[1], 700, -1000);
+                new Monster(0, 1000, -1000);
+                new Monster(0, 900, -1000);
+                new Monster(0, 800, -1000);
+                mainMonster=new Monster(1, 700, -1000);
                 break;
             case 3:
                 this.stageMonsterCount = 11;
-                mainMonster=new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
-                new Monster(MONSTERS[2], 400, -300);
+                mainMonster=new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
+                new Monster(2, 400, -300);
                 break;
             case 4:
                 this.stageMonsterCount = 1;
-                mainMonster=new Monster(MONSTERS[3],1000, -250);
+                mainMonster=new Monster(3,1000, -250);
                 break;
             case 5:
                 this.stageMonsterCount = 1;
-                mainMonster=new Monster(MONSTERS[4],Screen.perX(50), -400)
+                mainMonster=new Monster(4,Screen.perX(50), -400)
                 mainMonster.addAction(1,100,function(){Camera.vibrate(10);});
                 weatherNum=0;
                 

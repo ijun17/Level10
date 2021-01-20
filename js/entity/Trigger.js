@@ -17,7 +17,7 @@ class Trigger extends Entity{
         this.life--;
     }
 
-    damage(){}
+    giveDamage(){}
     giveForce(){}
 
     collisionHandler(e){

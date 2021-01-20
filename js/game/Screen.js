@@ -98,7 +98,7 @@ let Screen= {
         new MapBlock(Screen.perX(5),Screen.perY(80),Screen.perX(90),Screen.perY(50));
         Game.p = new Player(Screen.perX(10),Screen.perY(50));
         Game.p.removeHandler=function(){Game.click(Screen.perX(50), Screen.perY(50));};
-        let m1=new Monster(MONSTERS[0],Screen.perX(85),Screen.perY(50));
+        let m1=new Monster(0,Screen.perX(85),Screen.perY(50));
         m1.canAct=false;
     },
 
@@ -283,7 +283,7 @@ let Screen= {
         makePlayer();
         Game.keyboardOn=true;
         Magic.magicPoint=0; //스킬 못쓰게
-        let monster = new Monster(MONSTERS[0], canvas.width-100, 0);
+        let monster = new Monster(0, canvas.width-100, 0);
         monster.life = 1000000;
         monster.action = [];
         monster.addAction(100,100,function(){monster.canMove=false;});
@@ -416,7 +416,7 @@ let Screen= {
         const viewTextSize=Screen.perX(1.5);
         const MAX_HP = 10000*Level.playerLevel;
         const MAX_MP = 20000*Level.playerLevel;
-        const MP_restore = 2*Level.playerLevel;
+        const MP_restore = 1*Level.playerLevel;
         let view = new Button(Screen.perX(55),Screen.perX(1),Screen.perX(45),Screen.perX(8),Game.TEXT_CHANNEL);
         view.drawCode=function(){
             ctx.strokeStyle="black";
