@@ -18,16 +18,12 @@ class Text extends Entity{
         this.ga=0;
         this.canRemoved=false;
     }
-    draw(){
+    update(){
         ctx.textBaseline = this.textBaseline;
         ctx.textAlign = this.textAlign;
         ctx.font = this.font;
-        let textX=this.x;
-        let textY = this.y;
-        if (this.camera) {
-            textX = Camera.getX(textX);
-            textY = Camera.getY(textY);
-        }
+        const textX=(this.camera ? Camera.getX(this.x) : this.x);
+        const textY=(this.camera ? Camera.getY(this.y) : this.y);
         if (this.strokeColor != null) {
             ctx.strokeStyle = this.strokeColor;
             ctx.strokeText(this.text, textX, textY);
@@ -36,8 +32,8 @@ class Text extends Entity{
             ctx.fillStyle = this.fillColor;
             ctx.fillText(this.text, textX, textY);
         }
-
         if(this.life>0)this.life--;
-        if(this.life==0) this.canRemoved=true;
+        else if(this.life==0) this.canRemoved=true;
+        this.move();
     }
 }

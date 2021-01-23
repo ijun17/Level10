@@ -14,6 +14,10 @@ let Camera={
         if(Camera.cameraOn)return w*Camera.extension;
         else return w;
     },
+    drawImage:function(img,x,y,w,h){
+        if(this.cameraOn)ctx.drawImage(img,this.getX(x), this.getY(y), this.getS(w), this.getS(h));
+        else ctx.drawImage(img,x,y,w,h);
+    },
     fillRect:function(x,y,w,h){
         if(this.cameraOn)ctx.fillRect(this.getX(x), this.getY(y), this.getS(w), this.getS(h));
         else ctx.fillRect(x,y,w,h);

@@ -61,7 +61,7 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
-        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,20);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 70;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,10);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
         function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -10;return 500;}
     ]
 }
@@ -82,6 +82,7 @@ class Monster extends Entity {
     canJump = true;
     isRight=true;
     attackTick=0;
+    //damageTick=0;
 
     constructor(typenum, x, y, channelLevel = Game.PHYSICS_CHANNEL) {
         super(x, y, channelLevel);

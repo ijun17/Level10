@@ -1,6 +1,6 @@
 const particleTypes=[{name:"ember",speed:1,ga:-0.01},
-    {name:"spark",speed:1,ga:-0.01},
     {name:"smoke",speed:0.5,ga:-0.001},
+    {name:"spark",speed:1,ga:-0.01},
     {name:"snow",speed:1,ga:-0.01},
     {name:"ash",speed:1,ga:-0.01},
     {name:"magiceffect",speed:0,ga:0}];
@@ -23,7 +23,7 @@ class Particle extends Entity{
 
     update(){
         this.life--;
-        ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+        Camera.drawImage(this.img, this.x,this.y,this.w,this.h);
         this.x+=this.vx;
         this.y-=this.vy;
         this.vy+=this.ga;

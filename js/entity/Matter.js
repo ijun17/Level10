@@ -3,7 +3,7 @@ const MATTERS=[
         name:"fire",
         setStatus:function(e){
             e.power=500;
-            e.addAction(1,10000,function (){if(Game.time%10==0){new Particle(2,e.x,e.y);new Particle(0,e.x,e.y);}});
+            e.addAction(1,10000,function (){if(Game.time%15==0){new Particle(1,e.x,e.y);new Particle(0,e.x,e.y);}});
         },
         effect:function(e,v){v.giveDamage(e.power);v.giveForce(e.vx/e.inv_mass,(e.vy+1)/e.inv_mass);}
     },
@@ -30,8 +30,11 @@ const MATTERS=[
         setStatus:function(e){e.power=1000;},
         effect:function(e,v){
             if(v instanceof Matter&&v.typenum==4){
-                v.x=-10000;e.life+=v.life+1;v.life=0;e.w+=v.w;e.h+=v.h;
-                e.giveForce(v.vx, v.vy);
+                v.x=-10000;
+                e.life+=v.life+1;v.life=0;
+                e.w+=v.w;e.h+=v.h;
+                e.x-=v.w/2;e.y-=v.h/2;
+                e.giveForce(v.vx/v.inv_mass, v.vy/v.inv_mass);
                 e.power+=v.power;
             }else{
                 v.giveDamage(e.power);

@@ -166,6 +166,19 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         const ARROW=3;
         const ENERGY=4;
         const SWORD=5;
+        const BLOCK=6;
+        const TRIGGER=7;
+        function create(p,typenum,w,h,vx,vy){
+            let e;
+            if(typenum<=SWORD)e=new Matter(typenum,0,0,vx,vy);
+            else if(typenum=BLOCK)e=new Block(0,0,w,h);
+            else if(typenum=TRIGGER)e=new Trigger(0,0,w,h);
+            e.vx=vx;e.vy=vy;
+            e.x=p.x+p.w/2+front(p)*(e.w/2+p.w/2)-e.w/2;
+            e.y=p.y+p.h/2-e.h/2;
+            return e;
+        }
+        function setTrigger(e,f){if(e instanceof Trigger)e.code=f}
         function giveForce(e,ax,ay){e.vx+=ax;e.vy+=ay;}
         function giveLife(e,d){if(e.canCollision)e.life+=d;}
         function invisible(e,time){e.canDraw=false;e.addAction(time,time,function(){e.canDraw=true;});}
@@ -173,7 +186,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         function setGravity(e,time,ga){let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
         function move(e,vx,vy){if(e instanceof Monster)return;e.x+=vx;e.y-=vy;}
         function time(e,startTime,endTime,f){e.addAction(startTime,endTime,f);}
-        function setCamera(p,target,x,y,delay){Camera.makeMovingCamera(target,x+p.x,p.y-y,delay);}
+        function setCamera(p,target,x,y,delay=10){Camera.makeMovingCamera(target,x+p.x,p.y-y,delay);}
         function getX(p,e){return e.x+e.w/2-(p.x+p.w/2);}
         function getY(p,e){return p.y+p.h/2-(e.y+e.h/2);}
         function getVX(e){return e.vx;}
@@ -215,13 +228,13 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         function test_createMatter(p,type,vx,vy){let m=createMatter(p,type,vx,vy);addMF([50,getEnergy(m)]);return m;}
         function test_createTrigger(p,w,h,time,f){let t=createTrigger(p,w,h,time,f);addMF([time*2,w*h*time/1000+(getEnergy(t)+1)]);return t;}    
         //prohibited keyword
-        let prohibitedWord=["new","function"];
+        let prohibitedWord=["new","function","let","var"];
         let prohibitedSymbol=["[",".","$"];
         //test
         let testKeyword=["giveForce","giveLife","invisible", "freeze", "setGravity","createTrigger","move","time","createBlock","createMatter"];
         //convert symbol to word
         let symbol={"@":"let ","#":"function"};
-        //매개변수로 x,y를 가지거나 player의 isRight에 접근하는 메소드 - 사용자는 물리엔진의 절대 좌표를 알 수 없게함.
+        //매개변수로 x,y를 가지거나 player의 isRight에 접근하는 메소드 - 사용자는 절대 좌표를 알 수 없게함.
         let playerInsertionList=["getX","getY","front","setCamera","createMatter","createBlock","createTrigger"];
         let playerInsertion=false;
         //convert magic code to js code
@@ -237,7 +250,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             else{
                 //prohibit
                 if(prohibitedWord.includes(temp)){
-                    printError("Fail: "+name, " : your code have prohibited keyword(new, function)\n'function' change to '#'");
+                    printError("Fail: "+name, " : your code have prohibited keyword(new, function, let, var)");
                     return null;
                 }
                 if(prohibitedSymbol.includes(magicCode[i])){
