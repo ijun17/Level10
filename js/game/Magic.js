@@ -1,33 +1,24 @@
 let Magic = {
-    magicPoint:0,
     //qwer
-    skillNum:[1,2,3,4],
-    coolTime:[0,0,0,0],
-    basicMagicCount:1,
+    skillNum:[0,1,2,3],
+    basicMagicCount:0,
     customMagicCount:0,
     customMagic:[],
     magicEffectSound : new Audio(),
     //magicFrame=[magic name, magic code, needed Level] : basicMagic, customMagic
     //magicList = [name, magic function, coolTime, needed MagicPoint, needed Level] : magicList
-    magicList:[["magic effect",function(p){
-        let magicEffect = new Particle(5, p.x+p.w/2-p.h/2, p.y);
-        magicEffect.w=p.h;
-        magicEffect.h=p.h;
-        //Magic.magicEffectSound.pause();
-        Magic.magicEffectSound.currentTime=0;
-        Magic.magicEffectSound.play();
-    },0,0,0]],
+    magicList:[],
     basicMagic:[
     ["fire ball",`
 //전방에 파이어볼을 발사
-@e=createMatter(FIRE,front()*10,1);
+@e=create(FIRE,front()*10,1);
 giveLife(e,10);
 move(e,front()*30, 0);
     `,1],
 
     ["wall", `
 //길쭉한 블럭을 생성
-@block = createBlock(30,100,"black");
+@block = create(BLOCK,0,0,30,100);
 move(block,0,100);
     `,1],
 
@@ -56,7 +47,7 @@ move(player, front()*300, 0);
 @x=getX(player)+front()*200;
 @i=0;
 time(player, 1,12,#(){
-    @fire = createMatter(FIRE,0,0);
+    @fire = create(FIRE,0,0);
     move(fire,front()*(200-13*i-15), i*35);
     //setGravity(fire,500,0);
     giveLife(fire,500)
@@ -68,7 +59,7 @@ time(player, 1,12,#(){
     `,3],
     ["sword energy",`
 //검기 발사
-@e=createMatter(SWORD,front()*20,0);
+@e=create(SWORD,front()*20,0);
 giveLife(e,10);
     `,3],
     ["zero gravity", `
@@ -77,32 +68,27 @@ setGravity(player,200,0);
     `,4],
     ["Knockback",`
 //넉백
-@e = createTrigger(20,100,100,#(e){
+@t = create(TRIGGER,front()*10,0,20,100);
+giveLife(t,100);
+setTrigger(t,#(e){
     giveForce(e, front()*20, 0);
-})
-giveForce(e,front()*20,0);
+});
     `,5],
     ["detection",`
 //전방으로 카메라 발사
-@block=createBlock(10,10,"blue");
+@block=create(BLOCK,front()*20,0,10,10);
 @dt=150;
 giveLife(block,dt-100);
 setGravity(block,dt,0);
 move(block,0,100);
-giveForce(block,front()*20,0);
 setCamera(block,getX(block),getY(block),10);
 time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
     `,5]],
     //end basicMasic
 
-    doSkill:function(p,num){
-        if(Magic.coolTime[num]<Game.time&&Magic.magicPoint-Magic.magicList[Magic.skillNum[num]][3]>0){
-            Magic.magicList[0][1](p);
-            let magicNum=Magic.skillNum[num];
-            (Magic.magicList[magicNum][1])(p);
-            Magic.coolTime[num]=Magic.magicList[magicNum][2]+Game.time;
-            Magic.magicPoint-=Magic.magicList[magicNum][3];
-        }
+    doSkill: function (p, num) {
+        let magicNum = Magic.skillNum[num];
+        (Magic.magicList[magicNum][1])(p);
     },
     clearCoolTime:function(){
         this.coolTime=[0,0,0,0];
@@ -110,7 +96,15 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
     saveMagic:function(){
         localStorage.CUSTOM_MAGIC=JSON.stringify(Magic.customMagic);
     },
+    saveSkillNum:function(){
+        localStorage.skillNum=JSON.stringify(Magic.skillNum);
+    },
     loadMagic:function(){
+        if(localStorage.skillNum!=null)this.skillNum = JSON.parse(localStorage.skillNum);
+        else {
+            this.skillNum = [0,1,2,3];
+            this.saveSkillNum();
+        }
         //sound
         Magic.magicEffectSound.src="resource/sound/magic effect2.mp3";
         Magic.magicEffectSound.volume=0.1;
@@ -152,7 +146,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         function getEnergy(e){ //엔티티가 가지고 있는 데미지를 반환
             let test = new Entity(0,10000,Game.PHYSICS_CHANNEL);
             test.life=0;
-            e.collisionHandler(test,'D',true);
+            e.collisionHandler(test);
             return Math.abs(test.life);
         }
         function addMF(mf) {
@@ -168,19 +162,19 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         const SWORD=5;
         const BLOCK=6;
         const TRIGGER=7;
-        function create(p,typenum,w,h,vx,vy){
+        function create(p,typenum,vx,vy,w,h){
             let e;
             if(typenum<=SWORD)e=new Matter(typenum,0,0,vx,vy);
-            else if(typenum=BLOCK)e=new Block(0,0,w,h);
-            else if(typenum=TRIGGER)e=new Trigger(0,0,w,h);
+            else if(typenum==BLOCK)e=new Block(0,0,w,h);
+            else if(typenum==TRIGGER)e=new Trigger(0,0,w,h,1,function(e){});
             e.vx=vx;e.vy=vy;
             e.x=p.x+p.w/2+front(p)*(e.w/2+p.w/2)-e.w/2;
             e.y=p.y+p.h/2-e.h/2;
             return e;
         }
-        function setTrigger(e,f){if(e instanceof Trigger)e.code=f}
+        function setTrigger(t,f){if(t instanceof Trigger)t.code=f;}
         function giveForce(e,ax,ay){e.vx+=ax;e.vy+=ay;}
-        function giveLife(e,d){if(e.canCollision)e.life+=d;}
+        function giveLife(e,d){e.life+=d;}
         function invisible(e,time){e.canDraw=false;e.addAction(time,time,function(){e.canDraw=true;});}
         function freeze(e,time){e.canMove=false;e.addAction(time,time,function(){e.canMove=true;});}
         function setGravity(e,time,ga){let temp=e.ga;e.ga=ga;e.addAction(time,time,function(){e.ga=temp;});}
@@ -192,9 +186,6 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         function getVX(e){return e.vx;}
         function getVY(e){return e.vy;}
         function front(p){return (p.isRight ? 1 : -1);}
-        function createBlock(p,w,h,color="black"){let b=new Block(p.x+p.w/2+front(p)*(w/2+p.w/2)-w/2,p.y+p.h/2-w/2,w,h,color);return b;}
-        function createMatter(p,type,vx,vy){let m=new Matter(type,0,0,vx,vy);m.x=p.x+p.w/2+front(p)*(m.w/2+15)-m.w/2;m.y=(p.y+p.h/2)-m.h/2;return m;}
-        function createTrigger(p,w,h,time,f){let t=new Trigger(p.x+p.w/2+front(p)*(w/2+25)-w/2,p.y+p.h/2-h/2,w,h,time,f);return t;}
         //TEST FUNCTION
         function test_giveForce(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMF([0, newE-oldE]);}
         function test_giveLife(e,d){addMF([0,d]);giveLife(e,d);}
@@ -224,18 +215,17 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             }
             addMF([endTime*2,(endTime-startTime)]);
         }
-        function test_createBlock(p,w,h,color){addMF([0,(w*h/100)**2]);let b=createBlock(p,w,h,color);return b;}
-        function test_createMatter(p,type,vx,vy){let m=createMatter(p,type,vx,vy);addMF([50,getEnergy(m)]);return m;}
-        function test_createTrigger(p,w,h,time,f){let t=createTrigger(p,w,h,time,f);addMF([time*2,w*h*time/1000+(getEnergy(t)+1)]);return t;}    
+        function test_create(p,typenum,vx,vy,w,h){let e=create(p,typenum,vx,vy,w,h);addMF([50,getEnergy(e)]);return e;}
+        function test_setTrigger(t,f){setTrigger(t,f);addMF([100,t.w*t.h+getEnergy(t)+1]);}  
         //prohibited keyword
         let prohibitedWord=["new","function","let","var"];
         let prohibitedSymbol=["[",".","$"];
         //test
-        let testKeyword=["giveForce","giveLife","invisible", "freeze", "setGravity","createTrigger","move","time","createBlock","createMatter"];
+        let testKeyword=["giveForce","giveLife","invisible", "freeze", "setGravity","create","move","time","setTrigger"];
         //convert symbol to word
         let symbol={"@":"let ","#":"function"};
         //매개변수로 x,y를 가지거나 player의 isRight에 접근하는 메소드 - 사용자는 절대 좌표를 알 수 없게함.
-        let playerInsertionList=["getX","getY","front","setCamera","createMatter","createBlock","createTrigger"];
+        let playerInsertionList=["getX","getY","front","setCamera","create"];
         let playerInsertion=false;
         //convert magic code to js code
         function isEnglish(c){return (64<c&&c<91)||(96<c&&c<123);}
@@ -283,8 +273,8 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             jsCode+=temp;
         }
         //running test
-        console.log("js code: ",testCode);
-        console.log("js code: ",jsCode);
+        //console.log("js code: ",testCode);
+        //console.log("js code: ",jsCode);
         let magic=function(){};
         try {
             //clearInterval(systemclock);
@@ -295,12 +285,10 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             Game.p.dieCode=function(){};
             testMagic(Game.p);
             Game.p=temp;
-            //systemclock = setInterval(Game.updateWorld, 10);
         }catch(e){
             printError("Fail: "+name," : syntex error")
             return null;
         }
-        console.log(magicFactor);
         return [name,magic, magicFactor[0],magicFactor[1],1];
     }
 }

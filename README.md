@@ -1,7 +1,7 @@
 # web-rpg-game
-플레이어가 마법을 만들어 몬스터와 싸우는 게임
+마법을 만들어 몬스터와 싸우는 게임
 
-game link https://ijun17.github.io/webGame/
+game link https://ijun17.github.io/web-rpg-game/
 
 play video clip https://www.youtube.com/watch?v=iYIHrzt_TLk
 

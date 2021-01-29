@@ -1,28 +1,26 @@
-class MapBlock extends Entity{ //안부숴지는
-    color;
-    drawCode=function(){ctx.fillStyle = this.color;Camera.fillRect(this.x, this.y, this.w, this.h);}
-    
-    constructor(x,y,w,h,color = "rgb(48, 48, 48)",channelLevel=Game.PHYSICS_CHANNEL){
+class MapBlock extends Entity{ 
+    //안부숴지는
+    constructor(x,y,w,h,textureType="wall",channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
         this.w=w;
         this.h=h;
         this.ga=0;
-        this.color = color;
         this.overlap=false;
         this.canRemoved=false;
         this.canAct=false;
         this.canMove=false;
         this.canInteract=false;
+        this.draw = MapBlock.getTexture(textureType);
     }
 
     update(){
-        this.drawCode();
+        this.draw();
     }
 
     static getTexture(textureType){
         switch(textureType){
             case "wall":
-                return function(){ctx.fillStyle = "#080808";Camera.fillRect(this.x, this.y, this.w, this.h);};
+                return function(){ctx.fillStyle = "#303030";Camera.fillRect(this.x, this.y, this.w, this.h);};
             case "grass":
                 return function(){
                             ctx.fillStyle="#2B650D";

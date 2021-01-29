@@ -70,15 +70,18 @@ class Matter extends Entity {
         this.img.src = "resource/matter/" + type.name + ".png";
         type.setStatus(this);
         this.effect=type.effect;
+        this.draw=Matter.getDraw();
     }
 
-    draw() {
-        var r = Math.atan2(this.vx, this.vy);
-        ctx.save();
-        ctx.translate(Camera.getX(this.x + this.w/2), Camera.getY(this.y + this.h/2));
-        ctx.rotate(r);
-        ctx.drawImage(this.img, Camera.getS(-this.w/2), Camera.getS(-this.h/2), Camera.getS(this.w), Camera.getS(this.h));
-        ctx.restore();
+    static getDraw() {
+        return function () {
+            var r = Math.atan2(this.vx, this.vy);
+            ctx.save();
+            ctx.translate(Camera.getX(this.x + this.w / 2), Camera.getY(this.y + this.h / 2));
+            ctx.rotate(r);
+            ctx.drawImage(this.img, Camera.getS(-this.w / 2), Camera.getS(-this.h / 2), Camera.getS(this.w), Camera.getS(this.h));
+            ctx.restore();
+        }
     }
 
     giveDamage(){

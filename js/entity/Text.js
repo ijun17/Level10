@@ -19,6 +19,12 @@ class Text extends Entity{
         this.canRemoved=false;
     }
     update(){
+        this.draw();
+        if(this.life>0)this.life--;
+        else if(this.life==0) this.canRemoved=true;
+        this.move();
+    }
+    draw(){
         ctx.textBaseline = this.textBaseline;
         ctx.textAlign = this.textAlign;
         ctx.font = this.font;
@@ -32,8 +38,5 @@ class Text extends Entity{
             ctx.fillStyle = this.fillColor;
             ctx.fillText(this.text, textX, textY);
         }
-        if(this.life>0)this.life--;
-        else if(this.life==0) this.canRemoved=true;
-        this.move();
     }
 }

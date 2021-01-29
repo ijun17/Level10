@@ -108,6 +108,18 @@ class Monster extends Entity {
         this.animation.fps=type.image.frame;
     }
 
+    update() {
+        if (this.canDraw) this.draw();
+        if (this.canAct) this.act();
+        if (this.canInteract) this.interact();
+        if(this.canMove)this.move();
+        if (this.totalDamage > 0) {
+            new Text(this.x + this.w / 2, this.y - 50,Math.floor(this.totalDamage),30,"orange","black",40);
+            this.life-=Math.floor(this.totalDamage);
+            this.totalDamage=0;
+        }
+    }
+
     draw() {
         this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h),this.isRight);
         ctx.textBaseline = "middle";
@@ -115,12 +127,7 @@ class Monster extends Entity {
         ctx.font = "bold 15px Arial";
         ctx.fillStyle = "black"
         Camera.fillText("hp:"+(Math.floor(this.life)), this.x+this.w/2, this.y - 20);
-        //ctx.fillText("hp:" + (Math.floor(this.life)), Camera.getX(this.x+this.w/2), Camera.getY(this.y - 20));
-        if (this.totalDamage > 0) {
-            new Text(this.x + this.w / 2, this.y - 50,Math.floor(this.totalDamage),30,"orange","black",40);
-            this.life-=Math.floor(this.totalDamage);
-            this.totalDamage=0;
-        }
+        
     }
 
     collisionHandler(e,ct) {

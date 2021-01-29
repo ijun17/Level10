@@ -33,20 +33,6 @@ let Level= {
 
     makeStage:function(level) {
         this.stageLevel = level;
-        //player
-        Game.p = new Player(10, -60);
-        Game.p.removeHandler=function(){
-            Game.channel[Game.BUTTON_CHANNEL]=[];
-            Game.channel[Game.TEXT_CHANNEL]=[];
-            let text = new Text(Screen.perX(50),Screen.perY(50),"you die",Screen.perX(10),"red",null,200,false);
-            text.canAct=true;
-            text.removeHandler=function(){Screen.selectScreen();};
-            Magic.magicPoint=0;
-            Level.stageMonsterCount=0;
-        };
-        Magic.magicPoint=20000*Level.playerLevel;
-        Camera.makeMovingCamera(Game.p,0,0,10);
-
         function printMonsterName(name=""){
             let textE = new Text(Screen.perX(10),Screen.perY(3),"vs "+name,Screen.perX(3), "black", null, 400, false);
             textE.textBaseline = "top";
@@ -94,11 +80,6 @@ let Level= {
                 mainMonster=new Monster(4,Screen.perX(50), -400)
                 mainMonster.addAction(1,100,function(){Camera.vibrate(10);});
                 weatherNum=0;
-                
-                // for(let i=1; i<10; i++){
-                //     new MapBlock(50*i,-40*i,50,30);//.drawCode=MapBlock.getTexture("grass");
-                //     (new MapBlock(500*i,-400,350,30)).drawCode=MapBlock.getTexture("grass");
-                // }
                 break;
             case 6:
                 break;
@@ -133,9 +114,9 @@ let Level= {
             }
         });
         //양 끝 맵블럭
-        new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"rgb(48, 48, 48)");//top
-        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2,"rgb(48, 48, 48)"); //left
-        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2,"rgb(48, 48, 48)");//right
-        (new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize*2)).drawCode=MapBlock.getTexture("grass");
+        new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top
+        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall"); //left
+        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall");//right
+        new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize*2,"grass");
     }
 }

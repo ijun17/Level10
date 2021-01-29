@@ -43,7 +43,6 @@ let Game = {
             Game.removeEntity(i);
         }
         Game.time++;
-
     },
     removeEntity:function(channelLevel) {
         for (let e of Game.channel[channelLevel]) {
@@ -55,25 +54,6 @@ let Game = {
         }
     },
     //CLIENT FUNCITON
-    keyDownHandler:function(e) {
-        if(Game.keyboardOn)
-        switch (e.keyCode) {
-            case 39:Game.p.moveFlag = true;Game.p.isRight = true;break;//right
-            case 37:Game.p.moveFlag = true;Game.p.isRight = false;break;//left
-            case 38:Game.p.jump();break;//up
-            case 32:Game.p.jump();break;//space
-            case 81:Magic.doSkill(Game.p,0);break; //q
-            case 87:Magic.doSkill(Game.p,1);break; //w
-            case 69:Magic.doSkill(Game.p,2);break; //e
-            case 82:Magic.doSkill(Game.p,3);break; //r
-        }
-    },
-    keyUpHandler:function(e) {
-        switch(e.keyCode){
-            case 39:Game.p.moveFlag = false;break;
-            case 37:Game.p.moveFlag = false;break;
-        }
-    },
     click:function(x, y) {
         let c = Game.channel[Game.BUTTON_CHANNEL];
         for (let i = c.length - 1; i >= 0; i--) {
@@ -81,6 +61,25 @@ let Game = {
                 c[i].collisionHandler(null, "down");
                 break;
             }
+        }
+    },
+    keyDownHandler:function(e) {
+        if(Game.keyboardOn)
+        switch (e.keyCode) {
+            case 39:Game.p.moveFlag = true;Game.p.isRight = true;break;//right
+            case 37:Game.p.moveFlag = true;Game.p.isRight = false;break;//left
+            case 38:Game.p.jump();break;//up
+            case 32:Game.p.jump();break;//space
+            case 81:Game.p.castMagic(0);break; //q
+            case 87:Game.p.castMagic(1);break; //w
+            case 69:Game.p.castMagic(2);break; //e
+            case 82:Game.p.castMagic(3);break; //r
+        }
+    },
+    keyUpHandler:function(e) {
+        switch(e.keyCode){
+            case 39:Game.p.moveFlag = false;break;
+            case 37:Game.p.moveFlag = false;break;
         }
     },
     clickDownHandler:function(e) {
@@ -107,26 +106,35 @@ let Game = {
         e.preventDefault();
         if(e.touches.length==0)Game.p.moveFlag = false;
     },
+    convertMultiMode:function(a) {
+        if(a){
+            document.removeEventListener("keydown", this.keyDownHandler, false);
+            document.removeEventListener("keyup", this.keyUpHandler, false);
+            document.addEventListener("keydown", Multi.keyDownHandler, false);
+            document.addEventListener("keyup", Multi.keyUpHandler, false);
+        }else{
+            document.addEventListener("keydown", this.keyDownHandler, false);
+            document.addEventListener("keyup", this.keyUpHandler, false);
+            document.removeEventListener("keydown", Multi.keyDownHandler, false);
+            document.removeEventListener("keyup", Multi.keyUpHandler, false);
+        }
+    },
     convertMobileMode:function(a) {
         if (a) {
             document.addEventListener("touchstart", this.touchStartHandler, false);
             canvas.addEventListener("touchmove", this.touchMoveHandler, false); //캔버스로 해야 더 빠름
             document.addEventListener("touchend", this.touchEndHandler, false);
             canvas.removeEventListener("mousedown", this.clickDownHandler, false);
-            document.removeEventListener("keydown", this.keyDownHandler, false);
-            document.removeEventListener("keyup", this.keyUpHandler, false);
             Screen.isMobile = true;
         } else {
             canvas.removeEventListener("touchstart", this.touchStartHandler, false);
             canvas.removeEventListener("touchmove", this.touchMoveHandler,false);
             canvas.removeEventListener("touchend", this.touchEndHandler, false);
             canvas.addEventListener("mousedown", this.clickDownHandler, false);
-            document.addEventListener("keydown", this.keyDownHandler, false);
-            document.addEventListener("keyup", this.keyUpHandler, false);
             Screen.isMobile = false;
         }
     }
 }
 
 Game.startGame();
-let systemclock = setInterval(Game.updateWorld, 10);
+setInterval(Game.updateWorld, 10);

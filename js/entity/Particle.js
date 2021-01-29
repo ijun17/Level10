@@ -22,10 +22,13 @@ class Particle extends Entity{
     }
 
     update(){
+        this.draw();
         this.life--;
-        Camera.drawImage(this.img, this.x,this.y,this.w,this.h);
         this.x+=this.vx;
         this.y-=this.vy;
         this.vy+=this.ga;
+    }
+    draw(){
+        Camera.drawImage(this.img, this.x,this.y,this.w,this.h);
     }
 }
