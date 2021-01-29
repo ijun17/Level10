@@ -104,7 +104,10 @@ let Game = {
     },
     touchEndHandler:function(e) {
         e.preventDefault();
-        if(e.touches.length==0)Game.p.moveFlag = false;
+        if(e.touches.length==0){
+            if(Multi.gameOn)Multi.keyUpHandler({keyCode:39});
+            else Game.p.moveFlag = false;
+        }
     },
     convertMultiMode:function(a) {
         if(a){

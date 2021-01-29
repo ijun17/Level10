@@ -4,7 +4,7 @@ let Level= {
     stageLevel:0,
 
     loadLevel:function() {
-        this.playerLevel = localStorage.betalevel2;
+        this.playerLevel = Number(localStorage.betalevel2);
         if (this.playerLevel == undefined) {
             this.playerLevel = 1;
             this.saveLevel();

@@ -472,7 +472,7 @@ let Screen= {
         }
         
         //MOBILE BUTTON 
-        let mobileButtonSize=70;
+        const mobileButtonSize=70;
         if (Screen.isMobile) {
             let leftButton = new Button(5, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
             leftButton.code = function () {  Game.p.moveFlag = true; Game.p.isRight = false; };
@@ -486,7 +486,7 @@ let Screen= {
             let keys=["Q","W","E","R"];
             for(let i=0; i<4; i++){
                 let keyButton = new Button(canvas.width-(5*4+mobileButtonSize*4)+i*(mobileButtonSize+5),canvas.height-mobileButtonSize-5,mobileButtonSize,mobileButtonSize);
-                keyButton.code=function(){Magic.doSkill(Game.p,i);};
+                keyButton.code=function(){Game.p.castMagic(i);};
                 keyButton.drawCode=function(){
                     ctx.fillStyle=(Magic.coolTime[i]<Game.time ?"rgb(121, 140, 205)" : "rgba(61, 61, 61,0.5)");//"rgba(61, 61, 61,0.5)";
                     ctx.fillRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
@@ -509,6 +509,8 @@ let Screen= {
         let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.code = function () { Screen.selectScreen();Multi.connectOff();Game.convertMultiMode(false)};
         backButton.drawOption(null, null, "<", Screen.perX(6), "black");
+        
+        new Text(Screen.perX(50), Screen.perY(25), "MULTI", Screen.perX(13),"black",null,-1,false);
 
         let serverOnView = new Button(Screen.perX(6),Screen.perX(1),Screen.perX(10),Screen.perX(2.5));
         serverOnView.drawOption(null,"brown","server off", Screen.perX(2),"brown",null);
@@ -521,7 +523,7 @@ let Screen= {
         let serverChecker = new Entity(0,0,Game.BUTTON_CHANNEL);
         serverChecker.update=function(){
             //check server
-            if(Game.time%100==0){
+            if(Game.time%20==0){
                 if(Multi.serverOn&&Multi.gameOn==false){
                     playButton.x=Screen.perX(50)-playButton.w/2;
                     playButton.y=Screen.perY(50)-playButton.h/2;

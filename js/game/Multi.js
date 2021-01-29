@@ -48,14 +48,11 @@ let Multi = {
         this.connect=false;
         if(this.ws!=null)this.ws.close();
         this.serverOn=false;
-        this.resetMulti();
-    },
-    resetMulti:function(){
-        this.gameOn=false;
+        this.setGameStatus(false);
         this.playerNum='n';
     },
     enterGame:function(){
-        if(this.playerNum=='n')this.ws.send("^na");
+        if(Multi.playerNum==='n')Multi.ws.send("^na");
     },
     requestHandlerGameOff:function(message){
         if(message[0]==="*")
@@ -73,13 +70,16 @@ let Multi = {
                         else magicList[i]=(skillNum<Magic.basicMagicCount?Magic.basicMagic[skillNum] : Magic.customMagic[skillNum-Magic.basicMagicCount]);
                     }
                     this.ws.send("^"+this.playerNum+"m"+JSON.stringify(magicList))
+                }else{
+                    let text = new Text(Screen.perX(50), Screen.perY(70), "게임이 진행중입니다." ,Screen.perX(2), "red",null,100,false);
                 }
                 break;
             case "s":
                 console.log("게임이 시작했습니다.");
                 Game.channel[Game.TEXT_CHANNEL]=[];
-                Camera.makeMovingCamera({x:0,y:0},0,0,movingDelay=20)
-                this.gameOn=true;
+                //Camera.makeMovingCamera({x:0,y:0},0,0,movingDelay=20)
+                Camera.cameraOn=true;
+                this.setGameStatus(true);
                 break;
             }
     },
@@ -88,18 +88,21 @@ let Multi = {
             if(message[1]==="l"){
                 console.log("게임이 끝났습니다.");
                 let resultText;
-                if(message[2]===this.playerNum)resultText = new Text(Screen.perX(50), Screen.perY(50),"WIN",Screen.perX(10),"yellow",null,200,false);
+                let loserNum = 1-Number(message[2]);
+                if(message[2]===Multi.playerNum)resultText = new Text(Screen.perX(50), Screen.perY(50),"WIN",Screen.perX(10),"yellow",null,200,false);
                 else resultText = new Text(Screen.perX(50), Screen.perY(50),"YOU LOSE",Screen.perX(10),"red",null,200,false);
-                resultText.removeHandler=function(){Game.channel[Game.PHYSICS_CHANNEL]=[]}
-                this.resetMulti();
+                Game.channel[Game.PHYSICS_CHANNEL][loserNum].life=0;
+                resultText.removeHandler=function(){Multi.setGameStatus(false);}
             }
         } else {//
             let imagers = JSON.parse(message);
-            Camera.e.temp=imagers[Number(this.playerNum)];
+            Camera.e=imagers[Number(this.playerNum)].camera;
             for (let i = imagers.length - 1; i >= 0; i--) {
                 //draw imager
                 let ei = imagers[i];
                 switch (imagers[i].t) {
+                    case 0:ei.update=function(){};break;
+
                     case 1://Block
                     ei.update = function () { ctx.fillStyle = "black"; Camera.fillRect(ei.x, ei.y, ei.w, ei.h); }
                     break;
@@ -121,13 +124,25 @@ let Multi = {
                         if(ei.moveFlag)return 1;
                         else return 0;
                     });
-                    ei.draw=Player.getDraw();
-                    ei.update=function(){ei.x+=ei.vx;ei.y-=ei.vy;ei.draw();}
+                    //ei.draw=Player.getDraw();
+                    //ei.update=function(){ei.draw();ei.x+=ei.vx;ei.y-=ei.vy;ei.vy-=0.2}
+                    ei.update=Player.getDraw();
                     break;
 
                     case 5://Text
-                    ei.update = function () {}   
-                    break;                     
+                    ei.update = function(){
+                        ctx.textBaseline = "middle";
+                        ctx.textAlign = "center";
+                        ctx.font = "bold 30px Arial";
+                        const textX=Camera.getX(this.x);
+                        const textY=Camera.getY(this.y);
+                        ctx.strokeStyle = "black";
+                        ctx.strokeText(ei.text, textX, textY);
+                        ctx.fillStyle = "brown";
+                        ctx.fillText(ei.text, textX, textY);
+                    } 
+                    break;
+
                     case 6://Trigger
                     ei.update = Trigger.getDraw();
                     break;
@@ -139,11 +154,78 @@ let Multi = {
     },
     setGameStatus:function(s){
         if(s===this.gameOn)return;
-        this.gameOn=s;
-        if(this.gameOn){
+        this.gameOn = s;
+        if (s) {
+            //Player View
+            const viewTextSize = Screen.perX(1.5);
+            const MAX_HP = 10000 * 5;
+            const MAX_MP = 20000 * 5;
+            const MP_restore = 1 * 5;
+            const PLAYER_NUM = Number(Multi.playerNum);
             
+            let view = new Button(Screen.perX(55), Screen.perX(1), Screen.perX(45), Screen.perX(8), Game.TEXT_CHANNEL);
+            view.drawCode = function () {
+                let p=Game.channel[Game.PHYSICS_CHANNEL][PLAYER_NUM];
+                if(p==undefined)p={life:MAX_HP,mp:MAX_MP,coolTime:[-1,-1,-1,-1]};
+                ctx.strokeStyle = "black";
+                ctx.strokeRect(view.x, view.y, Screen.perX(18), Screen.perX(2));
+                ctx.strokeRect(view.x, view.y + Screen.perX(2.5), Screen.perX(18), Screen.perX(2));
+                ctx.fillStyle = "brown";
+                ctx.fillRect(view.x, view.y, Screen.perX(18) * (p.life / MAX_HP), Screen.perX(2));
+                ctx.fillStyle = "royalblue";
+                ctx.fillRect(view.x, view.y + Screen.perX(2.5), Screen.perX(18) * (p.mp / MAX_MP), Screen.perX(2));
+                if (p.mp < MAX_MP) p.mp += MP_restore;
+                else p.mp = MAX_MP;
+                ctx.fillStyle = "black";
+                ctx.font = "bold " + viewTextSize + "px Arial";
+                ctx.textBaseline = "top";
+                ctx.textAlign = "left";
+                ctx.fillText(p.life, Screen.perX(55.5), Screen.perX(1.5));
+                ctx.fillText(p.mp, Screen.perX(55.5), Screen.perX(4));
+                for (let i = 0; i < 4; i++) {
+                    if (Magic.skillNum[i] < 0) continue;
+                    let magic = Magic.magicList[Magic.skillNum[i]];
+                    ctx.fillText(magic[0] + "(" + magic[3] + "): " + (p.coolTime[i] > 0 ? (p.coolTime[i] / 100) : "ready"), Screen.perX(75), Screen.perX(1) + Screen.perX(2) * i);
+                }
+            }
+            //Mobile Mode Button
+            const mobileButtonSize=70;
+            if (Screen.isMobile) {
+                let p=Game.channel[Game.PHYSICS_CHANNEL][PLAYER_NUM];
+                if(p==undefined)p={life:MAX_HP,mp:MAX_MP,coolTime:[-1,-1,-1,-1]};
+                let leftButton = new Button(5, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
+                leftButton.code = function () { Multi.keyDownHandler({keyCode:37})};
+                leftButton.drawOption("rgba(61, 61, 61,0.5)", "black", "<", 80, "black");
+                let upButton = new Button(10+mobileButtonSize, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
+                upButton.code = function () { Multi.keyDownHandler({keyCode:38})};
+                upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", 80, "black");
+                let rightButton = new Button(15+mobileButtonSize*2, canvas.height - mobileButtonSize-5, mobileButtonSize, mobileButtonSize);
+                rightButton.code = function () {Multi.keyDownHandler({keyCode:39}) };
+                rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", 80, "black");
+                let keys=["Q","W","E","R"];
+                let keyCodes=[81,87,69,82];
+                for(let i=0; i<4; i++){
+                    let keyButton = new Button(canvas.width-(5*4+mobileButtonSize*4)+i*(mobileButtonSize+5),canvas.height-mobileButtonSize-5,mobileButtonSize,mobileButtonSize);
+                    keyButton.code=function(){Multi.keyDownHandler({keyCode:keyCodes[i]})};
+                    keyButton.drawCode=function(){
+                        ctx.fillStyle=(p.coolTime[i]<0 ?"rgb(121, 140, 205)" : "rgba(61, 61, 61,0.5)");//"rgba(61, 61, 61,0.5)";
+                        ctx.fillRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
+                        ctx.strokeStyle="black";
+                        ctx.strokeRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
+                        ctx.fillStyle="black";
+                        ctx.font = "bold "+(mobileButtonSize-20)+"px Arial";
+                        ctx.textBaseline = "middle";
+                        ctx.textAlign = "center";
+                        ctx.fillText(keys[i],keyButton.x+35,keyButton.y+43);
+                        ctx.fillStyle="white";
+                        ctx.font = "bold 15px Arial";
+                        ctx.fillText(Magic.magicList[Magic.skillNum[i]][0],keyButton.x+35,keyButton.y+11);
+                    }
+                }
+            }
         }else{
-
+            Screen.multiplayScreen();
+            this.playerNum='n';
         }
     },
     keyDownHandler:function(e){

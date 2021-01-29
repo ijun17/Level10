@@ -44,6 +44,7 @@ class Player extends Entity{
             this.life -= this.totalDamage;
             this.totalDamage = 0;
         }
+        if(this.mp<this.lv*20000)this.mp+=this.lv;
         if(this.damageTick>0)this.damageTick--;
     }
     static getDraw(){
