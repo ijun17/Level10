@@ -20,9 +20,10 @@ let Multi = {
     connect:false,
     serverOn:false,
     gameOn:false,
+    IP:"211.194.75.223",
     playerNum:'n', //n:익명 0:1번째플레이어 1:2번째플레이어
     makeWebSocket: function () {
-        this.ws = new WebSocket("ws://localhost:3000");
+        this.ws = new WebSocket("ws://"+Multi.IP+":777");
         // 연결이 수립되면 서버에 메시지를 전송한다
         this.ws.onopen = function (event) {
             Multi.serverOn=true;
@@ -46,10 +47,10 @@ let Multi = {
     connectOff:function(){
         this.connect=false;
         if(this.ws!=null)this.ws.close();
+        this.serverOn=false;
         this.resetMulti();
     },
     resetMulti:function(){
-        this.serverOn=false;
         this.gameOn=false;
         this.playerNum='n';
     },
@@ -63,6 +64,8 @@ let Multi = {
                 this.playerNum=message[1];
                 if(this.playerNum!="n"){
                     console.log("게임에 참여했습니다.");
+                    let text = new Text(Screen.perX(50), Screen.perY(70), "게임에 참여했습니다." ,Screen.perX(2), "black",null,100,false);
+                    text.removeHandler=function(){new Text(Screen.perX(50), Screen.perY(70), "참가자를 기다리는 중..." ,Screen.perX(2), "black",null,-1,false);}
                     let magicList=[];
                     for(let i=0;i<4;i++){
                         let skillNum=Magic.skillNum[i];
@@ -74,6 +77,7 @@ let Multi = {
                 break;
             case "s":
                 console.log("게임이 시작했습니다.");
+                Game.channel[Game.TEXT_CHANNEL]=[];
                 Camera.makeMovingCamera({x:0,y:0},0,0,movingDelay=20)
                 this.gameOn=true;
                 break;
@@ -83,6 +87,10 @@ let Multi = {
         if(message[0]==="*"){
             if(message[1]==="l"){
                 console.log("게임이 끝났습니다.");
+                let resultText;
+                if(message[2]===this.playerNum)resultText = new Text(Screen.perX(50), Screen.perY(50),"WIN",Screen.perX(10),"yellow",null,200,false);
+                else resultText = new Text(Screen.perX(50), Screen.perY(50),"YOU LOSE",Screen.perX(10),"red",null,200,false);
+                resultText.removeHandler=function(){Game.channel[Game.PHYSICS_CHANNEL]=[]}
                 this.resetMulti();
             }
         } else {//
@@ -104,7 +112,8 @@ let Multi = {
                     ei.img = new Image;
                     ei.img.src = "resource/matter/" + MATTERS[ei.typenum].name + ".png";
                     ei.draw=Matter.getDraw();
-                    ei.update = function(){ei.x+=ei.vx;ei.y-=ei.vy;ei.draw();}
+                    if(ei.typenum===0)ei.update = function(){ei.x+=ei.vx;ei.y-=ei.vy;ei.draw();if(Game.time%15==0){new Particle(1,ei.x,ei.y);new Particle(0,ei.x,ei.y);}}
+                    else ei.update = function(){ei.x+=ei.vx;ei.y-=ei.vy;ei.draw();}
                     break;
 
                     case 4://Player
@@ -126,6 +135,15 @@ let Multi = {
 
             }
             Game.channel[Game.PHYSICS_CHANNEL]=imagers;
+        }
+    },
+    setGameStatus:function(s){
+        if(s===this.gameOn)return;
+        this.gameOn=s;
+        if(this.gameOn){
+            
+        }else{
+
         }
     },
     keyDownHandler:function(e){

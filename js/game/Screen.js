@@ -525,12 +525,12 @@ let Screen= {
                 if(Multi.serverOn&&Multi.gameOn==false){
                     playButton.x=Screen.perX(50)-playButton.w/2;
                     playButton.y=Screen.perY(50)-playButton.h/2;
-                    serverOnView.drawOption(null,"green","server on", Screen.perX(2),"green",null);
                 }else {
                     playButton.x=Screen.perX(-100);
                     playButton.y=Screen.perY(-100);
-                    serverOnView.drawOption(null,"brown","server off", Screen.perX(2),"brown",null);
                 }
+                if(Multi.serverOn){serverOnView.drawOption(null,"green","server on", Screen.perX(2),"green",null);
+                }else{serverOnView.drawOption(null,"brown","server off", Screen.perX(2),"brown",null);}
             }
         }
 

@@ -11,3 +11,5 @@ play video clip https://www.youtube.com/watch?v=iYIHrzt_TLk
 # fight monster
 <img src="resource/readme/fight.png">
 
+# multi play
+
