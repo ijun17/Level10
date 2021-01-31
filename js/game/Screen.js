@@ -445,7 +445,6 @@ let Screen= {
         const viewTextSize=Screen.perX(1.5);
         const MAX_HP = 10000*Level.playerLevel;
         const MAX_MP = 20000*Level.playerLevel;
-        const MP_restore = 1*Level.playerLevel;
         let view = new Button(Screen.perX(55),Screen.perX(1),Screen.perX(45),Screen.perX(8),Game.TEXT_CHANNEL);
         view.drawCode=function(){
             ctx.strokeStyle="black";
@@ -455,8 +454,6 @@ let Screen= {
             ctx.fillRect(view.x,view.y,Screen.perX(18)*(Game.p.life/MAX_HP),Screen.perX(2));
             ctx.fillStyle="royalblue";
             ctx.fillRect(view.x,view.y+Screen.perX(2.5),Screen.perX(18)*(Game.p.mp/MAX_MP),Screen.perX(2));
-            if(Game.p.mp<MAX_MP)Game.p.mp+=MP_restore;
-            else Game.p.mp=MAX_MP;
             ctx.fillStyle="black";
             ctx.font = "bold "+viewTextSize+"px Arial";
             ctx.textBaseline = "top";

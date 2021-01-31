@@ -21,9 +21,9 @@ class Player extends Entity{
         //magic
         for(let i=0; i<4; i++){this.magicList[i]=(Magic.skillNum[i]>=0?Magic.magicList[Magic.skillNum[i]]:null);}
         //lv
-        this.lv=lv;
-        this.life=lv*10000;
-        this.mp=lv*20000;
+        this.lv=Number(lv);
+        this.life=this.lv*10000;
+        this.mp=this.lv*20000;
         //ani
         let p=this;
         this.animation = new Animation("resource/player/"+`player.png`,30,60,[1,1],function(){
@@ -45,6 +45,7 @@ class Player extends Entity{
             this.totalDamage = 0;
         }
         if(this.mp<this.lv*20000)this.mp+=this.lv;
+        else this.mp=this.lv*20000;
         if(this.damageTick>0)this.damageTick--;
     }
     static getDraw(){
