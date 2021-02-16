@@ -1,6 +1,5 @@
 let Magic = {
-    //qwer
-    skillNum:[0,1,2,3],
+    skillNum:[0,1,2,3],//qwer
     basicMagicCount:0,
     customMagicCount:0,
     customMagic:[],
@@ -9,41 +8,34 @@ let Magic = {
     //magicList = [name, magic function, coolTime, needed MagicPoint, needed Level] : magicList
     magicList:[],
     basicMagic:[
-    ["fire ball",`
-//전방에 파이어볼을 발사
+    ["fire ball",`//전방에 파이어볼을 발사
 @e=create(FIRE,front()*10,1);
 giveLife(e,10);
 move(e,front()*30, 0);
     `,1],
 
-    ["wall", `
-//길쭉한 블럭을 생성
+    ["wall", `//길쭉한 블럭을 생성
 @block = create(BLOCK,0,0,30,100);
 move(block,0,100);
     `,1],
 
-    ["dash",`
-//플레이어가 빠른 속도로 앞으로 이동
+    ["dash",`//플레이어가 빠른 속도로 앞으로 이동
 giveForce(player,front()*20,0);
     `,1],
 
-    ["heal",`
-//플레이어 hp를 2000회복
+    ["heal",`//플레이어 hp를 2000회복
 giveLife(player,2000);
     `,1],
 
-    ["invisible",`
-//플레이어의 투명화
+    ["invisible",`//플레이어의 투명화
 invisible(player,300);    
     `,2],
 
-    ["teleport",`
-//텔레포트
+    ["teleport",`//텔레포트
 move(player, front()*300, 0);
     `,2],
 
-    ["fire tornado",`
-//불꽃 토네이도 생성
+    ["fire tornado",`//불꽃 토네이도 생성
 @x=getX(player)+front()*200;
 @i=0;
 time(player, 1,12,#(){
@@ -57,25 +49,33 @@ time(player, 1,12,#(){
     i++;
 });
     `,3],
-    ["sword energy",`
-//검기 발사
+    ["sword energy",`//검기 발사
 @e=create(SWORD,front()*20,0);
 giveLife(e,10);
     `,3],
-    ["zero gravity", `
-//플레이어를 무중력 상태로 만듦
-setGravity(player,200,0);
+    ["elec shield", `//전기 실드를 생성
+@j=0;
+time(player,1,5,#(){
+@a=create(ELECTRICITY,0,0);
+move(a,front()*(20-j*20),60);
+giveLife(a,500);
+@b=create(ELECTRICITY,0,0);
+move(b,front()*(20),60-j*20);
+giveLife(b,500);
+@c=create(ELECTRICITY,0,0);
+move(c,front()*(-80),60-j*20);
+giveLife(c,500);
+j++;
+})
     `,4],
-    ["Knockback",`
-//넉백
+    ["Knockback",`//넉백
 @t = create(TRIGGER,front()*10,0,20,100);
 giveLife(t,100);
 setTrigger(t,#(e){
     giveForce(e, front()*20, 0);
 });
     `,5],
-    ["detection",`
-//전방으로 카메라 발사
+    ["detection",`//전방으로 카메라 발사
 @block=create(BLOCK,front()*20,0,10,10);
 @dt=150;
 giveLife(block,dt-100);
@@ -100,11 +100,6 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
         localStorage.skillNum=JSON.stringify(Magic.skillNum);
     },
     loadMagic:function(){
-        if(localStorage.skillNum!=null)this.skillNum = JSON.parse(localStorage.skillNum);
-        else {
-            this.skillNum = [0,1,2,3];
-            this.saveSkillNum();
-        }
         //sound
         Magic.magicEffectSound.src="resource/sound/magic effect2.mp3";
         Magic.magicEffectSound.volume=0.1;
@@ -121,16 +116,28 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             
         }
         //load custom magic
-        if(localStorage.CUSTOM_MAGIC!=null)Magic.customMagic=JSON.parse(localStorage.CUSTOM_MAGIC);
-        Magic.customMagicCount=Magic.customMagic.length;
-        for(let i=0,j=Magic.customMagicCount; i<j; i++){
-            let magic = Magic.convertMagictoJS(Magic.customMagic[i][0],Magic.customMagic[i][1]);
-            if(magic==null){
-                Magic.magicList.push([Magic.customMagic[i][0], function(){},100,100,1]);
-            }else {
-                Magic.magicList.push(magic);
+        if (localStorage.CUSTOM_MAGIC == null) {
+            Magic.customMagicCount = 0;
+            Magic.customMagic = [];
+        } else {
+            Magic.customMagic = JSON.parse(localStorage.CUSTOM_MAGIC);
+            Magic.customMagicCount = Magic.customMagic.length;
+            for (let i = 0, j = Magic.customMagicCount; i < j; i++) {
+                let magic = Magic.convertMagictoJS(Magic.customMagic[i][0], Magic.customMagic[i][1]);
+                if (magic == null) Magic.magicList.push([Magic.customMagic[i][0], function () { }, 100, 100, 1]);
+                else Magic.magicList.push(magic);
             }
         }
+        //selected skill num
+        if(localStorage.skillNum!=null){
+            this.skillNum = JSON.parse(localStorage.skillNum);
+            for(let i=0; i<this.skillNum.length; i++){
+                if(this.magicList[this.skillNum[i]]==null)this.skillNum[i]=-1;
+            }
+        } else {
+            this.skillNum = [0,1,2,3];
+        }
+        this.saveSkillNum();
     },
     addEmptyMagic:function(){
         Magic.customMagicCount++;
@@ -166,7 +173,7 @@ time(player,dt,dt,#(){setCamera(player,getX(player),getY(player),10);});
             let e;
             if(typenum<=SWORD)e=new Matter(typenum,0,0,vx,vy);
             else if(typenum==BLOCK)e=new Block(0,0,w,h);
-            else if(typenum==TRIGGER)e=new Trigger(0,0,w,h,1,function(e){});
+            else if(typenum==TRIGGER)e=new Trigger(0,0,w,h,100,function(e){});
             e.vx=vx;e.vy=vy;
             e.x=p.x+p.w/2+front(p)*(e.w/2+p.w/2)-e.w/2;
             e.y=p.y+p.h/2-e.h/2;

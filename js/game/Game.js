@@ -34,6 +34,10 @@ let Game = {
         Level.loadLevel();
         Magic.loadMagic();
         Screen.mainScreen();
+
+        setInterval(Game.updateWorld, 10);
+        //setInterval(Game.renderWorld, 10)
+
     },
     updateWorld:function() {
         ctx.fillStyle=Screen.bgColor;
@@ -43,6 +47,13 @@ let Game = {
             Game.removeEntity(i);
         }
         Game.time++;
+    },
+    renderWorld:function(){
+        ctx.fillStyle=Screen.bgColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 4; i++) {
+            for (let j = Game.channel[i].length - 1, c = Game.channel[i]; j >= 0; j--) { c[j].draw(); }
+        }
     },
     removeEntity:function(channelLevel) {
         for (let e of Game.channel[channelLevel]) {
@@ -140,4 +151,4 @@ let Game = {
 }
 
 Game.startGame();
-setInterval(Game.updateWorld, 10);
+//setInterval(Game.updateWorld, 10);

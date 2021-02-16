@@ -18,6 +18,7 @@ canvas {
     background-color: black;
     resize: none;
     color: brown;
+    font-size: 18px;
 }
 
 .textbox {
@@ -28,6 +29,8 @@ canvas {
     background-color: black;
     color: royalblue;
     resize: none;
+    font-size: 18px;
+    font-family: system-ui;
 }
 
 .compilebutton {

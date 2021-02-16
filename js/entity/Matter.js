@@ -34,11 +34,12 @@ const MATTERS=[
                 e.life+=v.life+1;v.life=0;
                 e.w+=v.w;e.h+=v.h;
                 e.x-=v.w/2;e.y-=v.h/2;
+                e.inv_mass=e.inv_mass*v.inv_mass/(e.inv_mass+v.inv_mass)
                 e.giveForce(v.vx/v.inv_mass, v.vy/v.inv_mass);
                 e.power+=v.power;
             }else{
                 v.giveDamage(e.power);
-                v.giveForce(e.vx,e.vy+1);
+                v.giveForce(e.vx/e.inv_mass,e.vy/e.inv_mass+1);
             }
         }
     },

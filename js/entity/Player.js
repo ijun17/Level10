@@ -43,6 +43,7 @@ class Player extends Entity{
             new Text(this.x + this.w / 2, this.y - 50,this.totalDamage,30,"red","black",40);
             this.life -= this.totalDamage;
             this.totalDamage = 0;
+            this.damageTick=20;
         }
         if(this.mp<this.lv*20000)this.mp+=this.lv;
         else this.mp=this.lv*20000;
@@ -84,7 +85,6 @@ class Player extends Entity{
     giveDamage(d) {
         if(this.damageTick==0){
             this.totalDamage += Math.floor(d);
-            if(d>0)this.damageTick=20;
             Camera.vibrate((d<4000 ? d/200 : 20)+5);
         }
     }

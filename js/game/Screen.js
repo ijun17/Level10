@@ -176,9 +176,9 @@ let Screen= {
         backBtn.code = function () { Screen.selectScreen() };
         backBtn.drawOption(null, null, "<", Screen.perX(6), "black");
 
-        let selectMagicText = new Text(Screen.perX(6),Screen.perX(1), "select magic", Screen.perX(3),"rgba(0,0,255,0.1)",null,-1,null);
+        let selectMagicText = new Text(Screen.perX(99),Screen.perX(1), "select magic", Screen.perX(3),"rgba(255,255,255,0.5)",null,-1,null);
         selectMagicText.textBaseline = "top";
-        selectMagicText.textAlign="left";
+        selectMagicText.textAlign="right";
 
         //KEYBORAD BUTTON
         let key = ['Q', 'W', 'E', 'R'];
@@ -219,6 +219,7 @@ let Screen= {
         let listEnd=-1;
         //
         
+        
         new Button(0,0,0,0).drawCode=function(){
             if (Screen.selectMagic != null) {
                 //선택된 마법의 색을 어둡게
@@ -226,16 +227,16 @@ let Screen= {
                 ctx.fillRect(Screen.selectMagic.x, Screen.selectMagic.y, Screen.selectMagic.w, Screen.selectMagic.h);
                 
                 //magic explanation
-                let temp1=Screen.perX(24);
+                let temp1=Screen.perX(53);
                 let temp2=Screen.perX(2.4);
                 ctx.fillStyle = "black";
                 ctx.font = "bold "+temp2+"px Arial";
                 ctx.textBaseline = "top";
                 ctx.textAlign = "left";
-                ctx.fillText("<"+Magic.magicList[Screen.selectMagic.temp[0]][0]+">", canvas.width-temp1, 10);
+                ctx.fillText("<"+Magic.magicList[Screen.selectMagic.temp[0]][0]+">", temp1, 10+temp2*2);
 
-                ctx.fillText("cooltime: "+(Magic.magicList[Screen.selectMagic.temp[0]][2]/100)+"sec", canvas.width-temp1, 10+temp2);
-                ctx.fillText("mp: "+(Magic.magicList[Screen.selectMagic.temp[0]][3]), canvas.width-temp1,10+temp2*2);
+                ctx.fillText("cooltime: "+(Magic.magicList[Screen.selectMagic.temp[0]][2]/100)+"sec", temp1, 10+temp2*3);
+                ctx.fillText("mp: "+(Magic.magicList[Screen.selectMagic.temp[0]][3]), temp1,10+temp2*4);
             }
         }
 
@@ -285,12 +286,13 @@ let Screen= {
 
         //TEST WORLD
         new MapBlock(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "wall");
-        function makePlayer(){Game.p=new Player(canvas.width*5/9+20, 0);Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();}}
+        function makePlayer(){Game.p=new Player(canvas.width*5/9+20, 0);Game.p.magicList=[null,null,null,null];
+            Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();};}
         Camera.makeMovingCamera(Game.p,0,0,10);
         Camera.cameraOn=false;
         makePlayer();
         Game.keyboardOn=true;
-        Magic.magicPoint=0; //스킬 못쓰게
+        Game.p.mp=0; //스킬 못쓰게
         let monster = new Monster(0, canvas.width-100, 0);
         monster.life = 1000000;
         monster.action = [];
@@ -322,9 +324,9 @@ let Screen= {
         };
         backButton.drawOption(null, null, "<", Screen.perX(6), "black");
 
-        let createMagicText = new Text(Screen.perX(6),Screen.perX(1), "create magic", Screen.perX(3),"rgba(0,0,255,0.1)",null,-1,null);
+        let createMagicText = new Text(Screen.perX(99),Screen.perX(1), "create magic", Screen.perX(3),"rgba(255,255,255,0.5)",null,-1,null);
         createMagicText.textBaseline = "top";
-        createMagicText.textAlign="left";
+        createMagicText.textAlign="right";
 
         //모바일 모드이면 엘레멘트 생성 중단
         if(Screen.isMobile){
@@ -346,13 +348,12 @@ let Screen= {
             }
         };
         
-        //MAGIC LIST
+        //MAKE MAGIC BUTTON FUNCTION
         function makeMagicButton(isCustom, x,y,num){
             let magicBtn = new Button(x,y,Screen.perX(16),Screen.perX(3));
             let color = "rgba(119, 138, 202,0.8)";
             if(isCustom) color = "rgba(65, 105, 225,0.8)";
             magicBtn.drawOption(color,"black",Magic.magicList[num][0],Screen.perX(2.4),"black");
-
             magicBtn.code = function () {
                 (Magic.magicList[num][1]) (Game.p);
                 if(isCustom){
@@ -375,22 +376,25 @@ let Screen= {
             magicBtn.canInteract = true;
             
         }
+        //CUSTOM MAGIC LIST
         let plusButton = new Button(10, Screen.perX(6)+10, Screen.perX(16), Screen.perX(3));
-        plusButton.drawOption(null,"black","+ magic",Screen.perX(2.4),"black");
+        plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagicCount+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
         plusButton.code=function(){ 
             if(Magic.customMagicCount<10){
                 Magic.addEmptyMagic();
-                makeMagicButton(Magic.customMagic,10,1000,Magic.magicList.length);
+                makeMagicButton(true,10,1000,Magic.magicList.length-1);
+                plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagicCount+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
             }
         };
         for(let i=0; i<Magic.customMagic.length; i++){
             makeMagicButton(true,10,200+50*i,i+Magic.basicMagicCount);
         }
-        let basic = new Button(canvas.width-210, 10, 200, 60);
-        basic.drawOption(null,null,"basic",30,"black");
+        //BASIC MAGIC LIST
+        let basic = new Button(canvas.width-210, Screen.perX(6)+10, Screen.perX(16),Screen.perX(3));
+        basic.drawOption(null,null,"basic",30,"rgba(0,0,255,0.3)");
         for(let i=0; i<Magic.basicMagicCount; i++){
             if(Magic.magicList[i][4]>Level.playerLevel)continue;
-            makeMagicButton(false,canvas.width-210,200+50*i,i);
+            makeMagicButton(false,canvas.width-210,300+50*i,i);
         }
         //COMPILE BUTTON CLICK EVENT
         compileBtn.onclick = function(){
@@ -408,14 +412,13 @@ let Screen= {
         };
         
         //TEST MAP
-        Magic.magicPoint=0;
-        
         new MapBlock(Screen.perX(100),Screen.perY(50),100,Screen.perX(100),"wall");
         new MapBlock(-100,Screen.perY(50),100,Screen.perX(100),"wall");
         new MapBlock(-50,Screen.perY(80),Screen.perX(100)+100,Screen.perX(50),"grass");
         Camera.makeMovingCamera(Game.p,0,0,10);
         Camera.cameraOn=true;
-        function makePlayer(){Game.p=new Player(Screen.perX(30), 0);Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();}}
+        function makePlayer(){Game.p=new Player(Screen.perX(30), 0);Game.p.magicList=[null,null,null,null];
+            Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();};}
         function makeTester(){new Player(Screen.perX(60), 0).removeHandler=function(){makeTester();}}
         makePlayer();
         makeTester();
@@ -507,7 +510,9 @@ let Screen= {
         backButton.code = function () { Screen.selectScreen();Multi.connectOff();Game.convertMultiMode(false)};
         backButton.drawOption(null, null, "<", Screen.perX(6), "black");
         
-        new Text(Screen.perX(50), Screen.perY(25), "MULTI", Screen.perX(13),"black",null,-1,false);
+        let multiPlayText = new Text(Screen.perX(99),Screen.perX(1), "multi play", Screen.perX(3),"rgba(255,255,255,0.5)",null,-1,null);
+        multiPlayText.textBaseline = "top";
+        multiPlayText.textAlign="right";
 
         let serverOnView = new Button(Screen.perX(6),Screen.perX(1),Screen.perX(10),Screen.perX(2.5));
         serverOnView.drawOption(null,"brown","server off", Screen.perX(2),"brown",null);
