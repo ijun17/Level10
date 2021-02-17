@@ -89,9 +89,9 @@ class Entity {
         }
         if (this.canMove) {
             if (downCollision) {
-                if (this.vx > 0) this.vx -= this.friction;
+                if (Math.abs(this.vx) < 1) this.vx = 0;
+                else if (this.vx > 0) this.vx -= this.friction;
                 else this.vx += this.friction;
-                if (Math.abs(this.vx) < 2) this.vx = 0;
             }
         }
     }

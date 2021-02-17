@@ -65,8 +65,8 @@ class Player extends Entity{
         this.y -= this.vy;
         this.vy += this.ga;
         if (this.moveFlag) {
-            if (this.isRight && this.vx <= this.speed) this.vx = this.speed;
-            else if (!this.isRight && this.vx >= -this.speed) this.vx = -this.speed;
+            if (this.isRight && this.vx <= this.speed) this.vx++;
+            else if (!this.isRight && this.vx >= -this.speed) this.vx--;
         }
     }
 
