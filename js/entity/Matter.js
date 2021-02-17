@@ -30,7 +30,7 @@ const MATTERS=[
         setStatus:function(e){e.power=1000;},
         effect:function(e,v){
             if(v instanceof Matter&&v.typenum==4){
-                v.x=-10000;
+                v.y=10000;
                 e.life+=v.life+1;v.life=0;
                 e.w+=v.w;e.h+=v.h;
                 e.x-=v.w/2;e.y-=v.h/2;

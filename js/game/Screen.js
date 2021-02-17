@@ -45,10 +45,10 @@ let Screen= {
     bgColor : "black",
 
     perX:function(percentile){
-        return canvas.width/100*percentile;
+        return Math.floor(canvas.width/100*percentile);
     },
     perY:function(percentile){
-        return canvas.height/100*percentile;
+        return Math.floor(canvas.height/100*percentile);
     },
 
     mainScreen:function() {
@@ -215,8 +215,7 @@ let Screen= {
             keyBtn.temp.push(null); //temp[0] 은 선택된 마법을 의미
         }
 
-        let listStart=-1;
-        let listEnd=-1;
+        
         //
         
         
@@ -241,9 +240,10 @@ let Screen= {
         }
 
         //MAGIC LIST
+        let listStart=Game.channel[Game.BUTTON_CHANNEL].length;
+        let listEnd;
         for (let i = 0; i < Magic.magicList.length; i++) {
             if(Magic.magicList[i][4]>Level.playerLevel)continue;
-            if(listStart==-1)listStart=Game.channel[Game.BUTTON_CHANNEL].length;
             let magicBtn = new Button(space*8+Screen.perX(8)+Screen.perX(16), Screen.perX(3) + Screen.perX(4) * i, Screen.perX(16), Screen.perX(3));
             magicBtn.code = function () { Screen.selectMagic = magicBtn; (Magic.magicList[i][1])(Game.p); };
             let magicColor="rgba(119, 138, 202,0.8)";
@@ -277,12 +277,13 @@ let Screen= {
                 if(Game.channel[Game.BUTTON_CHANNEL][i].temp[1]==null)Game.channel[Game.BUTTON_CHANNEL][i].y+=d;
             }
         }
+        const MOVE_DISTANCE=Screen.perY(50);
         let upButton = new Button(space*9+Screen.perX(8)+Screen.perX(16)*2,0,Screen.perX(4),Screen.perX(4));
         upButton.drawOption("rgba(0,0,0,0.5)",null,"▲", Screen.perX(3),"white");
-        upButton.code=function(){if(Game.channel[Game.BUTTON_CHANNEL][listEnd].y<0)move(200);};
+        upButton.code=function(){if(Game.channel[Game.BUTTON_CHANNEL][listEnd].y<-Screen.perX(8))move(MOVE_DISTANCE);};
         let downButton = new Button(space*9+Screen.perX(8)+Screen.perX(16)*2,canvas.height-Screen.perX(4),Screen.perX(4),Screen.perX(4));
         downButton.drawOption("rgba(0,0,0,0.5)",null,"▼", Screen.perX(3),"white");
-        downButton.code=function(){if(40*(listEnd-listStart)+Game.channel[Game.BUTTON_CHANNEL][listEnd].y>canvas.height)move(-200);};
+        downButton.code=function(){if(Screen.perX(3)*(listEnd-listStart)+Screen.perX(8)+Game.channel[Game.BUTTON_CHANNEL][listEnd].y>canvas.height)move(-MOVE_DISTANCE);};
 
         //TEST WORLD
         new MapBlock(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "wall");
@@ -412,14 +413,18 @@ let Screen= {
         };
         
         //TEST MAP
-        new MapBlock(Screen.perX(100),Screen.perY(50),100,Screen.perX(100),"wall");
-        new MapBlock(-100,Screen.perY(50),100,Screen.perX(100),"wall");
-        new MapBlock(-50,Screen.perY(80),Screen.perX(100)+100,Screen.perX(50),"grass");
+        let mapSizeW=1000;
+        let mapSizeH=500;
+        let wallSize=200;
+        new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top
+        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall"); //left
+        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall");//right
+        new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize*2,"grass");
         Camera.makeMovingCamera(Game.p,0,0,10);
         Camera.cameraOn=true;
-        function makePlayer(){Game.p=new Player(Screen.perX(30), 0);Game.p.magicList=[null,null,null,null];
+        function makePlayer(){Game.p=new Player(100, -100,10);Game.p.magicList=[null,null,null,null];
             Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();};}
-        function makeTester(){new Player(Screen.perX(60), 0).removeHandler=function(){makeTester();}}
+        function makeTester(){let p=new Player(500, -100,10);p.removeHandler=function(){makeTester();};}
         makePlayer();
         makeTester();
         Game.keyboardOn=true;
@@ -464,10 +469,12 @@ let Screen= {
             ctx.fillText(Game.p.life, Screen.perX(55.5),Screen.perX(1.5));
             ctx.fillText(Game.p.mp, Screen.perX(55.5),Screen.perX(4));
             for(let i=0; i<4; i++){
-                if(Magic.skillNum[i]<0)continue;
-                let coolT = Game.p.coolTime[i] - Game.time;
-                let magic = Game.p.magicList[i];
-                ctx.fillText(magic[0] + "("+magic[3]+"): " + (coolT > 0 ? (coolT / 100) : "ready"), Screen.perX(75), Screen.perX(1)+Screen.perX(2)*i);
+                if (Magic.skillNum[i] < 0) ctx.fillText("none", Screen.perX(75), Screen.perX(1) + Screen.perX(2) * i);
+                else {
+                    let coolT = Game.p.coolTime[i] - Game.time;
+                    let magic = Game.p.magicList[i];
+                    ctx.fillText(magic[0] + "(" + magic[3] + "): " + (coolT > 0 ? (coolT / 100) : "ready"), Screen.perX(75), Screen.perX(1) + Screen.perX(2) * i);
+                }
             }
         }
         

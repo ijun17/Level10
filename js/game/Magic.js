@@ -68,11 +68,11 @@ giveLife(c,500);
 j++;
 })
     `,4],
-    ["Knockback",`//넉백
+    ["끌어당기기",`//닿은 물체를 끌어 당김
 @t = create(TRIGGER,front()*10,0,20,100);
 giveLife(t,100);
 setTrigger(t,#(e){
-    giveForce(e, front()*20, 0);
+    giveForce(e, -front()*10, 4);
 });
     `,5],
     ["detection",`//전방으로 카메라 발사
