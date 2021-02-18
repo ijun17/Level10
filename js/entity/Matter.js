@@ -27,7 +27,7 @@ const MATTERS=[
     },
     {
         name:"energy",
-        setStatus:function(e){e.power=1000;},
+        setStatus:function(e){e.power=1000;e.inv_mass=1;},
         effect:function(e,v){
             if(v instanceof Matter&&v.typenum==4){
                 v.y=10000;
@@ -39,7 +39,7 @@ const MATTERS=[
                 e.power+=v.power;
             }else{
                 v.giveDamage(e.power);
-                v.giveForce(e.vx/e.inv_mass,e.vy/e.inv_mass+1);
+                v.giveForce(e.vx/e.inv_mass+(e.getX()<v.getX()?e.w/10:-e.w/10), e.vy/e.inv_mass+1);
             }
         }
     },

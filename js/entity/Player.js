@@ -80,6 +80,7 @@ class Player extends Entity{
     collisionHandler(e,ct){
         if(ct=='D'&&!this.canJump)this.canJump=true;
         else if(ct==null&&e instanceof MapBlock)this.giveDamage(10000);
+        else e.giveForce((this.getX()<e.getX()?1:-1),0);
     }
 
     giveDamage(d) {
