@@ -151,5 +151,3 @@ let Game = {
 }
 
 Game.startGame();
-//setInterval(Game.updateWorld, 10);
-let socket = io();
