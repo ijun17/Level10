@@ -4,7 +4,7 @@
 -------------------
 game link 게임 링크 ⬇
 
-http://abasdfasfasdfc.shop/
+http://www.abasdfasfasdfc.shop/
 
 game link 게임 링크 ⬆
 
