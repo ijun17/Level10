@@ -115,8 +115,8 @@ let Multi = {
                     ei.img = new Image;
                     ei.img.src = "resource/matter/" + MATTERS[ei.typenum].name + ".png";
                     ei.draw=Matter.getDraw();
-                    if(ei.typenum===0)ei.update = function(){ei.x+=ei.vx;ei.y-=ei.vy;ei.draw();if(Game.time%15==0){new Particle(1,ei.x,ei.y);new Particle(0,ei.x,ei.y);}}
-                    else ei.update = function(){ei.x+=ei.vx;ei.y-=ei.vy;ei.draw();}
+                    if(ei.typenum===0)ei.update = function(){ei.draw();if(Game.time%15==0){new Particle(1,ei.x,ei.y);new Particle(0,ei.x,ei.y);}}
+                    else ei.update = function(){ei.draw();}
                     break;
 
                     case 4://Player
@@ -124,9 +124,7 @@ let Multi = {
                         if(ei.moveFlag)return 1;
                         else return 0;
                     });
-                    //ei.draw=Player.getDraw();
-                    //ei.update=function(){ei.draw();ei.x+=ei.vx;ei.y-=ei.vy;ei.vy-=0.2}
-                    ei.update=Player.getDraw();
+                    ei.update=(ei.canDraw?Player.getDraw():function(){});
                     break;
 
                     case 5://Text
