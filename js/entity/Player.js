@@ -24,13 +24,8 @@ class Player extends Entity{
         this.lv=Number(lv);
         this.life=this.lv*10000;
         this.mp=this.lv*20000;
-        //ani
-        let p=this;
-        this.animation = new Animation("resource/player/"+`player.png`,30,60,[1,1],function(){
-            if(p.moveFlag)return 1;
-            else return 0;
-        });
-        this.draw=Player.getDraw();
+        //draw
+        this.draw=Player.getDraw(this);
     }
 
     update() {
@@ -49,14 +44,18 @@ class Player extends Entity{
         else this.mp=this.lv*20000;
         if(this.damageTick>0)this.damageTick--;
     }
-    static getDraw(){
+    static getDraw(p){
+        let animation = new Animation("resource/player/"+`player.png`,30,60,[1,1],function(){
+            if(p.moveFlag)return 1;
+            else return 0;
+        });
         return function(){
-            this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h),this.isRight);
+            animation.draw(Camera.getX(p.x), Camera.getY(p.y), Camera.getS(p.w), Camera.getS(p.h),p.isRight);
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
             ctx.font="bold 15px Arial";
             ctx.fillStyle="black";
-            Camera.fillText("hp:"+(Math.floor(this.life)),this.x+this.w/2,this.y-20);
+            Camera.fillText("hp:"+(Math.floor(p.life)),p.x+p.w/2,p.y-20);
         }
     }
     

@@ -131,7 +131,6 @@ let Screen= {
         let helpButton = new Button(space, canvas.height-space-Screen.perX(3), Screen.perX(3), Screen.perX(3));
         helpButton.code = function () { Screen.helpScreen() };
         helpButton.drawOption(null, "white", "?", Screen.perX(3),"white");
-
         //MOBILE MODE BUTTON
         let mobileButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
         mobileButton.code = function () {

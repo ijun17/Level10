@@ -112,19 +112,13 @@ let Multi = {
                     break;
 
                     case 3://Matter
-                    ei.img = new Image;
-                    ei.img.src = "resource/matter/" + MATTERS[ei.typenum].name + ".png";
-                    ei.draw=Matter.getDraw();
+                    ei.draw=Matter.getDraw(ei);
                     if(ei.typenum===0)ei.update = function(){ei.draw();if(Game.time%15==0){new Particle(1,ei.x,ei.y);new Particle(0,ei.x,ei.y);}}
                     else ei.update = function(){ei.draw();}
                     break;
 
                     case 4://Player
-                    ei.animation = new Animation("resource/player/"+`player.png`,30,60,[1,1],function(){
-                        if(ei.moveFlag)return 1;
-                        else return 0;
-                    });
-                    ei.update=(ei.canDraw?Player.getDraw():function(){});
+                    ei.update=(ei.canDraw?Player.getDraw(ei):function(){});
                     break;
 
                     case 5://Text
@@ -156,9 +150,9 @@ let Multi = {
         if (s) {
             //Player View
             const viewTextSize = Screen.perX(1.5);
-            const MAX_HP = 10000 * 5;
-            const MAX_MP = 20000 * 5;
-            const MP_restore = 1 * 5;
+            const MAX_HP = 10000 * 10;
+            const MAX_MP = 20000 * 10;
+            const MP_restore = 1 *10;
             const PLAYER_NUM = Number(Multi.playerNum);
             
             let view = new Button(Screen.perX(55), Screen.perX(1), Screen.perX(45), Screen.perX(8), Game.TEXT_CHANNEL);

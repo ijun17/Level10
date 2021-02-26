@@ -54,7 +54,6 @@ const MATTERS=[
 ];
 
 class Matter extends Entity {
-    img = new Image;
     typenum;
     power;
     effect=function(e){};
@@ -68,20 +67,33 @@ class Matter extends Entity {
         this.inv_mass=4;
         let type=MATTERS[typenum];
         this.typenum=typenum;
-        this.img.src = "resource/matter/" + type.name + ".png";
         type.setStatus(this);
         this.effect=type.effect;
-        this.draw=Matter.getDraw();
+        this.draw=Matter.getDraw(this);
     }
 
-    static getDraw() {
-        return function () {
-            var r = Math.atan2(this.vx, this.vy);
-            ctx.save();
-            ctx.translate(Camera.getX(this.x + this.w / 2), Camera.getY(this.y + this.h / 2));
-            ctx.rotate(r);
-            ctx.drawImage(this.img, Camera.getS(-this.w / 2), Camera.getS(-this.h / 2), Camera.getS(this.w), Camera.getS(this.h));
-            ctx.restore();
+    static getDraw(e) {
+        if(e.typenum===0||e.typenum===1){
+            e.animation=new Animation("resource/matter/" + MATTERS[e.typenum].name + ".png",10,10,[3],function(){return 0;});
+            return function (){
+                var r = Math.atan2(this.vx, this.vy);
+                ctx.save();
+                ctx.translate(Camera.getX(this.x + this.w / 2), Camera.getY(this.y + this.h / 2));
+                ctx.rotate(r);
+                this.animation.draw(Camera.getS(-this.w / 2), Camera.getS(-this.h / 2), Camera.getS(this.w), Camera.getS(this.h));
+                ctx.restore();
+            }
+        } else {
+            e.img = new Image();
+            e.img.src = "resource/matter/" + MATTERS[e.typenum].name + ".png";
+            return function () {
+                var r = Math.atan2(this.vx, this.vy);
+                ctx.save();
+                ctx.translate(Camera.getX(this.x + this.w / 2), Camera.getY(this.y + this.h / 2));
+                ctx.rotate(r);
+                ctx.drawImage(this.img, Camera.getS(-this.w / 2), Camera.getS(-this.h / 2), Camera.getS(this.w), Camera.getS(this.h));
+                ctx.restore();
+            }
         }
     }
 

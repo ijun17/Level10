@@ -20,4 +20,4 @@ play video clip https://www.youtube.com/watch?v=iYIHrzt_TLk
 <img src="resource/readme/fight.png">
 
 # multi play
-
+<img src="resource/readme/multi.png">

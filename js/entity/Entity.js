@@ -4,6 +4,7 @@ class Entity {
     x = 0; y = 0; w = 0; h = 0; vx = 0; vy = 0; 
     ga = -0.2; friction = 0.4; inv_mass=1;//phisics;
     life = 1;defense=100;
+    max_speed=80;
     
     canDraw = true; //보일 수 있는가
     canMove = true; //움직일 수 있는가
@@ -46,7 +47,7 @@ class Entity {
         this.action.splice(0, i+1);
     }
     interact() {
-        let maxV=80;
+        const maxV=this.max_speed;
         if(this.vx>maxV)this.vx=maxV;
         else if(this.vx<-maxV)this.vx=-maxV;
         if(this.vy>maxV)this.vy=maxV;

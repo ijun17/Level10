@@ -9,9 +9,9 @@ let Magic = {
     magicList:[],
     basicMagic:[
     ["fire ball",`//전방에 파이어볼을 발사
-@e=create(FIRE,front()*10,1);
+@e=create(FIRE,front(10),1);
 giveLife(e,10);
-move(e,front()*30, 0);
+move(e,front(30), 0);
     `,1],
 
     ["wall", `//길쭉한 블럭을 생성
@@ -20,7 +20,7 @@ move(block,0,100);
     `,1],
 
     ["dash",`//플레이어가 빠른 속도로 앞으로 이동
-giveForce(player,front()*20,0);
+giveForce(player,front(20),0);
     `,1],
 
     ["heal",`//플레이어 hp를 2000회복
@@ -32,15 +32,15 @@ invisible(player,300);
     `,2],
 
     ["teleport",`//텔레포트
-move(player, front()*300, 0);
+move(player, front(300), 0);
     `,2],
 
     ["fire tornado",`//불꽃 토네이도 생성
-@x=getX(player)+front()*200;
+@x=getX(player)+front(200);
 @i=0;
 addAction(player, 1,12,#(){
     @fire = create(FIRE,0,0);
-    move(fire,front()*(200-13*i-15), i*35);
+    move(fire,front(200-13*i-15), i*35);
     //setGravity(fire,500,0);
     giveLife(fire,500)
     addAction(fire,1,500,#(){
@@ -50,29 +50,29 @@ addAction(player, 1,12,#(){
 });
     `,3],
     ["sword energy",`//검기 발사
-@e=create(SWORD,front()*20,0);
+@e=create(SWORD,front(20),0);
 giveLife(e,10);
     `,3],
     ["elec shield", `//전기 실드를 생성
 @j=0;
 addAction(player,1,5,#(){
 @a=create(ELECTRICITY,0,0);
-move(a,front()*(20-j*20),60);
+move(a,front(20-j*20),60);
 giveLife(a,500);
 @b=create(ELECTRICITY,0,0);
-move(b,front()*(20),60-j*20);
+move(b,front(20),60-j*20);
 giveLife(b,500);
 @c=create(ELECTRICITY,0,0);
-move(c,front()*(-80),60-j*20);
+move(c,front(-80),60-j*20);
 giveLife(c,500);
 j++;
 })
     `,4],
     ["끌어당기기",`//닿은 물체를 끌어 당김
-@t = create(TRIGGER,front()*10,0,20,100);
+@t = create(TRIGGER,front(10),0,20,100);
 giveLife(t,100);
 setTrigger(t,#(e){
-    giveForce(e, -front()*10, 4);
+    giveForce(e, front(-10), 4);
 });
     `,5],
     ["얼음지뢰",`//얼음 지뢰 생성
@@ -80,7 +80,7 @@ setTrigger(t,#(e){
     giveLife(e,1000);
     invisible(e,1000);
     @e2 = create(ICE,0,0);
-    move(e2,front()*31, 0);
+    move(e2,front(31), 0);
     giveLife(e2,1000);
     invisible(e2,1000);
     `,5]],
@@ -165,13 +165,13 @@ setTrigger(t,#(e){
         function getPlayer(){return player;}
         //UNIT MAGIC FUNCTION
         const FIRE=0, ELECTRICITY=1,ICE=2,ARROW=3,ENERGY=4,SWORD=5,BLOCK=6,TRIGGER=7;
-        function create(typenum,vx,vy,w,h){
+        function create(typenum=BLOCK,vx=0,vy=0,w=30,h=30){
             let e;
             let p=getPlayer();
             if(typenum<=SWORD)e=new Matter(typenum,0,0,vx,vy);
-            else if(typenum==BLOCK)e=new Block(0,0,w,h);
-            else if(typenum==TRIGGER)e=new Trigger(0,0,w,h,100,function(e){});
-            e.vx=vx;e.vy=vy;e.x=p.getX()+front()*(e.w/2+p.w/2)-e.w/2;e.y=p.getY()-e.h/2;
+            else if(typenum===BLOCK)e=new Block(0,0,w,h);
+            else if(typenum===TRIGGER)e=new Trigger(0,0,w,h,100,function(e){});
+            e.vx=vx;e.vy=vy;e.x=p.getX()+front(e.w/2+p.w/2)-e.w/2;e.y=p.getY()-e.h/2;
             return e;
         }
         function setTrigger(t,f){if(t instanceof Trigger)t.code=f;}
@@ -184,7 +184,7 @@ setTrigger(t,#(e){
         function getY(e){return getPlayer().getY()-e.getY();}
         function getVX(e){return e.vx;}
         function getVY(e){return e.vy;}
-        function front(){return (getPlayer().isRight ? 1 : -1);}
+        function front(d=1){return (getPlayer().isRight ? d : -d);}
         //TEST FUNCTION
         function test_giveForce(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMF([0, newE-oldE]);}
         function test_giveLife(e,d){addMF([0,d]);giveLife(e,d);}
@@ -203,7 +203,7 @@ setTrigger(t,#(e){
             }
             addMF([endTime*2,(endTime-startTime)]);
         }
-        function test_create(typenum,vx,vy,w,h){let e=create(typenum,vx,vy,w,h);addMF([50,getEnergy(e)]);return e;}
+        function test_create(typenum,vx,vy,w,h){let e=create(typenum,vx,vy,w,h);addMF([50,getEnergy(e)+vx*vx+vy*vy]);return e;}
         function test_setTrigger(t,f){setTrigger(t,f);addMF([100,t.w*t.h+getEnergy(t)+1]);}  
         //prohibited keyword
         let prohibitedWord=["new","function","let","var"];

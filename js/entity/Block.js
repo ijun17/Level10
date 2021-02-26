@@ -7,7 +7,7 @@ class Block extends Entity{
         this.h=h;
         this.color = color;
         this.overlap=false;
-        this.life=w*h*2;
+        this.life=w*h*10;
         //this.brokenSound.src="resource/sound/broken.mp3";
         
     }
@@ -19,7 +19,7 @@ class Block extends Entity{
 
     collisionHandler(e){
         this.life--;
-        var damage=this.w*this.h*this.getVectorLength()/20;
+        var damage=this.w*this.h*(this.getVectorLength()+10)/100;
         e.giveDamage(damage);
         e.giveForce(this.vx/5, this.vy/5);
         

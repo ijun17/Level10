@@ -43,16 +43,6 @@ let Camera={
             Camera.e.y+=(Camera.e.temp.y-Camera.e.y)/movingDelay;
         }
     },
-    makeSmoothCamera:function(target,x,y, movingDelay=10){
-        Camera.cameraOn=true;
-        Camera.e=new Button(x,y,0,0, Game.TEXT_CHANNEL);
-        Camera.e.temp=target;
-        Camera.e.update = function(){
-            //Camera.e.x+=(Camera.e.temp.x-Camera.e.x?5:-5)//movingDelay;
-            Camera.e.x+=Math.floor((Camera.e.temp.x-Camera.e.x)/100)*10;
-            Camera.e.y+=(Camera.e.temp.y-Camera.e.y)/movingDelay;//movingDelay;
-        }
-    },
     vibrate: function(power){
         Camera.e.x+=power*(Math.random()-0.5>0 ? 1 : -1);
         Camera.e.y+=power*(Math.random()-0.5>0 ? 1 : -1);

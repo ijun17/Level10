@@ -28,8 +28,8 @@ class MapBlock extends Entity{
                             ctx.fillStyle="#382113";
                             Camera.fillRect(this.x,this.y+15,this.w,this.h-15);
                         };
-            case "":
-                return;
+            case "ice":
+                return function(){ctx.fillStyle = "rgb(92,150,212)";Camera.fillRect(this.x, this.y, this.w, this.h);}
             default:
                 break;
         }

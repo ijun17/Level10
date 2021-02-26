@@ -28,7 +28,7 @@ class Animation {
         this.MAX_X=MAX_X;//array
 
     }
-    draw(x,y,w,h,isNotInverse){
+    draw(x,y,w,h,isNotInverse=true){
         //calculate imageX
         if((this.counter++)==this.fps){
             this.counter=0;
