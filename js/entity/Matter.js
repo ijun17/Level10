@@ -27,16 +27,16 @@ const MATTERS=[
     },
     {
         name:"energy",
-        setStatus:function(e){e.power=1000;e.inv_mass=1;},
+        setStatus:function(e){e.power=1000;e.inv_mass=0.5;e.ga=-0.01;e.friction=0;},
         effect:function(e,v){
             if(v instanceof Matter&&v.typenum==4){
-                v.y=10000;
-                e.life+=v.life+1;v.life=0;
-                e.w+=v.w;e.h+=v.h;
-                e.x-=v.w/2;e.y-=v.h/2;
-                e.inv_mass=e.inv_mass*v.inv_mass/(e.inv_mass+v.inv_mass)
-                e.giveForce(v.vx/v.inv_mass, v.vy/v.inv_mass);
-                e.power+=v.power;
+                e.life+=v.life+1;v.life=0; //생명 합
+                e.x=(e.x*e.w+v.x*v.w)/(e.w+v.w);   e.y=(e.y*e.h+v.y*v.h)/(e.h+v.h); //좌표 조정
+                e.w=Math.sqrt(e.w**2+v.w**2);e.h=e.w;//크기 합체
+                e.inv_mass=e.inv_mass*v.inv_mass/(e.inv_mass+v.inv_mass) //질량 합
+                e.giveForce(v.vx/v.inv_mass, v.vy/v.inv_mass); //힘 합
+                e.power=Math.floor((e.power+v.power)); //파워 합
+                v.y=10000; //제거
             }else{
                 v.giveDamage(e.power);
                 v.giveForce(e.vx/e.inv_mass+(e.getX()<v.getX()?e.w/10:-e.w/10), e.vy/e.inv_mass+1);
@@ -45,7 +45,7 @@ const MATTERS=[
     },
     {
         name:"sword",
-        setStatus:function(e){e.power=20;e.w*=e.getVectorLength()/5;e.h=e.w;},
+        setStatus:function(e){e.power=20;e.w=e.getVectorLength()+30;e.h=e.w;},
         effect:function(e,v){
             v.giveDamage(e.w*e.power);
             v.giveForce(e.vx,e.vy+1);

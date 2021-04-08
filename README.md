@@ -4,7 +4,7 @@
 -------------------
 game link 게임 링크 ⬇
 
-http://www.abasdfasfasdfc.shop/
+https://ijun17.github.io/web-rpg-game/
 
 game link 게임 링크 ⬆
 

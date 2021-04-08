@@ -23,13 +23,13 @@ let Game = {
         Level.stageMonsterCount = -1;
         Camera.cameraOn = false;
         Camera.extension=canvas.width/(Screen.isMobile ? 1200 : 1400);
-        Screen.bgColor="rgb(121, 155, 206)";
+        Screen.bgColor="#A89A9A";
     },
     startGame:function() {
         document.addEventListener("keydown", this.keyDownHandler, false);
         document.addEventListener("keyup", this.keyUpHandler, false);
         canvas.addEventListener("mousedown", this.clickDownHandler, false);
-        //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A, 붉은빛밤하늘: #3F3939, 보라빛밤하늘: #3C3647, 겨울아침:rgb(179, 211, 244)}
+        //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A, 붉은빛밤하늘: #3F3939, 보라빛밤하늘: #3C3647, 겨울아침:rgb(179, 211, 244), 맑은하늘:rgb(121, 155, 206)}
         
         Level.loadLevel();
         Magic.loadMagic();

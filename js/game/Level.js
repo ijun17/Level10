@@ -30,7 +30,6 @@ let Level= {
         clearText.removeHandler=function(){Screen.selectScreen();};
     },
 
-
     makeStage:function(level) {
         this.stageLevel = level;
         function printMonsterName(name=""){
@@ -38,17 +37,25 @@ let Level= {
             textE.textBaseline = "top";
             textE.textAlign="left";
         }
+        function makeSuperMob(e, hp = 2, size = 2, power = 2, speed = 2) {
+            e.life *= hp;
+            e.w *= size; e.h = e.w;
+            e.inv_mass /= size * size;
+            e.power *= power;
+            e.speed *= speed;
+        }
         //level에 따라 달라지는 변수
         Screen.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
         let mapSizeW=2000;
         let mapSizeH=1000;
-        let wallSize=200;
+        let wallSize=300;
         let mainMonster={name:"Coming soon"};
         let weatherNum=3;
         switch (level) {
             case 1:
                 this.stageMonsterCount = 1;
                 mainMonster=new Monster(0, 1000, -1000);
+                makeSuperMob(mainMonster,2.5,2,5,1)
                 break;
             case 2:
                 this.stageMonsterCount = 4;
@@ -58,18 +65,12 @@ let Level= {
                 mainMonster=new Monster(1, 700, -1000);
                 break;
             case 3:
-                this.stageMonsterCount = 11;
-                mainMonster=new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
-                new Monster(2, 400, -300);
+                this.stageMonsterCount = 16;
+                mapSizeW=3000;
+                mainMonster=new Monster(2, 3000, -1000);
+                for(let i=0; i<15; i++){//10마리 추가
+                    new Monster(2, 200*i, -1000);
+                }
                 break;
             case 4:
                 this.stageMonsterCount = 1;
@@ -115,8 +116,8 @@ let Level= {
         });
         //양 끝 맵블럭
         new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top
-        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall"); //left
-        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall");//right
+        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2+1000,"wall"); //left
+        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2+1000,"wall");//right
         new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize*2,"grass");
     }
 }

@@ -4,8 +4,20 @@
     margin: 0;
 }
 
+@media( orientation: portrait ){
+    html {
+      transform: rotate(-90deg);
+      transform-origin: top left;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100vh;
+      height: 100vw;
+    }
+}
+
 canvas {
-    background: rgb(121, 155, 206);
+    background: "black";
     display: block;
     margin: 0 auto;
 }

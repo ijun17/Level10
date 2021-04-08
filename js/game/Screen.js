@@ -41,7 +41,6 @@ let Screen= {
 
     //screen status
     isMobile : false,
-    selectMagic : null,
     bgColor : "black",
 
     perX:function(percentile){
@@ -84,25 +83,20 @@ let Screen= {
             }
             startButton.addAction(50,50,function(){Screen.selectScreen();});
             startButton.drawCode=function(){};
+            startButton.code=function(){};
         };
         startButton.drawOption(null, "black", "START", Screen.perX(6), "black");
         //Camera.makeMovingCamera({x:Screen.perX(50), y:Screen.perY(50)},Screen.perY(50),Screen.perY(50), movingDelay=1);
         
         let clickHereText = new Button(Screen.perX(50),Screen.perY(62),0,0);
         clickHereText.drawOption(null, null, "click here",Screen.perX(1.6),"black");
-        //decorate
-        new Text(Screen.perX(50), Screen.perY(90), "Top of JUNGI", Screen.perX(5),"rgb(42, 42, 42)",null,-1,false);
-        new MapBlock(Screen.perX(5),Screen.perY(62),Screen.perX(15),Screen.perY(50));
+        //decorate1
+        new Text(Screen.perX(50),Screen.perY(90), "Magic & Monster & Arena", Screen.perX(5),"rgb(42, 42, 42)",null,-1,false);
+        new MapBlock(Screen.perX(5),Screen.perY(62),Screen.perX(15),Screen.perY(30));
         new MapBlock(Screen.perX(27),Screen.perY(70),Screen.perX(15),Screen.perY(50));
         new MapBlock(Screen.perX(58),Screen.perY(70),Screen.perX(15),Screen.perY(50));
-        new MapBlock(Screen.perX(80),Screen.perY(62),Screen.perX(15),Screen.perY(50));
-        new MapBlock(Screen.perX(5),Screen.perY(80),Screen.perX(90),Screen.perY(50));
-        Game.p = new Player(Screen.perX(10),Screen.perY(50));
-        Game.p.removeHandler=function(){Game.click(Screen.perX(50), Screen.perY(50));};
-        Game.p.enlarge(Screen.perX(100)/Screen.CANVAS_W);
-        let m1=new Monster(0,Screen.perX(85),Screen.perY(50));
-        m1.canAct=false;
-        m1.enlarge(Screen.perX(100)/Screen.CANVAS_W);
+        new MapBlock(Screen.perX(80),Screen.perY(62),Screen.perX(15),Screen.perY(30));
+        new MapBlock(Screen.perX(8),Screen.perY(80),Screen.perX(84),Screen.perY(50));
     },
 
     selectScreen:function() {
@@ -180,6 +174,8 @@ let Screen= {
         selectMagicText.textAlign="right";
 
         //KEYBORAD BUTTON
+        let selectMagic = null;
+        new Text(Screen.perX(6),Screen.perX(6.5),"선택된 마법",Screen.perX(2), "rgba(255,255,255,0.5)", null,-1,null);
         let key = ['Q', 'W', 'E', 'R'];
         let keyButtons = new Array(4);
         for (let i = 0; i < 4; i++) {
@@ -187,23 +183,23 @@ let Screen= {
             //temp.drawOption("black");
             let keyBtn = new Button(space, Screen.perX(8) + (Screen.perX(8)+space) * i, Screen.perX(8), Screen.perX(8))
             keyBtn.code = function () {
-                if (Screen.selectMagic != null && Screen.selectMagic.temp[1] != i) {
+                if (selectMagic != null && selectMagic.temp[1] != i) {
                     if (keyBtn.temp[0] != null) { //키버튼에 마법이 있으면
                         keyBtn.temp[0].x = space*8+Screen.perX(8)+Screen.perX(16);
                         keyBtn.temp[0].y = Screen.perX(4)*(Magic.basicMagicCount+Magic.customMagicCount+1);
                         keyBtn.temp[0].vy =0;
                         (keyBtn.temp[0]).temp[1] = null;//마법 기록 삭제
                     }
-                    if (Screen.selectMagic.temp[1] != null) { //선택한 마법에 이미 키가 있으면
-                        Magic.skillNum[Screen.selectMagic.temp[1]] = -1;
-                        keyButtons[Screen.selectMagic.temp[1]].temp[0] = null;//이전 키버튼의 선택 기록 삭제
+                    if (selectMagic.temp[1] != null) { //선택한 마법에 이미 키가 있으면
+                        Magic.skillNum[selectMagic.temp[1]] = -1;
+                        keyButtons[selectMagic.temp[1]].temp[0] = null;//이전 키버튼의 선택 기록 삭제
                     }
-                    Screen.selectMagic.x = Screen.perX(8)+space*2; 
-                    Screen.selectMagic.y = Screen.perX(8) + (Screen.perX(8)+space) * i+space;
-                    Magic.skillNum[i] = Screen.selectMagic.temp[0];
-                    Screen.selectMagic.temp[1] = i;
-                    keyBtn.temp[0] = Screen.selectMagic;
-                    Screen.selectMagic = null;
+                    selectMagic.x = Screen.perX(8)+space*2; 
+                    selectMagic.y = Screen.perX(8) + (Screen.perX(8)+space) * i+space;
+                    Magic.skillNum[i] = selectMagic.temp[0];
+                    selectMagic.temp[1] = i;
+                    keyBtn.temp[0] = selectMagic;
+                    selectMagic = null;
                 }
                 Magic.saveSkillNum();
                 //console.log(Magic.skillNum);
@@ -219,10 +215,10 @@ let Screen= {
         
         
         new Button(0,0,0,0).drawCode=function(){
-            if (Screen.selectMagic != null) {
+            if (selectMagic != null) {
                 //선택된 마법의 색을 어둡게
                 ctx.fillStyle = "rgba(0,0,0,0.5)";
-                ctx.fillRect(Screen.selectMagic.x, Screen.selectMagic.y, Screen.selectMagic.w, Screen.selectMagic.h);
+                ctx.fillRect(selectMagic.x, selectMagic.y, selectMagic.w, selectMagic.h);
                 
                 //magic explanation
                 let temp1=Screen.perX(53);
@@ -231,10 +227,10 @@ let Screen= {
                 ctx.font = "bold "+temp2+"px Arial";
                 ctx.textBaseline = "top";
                 ctx.textAlign = "left";
-                ctx.fillText("<"+Magic.magicList[Screen.selectMagic.temp[0]][0]+">", temp1, 10+temp2*2);
+                ctx.fillText("<"+Magic.magicList[selectMagic.temp[0]][0]+">", temp1, 10+temp2*2);
 
-                ctx.fillText("cooltime: "+(Magic.magicList[Screen.selectMagic.temp[0]][2]/100)+"sec", temp1, 10+temp2*3);
-                ctx.fillText("mp: "+(Magic.magicList[Screen.selectMagic.temp[0]][3]), temp1,10+temp2*4);
+                ctx.fillText("cooltime: "+(Magic.magicList[selectMagic.temp[0]][2]/100)+"sec", temp1, 10+temp2*3);
+                ctx.fillText("mp: "+(Magic.magicList[selectMagic.temp[0]][3]), temp1,10+temp2*4);
             }
         }
 
@@ -244,10 +240,10 @@ let Screen= {
         for (let i = 0; i < Magic.magicList.length; i++) {
             if(Magic.magicList[i][4]>Level.playerLevel)continue;
             let magicBtn = new Button(space*8+Screen.perX(8)+Screen.perX(16), Screen.perX(3) + Screen.perX(4) * i, Screen.perX(16), Screen.perX(3));
-            magicBtn.code = function () { Screen.selectMagic = magicBtn; (Magic.magicList[i][1])(Game.p); };
+            magicBtn.code = function () { selectMagic = magicBtn; (Magic.magicList[i][1])(Game.p); };
             let magicColor="rgba(119, 138, 202,0.8)";
             if(i>=Magic.basicMagicCount)magicColor="rgba(65, 105, 225,0.8)";
-            magicBtn.drawOption(magicColor, "black", Magic.magicList[i][0], Screen.perX(2.4), "black");
+            magicBtn.drawOption(magicColor, "black", Magic.magicList[i][0], Screen.perX(2), "black");
             magicBtn.temp.push(i); //temp[0]=Magic.magicList
             magicBtn.temp.push(null); //temp[1] is keyButton index
             magicBtn.ga = 0.5;
@@ -256,7 +252,7 @@ let Screen= {
 
             let keyIndex = Magic.skillNum.findIndex(function (e) { return e == i; });
             if (keyIndex >= 0) {
-                Screen.selectMagic = magicBtn;
+                selectMagic = magicBtn;
                 keyButtons[keyIndex].collisionHandler();
             }
         }
@@ -294,7 +290,7 @@ let Screen= {
         Game.keyboardOn=true;
         Game.p.mp=0; //스킬 못쓰게
         let monster = new Monster(0, canvas.width-100, 0);
-        monster.life = 1000000;
+        monster.life = 0;
         monster.action = [];
         monster.addAction(100,100,function(){monster.canMove=false;});
         monster.canRemoved = false;
@@ -302,6 +298,27 @@ let Screen= {
 
     makeMagicScreen:function(){
         Game.resetGame();
+        //BACK
+        let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
+        backButton.drawOption(null, null, "<", Screen.perX(6), "black");
+        backButton.code = function () { 
+            namebox.value="";
+            textbox.value="";
+            Screen.selectScreen();
+            tb.style.display="none"; 
+        };
+        let createMagicText = new Text(Screen.perX(99),Screen.perX(1), "create magic", Screen.perX(3),"rgba(255,255,255,0.5)",null,-1,null);
+        createMagicText.textBaseline = "top";
+        createMagicText.textAlign="right";
+
+        //모바일 모드이면 엘레멘트 생성 중단
+        if(Screen.isMobile){
+            new Text(Screen.perX(50),Screen.perY(50), "모바일 모드에서 동작하지 않습니다", Screen.perX(3),"black",null,-1,null);
+            return;
+        }
+
+        //텍스트박스 생성
+        tb.style.display="block";
         const namebox=document.querySelector(".namebox");
         const textbox=document.querySelector(".textbox");
         const compileBtn=document.querySelector(".compilebutton");
@@ -309,34 +326,10 @@ let Screen= {
         const magicInfo = document.querySelector(".magicInfo");
         function printInfo(text1="", text2=""){
             successInfo.innerText = text1;
+            successInfo.style.color="royalblue";
             magicInfo.innerText = text2;
         }
-
-        //BACK
-        let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
-        backButton.code = function () { 
-            namebox.value="";
-            textbox.value="";
-            successInfo.innerText="";
-            magicInfo.innerText="";
-            Screen.selectScreen();
-            tb.style.display="none"; 
-        };
-        backButton.drawOption(null, null, "<", Screen.perX(6), "black");
-
-        let createMagicText = new Text(Screen.perX(99),Screen.perX(1), "create magic", Screen.perX(3),"rgba(255,255,255,0.5)",null,-1,null);
-        createMagicText.textBaseline = "top";
-        createMagicText.textAlign="right";
-
-        //모바일 모드이면 엘레멘트 생성 중단
-        if(Screen.isMobile){
-            let text = new Button(canvas.width/2,canvas.height/2,0,0);
-            text.drawOption(null, null, "not work on mobile mode", 20, "black");
-            return;
-        }
-        
-        //텍스트박스 생성
-        tb.style.display="block";
+        printInfo("","");
         
         //control system
         let cs=new Button(0,0,0,0);
@@ -351,9 +344,8 @@ let Screen= {
         //MAKE MAGIC BUTTON FUNCTION
         function makeMagicButton(isCustom, x,y,num){
             let magicBtn = new Button(x,y,Screen.perX(16),Screen.perX(3));
-            let color = "rgba(119, 138, 202,0.8)";
-            if(isCustom) color = "rgba(65, 105, 225,0.8)";
-            magicBtn.drawOption(color,"black",Magic.magicList[num][0],Screen.perX(2.4),"black");
+            let color = (isCustom ? `rgba(65, 105, 225,0.8)` : `rgba(119, 138, 202,0.8)`); //119, 138, 202
+            magicBtn.drawOption(color, "black", Magic.magicList[num][0], Screen.perX(2), "black");
             magicBtn.code = function () {
                 (Magic.magicList[num][1]) (Game.p);
                 if(isCustom){
@@ -367,14 +359,12 @@ let Screen= {
                     cs.temp = null;
                     printInfo("Basic magic can not edit.", "cooltime: "+(Magic.magicList[num][2]/100)+"sec\nMP: "+Magic.magicList[num][3]);
                 }
-                
             }
             magicBtn.temp = num;
             magicBtn.ga = 0.5;
             magicBtn.vy = 20;
             magicBtn.canMove = true;
             magicBtn.canInteract = true;
-            
         }
         //CUSTOM MAGIC LIST
         let plusButton = new Button(10, Screen.perX(6)+10, Screen.perX(16), Screen.perX(3));
@@ -386,14 +376,12 @@ let Screen= {
                 plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagicCount+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
             }
         };
-        for(let i=0; i<Magic.customMagic.length; i++){
-            makeMagicButton(true,10,200+50*i,i+Magic.basicMagicCount);
-        }
+        for(let i=0; i<Magic.customMagic.length; i++)makeMagicButton(true,10,200+50*i,i+Magic.basicMagicCount);
         //BASIC MAGIC LIST
         let basic = new Button(canvas.width-210, Screen.perX(6)+10, Screen.perX(16),Screen.perX(3));
-        basic.drawOption(null,null,"basic",30,"rgba(0,0,255,0.3)");
+        basic.drawOption(null,null,"basic magic",25,"rgba(0,0,255,0.3)");
         for(let i=0; i<Magic.basicMagicCount; i++){
-            if(Magic.magicList[i][4]>Level.playerLevel)continue;
+            if(Magic.magicList[i][4]>Level.playerLevel)break;
             makeMagicButton(false,canvas.width-210,300+50*i,i);
         }
         //COMPILE BUTTON CLICK EVENT
@@ -407,7 +395,6 @@ let Screen= {
                 Magic.magicList[cs.temp.temp]=magic;
                 Magic.saveMagic();
                 cs.temp.drawOption("rgba(65, 105, 225,0.8)","black",namebox.value,30,"black")
-                printInfo("SUCCESS", "cooltime: "+(magic[2]/100)+"sec\nMP: "+magic[3]);
             }
         };
         
@@ -451,7 +438,7 @@ let Screen= {
         //VIEW
         const viewTextSize=Screen.perX(1.5);
         const MAX_HP = 10000*Level.playerLevel;
-        const MAX_MP = 20000*Level.playerLevel;
+        const MAX_MP = 30000*Level.playerLevel;
         let view = new Button(Screen.perX(55),Screen.perX(1),Screen.perX(45),Screen.perX(8),Game.TEXT_CHANNEL);
         view.drawCode=function(){
             ctx.strokeStyle="black";
@@ -494,7 +481,7 @@ let Screen= {
                 let keyButton = new Button(canvas.width-(5*4+mobileButtonSize*4)+i*(mobileButtonSize+5),canvas.height-mobileButtonSize-5,mobileButtonSize,mobileButtonSize);
                 keyButton.code=function(){Game.p.castMagic(i);};
                 keyButton.drawCode=function(){
-                    ctx.fillStyle=(Magic.coolTime[i]<Game.time ?"rgb(121, 140, 205)" : "rgba(61, 61, 61,0.5)");//"rgba(61, 61, 61,0.5)";
+                    ctx.fillStyle=(Game.p.coolTime[i]<Game.time ?"rgb(121, 140, 205)" : "rgba(61, 61, 61,0.5)");//"rgba(61, 61, 61,0.5)";
                     ctx.fillRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
                     ctx.strokeStyle="black";
                     ctx.strokeRect(keyButton.x,keyButton.y,keyButton.w,keyButton.h);
@@ -552,7 +539,7 @@ let Screen= {
         let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.code = function () { Screen.selectScreen() };
         backButton.drawOption(null, null, "<", Screen.perX(6), "black");
-        let howToText = new Text(Screen.perX(15), Screen.perY(5),"About",Screen.perX(2),"white",null,-1,false);
+        let howToText = new Text(Screen.perX(15), Screen.perY(5),"About",Screen.perX(2),"black",null,-1,false);
         let nextBtnY=Screen.perX(6);
         function makeMenuButton(text,f=function(){clearPanel();},isEmphasis=true){
             let btn = new Button(0,nextBtnY,Screen.perX(20),Screen.perX(4));
@@ -561,21 +548,23 @@ let Screen= {
                 nextBtnY+=Screen.perX(4);
             }
             else {
-                btn.drawOption(null,null,text,Screen.perX(2),"black");
+                btn.drawOption(null,null,text,Screen.perX(2),"grey");
                 nextBtnY+=Screen.perX(2.5);
             }
             btn.code=f;
             
         }
-        makeMenuButton("움직이는법",howToMovePanel);
-        makeMenuButton("마법을쓰는법",howToUseMagic);
-        makeMenuButton("Select Magic",howToSelectMagicPanel);
-        makeMenuButton("Create Magic",howToCreateMagicPanel);
-        makeMenuButton("GAME INFO",gameInfoPanel);
-        nextBtnY += Screen.perX(4);
-        makeMenuButton("unit magic",function(){},false);
-        makeMenuButton("prohibited code",function(){},false);
-        makeMenuButton("magic evaluation",function(){},false);
+        makeMenuButton("조작법",gameControlPanel);
+        //makeMenuButton("마법을쓰는법",howToUseMagic);
+        makeMenuButton("마법을선택하는법",howToSelectMagicPanel);
+        makeMenuButton("마법을만드는법",howToCreateMagicPanel);
+        makeMenuButton("물질 생성 마법",create_magicCodePanel,false);
+        makeMenuButton("물질 속성 변환 마법",magicCodePanel,false);
+        makeMenuButton("물질 정보 탐색 마법",info_magicCodePanel,false);
+        makeMenuButton("prohibited code",prohibitedPanel,false);
+        makeMenuButton("magic evaluation",magicEvaluationPanel,false);
+        nextBtnY += Screen.perX(8);
+        makeMenuButton("",developerPanel);
 
 
         //PANEL FUNCTION
@@ -590,62 +579,102 @@ let Screen= {
             let textE = new Text(Screen.perX(25), nextLine, text, textSize, textColor,null,-1,false);
             textE.textBaseline = "top";
             textE.textAlign="left";
-            nextLine+=(type==0 ? Screen.perX(2.5):Screen.perX(4));
+            nextLine+=(type==0 ? Screen.perX(3):Screen.perX(4));
         }
 
-        function gameInfoPanel(){
+        function developerPanel(){
             clearPanel();
-            writeText("GAME INFO",1);
-            writeText("screen width: "+canvas.width,0);
-            writeText("screen height: "+canvas.height,0);
+            // writeText("GAME INFO",1);
+            // writeText("screen width: "+canvas.width,0);
+            // writeText("screen height: "+canvas.height,0);
         }
         function howToCreateMagicPanel(){
             clearPanel();
-            writeText("How To Create Magic", 1);
+            writeText("마법을 만드는 방법", 1);
             writeText("1. create magic 화면으로 이동",0);
-            writeText("2. +magic 버튼 클릭",0)
+            writeText("2. +magic 버튼을 클릭해서 빈 마법을 생성",0)
             writeText("3. 새로 만들어진 파란색 버튼 클릭",0)
-            writeText("4. 마법의 이름과 코드를 스크린 하단에 박스에 적음",0);
-            writeText("5. 그 밑에 있는 compile 버튼 클릭",0);
-            nextLine+=Screen.perX(5);
-            writeText("마법 코드는 자바스크립트를 기반으로 만들어졌습니다.",0);
-            writeText("자바스크립트에 대한 지식은 마법을 만드는데 도움이 됩니다.",0);
+            writeText("4. magic name 칸에 마법의 이름을 magic code 칸에 마법코드를 적음",0);
+            writeText("5. 그 밑에 있는 create 버튼 클릭(성공해야 저장됨)",0);
             nextLine+=Screen.perX(2);
-            writeText("*마법 코드에 대한 내용은 unit magic을 참고하세요",0);
-            writeText("*마법 코드와 자바스크립트의 차이점은 prohibited code를 참고하세요",0);
-            writeText("*마법 평가에 대한 내용은 magic evaluation를 참고하세요",0);
+            writeText("*물질생성마법, 물질속성변환마법, 물질정보탐색마법을 참고하세요.",0);
+            writeText("*create magic 화면에서 기본 마법의 코드를 볼 수 있습니다.",0);
+            writeText("*모바일에서 이용하려면 모바일 모드로 바꾸지 말고 이용하세요.",0);
+            writeText("*캐시 삭제를 하면 저장된 마법이 지워질 수 있습니다.",0);
         }
         function howToSelectMagicPanel(){
             clearPanel();
-            writeText("How To Select Magic", 1);
+            writeText("마법을 선택하는 방법", 1);
+            writeText("키 q,w,e,r에 원하는 마법을 지정할 수 있음",0)
+            nextLine+=Screen.perX(1);
             writeText("1. select magic 화면으로 이동",0);
             writeText("2. 마법 버튼(파란색 또는 보라색 버튼)을 클릭",0);
-            writeText("3. 원하는 키 버튼(Q,W,E,R) 클릭",0);
-            writeText("4. 키버튼을 누르면 선택된 스킬을 사용할 수 있음",0);
+            writeText("3. 키 버튼(Q,W,E,R)을 클릭",0);
             nextLine+=Screen.perX(2);
-            writeText("*마법 버튼이 정상적으로 클릭되면 버튼이 어두워짐",0);
+            writeText("*마법 버튼을 클릭하면 마법을 테스트할 수 있음",0);
         }
 
-        function howToMovePanel(){
+        function gameControlPanel(){
             clearPanel();
-            writeText("How To Move(pc mode)",1);
-            writeText("방향키를 클릭",0);
-            writeText("left move(<), jump(^), right move(>)",0);
-            nextLine+=Screen.perX(5);
-            writeText("How To Move(mobile mode)",1);
-            writeText("던전에 들어가면 좌측 하단에 버튼이 생성",0);
-            writeText("left move(<), jump(^), right move(>)",0);
+            writeText("이동하는법", 1);
+            writeText("pc - 키보드 방향키",0);
+            writeText("모바일 - 스크린 하단 방향 버튼",0);
+            nextLine+=Screen.perX(3);
+            writeText("마법을쓰는법", 1);
+            writeText("pc - 키보드 q,w,e,r키",0);
+            writeText("모바일 - 스크린 하단 Q,W,E,R 버튼",0);
         }
 
-        function howToUseMagic(){
+        function create_magicCodePanel(){
             clearPanel();
-            writeText("How To Use Magic(pc mode)",1);
-            writeText("키보드 q,w,e,r 버튼 클릭 ",0);
-            nextLine+=Screen.perX(5);
-            writeText("How To Use Magic(mobile mode)",1);
-            writeText("던전에 들어가면 우측 하단에 Q,W,E,R 버튼이 생성",0);
-            nextLine+=Screen.perX(10);
-            writeText("*cooltime이 0보다 크고 mp가 부족하면 마법을 쓰지 못합니다. ",0)
+            writeText("물질 생성 마법",1);
+            writeText("생성할 수 있는 물질 - 불, 전기, 얼음, 화살, 에너지, 검격, 블럭, 트리거",0)
+            writeText("마법코드 - create(type, vx, vy, w, h)",0)
+            nextLine+=Screen.perX(1);
+            writeText("type - FIRE,ELECTRICITY,ICE,ARROW,ENERGY,SWORD,BLOCK,TRIGGER",0)
+            writeText("vx - 가로방향 속력",0)
+            writeText("vy - 세로방향 속력",0)
+            writeText("w - 가로크기",0)
+            writeText("h - 세로크기",0)
+        }
+
+        function magicCodePanel(){
+            clearPanel();
+            writeText("물질 속성 변환 마법",1);
+            writeText("물질의 속성 - 속도, 위치, 가시성, 생명력, 행동 등",0);
+            nextLine+=Screen.perX(2);
+            writeText("giveForce(e,vx,vy) - 대상(e)을 vx, vy만큼 속력을 변화시킨다.",0)
+            writeText("move(e,x,y) - 대상(e)을 현재 위치에서 x, y만큼 이동시킨다.",0)
+            writeText("invisible(e,time) - 대상(e)을 time동안 보이지 않게 한다.",0)
+            writeText("giveLife(e,life) - 대상(e)의 생명력을 life만큼 증가시킨다.",0)
+            writeText("order(e,startT,endT,f) - 대상(e)에게 startT부터 endT까지 행동(f)을 시킨다.",0)
+            writeText("setTrigger(t,f) - 트리거(t)에게 트리거를 발동 시킨 대상에게 할 행동(f)을 정한다.",0)
+        }
+
+        function info_magicCodePanel(){
+            clearPanel();
+            writeText("물질 정보 탐색 마법",1);
+            writeText("얻을 수 있는 정보 - 속도, 위치, 플레이어 방향",0);
+            nextLine+=Screen.perX(2);
+            writeText("getVX(e) - 대상(e)의 x축 속도를 얻는다.",0);
+            writeText("getVY(e) - 대상(e)의 y축 속도를 얻는다.",0);
+            writeText("getX(e) - 플레이어를 기준으로 대상(e)의 x축 거리를 얻는다.",0);
+            writeText("getY(e) - 플레이어를 기준으로 대상(e)의 y축 거리를 얻는다.",0);
+            writeText("front() - 플레이어가 보고있는 방향이 오른쪽이면 1, 왼쪽이면 -1",0);
+            writeText("player - 플레이어",0);
+        }
+
+        function prohibitedPanel(){
+            clearPanel();
+            writeText("금지어",1);
+            writeText(`["new","function","let","var", "addMF", "setPlayer"]`,0);
+            writeText(`["[",".","$"]`,0);
+        }
+
+        function magicEvaluationPanel(){
+            clearPanel();
+            writeText("마법 평가",1);
+            writeText(`마법이 생성될 때 소비마나, 재사용대기시간이 자동으로 평가됩니다.`,0);
         }
     }
 }

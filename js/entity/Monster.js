@@ -19,16 +19,17 @@ attack:{}
 const MONSTERS = [{
     name: "뾰족버섯",
     image: { name: "crazymushroom",w: 60, h: 60, frame: 8, MAX_X: [3, 3] },
-    setStatus: function(e){ e.w=60; e.h=60; e.life=10000; e.power=200; e.speed=3; e.inv_mass=1;},
+    setStatus: function(e){ e.w=60; e.h=60; e.life=20000; e.power=200; e.speed=3; e.inv_mass=1;},
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI(2);return 50;}
+        function(e){e.AI(2);return 50;},
+        function(e){e.vx+=(e.isRight ? 5 : -5);e.vy+=7;return 503;}
     ]
 },
 {
-    name: "심연의 망나니 <Varrc Minok>",
+    name: "혹한의군주 미눅",
     image: { name: "crazymonkey", w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
-    setStatus: function(e){ e.w=120;e.h=200;e.life=50000;e.power=500;e.speed=5;e.inv_mass=0.2},
+    setStatus: function(e){ e.w=120;e.h=200;e.life=100000;e.power=1000;e.speed=5;e.inv_mass=0.2},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI(10);return 50;},
@@ -51,7 +52,10 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI();return 50;},
-        function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -11;return 500;}
+        function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-700;e.vx = 0;e.vy = -5;
+            let effect = new Particle(5, e.x+e.w-e.h, e.y);effect.w=e.h*2;effect.h=e.h*2;
+            let temp=e.power;e.power=9999;e.addAction(40,40,function(){e.power=temp});
+            return 501;}
     ]
 },
 {
@@ -152,7 +156,7 @@ class Monster extends Entity {
     giveDamage(d) {
         if(this.defense<d){
             this.totalDamage += d;
-            Camera.vibrate(2);
+            Camera.vibrate((d<8000 ? d/400 : 20)+1);
         }
     }
 
@@ -161,7 +165,16 @@ class Monster extends Entity {
         this.addAction(time,time,function(){let cooltime = f(temp);temp.addSkill(cooltime,f)});
     }
     //편의기능
-    canTarget(){return (this.target!=null&&this.target.canDraw)}
+    canTarget(){return (this.target!=null&&this.target.canDraw&&this.target.life>0)}
+    searchTarget(){
+        let c=Game.channel[Game.PHYSICS_CHANNEL]
+        let targetPriority=3; //타겟 우선순위
+        for(let i=c.length-1; i>=0; i--){
+            if(c[i] instanceof Player){
+                this.target=c[i];targetPriority=0;break;
+            }
+        }
+    }
     getTargetDir(){
         if(this.canTarget())return (this.x+this.w/2 < this.target.x+this.target.w/2 ? 1 : -1);
         else return (Math.random()-0.5>0 ? 1 : -1);

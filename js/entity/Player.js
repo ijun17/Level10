@@ -23,7 +23,7 @@ class Player extends Entity{
         //lv
         this.lv=Number(lv);
         this.life=this.lv*10000;
-        this.mp=this.lv*20000;
+        this.mp=this.lv*30000;
         //draw
         this.draw=Player.getDraw(this);
     }
@@ -40,8 +40,7 @@ class Player extends Entity{
             this.totalDamage = 0;
             this.damageTick=20;
         }
-        if(this.mp<this.lv*20000)this.mp+=this.lv;
-        else this.mp=this.lv*20000;
+        (this.mp<this.lv*30000 ? this.mp+=this.lv*2 : this.mp=this.lv*30000)
         if(this.damageTick>0)this.damageTick--;
     }
     static getDraw(p){
@@ -79,13 +78,13 @@ class Player extends Entity{
     collisionHandler(e,ct){
         if(ct=='D'&&!this.canJump)this.canJump=true;
         else if(ct==null&&e instanceof MapBlock)this.giveDamage(10000);
-        else e.giveForce((this.getX()<e.getX()?1:-1),0);
+        //else e.giveForce((this.getX()<e.getX()?1:-1),0);
     }
 
     giveDamage(d) {
         if(this.damageTick==0){
             this.totalDamage += Math.floor(d);
-            Camera.vibrate((d<4000 ? d/200 : 20)+5);
+            Camera.vibrate((d<20000 ? d/200 : 50)+5);
         }
     }
 
