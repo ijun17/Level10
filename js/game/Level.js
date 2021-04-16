@@ -63,24 +63,26 @@ let Level= {
                 new Monster(0, 900, -1000);
                 new Monster(0, 800, -1000);
                 mainMonster=new Monster(1, 700, -1000);
+                Screen.bgColor="#cde5e4";
                 break;
             case 3:
                 this.stageMonsterCount = 16;
                 mapSizeW=3000;
                 mainMonster=new Monster(2, 3000, -1000);
-                for(let i=0; i<15; i++){//10마리 추가
-                    new Monster(2, 200*i, -1000);
-                }
+                for(let i=0; i<15; i++)new Monster(2, 200*i, -1000);
+                //Screen.bgColor="#424146";
                 break;
             case 4:
                 this.stageMonsterCount = 1;
                 mainMonster=new Monster(3,1000, -250);
+                Screen.bgColor="#657d87";
                 break;
             case 5:
                 this.stageMonsterCount = 1;
                 mainMonster=new Monster(4,Screen.perX(50), -400)
                 mainMonster.addAction(1,100,function(){Camera.vibrate(10);});
                 weatherNum=0;
+                Screen.bgColor="#424146";
                 break;
             case 6:
                 break;

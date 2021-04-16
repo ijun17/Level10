@@ -151,6 +151,15 @@ class Monster extends Entity {
     removeHandler() {
         Level.stageMonsterCount--;
         if (Level.stageMonsterCount == 0) Level.clearLevel();
+        for(let i=this.w/10; i>=0; i--){
+            for(let j=this.h/10; j>=0; j--){
+                let e = new Particle(1, this.x + i * 10, this.y + j * 10);
+                e.ga = 0;
+                //e.vx = 2;
+                //e.vy = 2;
+            }
+        }
+        Camera.vibrate(50);
     }
 
     giveDamage(d) {

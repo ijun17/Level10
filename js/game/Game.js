@@ -23,21 +23,19 @@ let Game = {
         Level.stageMonsterCount = -1;
         Camera.cameraOn = false;
         Camera.extension=canvas.width/(Screen.isMobile ? 1200 : 1400);
-        Screen.bgColor="#A89A9A";
+        Screen.bgColor="#b2c3c8";
+        //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A,맑은하늘:rgb(121, 155, 206), 녹색하늘색:#94a9ad}
     },
     startGame:function() {
         document.addEventListener("keydown", this.keyDownHandler, false);
         document.addEventListener("keyup", this.keyUpHandler, false);
         canvas.addEventListener("mousedown", this.clickDownHandler, false);
-        //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A, 붉은빛밤하늘: #3F3939, 보라빛밤하늘: #3C3647, 겨울아침:rgb(179, 211, 244), 맑은하늘:rgb(121, 155, 206)}
         
         Level.loadLevel();
         Magic.loadMagic();
         Screen.mainScreen();
 
         setInterval(Game.updateWorld, 10);
-        //setInterval(Game.renderWorld, 10)
-
     },
     updateWorld:function() {
         ctx.fillStyle=Screen.bgColor;
@@ -98,7 +96,7 @@ let Game = {
         Game.click(e.layerX, e.layerY);
     },
     touchStartHandler:function(e) {
-        e.preventDefault();
+        //e.preventDefault();
         let touch= new Button(e.touches[0].clientX, e.touches[0].clientY, 0,0,Game.PARTICLE_CHANNEL);
         touch.canRemoved=true;
         touch.drawCode = function(){ctx.strokeRect(touch.x-5,touch.y-5, 10, 10);touch.life--;}
@@ -108,13 +106,13 @@ let Game = {
         }
     },
     touchMoveHandler:function(e) {
-        e.preventDefault();
+        //e.preventDefault();
         for(let i=0, max=e.touches.length; i<max; i++){
             Game.click(e.touches[i].clientX, e.touches[i].clientY);
         }
     },
     touchEndHandler:function(e) {
-        e.preventDefault();
+        //e.preventDefault();
         if(e.touches.length==0){
             if(Multi.gameOn)Multi.keyUpHandler({keyCode:39});
             else Game.p.moveFlag = false;

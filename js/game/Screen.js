@@ -302,8 +302,6 @@ let Screen= {
         let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.drawOption(null, null, "<", Screen.perX(6), "black");
         backButton.code = function () { 
-            namebox.value="";
-            textbox.value="";
             Screen.selectScreen();
             tb.style.display="none"; 
         };
@@ -330,6 +328,8 @@ let Screen= {
             magicInfo.innerText = text2;
         }
         printInfo("","");
+        namebox.value="";
+        textbox.value="";
         
         //control system
         let cs=new Button(0,0,0,0);
@@ -366,6 +366,8 @@ let Screen= {
             magicBtn.canMove = true;
             magicBtn.canInteract = true;
         }
+        const btnW=Screen.perX(16);
+        const btnH=Screen.perX(2.2);
         //CUSTOM MAGIC LIST
         let plusButton = new Button(10, Screen.perX(6)+10, Screen.perX(16), Screen.perX(3));
         plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagicCount+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
@@ -394,7 +396,7 @@ let Screen= {
                 cusMag[1]=textbox.value;
                 Magic.magicList[cs.temp.temp]=magic;
                 Magic.saveMagic();
-                cs.temp.drawOption("rgba(65, 105, 225,0.8)","black",namebox.value,30,"black")
+                cs.temp.drawOption("rgba(65, 105, 225,0.8)","black",namebox.value,Screen.perX(2),"black")
             }
         };
         
@@ -623,6 +625,10 @@ let Screen= {
             writeText("마법을쓰는법", 1);
             writeText("pc - 키보드 q,w,e,r키",0);
             writeText("모바일 - 스크린 하단 Q,W,E,R 버튼",0);
+            nextLine+=Screen.perX(3);
+            writeText("문제가발생했을때", 1);
+            writeText("새로고침하면 대부분의 문제가 해결됩니다",0);
+            writeText("*중요 정보들은 저장됩니다",0);
         }
 
         function create_magicCodePanel(){
