@@ -4,6 +4,7 @@
     margin: 0;
 }
 
+/*
 @media( orientation: portrait ){
     html {
       transform: rotate(90deg);
@@ -15,6 +16,7 @@
       height: 100vw;
     }
 }
+*/
 
 canvas {
     background: "black";
