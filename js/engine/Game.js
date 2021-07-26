@@ -7,6 +7,7 @@ let Game = {
     BUTTON_CHANNEL : 3,
     time : 0,
     p:null,
+    p2:null,
     
     //CLIENT
     keyboardOn:false,
@@ -36,6 +37,7 @@ let Game = {
         Screen.mainScreen();
 
         setInterval(Game.updateWorld, 10);
+        //setInterval(Game.renderWorld, 30);
     },
     updateWorld:function() {
         ctx.fillStyle=Screen.bgColor;

@@ -19,7 +19,9 @@ class Player extends Entity{
         this.friction=0.4;
         this.inv_mass=1;
         //magic
-        for(let i=0; i<4; i++){this.magicList[i]=(Magic.skillNum[i]>=0?Magic.magicList[Magic.skillNum[i]]:null);}
+        for(let i=0; i<4; i++){
+            this.magicList[i]=(Magic.skillNum[i]>=0?Magic.magicList[Magic.skillNum[i]]:["none", function(){},0,0,0]);
+        }
         //lv
         this.lv=Number(lv);
         this.life=this.lv*10000;
@@ -38,7 +40,7 @@ class Player extends Entity{
             new Text(this.x + this.w / 2, this.y - 50,this.totalDamage,30,"red","black",40);
             this.life -= this.totalDamage;
             this.totalDamage = 0;
-            this.damageTick=20;
+            this.damageTick=10;
         }
         (this.mp<this.lv*30000 ? this.mp+=this.lv*2 : this.mp=this.lv*30000)
         if(this.damageTick>0)this.damageTick--;

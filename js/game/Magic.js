@@ -4,9 +4,7 @@ let Magic = {
     customMagicCount:0,
     customMagic:[],
     magicEffectSound : new Audio(),
-    //magicFrame=[magic name, magic code, needed Level] : basicMagic, customMagic
-    //magicList = [name, magic function, coolTime, needed MagicPoint, needed Level] : magicList
-    magicList:[],
+    magicList:[],//magicList = [name, magic function, coolTime, needed MagicPoint, needed Level]
     basicMagic:[
     ["파이어볼",`//전방에 파이어볼을 발사
 @e=create(FIRE,front(10),1);

@@ -23,7 +23,7 @@ class Button extends Entity {
         let thisBtn = this;
         let textW = this.w / 2;
         let textH = this.h / 2 + this.h / 20;
-        this.drawCode = function () {
+        this.draw = function () {
             if (boxFill != null) {
                 ctx.fillStyle = boxFill;
                 ctx.fillRect(thisBtn.x, thisBtn.y, thisBtn.w, thisBtn.h);
