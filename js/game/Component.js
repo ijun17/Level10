@@ -9,12 +9,40 @@ let Component={
         backButton.drawOption(null, null, "<", Screen.perX(6), "black");
         return backButton;
     },
-    magicButton:function(x,y,magicListIndex,extraCode=function(){}){
+    
+    screenName:function(name,color="rgba(255,255,255,0.5)"){ //화면 우측 상단 흰 투명 텍스트
+        let screenNameText = new Text(Screen.perX(99),Screen.perX(1), name, Screen.perX(3),color,null,-1,null);
+        screenNameText.textBaseline = "top";
+        screenNameText.textAlign="right";
+        return screenNameText;
+    },
+    listScroll:function(perX,perSize,listStart, listEnd){
+        //MAGIC LIST SCROLL
+        let scroll = new Button(Screen.perX(perX-1), -Screen.perX(8), Screen.perX(perSize+2), Screen.perX(9));
+        scroll.draw = function () {
+            ctx.fillStyle = "rgba(0,0,0,0.2)";
+            ctx.fillRect(scroll.x, 0, scroll.w, canvas.height);
+        }
+        function move(d){
+            for(let i=listStart;i<=listEnd;i++){
+                if(Game.channel[Game.BUTTON_CHANNEL][i].temp[1]==null)Game.channel[Game.BUTTON_CHANNEL][i].y+=d;
+            }
+        }
+        const MOVE_DISTANCE=Screen.perY(20);
+        let upButton = new Button(Screen.perX(perX+perSize+1),0,Screen.perX(4),Screen.perX(4));
+        upButton.drawOption("rgba(0,0,0,0.5)",null,"▲", Screen.perX(3),"white");
+        upButton.code=function(){if(Game.channel[Game.BUTTON_CHANNEL][listEnd].y<-Screen.perX(8))move(MOVE_DISTANCE);};
+        let downButton = new Button(Screen.perX(perX+perSize+1),canvas.height-Screen.perX(4),Screen.perX(4),Screen.perX(4));
+        downButton.drawOption("rgba(0,0,0,0.5)",null,"▼", Screen.perX(3),"white");
+        downButton.code=function(){if(Screen.perX(3)*(listEnd-listStart)+Screen.perX(8)+Game.channel[Game.BUTTON_CHANNEL][listEnd].y>canvas.height)move(-MOVE_DISTANCE);};
+    },
+    magicButton:function(x,y,magicListIndex,selector=null,extraCode=function(){}){
         let magicBtn = new Button(x,y,Screen.perX(16),Screen.perX(3));
         const color = (magicListIndex<Magic.basicMagicCount ? `rgba(119, 138, 202,0.8)` : `rgba(65, 105, 225,0.8)`); //119, 138, 202
         magicBtn.drawOption(color, "black", Magic.magicList[magicListIndex][0], Screen.perX(2), "black");
         magicBtn.code = function () {
             (Magic.magicList[magicListIndex][1]) (Game.p);
+            if(selector!=null)selector.selectedBtn=this;
             extraCode(magicBtn);
         }
         magicBtn.temp[0] = magicListIndex;
@@ -24,34 +52,72 @@ let Component={
         magicBtn.canInteract = true;
         return magicBtn;
     },
-    screenName:function(name){ //화면 우측 상단 흰 투명 텍스트
-        let screenNameText = new Text(Screen.perX(99),Screen.perX(1), name, Screen.perX(3),"rgba(255,255,255,0.5)",null,-1,null);
-        screenNameText.textBaseline = "top";
-        screenNameText.textAlign="right";
+    buttonSelector:function(extraCode=function(){}){
+        let selector = new Entity(0,0,Game.BUTTON_CHANNEL);
+        selector.selectedBtn=null;
+        selector.update=function(){
+            if (this.selectedBtn != null) {
+                //선택된 마법의 색을 어둡게
+                ctx.fillStyle = "rgba(0,0,0,0.5)";
+                ctx.fillRect(this.selectedBtn.x, this.selectedBtn.y, this.selectedBtn.w, this.selectedBtn.h);
+                extraCode();
+            }
+        }
+        return selector;
     },
-    playerStatusView:function(player,perX,perY){
+    keyButton:function(perX,perY,keys,skillNum,selector,name=""){
+        for (let i = 0; i < 4; i++) {
+            let temp = new Button(Screen.perX(perX+8), Screen.perX(perY-4+9*i), Screen.perX(16), Screen.perX(4));
+            let keyBtn = new Button(Screen.perX(perX), Screen.perX(perY+9*i), Screen.perX(8), Screen.perX(8))
+            keyBtn.code = function () {
+                let selectMagic=selector.selectedBtn;
+                if(selectMagic != null){
+                    skillNum[i]=selectMagic.temp[0];
+                    const boxFill=(selectMagic.temp[0]<Magic.basicMagicCount ? `rgba(119, 138, 202,0.8)` : `rgba(65, 105, 225,0.8)`);
+                    keyBtn.temp[0].drawOption(boxFill, "black", Magic.magicList[skillNum[i]][0], Screen.perX(2), "black");
+                    keyBtn.temp[0].code=function(){(Magic.magicList[skillNum[i]][1])(Game.p)};
+                    keyBtn.temp[0].y+=Screen.perX(1);
+                    Magic.saveSkillNum();
+                }
+            };
+            keyBtn.drawOption("rgb(60, 60, 60)", "black", keys[i],Screen.perX(7), "black");
+            keyBtn.temp[0]=Component.magicButton(Screen.perX(perX+9), Screen.perX(perY) + Screen.perX(9*i+1), skillNum[i])
+        }
+        let nameText = new Text(Screen.perX(perX),Screen.perX(perY-3), name, Screen.perX(2),"rgba(255,255,255,0.5)",null,-1,null);
+        nameText.textBaseline = "top";
+        nameText.textAlign="left";
+        new Entity(0,0,Game.BUTTON_CHANNEL).update=function(){
+            ctx.fillStyle = "rgba(0,0,0,0.2)";
+            ctx.fillRect(Screen.perX(perX-0.5), Screen.perX(perY-0.5), Screen.perX(26), Screen.perX(36));
+        }
+    },
+    playerStatusView:function(player,perX,perY,playerName="Level "+Level.playerLevel){
         const viewTextSize=Screen.perX(1.5);
+        const viewTextSize2=Screen.perX(1.8);
         const MAX_HP = 10000*player.lv;
         const MAX_MP = 30000*player.lv;
         let view = new Button(Screen.perX(perX),Screen.perY(perY),Screen.perX(45),Screen.perX(8),Game.TEXT_CHANNEL);
         view.draw=function(){
             ctx.strokeStyle="black";
-            ctx.strokeRect(this.x,this.y,Screen.perX(18),Screen.perX(2));
             ctx.strokeRect(this.x,this.y+Screen.perX(2.5),Screen.perX(18),Screen.perX(2));
+            ctx.strokeRect(this.x,this.y+Screen.perX(5),Screen.perX(18),Screen.perX(2));
             ctx.fillStyle="brown";
-            ctx.fillRect(this.x,this.y,Screen.perX(18)*(player.life/MAX_HP),Screen.perX(2));
+            ctx.fillRect(this.x,this.y+Screen.perX(2.5),Screen.perX(18)*(player.life/MAX_HP),Screen.perX(2));
             ctx.fillStyle="royalblue";
-            ctx.fillRect(this.x,this.y+Screen.perX(2.5),Screen.perX(18)*(player.mp/MAX_MP),Screen.perX(2));
-            ctx.fillStyle="black";
-            ctx.font = "bold "+viewTextSize+"px Arial";
+            ctx.fillRect(this.x,this.y+Screen.perX(5),Screen.perX(18)*(player.mp/MAX_MP),Screen.perX(2));
             ctx.textBaseline = "top";
             ctx.textAlign = "left";
-            ctx.fillText(player.life, this.x+Screen.perX(0.5),this.y+Screen.perX(0.5));
-            ctx.fillText(player.mp, this.x+Screen.perX(0.5),this.y+Screen.perX(3));
+            ctx.fillStyle="black";
+            ctx.font = "bold "+viewTextSize2+"px Arial";
+            ctx.fillText(playerName, this.x,this.y);
+            ctx.fillStyle="black";
+            ctx.font = "bold "+viewTextSize+"px Arial";
+            ctx.fillText(player.life, this.x+Screen.perX(0.5),this.y+Screen.perX(3));
+            ctx.fillText(player.mp, this.x+Screen.perX(0.5),this.y+Screen.perX(5.5));
             for (let i = 0; i < 4; i++) {
                 let coolT = player.coolTime[i] - Game.time;
                 let magic = player.magicList[i];
-                ctx.fillText(magic[0] + "(" + magic[3] + "): " + (coolT > 0 ? (coolT * 0.01).toFixed(2) : "ready"), this.x+Screen.perX(20), this.y + Screen.perX(2) * i);
+                ctx.fillText(magic[0] + "(" + magic[3] + "): " + (coolT > 0 ? (coolT * 0.01).toFixed(2) : "ready"), this.x+Screen.perX(19), this.y + Screen.perX(2) * i);
             }
         }
         return view;
@@ -85,6 +151,18 @@ let Component={
                 ctx.fillText(player.magicList[i][0], keyButton.x + 35, keyButton.y + 11);
             }
         }
+    },
+    serverConnectionChecker:function(x=Screen.perX(6),y=Screen.perX(1)){
+        let checker = new Button(x,y,Screen.perX(8),Screen.perX(2.5));
+        checker.drawOption(null,"brown","offline", Screen.perX(2),"brown",null);
+        checker.act=function(){
+            //check server
+            if(Game.time%20==0){
+                if(Multi.serverOn){checker.drawOption(null,"green","online", Screen.perX(2),"green",null);
+                }else{checker.drawOption(null,"brown","offline", Screen.perX(2),"brown",null);}
+            }
+        }
+        return checker;
     },
     worldWall:function(mapSizeW,mapSizeH,wallSize){
         new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top

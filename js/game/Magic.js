@@ -1,5 +1,6 @@
 let Magic = {
     skillNum:[0,1,2,3],//qwer
+    pvp_skillnum:[[0,1,2,3],[0,1,2,3]],
     basicMagicCount:0,
     customMagicCount:0,
     customMagic:[],
@@ -67,7 +68,7 @@ giveLife(e,30);`,3],
 @count=0;
 addAction(player,1,500,#(){
     if((count++)%10==0){
-        @a = create(ARROW, front(30), 2, 30,10)
+        @a = create(ARROW, front(30), 1, 30,10)
         giveLife(a, 10)
     }
 })`, 4],
@@ -115,6 +116,7 @@ setTrigger(t,#(e){
     },
     saveSkillNum:function(){
         localStorage.skillNum=JSON.stringify(Magic.skillNum);
+        localStorage.pvp_skillNum=JSON.stringify(Magic.pvp_skillNum);
     },
     loadMagic:function(){
         //sound
@@ -153,6 +155,16 @@ setTrigger(t,#(e){
             }
         } else {
             this.skillNum = [0,1,2,3];
+        }
+        //selected pvp skill num
+        if(localStorage.pvp_skillNum!=null){
+            this.pvp_skillNum = JSON.parse(localStorage.pvp_skillNum);
+            for(let i=0; i<this.skillNum.length; i++){
+                if(this.magicList[this.pvp_skillNum[0][i]]==null)this.pvp_skillNum[i]=-1;
+                if(this.magicList[this.pvp_skillNum[1][i]]==null)this.pvp_skillNum[i]=-1;
+            }
+        } else {
+            this.pvp_skillNum = [[0,1,2,3],[0,1,2,3]];
         }
         this.saveSkillNum();
     },

@@ -1,7 +1,7 @@
 let Camera={
     e:null, //Entity
     cameraOn:false,
-    extension:1,
+    extension:1, // 커지면 엔티티들이 작아짐
     getX:function(x){
         if(Camera.cameraOn)return ((x-Camera.e.x)*Camera.extension+Screen.perX(50));
         else return x;
@@ -43,8 +43,21 @@ let Camera={
             Camera.e.y+=(Camera.e.temp.y-Camera.e.y)/movingDelay;
         }
     },
+    makeTwoTargetCamera:function(target1, target2 ,x,y, movingDelay=10){
+        Camera.cameraOn=true;
+        Camera.e=new Entity(x,y,Game.BUTTON_CHANNEL);
+        Camera.e.update=function(){
+            Camera.e.x+=(((target1.x+target2.x)/2)-Camera.e.x)>>5;
+            Camera.e.y+=(((target1.y+target2.y)/2)-Camera.e.y)>>5;
+            let distance=Math.abs(Math.floor(target1.x-target2.x));
+            Camera.extension=(canvas.width/(distance+canvas.width));
+
+        }
+    },
     vibrate: function(power){
-        Camera.e.x+=power*(Math.random()-0.5>0 ? 1 : -1);
+        if(this.cameraOn){
+            Camera.e.x+=power*(Math.random()-0.5>0 ? 1 : -1);
         Camera.e.y+=power*(Math.random()-0.5>0 ? 1 : -1);
+        }
     }
 }

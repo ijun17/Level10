@@ -10,7 +10,7 @@ class Player extends Entity{
     totalDamage=0;
     damageTick=0;
 
-    constructor(x,y,lv=1,channelLevel=Game.PHYSICS_CHANNEL){
+    constructor(x,y,lv=1,skillNum=Magic.skillNum,channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
         //default
         this.w=30;
@@ -20,7 +20,7 @@ class Player extends Entity{
         this.inv_mass=1;
         //magic
         for(let i=0; i<4; i++){
-            this.magicList[i]=(Magic.skillNum[i]>=0?Magic.magicList[Magic.skillNum[i]]:["none", function(){},0,0,0]);
+            this.magicList[i]=(skillNum[i]>=0?Magic.magicList[skillNum[i]]:["none", function(){},0,0,0]);
         }
         //lv
         this.lv=Number(lv);

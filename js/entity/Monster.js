@@ -118,7 +118,8 @@ class Monster extends Entity {
         if (this.canInteract) this.interact();
         if(this.canMove)this.move();
         if (this.totalDamage > 0) {
-            new Text(this.x + this.w / 2, this.y - 50,Math.floor(this.totalDamage),30,"orange","black",40);
+            let damageText = new Text(this.x + this.w / 2, this.y - 50,Math.floor(this.totalDamage),30,"orange","black",40);
+            damageText.vy=1;
             this.life-=Math.floor(this.totalDamage);
             this.totalDamage=0;
         }
