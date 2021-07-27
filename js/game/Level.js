@@ -111,15 +111,12 @@ let Level= {
         ashSpray.addAction(1,1000000,function(){
             if(Game.time%5==0){
                 let r = Math.random()*2000;
-                let ash=new Particle(weatherNum,Game.p.x-1000+r,-Game.p.y-600);
+                let ash=new Particle(weatherNum,Game.p.x-1000+r,Game.p.y-600);
                 ash.life=300;
                 ash.vy-=1.5;
             }
         });
         //양 끝 맵블럭
-        new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top
-        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2+1000,"wall"); //left
-        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2+1000,"wall");//right
-        new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize*2,"grass");
+        Component.worldWall(mapSizeW,mapSizeH,wallSize);
     }
 }

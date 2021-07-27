@@ -1,6 +1,5 @@
 class Button extends Entity {
     code = function () { };
-    drawCode = function () { };
     temp = new Array();
 
     constructor(x, y, w, h, channelLevel=Game.BUTTON_CHANNEL) {
@@ -16,7 +15,7 @@ class Button extends Entity {
     }
 
     draw() {
-        this.drawCode();
+        
     }
 
     drawOption(boxFill = null, boxLine = null, text = null, px = 10, textFill = null, textLine = null) {
