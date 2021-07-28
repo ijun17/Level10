@@ -96,7 +96,7 @@ let Component={
         const viewTextSize2=Screen.perX(1.8);
         const MAX_HP = 10000*player.lv;
         const MAX_MP = 30000*player.lv;
-        let view = new Button(Screen.perX(perX),Screen.perY(perY),Screen.perX(45),Screen.perX(8),Game.TEXT_CHANNEL);
+        let view = new Button(Screen.perX(perX),Screen.perX(perY),Screen.perX(45),Screen.perX(8),Game.TEXT_CHANNEL);
         view.draw=function(){
             ctx.fillStyle="rgba(0,0,0,0.1)";
             ctx.fillRect(this.x-Screen.perX(0.5),this.y-Screen.perX(0.5), Screen.perX(42), Screen.perX(8))

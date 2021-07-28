@@ -20,12 +20,12 @@ const MATTERS=[
     },
     {
         name:"electricity",
-        setStatus:function(e){e.power=150;},
-        effect:function(e,v){v.giveDamage(e.power);v.vx=0;v.vy=0;}
+        setStatus:function(e){e.power=110;e.ga=0;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
+        effect:function(e,v){v.giveDamage(e.power);v.vx=0;v.vy=0;++e.life;}
     },
     {
         name:"ice",
-        setStatus:function(e){e.power=200;},
+        setStatus:function(e){e.power=110;},
         effect:function(e,v){
             if(v instanceof Matter && v.typenum==0){
                 for(let i=0 ;i<3; i++){
@@ -76,7 +76,7 @@ const MATTERS=[
     },
     {
         name:"explosion",
-        setStatus:function(e){e.power=1000;e.w=100;e.h=100;e.ga=0;e.life=150;e.inv_mass=0;e.act=function(){e.life--;};},
+        setStatus:function(e){e.power=1000;e.w=100;e.h=100;e.ga=0;e.life=300;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){v.giveDamage(e.power);++e.life;}
     }
 ];
@@ -142,7 +142,7 @@ class Matter extends Entity {
     }
 
     giveDamage(){
-        --this.life;
+        return;
     }
 
     collisionHandler(e) {

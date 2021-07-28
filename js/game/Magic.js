@@ -19,7 +19,7 @@ giveLife(player,2000);`,1],
 addAction(player, 1,10,#(){
     @ice = create(ICE, 0,-20)
     move(ice, front(count*40+100),300)
-    giveLife(ice,10);
+    giveLife(ice,100);
     count++;
 })`,2],
 
@@ -95,7 +95,6 @@ setTrigger(t,#(e){
 
 
 
-
 let Magic = {
     skillNum:[0,1,2,3],
     pvp_skillnum:[[0,1,2,3],[0,1,2,3]],
@@ -163,13 +162,11 @@ let Magic = {
         Magic.magicList.push(["none", function(){},0,0]);
     },
     convertMagictoJS: function (name, magicCode) {
-        let player;function setPlayer(p){player=p;};function getPlayer(){return player;}
-        
-        //MAGIC FUNCTION
+        let unit_magic=`
         const FIRE=0, ELECTRICITY=1,ICE=2,ARROW=3,ENERGY=4,SWORD=5,BLOCK=6,TRIGGER=7;
         function create(typenum=BLOCK,vx=0,vy=0,w=30,h=30){
             let e;
-            let p=getPlayer();
+            let p=player;
             if(typenum<=SWORD)e=new Matter(typenum,0,0,vx,vy);
             else if(typenum===BLOCK)e=new Block(0,0,w,h);
             else if(typenum===TRIGGER)e=new Trigger(0,0,w,h,100,function(e){});
@@ -182,16 +179,17 @@ let Magic = {
         function invisible(e,time){e.canDraw=false;e.addAction(time,time,function(){e.canDraw=true;});}
         function move(e,vx,vy){if(e instanceof Monster)return;e.x+=vx;e.y-=vy;}
         function addAction(e,startTime,endTime,f){e.addAction(startTime,endTime,f);}
-        function getX(e){return e.getX()-getPlayer().getX();}
-        function getY(e){return getPlayer().getY()-e.getY();}
+        function getX(e){return e.getX()-player.getX();}
+        function getY(e){return player.getY()-e.getY();}
         function getVX(e){return e.vx;}
         function getVY(e){return e.vy;}
-        function front(d=1){return (getPlayer().isRight ? d : -d);}
-        //caculate magicFactor(cooltime, magic point)
+        function front(d=1){return (player.isRight ? d : -d);}
+        `
+        
         let magicFactor = [100,100]; //[cooltime, magic point]
         function getEnergy(e){let test = new Entity(0,10000,Game.PHYSICS_CHANNEL);test.life=0;e.collisionHandler(test);return Math.abs(test.life);}
         function addMF(mf) {magicFactor[0] = Math.floor(Math.sqrt(magicFactor[0]**2 + mf[0]**2));magicFactor[1] += Math.floor(Math.abs(mf[1]));}
-        //TEST FUNCTION
+        let test_unit_magic=`
         function test_create(typenum=BLOCK,vx=0,vy=0,w=30,h=30){let e=create(typenum,vx,vy,w,h);addMF([50,getEnergy(e)*(w*h)/900+e.getVectorLength()]);return e;}
         function test_setTrigger(t,f){setTrigger(t,f);addMF([100,t.w*t.h+getEnergy(t)+1]);}
         function test_giveForce(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMF([0, newE-oldE]);}
@@ -211,6 +209,7 @@ let Magic = {
             }
             addMF([endTime*2,(endTime-startTime)]);
         }
+        `
         //keyword list
         let prohibitedWord=["new","function","let","var", "addMF", "setPlayer"],prohibitedSymbol=["[",".","$"];//prohibited
         let testKeyword=["giveForce","giveLife","invisible", "create","move","addAction","setTrigger"];//test method
@@ -224,6 +223,7 @@ let Magic = {
             successInfo.style.color = (isSuccess ? "yellow" : "red");
             magicInfo.innerText = text2;
         }
+        
         let jsCode="",testCode="",temp ="";
         magicCode+=" "; //마지막에 temp가 더해지지 않을 수 있어서
         for(let i=0, j=magicCode.length;i<j; i++){
@@ -252,8 +252,8 @@ let Magic = {
         let magic=function(){};
         try {
             //clearInterval(systemclock);
-            magic = eval("(function(player){setPlayer(player);"+jsCode+"})");
-            let testMagic=eval("(function(player){setPlayer(player);"+testCode+"})");
+            magic = eval("(function(player){"+unit_magic+jsCode+"})");
+            let testMagic=eval("(function(player){"+unit_magic+test_unit_magic+testCode+"})");
             let temp = Game.p;Game.p = new Player(0,10000);
             testMagic(Game.p);
             Game.p=temp;

@@ -174,6 +174,9 @@ class Monster extends Entity {
                 e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.power)/5/e.inv_mass,0.3);
             }
         }
+        // if(e instanceof Matter){
+        //     e.giveForce((e.x + e.w / 2 > this.x + this.w / 2?1:-1)*Math.sqrt(this.power)/5/e.inv_mass,0.3);
+        // }
     }
 
     removeHandler() {
@@ -208,7 +211,7 @@ class Monster extends Entity {
         this.addAction(time,time,function(){temp.addSkill(f(temp),f)});
     }
     //편의기능
-    canTarget(){if(this.target!=null&&this.target.life<1)this.target=null;return (this.target!=null&&this.target.canDraw&&this.target.life>0)}
+    canTarget(){return (this.target!=null&&this.target.canDraw&&this.target.life>0)}
     searchTarget(){
         let c=Game.channel[Game.PHYSICS_CHANNEL]
         let targetPriority=3; //타겟 우선순위
