@@ -1,12 +1,4 @@
-let Magic = {
-    skillNum:[0,1,2,3],//qwer
-    pvp_skillnum:[[0,1,2,3],[0,1,2,3]],
-    basicMagicCount:0,
-    customMagicCount:0,
-    customMagic:[],
-    magicEffectSound : new Audio(),
-    magicList:[],//magicList = [name, magic function, coolTime, needed MagicPoint, needed Level]
-    basicMagic:[
+const BASIC_MASIC=[
     ["파이어볼",`//전방에 파이어볼을 발사
 @e=create(FIRE,front(10),1);
 giveLife(e,10);
@@ -100,17 +92,18 @@ giveLife(t,100);
 setTrigger(t,#(e){
     giveForce(e, front(-10), 4);
 });`,5],
+]
 
-    ],
-    //end basicMasic
 
-    doSkill: function (p, num) {
-        let magicNum = Magic.skillNum[num];
-        (Magic.magicList[magicNum][1])(p);
-    },
-    clearCoolTime:function(){
-        this.coolTime=[0,0,0,0];
-    },
+
+
+let Magic = {
+    skillNum:[0,1,2,3],
+    pvp_skillnum:[[0,1,2,3],[0,1,2,3]],
+    magicList:[],//magicList = [name, magic function, coolTime, needed MagicPoint, needed Level]
+    magicEffectSound : new Audio(),
+    customMagic:[],
+    basicMagic:[],
     saveMagic:function(){
         localStorage.CUSTOM_MAGIC=JSON.stringify(Magic.customMagic);
     },
@@ -123,8 +116,8 @@ setTrigger(t,#(e){
         Magic.magicEffectSound.src="resource/sound/magic effect2.mp3";
         Magic.magicEffectSound.volume=0.1;
         //load basic magic
-        Magic.basicMagicCount=Magic.basicMagic.length;
-        for(let i=0,j=Magic.basicMagicCount; i<j; i++){
+        Magic.basicMagic=BASIC_MASIC;
+        for(let i=0,j=Magic.basicMagic.length; i<j; i++){
             let magic = Magic.convertMagictoJS(Magic.basicMagic[i][0],Magic.basicMagic[i][1]);
             if(magic==null){
                 Magic.magicList.push([Magic.basicMagic[i][0], function(){}, 100,100,Magic.basicMagic[i][2]]);
@@ -136,12 +129,10 @@ setTrigger(t,#(e){
         }
         //load custom magic
         if (localStorage.CUSTOM_MAGIC == null) {
-            Magic.customMagicCount = 0;
             Magic.customMagic = [];
         } else {
             Magic.customMagic = JSON.parse(localStorage.CUSTOM_MAGIC);
-            Magic.customMagicCount = Magic.customMagic.length;
-            for (let i = 0, j = Magic.customMagicCount; i < j; i++) {
+            for (let i = 0, j = Magic.customMagic.length; i < j; i++) {
                 let magic = Magic.convertMagictoJS(Magic.customMagic[i][0], Magic.customMagic[i][1]);
                 if (magic == null) Magic.magicList.push([Magic.customMagic[i][0], function () { }, 100, 100, 1]);
                 else Magic.magicList.push(magic);
@@ -169,12 +160,12 @@ setTrigger(t,#(e){
         this.saveSkillNum();
     },
     addEmptyMagic:function(){
-        Magic.customMagicCount++;
         Magic.customMagic.push(["none", ""]);
         Magic.magicList.push(["none", function(){},0,0]);
     },
     convertMagictoJS: function (name, magicCode) {
-        let player;function setPlayer(p){player=p;}function getPlayer(){return player;}
+        let player;function setPlayer(p){player=p;};function getPlayer(){return player;}
+        
         //MAGIC FUNCTION
         const FIRE=0, ELECTRICITY=1,ICE=2,ARROW=3,ENERGY=4,SWORD=5,BLOCK=6,TRIGGER=7;
         function create(typenum=BLOCK,vx=0,vy=0,w=30,h=30){
@@ -264,7 +255,7 @@ setTrigger(t,#(e){
             //clearInterval(systemclock);
             magic = eval("(function(player){setPlayer(player);"+jsCode+"})");
             let testMagic=eval("(function(player){setPlayer(player);"+testCode+"})");
-            let temp = Game.p;Game.p = new Player(0,10000);Game.p.dieCode=function(){};
+            let temp = Game.p;Game.p = new Player(0,10000);
             testMagic(Game.p);
             Game.p=temp;
         }catch(e){

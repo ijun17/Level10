@@ -52,11 +52,11 @@ class Player extends Entity{
         });
         return function(){
             animation.draw(Camera.getX(p.x), Camera.getY(p.y), Camera.getS(p.w), Camera.getS(p.h),p.isRight);
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            ctx.font="bold 15px Arial";
-            ctx.fillStyle="black";
-            Camera.fillText("hp:"+(Math.floor(p.life)),p.x+p.w/2,p.y-20);
+            // ctx.textBaseline = "middle";
+            // ctx.textAlign = "center";
+            // ctx.font="bold 15px Arial";
+            // ctx.fillStyle="black";
+            // Camera.fillText("hp:"+(Math.floor(p.life)),p.x+p.w/2,p.y-20);
         }
     }
     

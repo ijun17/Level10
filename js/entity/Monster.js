@@ -76,6 +76,7 @@ class Monster extends Entity {
     animation;
     name;
     target=null;
+    targets=[];
 
     power=100;
     speed=1;
@@ -138,7 +139,7 @@ class Monster extends Entity {
     collisionHandler(e,ct) {
         if (ct=='D') this.canJump = true;
         //공격
-        if(!(e instanceof Monster||e instanceof MapBlock)){
+        if(e==this.target || e instanceof Block){
             e.giveDamage((1 - Math.random()*2)*this.power/10+this.power);
             this.attackTick = this.animation.fps*this.animation.MAX_X[1];
             if (e.x + e.w / 2 > this.x + this.w / 2) {
@@ -172,7 +173,7 @@ class Monster extends Entity {
 
     addSkill(time,f){ 
         let temp=this;
-        this.addAction(time,time,function(){let cooltime = f(temp);temp.addSkill(cooltime,f)});
+        this.addAction(time,time,function(){temp.addSkill(f(temp),f)});
     }
     //편의기능
     canTarget(){return (this.target!=null&&this.target.canDraw&&this.target.life>0)}

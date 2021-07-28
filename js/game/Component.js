@@ -38,7 +38,7 @@ let Component={
     },
     magicButton:function(x,y,magicListIndex,selector=null,extraCode=function(){}){
         let magicBtn = new Button(x,y,Screen.perX(16),Screen.perX(3));
-        const color = (magicListIndex<Magic.basicMagicCount ? `rgba(119, 138, 202,0.8)` : `rgba(65, 105, 225,0.8)`); //119, 138, 202
+        const color = (magicListIndex<Magic.basicMagic.length ? `rgba(119, 138, 202,0.8)` : `rgba(65, 105, 225,0.8)`); //119, 138, 202
         magicBtn.drawOption(color, "black", Magic.magicList[magicListIndex][0], Screen.perX(2), "black");
         magicBtn.code = function () {
             (Magic.magicList[magicListIndex][1]) (Game.p);
@@ -73,7 +73,7 @@ let Component={
                 let selectMagic=selector.selectedBtn;
                 if(selectMagic != null){
                     skillNum[i]=selectMagic.temp[0];
-                    const boxFill=(selectMagic.temp[0]<Magic.basicMagicCount ? `rgba(119, 138, 202,0.8)` : `rgba(65, 105, 225,0.8)`);
+                    const boxFill=(selectMagic.temp[0]<Magic.basicMagic.length ? `rgba(119, 138, 202,0.8)` : `rgba(65, 105, 225,0.8)`);
                     keyBtn.temp[0].drawOption(boxFill, "black", Magic.magicList[skillNum[i]][0], Screen.perX(2), "black");
                     keyBtn.temp[0].code=function(){(Magic.magicList[skillNum[i]][1])(Game.p)};
                     keyBtn.temp[0].y+=Screen.perX(1);
@@ -87,7 +87,7 @@ let Component={
         nameText.textBaseline = "top";
         nameText.textAlign="left";
         new Entity(0,0,Game.BUTTON_CHANNEL).update=function(){
-            ctx.fillStyle = "rgba(0,0,0,0.2)";
+            ctx.fillStyle = "rgba(0,0,0,0.1)";
             ctx.fillRect(Screen.perX(perX-0.5), Screen.perX(perY-0.5), Screen.perX(26), Screen.perX(36));
         }
     },
@@ -98,6 +98,8 @@ let Component={
         const MAX_MP = 30000*player.lv;
         let view = new Button(Screen.perX(perX),Screen.perY(perY),Screen.perX(45),Screen.perX(8),Game.TEXT_CHANNEL);
         view.draw=function(){
+            ctx.fillStyle="rgba(0,0,0,0.1)";
+            ctx.fillRect(this.x-Screen.perX(0.5),this.y-Screen.perX(0.5), Screen.perX(42), Screen.perX(8))
             ctx.strokeStyle="black";
             ctx.strokeRect(this.x,this.y+Screen.perX(2.5),Screen.perX(18),Screen.perX(2));
             ctx.strokeRect(this.x,this.y+Screen.perX(5),Screen.perX(18),Screen.perX(2));
@@ -168,7 +170,7 @@ let Component={
         new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top
         new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall"); //left
         new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall");//right
-        new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize*2,"grass");
+        new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize,"grass");
     },
     particleSpray:function(type,xy,width,particleSize,particleVy,delay){
         let spray = new Entity(0,0,Game.BUTTON_CHENNEL);

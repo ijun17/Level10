@@ -7,6 +7,6 @@ function preloading (directory, imageArray) {
 } 
 
 preloading("player/", [`player.png`]);
-preloading("particle/", ["ember.png", "spark.png", "snow.png", "smoke.png"]);
+preloading("particle/", ["ember.png", "cloud.png", "snow.png", "smoke.png"]);
 preloading("monster/", ["crazymushroom.png", "crazymonkey.png", "hellfly.png", "golem.png", "wyvern.png"]);
-preloading("matter/", ["fire.png", "energy.png", "electricity.png","arrow.png", "ice.png", "sword.png"]);
+preloading("matter/", ["fire.png", "energy.png", "electricity.png","arrow.png", "ice.png", "sword.png", "explosion.png"]);

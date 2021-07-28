@@ -6,7 +6,6 @@ let Input = {
     KEY_MOVE:[[37,38,39],[65,87,68]], //left up right / a w d
     KEY_SKILL:[[81,87,69,82],[96,97,98,99],[82,84,89,85]], //qwer / 0123 / rtyu 
     startInput:function(){
-        console.log("startInput");
         keyDowns=new Array();
         keyUps=new Array();
         document.addEventListener("keydown", this.keyDownHandler, false);

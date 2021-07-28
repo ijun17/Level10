@@ -1,8 +1,8 @@
 let Game = {
     //ENGINE
     channel : [[], [], [], []], //phisics, particle, button
-    PHYSICS_CHANNEL : 1,
-    PARTICLE_CHANNEL : 0,
+    PHYSICS_CHANNEL : 0,
+    PARTICLE_CHANNEL : 1,
     TEXT_CHANNEL : 2,
     BUTTON_CHANNEL : 3,
     time : 0,
@@ -18,8 +18,6 @@ let Game = {
         Game.channel = [[], [], [], []];
         Game.time = 0;
         Game.keyboardOn=false;
-        Magic.clearCoolTime();
-        Magic.magicPoint=0;
         Level.stageLevel = -1;
         Level.stageMonsterCount = -1;
         Camera.cameraOn = false;
@@ -42,7 +40,8 @@ let Game = {
         ctx.fillStyle=Screen.bgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < 4; i++) {
-            for (let j = Game.channel[i].length - 1, c = Game.channel[i]; j >= 0; j--) { c[j].update(); }
+            //for (let j = 0, c = Game.channel[i],length=Game.channel[i].length; j <length; j++) { c[j].update(); }
+            for (let j = Game.channel[i].length-1, c = Game.channel[i]; j >=0; j--) { c[j].update(); }
             Game.removeEntity(i);
         }
         Game.time++;
