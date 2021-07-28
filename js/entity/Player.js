@@ -5,7 +5,7 @@ class Player extends Entity{
     magicList=[];
     coolTime=[0,0,0,0];
     isRight=true;
-    moveFlag=false;
+    isMoving=false;
     canJump=true;
     totalDamage=0;
     damageTick=0;
@@ -47,16 +47,11 @@ class Player extends Entity{
     }
     static getDraw(p){
         let animation = new Animation("resource/player/"+`player.png`,30,60,[1,1],function(){
-            if(p.moveFlag)return 1;
+            if(p.isMoving)return 1;
             else return 0;
         });
         return function(){
             animation.draw(Camera.getX(p.x), Camera.getY(p.y), Camera.getS(p.w), Camera.getS(p.h),p.isRight);
-            // ctx.textBaseline = "middle";
-            // ctx.textAlign = "center";
-            // ctx.font="bold 15px Arial";
-            // ctx.fillStyle="black";
-            // Camera.fillText("hp:"+(Math.floor(p.life)),p.x+p.w/2,p.y-20);
         }
     }
     
@@ -64,7 +59,7 @@ class Player extends Entity{
         this.x += this.vx;
         this.y -= this.vy;
         this.vy += this.ga;
-        if (this.moveFlag) {
+        if (this.isMoving) {
             if (this.isRight && this.vx <= this.speed) this.vx++;
             else if (!this.isRight && this.vx >= -this.speed) this.vx--;
         }
@@ -90,9 +85,9 @@ class Player extends Entity{
         }
     }
 
-    castMagic(num){
+    castSkill(num){
         //num 0:q 1:w 2:e 3:r
-        if(this.magicList[num]!==null&&this.coolTime[num]<Game.time&&this.mp>this.magicList[num][3]){
+        if(this.coolTime[num]<Game.time&&this.mp>this.magicList[num][3]){
             let magicEffect = new Particle(5, this.x+this.w/2-this.h/2, this.y);
             magicEffect.w=this.h;
             magicEffect.h=this.h;

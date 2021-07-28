@@ -126,18 +126,18 @@ let Component={
     },
     mobileButton: function (player, mobileButtonSize = 70) {
         let leftButton = new Button(5, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
-        leftButton.code = function () { player.moveFlag = true; player.isRight = false; };
+        leftButton.code = function () { player.isMoving = true; player.isRight = false; };
         leftButton.drawOption("rgba(61, 61, 61,0.5)", "black", "<", 80, "black");
         let upButton = new Button(10 + mobileButtonSize, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
         upButton.code = function () { player.jump() };
         upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", 80, "black");
         let rightButton = new Button(15 + mobileButtonSize * 2, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
-        rightButton.code = function () { player.moveFlag = true; player.isRight = true; };
+        rightButton.code = function () { player.isMoving = true; player.isRight = true; };
         rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", 80, "black");
         let keys = ["Q", "W", "E", "R"];
         for (let i = 0; i < 4; i++) {
             let keyButton = new Button(canvas.width - (5 * 4 + mobileButtonSize * 4) + i * (mobileButtonSize + 5), canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
-            keyButton.code = function () { player.castMagic(i); };
+            keyButton.code = function () { player.castSkill(i); };
             keyButton.draw = function () {
                 ctx.fillStyle = (player.coolTime[i] < Game.time ? "rgb(121, 140, 205)" : "rgba(61, 61, 61,0.5)");//"rgba(61, 61, 61,0.5)";
                 ctx.fillRect(keyButton.x, keyButton.y, keyButton.w, keyButton.h);
@@ -155,6 +155,7 @@ let Component={
         }
     },
     serverConnectionChecker:function(x=Screen.perX(6),y=Screen.perX(1)){
+        Multi.connectOn();
         let checker = new Button(x,y,Screen.perX(8),Screen.perX(2.5));
         checker.drawOption(null,"brown","offline", Screen.perX(2),"brown",null);
         checker.act=function(){

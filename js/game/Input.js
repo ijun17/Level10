@@ -23,15 +23,14 @@ let Input = {
         const a=keyset[0],b=keyset[1],c=keyset[2];
         this.keyDowns.push(function(e){
             switch(e.keyCode){
-                case a:player.moveFlag = true;player.isRight = false;break;//left
+                case a:player.isMoving = true;player.isRight = false;break;//left
                 case b:player.jump();break;//up
-                case c:player.moveFlag = true;player.isRight = true;break;//right
+                case c:player.isMoving = true;player.isRight = true;break;//right
             }
         })
         this.keyUps.push(function(e){
             switch(e.keyCode){
-                case a:player.moveFlag = false;break;
-                case c:player.moveFlag = false;break;
+                case a: case c:player.isMoving = false;break;
             }
         })
     },
@@ -39,10 +38,10 @@ let Input = {
         const a=keyset[0],b=keyset[1],c=keyset[2],d=keyset[3];
         this.keyDowns.push(function(e){
             switch(e.keyCode){
-                case a:player.castMagic(0);break; //q
-                case b:player.castMagic(1);break; //w
-                case c:player.castMagic(2);break; //e
-                case d:player.castMagic(3);break; //r
+                case a:player.castSkill(0);break; //q
+                case b:player.castSkill(1);break; //w
+                case c:player.castSkill(2);break; //e
+                case d:player.castSkill(3);break; //r
             }
         })
     },
@@ -96,7 +95,7 @@ let Input = {
         //e.preventDefault();
         if(e.touches.length==0){
             if(Multi.gameOn)Multi.keyUpHandler({keyCode:39});
-            else Game.p.moveFlag = false;
+            else Game.p.isMoving = false;
         }
     }
 }

@@ -3,8 +3,8 @@ let Game = {
     channel : [[], [], [], []], //phisics, particle, button
     PHYSICS_CHANNEL : 0,
     PARTICLE_CHANNEL : 1,
-    TEXT_CHANNEL : 2,
-    BUTTON_CHANNEL : 3,
+    TEXT_CHANNEL : 3,
+    BUTTON_CHANNEL : 2,
     time : 0,
     p:null,
     p2:null,

@@ -41,7 +41,6 @@ move(player, front(400), 0);`,2],
 addAction(player, 1,12,#(){
     @fire = create(FIRE,0,0);
     move(fire,front(200-13*i-15), i*35);
-    //setGravity(fire,500,0);
     giveLife(fire,500)
     addAction(fire,1,500,#(){
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
@@ -91,7 +90,7 @@ addAction(a, 1,500, #(){giveForce(a,-getVX(a)+speed, -getVY(a))})`,5],
 giveLife(t,100);
 setTrigger(t,#(e){
     giveForce(e, front(-10), 4);
-});`,5],
+});`,5]
 ]
 
 

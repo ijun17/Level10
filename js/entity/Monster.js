@@ -68,6 +68,16 @@ const MONSTERS = [{
         function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,10);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
         function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -10;return 500;}
     ]
+},
+{
+    name: "지옥불군주 미누크",
+    image: { name: "crazymonkey2", w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
+    setStatus: function(e){ e.w=120;e.h=200;e.life=1000000;e.power=2000;e.speed=6;e.inv_mass=0.1},
+    attackEffect: function(e,v){},
+    skillList: [
+        function(e){e.AI(10);return 50;},
+        function(e){if(e.canTarget())e.createMatterToTarget(2,e.getTargetDir()*2,0,10);return 200;}
+    ]
 }
 ];
 
@@ -77,29 +87,38 @@ class Monster extends Entity {
     name;
     target=null;
     targets=[];
+    attackEffect=function(){};
+    attackFilter=function(){}
+    attackTick=0; //몬스터가 공격하는 자세
 
     power=100;
     speed=1;
-    attackEffect=function(){};
+    
+    coolTime=[0,0,0,0];
 
-    //draw
     totalDamage=0;
     canJump = true;
     isRight=true;
-    attackTick=0;
-    //damageTick=0;
+    isMoving=false;
+    isFlying=false;
+    
 
-    constructor(typenum, x, y, channelLevel = Game.PHYSICS_CHANNEL) {
+    mp=0;//쓰지는 않으나 플레이어와 연동을 위해 만듬
+
+    constructor(typenum, x, y, ai=true, channelLevel = Game.PHYSICS_CHANNEL) {
         super(x, y, channelLevel);
         let type=MONSTERS[typenum];
         this.typenum=typenum;
         this.name=type.name;
         type.setStatus(this);
         this.attackEffect=type.attackEffect;
-        this.target = Game.p;
-        //skill set
-        for(let i=type.skillList.length-1; i>=0;i--){
-            this.addSkill(200,type.skillList[i]);
+        this.attackFilter=function(e){return (e==this.target || e instanceof Block)}
+        //AI
+        if(ai){
+            this.target = Game.p;
+            for(let i=type.skillList.length-1; i>=0;i--){
+                this.addSkill(200,type.skillList[i]);
+            }
         }
         //image
         let temp = this;
@@ -117,7 +136,13 @@ class Monster extends Entity {
         if (this.canDraw) this.draw();
         if (this.canAct) this.act();
         if (this.canInteract) this.interact();
-        if(this.canMove)this.move();
+        if(this.canMove){
+            this.move();
+            if (this.isMoving) {
+                if (this.isRight && this.vx <= this.speed) this.vx++;
+                else if (!this.isRight && this.vx >= -this.speed) this.vx--;
+            }
+        }
         if (this.totalDamage > 0) {
             let damageText = new Text(this.x + this.w / 2, this.y - 50,Math.floor(this.totalDamage),30,"orange","black",40);
             damageText.vy=1;
@@ -139,7 +164,8 @@ class Monster extends Entity {
     collisionHandler(e,ct) {
         if (ct=='D') this.canJump = true;
         //공격
-        if(e==this.target || e instanceof Block){
+        if(this.attackFilter(e)){
+            if(this.target==null)this.target=e;
             e.giveDamage((1 - Math.random()*2)*this.power/10+this.power);
             this.attackTick = this.animation.fps*this.animation.MAX_X[1];
             if (e.x + e.w / 2 > this.x + this.w / 2) {
@@ -170,13 +196,19 @@ class Monster extends Entity {
             Camera.vibrate((d<8000 ? d/400 : 20)+1);
         }
     }
+    castSkill(num){
+        //num 0:q 1:w 2:e 3:r
+        if(MONSTERS[this.typenum].skillList.length>num&&this.coolTime[num]<Game.time){
+            this.coolTime[num]=MONSTERS[this.typenum].skillList[num](this)+Game.time;
+        }
+    }
 
     addSkill(time,f){ 
         let temp=this;
         this.addAction(time,time,function(){temp.addSkill(f(temp),f)});
     }
     //편의기능
-    canTarget(){return (this.target!=null&&this.target.canDraw&&this.target.life>0)}
+    canTarget(){if(this.target!=null&&this.target.life<1)this.target=null;return (this.target!=null&&this.target.canDraw&&this.target.life>0)}
     searchTarget(){
         let c=Game.channel[Game.PHYSICS_CHANNEL]
         let targetPriority=3; //타겟 우선순위
@@ -205,13 +237,16 @@ class Monster extends Entity {
         return  new Matter(type, matter_x, matter_y,vx,vy);
     }
     //MONSTER MOVING
-    AI(noise = 0) { //걸어 댕기는 놈
-        this.isRight=(this.getTargetDir()>0);
-        this.vx = this.speed*(this.isRight ? 1 : -1)+(1 - Math.random()*2)*noise;
+    jump(){
         if (this.canJump) {
             this.canJump = false;
             this.vy = this.speed - 0.5;
         }
+    }
+    AI(noise = 0) { //걸어 댕기는 놈
+        this.isRight=(this.getTargetDir()>0);
+        this.vx = this.speed*(this.isRight ? 1 : -1)+(1 - Math.random()*2)*noise;
+        this.jump();
     }
     AI2(noise = 0) {// 날아 댕기는 놈
         this.isRight=(this.getTargetDir()>0);
