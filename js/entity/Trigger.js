@@ -18,7 +18,7 @@ class Trigger extends Entity{
     }
     static getDraw(){
         return function(){
-            ctx.fillStyle = "rgba(255,255,255,0.1)";
+            ctx.fillStyle = "rgba(65, 105, 225,0.1)";
             ctx.fillRect(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
         }
     }

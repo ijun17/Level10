@@ -350,7 +350,7 @@ let Screen= {
         Component.playerStatusView(player1, 1, 11, "player1");
         Component.playerStatusView(player2, 57, 11, "player2");
 
-        new Entity(0,0,Game.PHYSICS_CHANNEL).update=function(){
+        let nameTag=new Entity(0,-10000,Game.PHYSICS_CHANNEL).update=function(){
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
             ctx.font="bold 15px Arial";
@@ -359,6 +359,7 @@ let Screen= {
             ctx.fillStyle="red";
             Camera.fillText("player2",player2.x+player2.w/2,player2.y-20);
         }
+        nameTag.canInteract=false;
 
         function countdown(textset, index){
             let text = new Text(Screen.perX(50),Screen.perY(50), textset[index], Screen.perX(20), "yellow", null,100,false);
@@ -373,7 +374,8 @@ let Screen= {
         Game.keyboardOn=true;
         Component.backButton(function(){Screen.selectScreen()});
         //player
-        Game.p = new Player(10, -60, Level.playerLevel);//new Monster(3,10, -200,false)//
+        Game.p = new Player(10, -60, Level.playerLevel);
+        //Game.p=new Monster(4,10, -200,false)//
         //Game.p.attackFilter = function(e){return (e instanceof Block|| e instanceof Player || e instanceof Monster)}
         Game.p.removeHandler=function(){
             Game.channel[Game.BUTTON_CHANNEL]=[];

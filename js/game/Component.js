@@ -94,8 +94,20 @@ let Component={
     playerStatusView:function(player,perX,perY,playerName="Level "+Level.playerLevel){
         const viewTextSize=Screen.perX(1.5);
         const viewTextSize2=Screen.perX(1.8);
-        const MAX_HP = 10000*player.lv;
-        const MAX_MP = 30000*player.lv;
+        const MAX_HP=player.life;
+        const MAX_MP=player.mp;
+        const printSkillInfo=(player instanceof Player?function(){
+            for(let i = 0; i < 4; i++){
+                let coolT = player.coolTime[i] - Game.time;
+                let magic = player.magicList[i];
+                ctx.fillText(magic[0] + "(" + magic[3] + "): " + (coolT > 0 ? (coolT * 0.01).toFixed(2) : "ready"),Screen.perX(perX+19),Screen.perX(perY)+Screen.perX(2) * i);
+            }
+        }:function(){
+            for(let i=0,l=MONSTERS[player.typenum].skillList.length; i<l; i++){
+                let coolT = player.coolTime[i] - Game.time;
+                ctx.fillText((i+1)+": " + (coolT > 0 ? (coolT * 0.01).toFixed(2) : "ready"), Screen.perX(perX+19),Screen.perX(perY)+Screen.perX(2) * i);
+            }
+        })
         let view = new Button(Screen.perX(perX),Screen.perX(perY),Screen.perX(45),Screen.perX(8),Game.TEXT_CHANNEL);
         view.draw=function(){
             ctx.fillStyle="rgba(0,0,0,0.1)";
@@ -116,11 +128,7 @@ let Component={
             ctx.font = "bold "+viewTextSize+"px Arial";
             ctx.fillText(player.life, this.x+Screen.perX(0.5),this.y+Screen.perX(3));
             ctx.fillText(player.mp, this.x+Screen.perX(0.5),this.y+Screen.perX(5.5));
-            for (let i = 0; i < 4; i++) {
-                let coolT = player.coolTime[i] - Game.time;
-                let magic = player.magicList[i];
-                ctx.fillText(magic[0] + "(" + magic[3] + "): " + (coolT > 0 ? (coolT * 0.01).toFixed(2) : "ready"), this.x+Screen.perX(19), this.y + Screen.perX(2) * i);
-            }
+            printSkillInfo();
         }
         return view;
     },

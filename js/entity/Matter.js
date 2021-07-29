@@ -6,6 +6,7 @@ const MATTERS=[
             e.addAction(1,10000,function (){if(Game.time%15==0){new Particle(1,e.x,e.y);new Particle(0,e.x,e.y);}});
         },
         effect:function(e,v){
+            --this.life;
             if(v instanceof Matter&&(v.typenum==0||v.typenum==6)){
                 let explosion = new Matter(6, e.x-35, e.y-35,0,0);
                 e.throw();
@@ -20,38 +21,55 @@ const MATTERS=[
     },
     {
         name:"electricity",
-        setStatus:function(e){e.power=110;e.ga=0;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
-        effect:function(e,v){v.giveDamage(e.power);v.vx=0;v.vy=0;++e.life;}
+        setStatus:function(e){e.power=110;e.ga=0;e.inv_mass=0;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
+        effect:function(e,v){
+            v.giveDamage(e.power);v.vx=0;v.vy=0;
+            if(v instanceof Matter && v.typenum==1){
+                if(++e.lightningPoint>8000){
+                    if(e.lightningPoint==10000){
+                        new Matter(7, e.x+e.w/2-150,e.y-900);
+                        e.throw();
+                        v.throw();
+                    }else if(e.lightningPoint==8001){
+                        e.w=60;e.h=60;
+                        e.x-=15;e.y-=15;
+                    }
+                }
+            }
+        }
     },
     {
         name:"ice",
         setStatus:function(e){e.power=110;},
         effect:function(e,v){
-            if(v instanceof Matter && v.typenum==0){
-                for(let i=0 ;i<3; i++){
-                    let cloud = new Particle(2, e.x + 15 - 100, e.y + 15 - 100);
-                    cloud.w = 200;
-                    cloud.h = 200;
-                    cloud.life=300;
+            --this.life;
+            if(v instanceof Matter){
+                if(v.typenum==0){
+                    for (let i = 0; i < 3; i++) {
+                        let cloud = new Particle(2, e.x + 15 - 100, e.y + 15 - 100);
+                        cloud.w = 200;
+                        cloud.h = 200;
+                        cloud.life = 300;
+                    }
+                    e.throw();
+                    v.throw();
                 }
-                
-                e.throw();
-                v.throw();
             }else{
                 v.giveDamage(Math.floor(this.getVectorLength())+e.power);
-            v.addAction(1,150,function(){v.vx=0;v.vy=0;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
+                v.addAction(1,150,function(){v.vx=0;v.vy=0;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
             }
         }
     },
     {
         name:"arrow",
         setStatus:function(e){e.power=100;},
-        effect:function(e,v){v.giveDamage(Math.floor(e.getVectorLength()*e.power));v.giveForce(e.vx/e.inv_mass,(e.vy+1)/e.inv_mass);}
+        effect:function(e,v){--this.life;v.giveDamage(Math.floor(e.getVectorLength()*e.power));v.giveForce(e.vx/e.inv_mass,(e.vy+1)/e.inv_mass);}
     },
     {
         name:"energy",
         setStatus:function(e){e.power=1000;e.inv_mass=0.5;e.ga=-0.01;e.friction=0;},
         effect:function(e,v){
+            --this.life;
             if(v instanceof Matter&&v.typenum==4){
                 e.life+=v.life+1;v.life=0; //생명 합
                 e.x=(e.x*e.w+v.x*v.w)/(e.w+v.w);   e.y=(e.y*e.h+v.y*v.h)/(e.h+v.h); //좌표 조정
@@ -62,22 +80,37 @@ const MATTERS=[
                 v.throw();
             }else{
                 v.giveDamage(e.power);
-                v.giveForce(e.vx/e.inv_mass+(e.getX()<v.getX()?e.w/10:-e.w/10), e.vy/e.inv_mass+1);
+                v.giveForce(e.vx/e.inv_mass+(e.getX()<v.getX()?e.w/10:-e.w/10), e.vy/e.inv_mass+(e.getY()<v.getY()?e.h/10:-e.h/10)+1);
             }
         }
     },
     {
-        name:"sword",
-        setStatus:function(e){e.power=20;e.w=e.getVectorLength()+30;e.h=e.w;},
+        name:"wind",
+        setStatus:function(e){e.power=100;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.01;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
-            v.giveDamage(e.w*e.power);
-            v.giveForce(e.vx,e.vy+1);
+            v.giveForce(e.vx-v.vx,e.vy-v.vy+1);
+            if(e.vx==0&&e.vy==0)e.throw();
         }
     },
     {
         name:"explosion",
-        setStatus:function(e){e.power=1000;e.w=100;e.h=100;e.ga=0;e.life=300;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
-        effect:function(e,v){v.giveDamage(e.power);++e.life;}
+        setStatus:function(e){e.power=3000;e.w=100;e.h=100;e.ga=0;e.life=50;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
+        effect:function(e,v){
+            v.giveDamage(e.power);
+            v.giveForce((e.getX()<v.getX()?1:-1), (e.getY()<v.getY()?1:-1));
+        }
+    },
+    {
+        name: "lightning",
+        setStatus:function(e){e.power=1000;e.w=300;e.h=1200;e.inv_mass=0;e.life=50;e.move=function(){};e.addAction(0,99999999,function(){--e.life;Camera.vibrate(5);})},
+        effect:function(e,v){
+            if(v instanceof Matter && (v.typenum==1||v.typenum==7)){
+                v.throw();
+                e.power+=v.power;
+            }else{
+                v.giveDamage(e.power);
+            }
+        }
     }
 ];
 
@@ -138,6 +171,13 @@ class Matter extends Entity {
                     ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
                 }
                 break;
+            case 7:
+                e.animation = new Animation("resource/matter/" + MATTERS[e.typenum].name + ".png", 100, 400, [3], function () { return 0; });
+                e.animation.fps=4;
+                return function () {
+                    this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+                }
+                break;
         }
     }
 
@@ -147,7 +187,6 @@ class Matter extends Entity {
 
     collisionHandler(e) {
         if(!e.canCollision)return;
-        --this.life;
         this.effect(this,e);
     }
 }

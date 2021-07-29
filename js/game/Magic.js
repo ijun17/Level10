@@ -1,4 +1,7 @@
-const BASIC_MASIC=[
+
+
+const MAGIC_DATA={
+    BASIC_MASIC:[
     ["파이어볼",`//전방에 파이어볼을 발사
 @e=create(FIRE,front(10),1);
 giveLife(e,10);
@@ -16,7 +19,7 @@ giveLife(player,2000);`,1],
     
     ["얼음비", `//많은 얼음을 소환
 @count=0;
-addAction(player, 1,10,#(){
+addAction(player, 1,10,#{
     @ice = create(ICE, 0,-20)
     move(ice, front(count*40+100),300)
     giveLife(ice,100);
@@ -38,11 +41,11 @@ move(player, front(400), 0);`,2],
     ["파이어토네이도",`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
 @i=0;
-addAction(player, 1,12,#(){
+addAction(player, 1,12,#{
     @fire = create(FIRE,0,0);
     move(fire,front(200-13*i-15), i*35);
     giveLife(fire,500)
-    addAction(fire,1,500,#(){
+    addAction(fire,1,200,#{
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
     });
     i++;
@@ -51,13 +54,13 @@ addAction(player, 1,12,#(){
     ["투명",`//플레이어의 투명화
 invisible(player,300);`,3],
 
-    ["검격",`//검기 발사
-@e=create(SWORD,front(60),0);
+    ["바람",`//바람 발사
+@e=create(WIND,front(30),0);
 giveLife(e,30);`,3],
 
     ["기관총",`//화살 발사
 @count=0;
-addAction(player,1,500,#(){
+addAction(player,1,500,#{
     if((count++)%10==0){
         @a = create(ARROW, front(30), 1, 30,10)
         giveLife(a, 10)
@@ -66,7 +69,7 @@ addAction(player,1,500,#(){
 
     ["전격실드", `//전기 실드를 생성
 @j=0;
-addAction(player,1,5,#(){
+addAction(player,1,5,#{
     @a=create(ELECTRICITY,0,0);
     move(a,front(20-j*20),60);
     giveLife(a,500);
@@ -83,16 +86,89 @@ addAction(player,1,5,#(){
 @a = create(BLOCK, front(30), 0,30,30);
 giveLife(a,2000)
 @speed= front(30)
-addAction(a, 1,500, #(){giveForce(a,-getVX(a)+speed, -getVY(a))})`,5],
+addAction(a, 1,500, #{giveForce(a,-getVX(a)+speed, -getVY(a))})`,5],
 
     ["끌어당기기",`//닿은 물체를 끌어 당김
 @t = create(TRIGGER,front(10),0,20,100);
 giveLife(t,100);
-setTrigger(t,#(e){
-    giveForce(e, front(-10), 4);
-});`,5]
-]
+setTrigger(t,#{
+    giveForce($, front(-10), 4);
+});`,5],
+    ["파이어토네이도V",`//불꽃 토네이도 생성
+@x=getX(player)+front(200);
+@plusX=front(1);
+@i=0;
+addAction(player, 1,12,#{
+    @fire = create(FIRE,0,0);
+    move(fire,front(200-13*i-15), i*35);
+    giveLife(fire,500)
+    addAction(fire,1,70,#{
+        giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
+        x+=plusX;
+    });
+    addAction(fire,81,81,#{giveForce(fire,-getVX(fire)+plusX*20,-getVY(fire));})
+    i++;
+});`,10]
+],
 
+//
+unit_magic:`
+const vvmagic={
+    FIRE:0, ELECTRICITY:1,ICE:2,ARROW:3,ENERGY:4,WIND:5,BLOCK:6,TRIGGER:7,
+    create:function(typenum=this.BLOCK,vx=0,vy=0,w=30,h=30){
+        let e;
+        let p=player;
+        if(typenum<=this.WIND)e=new Matter(typenum,0,0,vx,vy);
+        else if(typenum===this.BLOCK)e=new Block(0,0,w,h);
+        else if(typenum===this.TRIGGER)e=new Trigger(0,0,w,h,100,function(e){});
+        e.vx=vx;e.vy=vy;e.x=p.getX()+this.front(e.w/2+p.w/2)-e.w/2;e.y=p.getY()-e.h/2;
+        return e;
+    },
+    setTrigger:function(t,f){if(t instanceof Trigger)t.code=f;},
+    giveForce:function(e,ax,ay){e.vx+=ax;e.vy+=ay;},
+    giveLife:function(e,d){e.life+=d;},
+    invisible:function(e,time){e.canDraw=false;e.addAction(time,time,function(){e.canDraw=true;});},
+    move:function(e,vx,vy){if(e instanceof Monster)return;e.x+=vx;e.y-=vy;},
+    addAction:function(e,startTime,endTime,f){e.addAction(startTime,endTime,f);},
+    getX:function(e){return e.getX()-player.getX();},
+    getY:function(e){return player.getY()-e.getY();},
+    getVX:function(e){return e.vx;},
+    getVY:function(e){return e.vy;},
+    front:function(d=1){return (player.isRight ? d : -d);}
+}
+`,
+//
+test_unit_magic:`
+const vvtest={
+    test_create:function(typenum=vvmagic.BLOCK,vx=0,vy=0,w=30,h=30){let e=vvmagic.create(typenum,vx,vy,w,h);addMF([50,getEnergy(e)*(w*h)/900+e.getVectorLength()]);return e;},
+    test_setTrigger:function(t,f){vvmagic.setTrigger(t,f);addMF([100,t.w*t.h+getEnergy(t)+1]);},
+    test_giveForce:function(e,ax,ay){let oldE = getEnergy(e);vvmagic.giveForce(e,ax,ay);let newE=getEnergy(e);addMF([0, newE-oldE]);},
+    test_giveLife:function(e,d){addMF([0,d]);vvmagic.giveLife(e,d);},
+    test_invisible:function(e,time){addMF([time*2,(e instanceof Player?(time**2)/100:time)]);},
+    test_move:function(e,vx,vy){addMF([0,(vx+vy)/10]);},
+    test_addAction:function(e,startTime,endTime,f){
+        if(endTime-startTime>100){
+            let oldM0 = magicFactor[0];
+            let oldM1 = magicFactor[1];
+            for(let i=0,j=(endTime-startTime)/10;i<j;i++)f();
+            let newM0 = magicFactor[0];
+            let newM1 = magicFactor[1];
+            addMF([Math.sqrt((newM0**2-oldM0**2)*9), (newM1-oldM1)*9]);
+        }else{
+            for(let i=0,j=(endTime-startTime);i<j;i++)f();
+        }
+        addMF([endTime*2,(endTime-startTime)]);
+    }
+}
+        
+        
+        
+        
+        
+        
+        
+        `
+}
 
 
 let Magic = {
@@ -114,7 +190,7 @@ let Magic = {
         Magic.magicEffectSound.src="resource/sound/magic effect2.mp3";
         Magic.magicEffectSound.volume=0.1;
         //load basic magic
-        Magic.basicMagic=BASIC_MASIC;
+        Magic.basicMagic=MAGIC_DATA.BASIC_MASIC;
         for(let i=0,j=Magic.basicMagic.length; i<j; i++){
             let magic = Magic.convertMagictoJS(Magic.basicMagic[i][0],Magic.basicMagic[i][1]);
             if(magic==null){
@@ -162,58 +238,24 @@ let Magic = {
         Magic.magicList.push(["none", function(){},0,0]);
     },
     convertMagictoJS: function (name, magicCode) {
-        let unit_magic=`
-        const FIRE=0, ELECTRICITY=1,ICE=2,ARROW=3,ENERGY=4,SWORD=5,BLOCK=6,TRIGGER=7;
-        function create(typenum=BLOCK,vx=0,vy=0,w=30,h=30){
-            let e;
-            let p=player;
-            if(typenum<=SWORD)e=new Matter(typenum,0,0,vx,vy);
-            else if(typenum===BLOCK)e=new Block(0,0,w,h);
-            else if(typenum===TRIGGER)e=new Trigger(0,0,w,h,100,function(e){});
-            e.vx=vx;e.vy=vy;e.x=p.getX()+front(e.w/2+p.w/2)-e.w/2;e.y=p.getY()-e.h/2;
-            return e;
-        }
-        function setTrigger(t,f){if(t instanceof Trigger)t.code=f;}
-        function giveForce(e,ax,ay){e.vx+=ax;e.vy+=ay;}
-        function giveLife(e,d){e.life+=d;}
-        function invisible(e,time){e.canDraw=false;e.addAction(time,time,function(){e.canDraw=true;});}
-        function move(e,vx,vy){if(e instanceof Monster)return;e.x+=vx;e.y-=vy;}
-        function addAction(e,startTime,endTime,f){e.addAction(startTime,endTime,f);}
-        function getX(e){return e.getX()-player.getX();}
-        function getY(e){return player.getY()-e.getY();}
-        function getVX(e){return e.vx;}
-        function getVY(e){return e.vy;}
-        function front(d=1){return (player.isRight ? d : -d);}
-        `
         
         let magicFactor = [100,100]; //[cooltime, magic point]
         function getEnergy(e){let test = new Entity(0,10000,Game.PHYSICS_CHANNEL);test.life=0;e.collisionHandler(test);return Math.abs(test.life);}
         function addMF(mf) {magicFactor[0] = Math.floor(Math.sqrt(magicFactor[0]**2 + mf[0]**2));magicFactor[1] += Math.floor(Math.abs(mf[1]));}
-        let test_unit_magic=`
-        function test_create(typenum=BLOCK,vx=0,vy=0,w=30,h=30){let e=create(typenum,vx,vy,w,h);addMF([50,getEnergy(e)*(w*h)/900+e.getVectorLength()]);return e;}
-        function test_setTrigger(t,f){setTrigger(t,f);addMF([100,t.w*t.h+getEnergy(t)+1]);}
-        function test_giveForce(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMF([0, newE-oldE]);}
-        function test_giveLife(e,d){addMF([0,d]);giveLife(e,d);}
-        function test_invisible(e,time){addMF([time*2,(e instanceof Player?(time**2)/100:time)]);}
-        function test_move(e,vx,vy){addMF([0,(vx+vy)/10]);}
-        function test_addAction(e,startTime,endTime,f){
-            if(endTime-startTime>100){
-                let oldM0 = magicFactor[0];
-                let oldM1 = magicFactor[1];
-                for(let i=0,j=(endTime-startTime)/10;i<j;i++)f();
-                let newM0 = magicFactor[0];
-                let newM1 = magicFactor[1];
-                addMF([Math.sqrt((newM0**2-oldM0**2)*9), (newM1-oldM1)*9]);
-            }else{
-                for(let i=0,j=(endTime-startTime);i<j;i++)f();
-            }
-            addMF([endTime*2,(endTime-startTime)]);
-        }
-        `
-        //keyword list
-        let prohibitedWord=["new","function","let","var", "addMF", "setPlayer"],prohibitedSymbol=["[",".","$"];//prohibited
-        let testKeyword=["giveForce","giveLife","invisible", "create","move","addAction","setTrigger"];//test method
-        let symbol={"@":"let ","#":"function"};//convert symbol to word
+        
+        //prohibited keyword list
+        const prohibitedWord=["new","function","let","var", "addMF", "setPlayer"];
+        const prohibitedSymbol=["[","."];
+
+        //magic code keyword
+        //const unitMagicKeyword=["front","create","setTrigger","giveForce","giveLife","invisible","move","addAction","getX","getY","getVX","getVY",
+        //    "FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"];
+        let notUnitMagicKeyword=["player","if"]//unit magic에 포함되어 있지 않은 객체
+        let isNotUnitMagic=false;
+        const testKeyword=["giveForce","giveLife","invisible", "create","move","addAction","setTrigger"];
+
+        //convert symbol to word
+        const symbol={"@":"let ","#":"function(parameter)","$":"parameter"};
         //convert magic code to js code
         function isEnglish(c){return (64<c&&c<91)||(96<c&&c<123);}
         function printResult(text1,text2,isSuccess=false){
@@ -236,13 +278,28 @@ let Magic = {
                     return null;
                 }
                 //단어 검사
-                testKeyword.includes(temp) ? testCode+="test_"+temp : testCode+=temp;//테스트해야할 메소드면 test를 더함
-                jsCode+=temp; 
+                if(temp.length>0){
+                    if(isNotUnitMagic){
+                        notUnitMagicKeyword.push(temp);
+                        testCode +=temp
+                        jsCode+=temp;
+                        isNotUnitMagic=false;
+                    }else{
+                        if(notUnitMagicKeyword.includes(temp)){
+                            testCode +=temp
+                            jsCode+=temp;
+                        }else{
+                            testKeyword.includes(temp) ? testCode += "vvtest.test_" + temp : testCode += "vvmagic." + temp;//테스트해야할 메소드면 test를 더함
+                            jsCode+="vvmagic."+temp;
+                        }
+                    }  
+                }
                 temp=""; //검사하고 비움
                 //심볼 검사
                 if(magicCode[i] in symbol){
                     testCode+=symbol[magicCode[i]];
                     jsCode+=symbol[magicCode[i]];
+                    if(magicCode[i]=="@")isNotUnitMagic=true;
                 }else{
                     testCode+=magicCode[i];
                     jsCode+=magicCode[i];
@@ -251,14 +308,14 @@ let Magic = {
         }
         let magic=function(){};
         try {
-            //clearInterval(systemclock);
-            magic = eval("(function(player){"+unit_magic+jsCode+"})");
-            let testMagic=eval("(function(player){"+unit_magic+test_unit_magic+testCode+"})");
+            magic = eval("(function(player){"+MAGIC_DATA.unit_magic+jsCode+"})");
+            let testMagic=eval("(function(player){"+MAGIC_DATA.unit_magic+MAGIC_DATA.test_unit_magic+testCode+"})");
             let temp = Game.p;Game.p = new Player(0,10000);
             testMagic(Game.p);
             Game.p=temp;
         }catch(e){
             printResult("Fail: "+name+"를 생성하지 못했습니다.","원인: 자바스크립트 문법 오류");
+            console.log(testCode);
             return null;
         }
         printResult("SUCCESS: "+name+"를 생성했습니다.", "cooltime: "+(magicFactor[0]/100)+"sec\nMP: "+magicFactor[1],true)

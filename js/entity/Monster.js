@@ -22,7 +22,7 @@ const MONSTERS = [{
     setStatus: function(e){ e.w=60; e.h=60; e.life=20000; e.power=200; e.speed=3; e.inv_mass=1;},
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI(2);return 50;},
+        function(e){e.AI(1);return 50;},
         function(e){e.vx+=(e.isRight ? 5 : -5);e.vy+=7;return 503;}
     ]
 },
@@ -42,7 +42,7 @@ const MONSTERS = [{
     setStatus: function(e){e.w=30;e.h=30;e.life=20000;e.power=500;e.speed=5;e.inv_mass=2;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI2(5);return 10;}
+        function(e){e.AI2(5);return 50;}
     ]
 },
 {
@@ -52,21 +52,29 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI();return 50;},
-        function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-700;e.vx = 0;e.vy = -5;
+        function(e){
+            if(!e.canTarget())return 100;
+            e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-700;e.vx = 0;e.vy = -5;
             let effect = new Particle(5, e.x+e.w-e.h, e.y);effect.w=e.h*2;effect.h=e.h*2;
             let temp=e.power;e.power=9999;e.addAction(40,40,function(){e.power=temp});
-            return 501;}
+            return 501;},
+        function(e){e.vx=e.getTargetDir()*30;return 600;}
     ]
 },
 {
     name: "심연의흑염룡",
     image: {name:"wyvern",w:80,h:80,frame:16,MAX_X:[4,1]},
-    setStatus: function(e){e.w=300;e.h=300;e.life=10000000;e.power=4000;e.speed=3;e.inv_mass=0.1;e.ga=0;},
+    setStatus: function(e){e.w=300;e.h=300;e.life=10000000;e.power=4000;e.speed=5;e.inv_mass=0.1;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
         function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,10);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
-        function(e){e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-600;e.vx = 0;e.vy = -10;return 500;}
+        function(e){
+            for(let i=0; i<10; i++){
+                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-2-i*0.5,0,-30)).life=10;
+                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-1.5-i*0.5,0,-30)).life=10;
+            }
+            return 500;}
     ]
 },
 {
@@ -98,7 +106,7 @@ class Monster extends Entity {
 
     totalDamage=0;
     canJump = true;
-    isRight=true;
+    isRight=false;
     isMoving=false;
     isFlying=false;
     
@@ -226,13 +234,14 @@ class Monster extends Entity {
         else return (Math.random()-0.5>0 ? 1 : -1);
         
     }
+    front(n=1){return (this.isRight?n:-n)}
     createMatterToTarget(type,xDir,yDir,power){
         let matter_x = this.x+this.w/2+(this.w/2+15)*xDir-15;
         let matter_y = this.y+this.h/2+(this.h/2+15)*yDir-15;
         let matter_vx = (this.target.x-matter_x);
         let matter_vy = -(this.target.y-matter_y);
         let vector_length = Math.sqrt(matter_vx**2+matter_vy**2);
-        return  new Matter(type, matter_x, matter_y, matter_vx*power/vector_length, matter_vy*power/vector_length);
+        return  new Matter(type, matter_x, matter_y, matter_vx*power/vector_length, matter_vy*power/vector_length+1);
     }
     createMatter(type,xDir,yDir,vx,vy){
         let matter_x = this.x+this.w/2+(this.w/2+15)*xDir-15;
@@ -248,7 +257,7 @@ class Monster extends Entity {
     }
     AI(noise = 0) { //걸어 댕기는 놈
         this.isRight=(this.getTargetDir()>0);
-        this.vx = this.speed*(this.isRight ? 1 : -1)+(1 - Math.random()*2)*noise;
+        if(Math.abs(this.vx)<this.speed)this.vx += (this.speed+(1 - Math.random()*2)*noise)*(this.isRight ? 1 : -1);
         this.jump();
     }
     AI2(noise = 0) {// 날아 댕기는 놈

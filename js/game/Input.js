@@ -94,8 +94,7 @@ let Input = {
     touchEndHandler:function(e) {
         //e.preventDefault();
         if(e.touches.length==0){
-            if(Multi.gameOn)Multi.keyUpHandler({keyCode:39});
-            else Game.p.isMoving = false;
+            keyUpHandler({keyCode:37});
         }
     }
 }
