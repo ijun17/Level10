@@ -242,13 +242,14 @@ let Screen= {
                 plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagic.length+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
             }
         };
-        for(let i=Magic.basicMagic.length; i<Magic.magicList.length; i++)Component.magicButton(Screen.perX(83),Screen.perX(10+4*i),i,buttonSelector,function(btn){customMagicButtonCode(i);})
+        for(let i=Magic.basicMagic.length; i<Magic.magicList.length; i++)
+            Component.magicButton(Screen.perX(83),Screen.perX(10+4*(i-Magic.basicMagic.length)),i,buttonSelector,function(btn){customMagicButtonCode(i);})
         //BASIC MAGIC LIST
         const list_x=8;
         let list_start=Game.channel[Game.BUTTON_CHANNEL].length;
         for(let i=0; i<Magic.basicMagic.length; i++){
             if(Magic.magicList[i][4]>Level.playerLevel)break;
-            Component.magicButton(Screen.perX(list_x),Screen.perY(50)+Screen.perX(4)*i,i,buttonSelector,function(btn){basicMagicButtonCode(i);})
+            Component.magicButton(Screen.perX(list_x),Screen.perX(10+4*i),i,buttonSelector,function(btn){basicMagicButtonCode(i);})
         }
         let list_end=Game.channel[Game.BUTTON_CHANNEL].length;
         Component.listScroll(list_x, 16, list_start, list_end);
@@ -271,6 +272,7 @@ let Screen= {
         //TEST MAP
         Component.worldWall(1000,500,200);
         Camera.makeMovingCamera(Game.p,0,0,10);
+        Camera.extension=1000/canvas.width;
         function makePlayer(){Game.p=new Player(100, -100,10);Game.p.magicList=[null,null,null,null];
             Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();};}
         function makeTester(){let p=new Player(500, -100,10);p.removeHandler=function(){makeTester();};}
@@ -443,119 +445,111 @@ let Screen= {
         nextBtnY += Screen.perX(8);
         makeMenuButton("",developerPanel);
 
-
-        //PANEL FUNCTION
-        let nextLine=Screen.perX(3);
-        function clearPanel(){
-            Game.channel[Game.TEXT_CHANNEL]=[helpText];
-            nextLine=Screen.perX(3);
-        }
-        function writeText(text, type){ //type은 제목인지(1) 본문인지(0)
-            const textSize=(type==0 ? Screen.perX(2):Screen.perX(3));
-            const textColor=(type==0 ? "black":"white");
-            let textE = new Text(Screen.perX(25), nextLine, text, textSize, textColor,null,-1,false);
-            textE.textBaseline = "top";
-            textE.textAlign="left";
-            nextLine+=(type==0 ? Screen.perX(3):Screen.perX(4));
-        }
-
+        let textPanel = new TextPanel(Screen.perX(25),Screen.perX(3),0,0);
+            textPanel.colors=[null, "white", "black"];
+            textPanel.px=[Screen.perX(1), Screen.perX(3), Screen.perX(2)];
         function developerPanel(){
-            clearPanel();
-            // writeText("GAME INFO",1);
-            // writeText("screen width: "+canvas.width,0);
-            // writeText("screen height: "+canvas.height,0);
+            textPanel.texts=[];
         }
         function howToCreateMagicPanel(){
-            clearPanel();
-            writeText("마법을 만드는 방법", 1);
-            writeText("1. create magic 화면으로 이동",0);
-            writeText("2. +magic 버튼을 클릭해서 빈 마법을 생성",0)
-            writeText("3. 새로 만들어진 파란색 버튼 클릭",0)
-            writeText("4. magic name 칸에 마법의 이름을 magic code 칸에 마법코드를 적음",0);
-            writeText("5. 그 밑에 있는 create 버튼 클릭(성공해야 저장됨)",0);
-            nextLine+=Screen.perX(2);
-            writeText("*물질생성마법, 물질속성변환마법, 물질정보탐색마법을 참고하세요.",0);
-            writeText("*create magic 화면에서 기본 마법의 코드를 볼 수 있습니다.",0);
-            writeText("*모바일에서 이용하려면 모바일 모드로 바꾸지 말고 이용하세요.",0);
-            writeText("*캐시 삭제를 하면 저장된 마법이 지워질 수 있습니다.",0);
+            textPanel.texts=[
+                [1,"마법을 만드는 방법"],
+                [2,"1. create magic 화면으로 이동"],
+                [2,"2. +magic 버튼을 클릭해서 빈 마법을 생성"],
+                [2,"3. 새로 만들어진 파란색 버튼 클릭"],
+                [2,"4. magic name 칸에 마법의 이름을 magic code 칸에 마법코드를 적음"],
+                [2,"5. 그 밑에 있는 create 버튼 클릭(성공해야 저장됨)"],
+                [0,2],
+                [2,"*물질생성마법, 물질속성변환마법, 물질정보탐색마법을 참고하세요."],
+                [2,"*create magic 화면에서 기본 마법의 코드를 볼 수 있습니다."],
+                [2,"*모바일에서 이용하려면 모바일 모드로 바꾸지 말고 이용하세요."],
+                [2,"*캐시 삭제를 하면 저장된 마법이 지워질 수 있습니다."]
+            ];
         }
         function howToSelectMagicPanel(){
-            clearPanel();
-            writeText("마법을 선택하는 방법", 1);
-            writeText("키 q,w,e,r에 원하는 마법을 지정할 수 있음",0)
-            nextLine+=Screen.perX(1);
-            writeText("1. select magic 화면으로 이동",0);
-            writeText("2. 마법 버튼(파란색 또는 보라색 버튼)을 클릭",0);
-            writeText("3. 키 버튼(Q,W,E,R)을 클릭",0);
-            nextLine+=Screen.perX(2);
-            writeText("*마법 버튼을 클릭하면 마법을 테스트할 수 있음",0);
+            textPanel.texts=[
+                [1,"마법을 선택하는 방법"],
+                [2,"키 q,w,e,r에 원하는 마법을 지정할 수 있음"],
+                [0,1],
+                [2,"1. select magic 화면으로 이동"],
+                [2,"2. 마법 버튼(파란색 또는 보라색 버튼)을 클릭"],
+                [2,"3. 키 버튼(Q,W,E,R)을 클릭"],
+                [0,2],
+                [2,"*마법 버튼을 클릭하면 마법을 테스트할 수 있음"]
+            ]
         }
 
         function gameControlPanel(){
-            clearPanel();
-            writeText("이동하는법", 1);
-            writeText("pc - 키보드 방향키",0);
-            writeText("모바일 - 스크린 하단 방향 버튼",0);
-            nextLine+=Screen.perX(3);
-            writeText("마법을쓰는법", 1);
-            writeText("pc - 키보드 q,w,e,r키",0);
-            writeText("모바일 - 스크린 하단 Q,W,E,R 버튼",0);
-            nextLine+=Screen.perX(3);
-            writeText("문제가발생했을때", 1);
-            writeText("새로고침하면 대부분의 문제가 해결됩니다",0);
-            writeText("*중요 정보들은 저장됩니다",0);
+            textPanel.texts=[
+                [1,"이동하는법"],
+                [2,"pc - 키보드 방향키"],
+                [2,"모바일 - 스크린 하단 방향 버튼"],
+                [0,3],
+                [1,"마법을쓰는법"],
+                [2,"pc - 키보드 q,w,e,r키"],
+                [2,"모바일 - 스크린 하단 Q,W,E,R 버튼"],
+                [0,3],
+                [1,"문제가발생했을때"],
+                [2,"새로고침하면 대부분의 문제가 해결됩니다"],
+                [2,"*중요 정보들은 저장됩니다"]
+            ]
         }
 
         function create_magicCodePanel(){
-            clearPanel();
-            writeText("물질 생성 마법",1);
-            writeText("생성할 수 있는 물질 - 불, 전기, 얼음, 화살, 에너지, 검격, 블럭, 트리거",0)
-            writeText("마법코드 - create(type, vx, vy, w, h)",0)
-            nextLine+=Screen.perX(1);
-            writeText("type - FIRE,ELECTRICITY,ICE,ARROW,ENERGY,SWORD,BLOCK,TRIGGER",0)
-            writeText("vx - 가로방향 속력",0)
-            writeText("vy - 세로방향 속력",0)
-            writeText("w - 가로크기",0)
-            writeText("h - 세로크기",0)
+            textPanel.texts=[
+                [1,"물질 생성 마법"],
+                [2,"생성할 수 있는 물질 - 불, 전기, 얼음, 화살, 에너지, 검격, 블럭, 트리거"],
+                [2,"마법코드 - create(type, vx, vy, w, h)"],
+                [0,1],
+                [2,"type - FIRE,ELECTRICITY,ICE,ARROW,ENERGY,WIND,BLOCK,TRIGGER"],
+                [2,"vx - 가로방향 속력"],
+                [2,"vy - 세로방향 속력"],
+                [2,"w - 가로크기"],
+                [2,"h - 세로크기"]
+            ]
         }
 
         function magicCodePanel(){
-            clearPanel();
-            writeText("물질 속성 변환 마법",1);
-            writeText("물질의 속성 - 속도, 위치, 가시성, 생명력, 행동 등",0);
-            nextLine+=Screen.perX(2);
-            writeText("giveForce(e,vx,vy) - 대상(e)을 vx, vy만큼 속력을 변화시킨다.",0)
-            writeText("move(e,x,y) - 대상(e)을 현재 위치에서 x, y만큼 이동시킨다.",0)
-            writeText("invisible(e,time) - 대상(e)을 time동안 보이지 않게 한다.",0)
-            writeText("giveLife(e,life) - 대상(e)의 생명력을 life만큼 증가시킨다.",0)
-            writeText("order(e,startT,endT,f) - 대상(e)에게 startT부터 endT까지 행동(f)을 시킨다.",0)
-            writeText("setTrigger(t,f) - 트리거(t)에게 트리거를 발동 시킨 대상에게 할 행동(f)을 정한다.",0)
+            textPanel.texts=[
+                [1,"물질 속성 변환 마법"],
+                [2,"물질의 속성 - 속도, 위치, 가시성, 생명력, 행동 등"],
+                [0,2],
+                [2,"giveForce(e,vx,vy) - 대상(e)을 vx, vy만큼 속력을 변화시킨다."],
+                [2,"move(e,x,y) - 대상(e)을 현재 위치에서 x, y만큼 이동시킨다."],
+                [2,"invisible(e,time) - 대상(e)을 time동안 보이지 않게 한다."],
+                [2,"giveLife(e,life) - 대상(e)의 생명력을 life만큼 증가시킨다."],
+                [2,"order(e,startT,endT,f) - 대상(e)에게 startT부터 endT까지 행동(f)을 시킨다."],
+                [2,"setTrigger(t,f) - 트리거(t)에게 트리거를 발동 시킨 대상에게 할 행동(f)을 정한다."]
+            ]
         }
 
         function info_magicCodePanel(){
-            clearPanel();
-            writeText("물질 정보 탐색 마법",1);
-            writeText("얻을 수 있는 정보 - 속도, 위치, 플레이어 방향",0);
-            nextLine+=Screen.perX(2);
-            writeText("getVX(e) - 대상(e)의 x축 속도를 얻는다.",0);
-            writeText("getVY(e) - 대상(e)의 y축 속도를 얻는다.",0);
-            writeText("getX(e) - 플레이어를 기준으로 대상(e)의 x축 거리를 얻는다.",0);
-            writeText("getY(e) - 플레이어를 기준으로 대상(e)의 y축 거리를 얻는다.",0);
-            writeText("front() - 플레이어가 보고있는 방향이 오른쪽이면 1, 왼쪽이면 -1",0);
-            writeText("player - 플레이어",0);
+            textPanel.texts=[
+                [1,"물질 정보 탐색 마법"],
+                [2,"얻을 수 있는 정보 - 속도, 위치, 플레이어 방향"],
+                [0,2],
+                [2,"getVX(e) - 대상(e)의 x축 속도를 얻는다."],
+                [2,"getVY(e) - 대상(e)의 y축 속도를 얻는다."],
+                [2,"getX(e) - 플레이어를 기준으로 대상(e)의 x축 거리를 얻는다."],
+                [2,"getY(e) - 플레이어를 기준으로 대상(e)의 y축 거리를 얻는다."],
+                [2,"front() - 플레이어가 보고있는 방향이 오른쪽이면 1, 왼쪽이면 -1"],
+                [2,"player - 플레이어"]
+            ]
         }
 
         function prohibitedPanel(){
-            clearPanel();
-            writeText("금지어",1);
-            writeText(`["new","function","let","var", "addMF", "setPlayer"]`,0);
-            writeText(`["[",".","$"]`,0);
+            textPanel.texts=[
+                [1,"금지어"],
+                [2,JSON.stringify(MAGIC_DATA.prohibitedWord)],
+                [2,JSON.stringify(MAGIC_DATA.prohibitedSymbol)]
+            ]
         }
 
         function magicEvaluationPanel(){
-            clearPanel();
-            writeText("마법 평가",1);
-            writeText(`마법이 생성될 때 소비마나, 재사용대기시간이 자동으로 평가됩니다.`,0);
+            textPanel.texts=[
+                [1,"마법 평가"],
+                [2,"마법이 생성될 때 소비마나, 재사용 대기시간이 자동으로 평가됩니다."]
+            ]
         }
     }
 }

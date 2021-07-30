@@ -162,7 +162,7 @@ let Component={
             }
         }
     },
-    serverConnectionChecker:function(x=Screen.perX(6),y=Screen.perX(1)){
+    serverConnectionChecker:function(x,y){
         Multi.connectOn();
         let checker = new Button(x,y,Screen.perX(8),Screen.perX(2.5));
         checker.drawOption(null,"brown","offline", Screen.perX(2),"brown",null);
@@ -194,5 +194,17 @@ let Component={
                 particle.vy-=particleVy;
             }
         });
+    },
+    developerTool:function(){
+        const perSize=Screen.perX(4);
+        const perX=Screen.perX(50)-perSize*1.5;
+        const perY=Screen.perY(100)-perSize-Screen.perX(1);
+        speed=[0,10,100];
+        for(let i=0; i<speed.length; i++){
+            let speedBtn=new Button(perX+i*perSize, perY, perSize, perSize);
+            speedBtn.drawOption("rgba(125,125,125,0.5)","black",speed[i],Screen.perX(2),"black");
+            speedBtn.code=function(){Game.setGameSpeed(speed[i])}
+            speedBtn.canCollision=false;
+        }
     }
 }

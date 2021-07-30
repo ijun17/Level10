@@ -42,7 +42,7 @@ const MONSTERS = [{
     setStatus: function(e){e.w=30;e.h=30;e.life=20000;e.power=500;e.speed=5;e.inv_mass=2;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI2(5);return 50;}
+        function(e){e.AI2(5);return 10;}
     ]
 },
 {
@@ -78,13 +78,20 @@ const MONSTERS = [{
     ]
 },
 {
-    name: "지옥불군주 미누크",
-    image: { name: "crazymonkey2", w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
-    setStatus: function(e){ e.w=120;e.h=200;e.life=1000000;e.power=2000;e.speed=6;e.inv_mass=0.1},
+    name: "투명 드래곤",
+    image: { name: "invisible_wyvern", w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
+    setStatus: function(e){ e.w=120;e.h=200;e.life=1000000;e.power=2000;e.speed=6;e.inv_mass=0.1;e.canDraw=false;},
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI(10);return 50;},
-        function(e){if(e.canTarget())e.createMatterToTarget(2,e.getTargetDir()*2,0,10);return 200;}
+        function(e){e.AI2(4);return 50;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,10);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
+        function(e){
+            for(let i=0; i<10; i++){
+                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-2-i*0.5,0,-30)).life=10;
+                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-1.5-i*0.5,0,-30)).life=10;
+            }
+            return 500;
+        }
     ]
 }
 ];

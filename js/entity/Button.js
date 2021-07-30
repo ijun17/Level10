@@ -60,6 +60,6 @@ class Button extends Entity {
     }
 
     collisionHandler(e,ct) {
-        if (!(e instanceof Button)) this.code(e,ct);
+        if (ct=="c") this.code(e,ct);//c=click
     }
 }

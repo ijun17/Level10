@@ -115,7 +115,7 @@ class Entity {
         return false;
     }
     enlarge(per){this.w*=per; this.h*=per;}
-    throw(){this.y=10000;this.life=0;this.update=function(){};}
+    throw(){this.y=10000;this.life=0;this.canRemoved=true;this.update=function(){};}
     getVectorLength(){
         return Math.sqrt(this.vx*this.vx+this.vy*this.vy);
     }

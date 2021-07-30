@@ -54,9 +54,11 @@ addAction(player, 1,12,#{
     ["투명",`//플레이어의 투명화
 invisible(player,300);`,3],
 
-    ["바람",`//바람 발사
-@e=create(WIND,front(30),0);
-giveLife(e,30);`,3],
+    ["활공",`//플레이어 아래에 바람 생성
+@wind=create(WIND,0,40);
+giveLife(wind,200);
+move(wind,front(-100),-20);
+giveForce(wind,0,-35);`,3],
 
     ["기관총",`//화살 발사
 @count=0;
@@ -113,6 +115,7 @@ addAction(player, 1,12,#{
 
 //
 unit_magic:`
+let vvobject={};
 const vvmagic={
     FIRE:0, ELECTRICITY:1,ICE:2,ARROW:3,ENERGY:4,WIND:5,BLOCK:6,TRIGGER:7,
     create:function(typenum=this.BLOCK,vx=0,vy=0,w=30,h=30){
@@ -139,6 +142,9 @@ const vvmagic={
 `,
 //
 test_unit_magic:`
+let magicFactor = [100,100]; //[cooltime, magic point]
+function getEnergy(e){let test = new Entity(0,10000,Game.PHYSICS_CHANNEL);test.life=0;e.collisionHandler(test);return Math.abs(test.life);}
+function addMF(mf) {magicFactor[0] = Math.floor(Math.sqrt(magicFactor[0]**2 + mf[0]**2));magicFactor[1] += Math.floor(Math.abs(mf[1]));}
 const vvtest={
     test_create:function(typenum=vvmagic.BLOCK,vx=0,vy=0,w=30,h=30){let e=vvmagic.create(typenum,vx,vy,w,h);addMF([50,getEnergy(e)*(w*h)/900+e.getVectorLength()]);return e;},
     test_setTrigger:function(t,f){vvmagic.setTrigger(t,f);addMF([100,t.w*t.h+getEnergy(t)+1]);},
@@ -160,14 +166,14 @@ const vvtest={
         addMF([endTime*2,(endTime-startTime)]);
     }
 }
-        
-        
-        
-        
-        
-        
-        
-        `
+`,
+prohibitedWord:["new","function","let","var", "addMF", "setPlayer"],
+prohibitedSymbol:[],
+predefinedKeyword:["player","if"],
+vvmagics:["front","create","setTrigger","giveForce","giveLife","invisible","move","addAction","getX","getY","getVX","getVY",
+    "FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"],
+vvtests:["giveForce","giveLife","invisible", "create","move","addAction","setTrigger"],
+symbol:{"@":"let ","#":"function(parameter)","$":"parameter"}
 }
 
 
@@ -238,87 +244,96 @@ let Magic = {
         Magic.magicList.push(["none", function(){},0,0]);
     },
     convertMagictoJS: function (name, magicCode) {
-        
-        let magicFactor = [100,100]; //[cooltime, magic point]
-        function getEnergy(e){let test = new Entity(0,10000,Game.PHYSICS_CHANNEL);test.life=0;e.collisionHandler(test);return Math.abs(test.life);}
-        function addMF(mf) {magicFactor[0] = Math.floor(Math.sqrt(magicFactor[0]**2 + mf[0]**2));magicFactor[1] += Math.floor(Math.abs(mf[1]));}
-        
-        //prohibited keyword list
-        const prohibitedWord=["new","function","let","var", "addMF", "setPlayer"];
-        const prohibitedSymbol=["[","."];
+        //사용자가 @를 통해 생성한 객체
+        let userdefinedKeyword=[]
+        let isUserdefined=false;
 
-        //magic code keyword
-        //const unitMagicKeyword=["front","create","setTrigger","giveForce","giveLife","invisible","move","addAction","getX","getY","getVX","getVY",
-        //    "FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"];
-        let notUnitMagicKeyword=["player","if"]//unit magic에 포함되어 있지 않은 객체
-        let isNotUnitMagic=false;
-        const testKeyword=["giveForce","giveLife","invisible", "create","move","addAction","setTrigger"];
-
-        //convert symbol to word
-        const symbol={"@":"let ","#":"function(parameter)","$":"parameter"};
         //convert magic code to js code
+        let linenum=1;
         function isEnglish(c){return (64<c&&c<91)||(96<c&&c<123);}
-        function printResult(text1,text2,isSuccess=false){
+        function printResult(isSuccess,text){
             const successInfo=document.querySelector(".successInfo");
             const magicInfo = document.querySelector(".magicInfo");
-            successInfo.innerText = text1;
-            successInfo.style.color = (isSuccess ? "yellow" : "red");
-            magicInfo.innerText = text2;
+            if(isSuccess){
+                successInfo.innerText ="SUCCESS: "+name+"를 생성했습니다.";
+                successInfo.style.color = "yellow";
+                magicInfo.innerText = text;
+            }else{
+                successInfo.innerText = "Fail: "+name+"를 생성하지 못했습니다.";
+                successInfo.style.color = "red";
+                magicInfo.innerText = text//+"\n line "+linenum;
+
+            }
         }
-        
+        //주석제거
+        magicCode=magicCode.replace(new RegExp("//.*\n","gm"),"");
+        magicCode=magicCode.replace(new RegExp("/\\*(.*\n)*.*\\*/"),"");
+
         let jsCode="",testCode="",temp ="";
-        magicCode+=" "; //마지막에 temp가 더해지지 않을 수 있어서
+        magicCode+="\n"; //마지막에 temp가 더해지지 않을 수 있어서
         for(let i=0, j=magicCode.length;i<j; i++){
             if(isEnglish(magicCode.charCodeAt(i)))temp+=magicCode[i];
             else{
                 //prohibit
-                if(prohibitedWord.includes(temp) || prohibitedSymbol.includes(magicCode[i])){
-                    printResult("Fail: "+name+"를 생성하지 못했습니다."
-                    , "원인: 금지어를 포함했습니다.\n"+JSON.stringify(prohibitedWord)+"\n"+JSON.stringify(prohibitedSymbol));
+                if(MAGIC_DATA.prohibitedWord.includes(temp) || MAGIC_DATA.prohibitedSymbol.includes(magicCode[i])){
+                    printResult(false, "원인: 금지어를 포함했습니다.\n"+JSON.stringify(MAGIC_DATA.prohibitedWord)+"\n"+JSON.stringify(MAGIC_DATA.prohibitedSymbol));
                     return null;
                 }
                 //단어 검사
                 if(temp.length>0){
-                    if(isNotUnitMagic){
-                        notUnitMagicKeyword.push(temp);
-                        testCode +=temp
+                    if(MAGIC_DATA.predefinedKeyword.includes(temp)){
+                        testCode +=temp;
                         jsCode+=temp;
-                        isNotUnitMagic=false;
+                        if(isUserdefined){
+                            printResult(false, "원인: 예약어 "+JSON.stringify(MAGIC_DATA.predefinedKeyword)+"를 변수로 선언했습니다.");
+                            return null;
+                        }
+                    }else if(isUserdefined){
+                        userdefinedKeyword.push(temp);
+                        testCode+=temp;
+                        jsCode+=temp;
+                        isUserdefined=false;
                     }else{
-                        if(notUnitMagicKeyword.includes(temp)){
-                            testCode +=temp
+                        if(userdefinedKeyword.includes(temp)){
+                            testCode +=temp;
                             jsCode+=temp;
-                        }else{
-                            testKeyword.includes(temp) ? testCode += "vvtest.test_" + temp : testCode += "vvmagic." + temp;//테스트해야할 메소드면 test를 더함
+                        }else if(MAGIC_DATA.vvmagics.includes(temp)){
+                            MAGIC_DATA.vvtests.includes(temp) ? testCode += "vvtest.test_" + temp : testCode += "vvmagic." + temp;//테스트해야할 메소드면 test를 더함
                             jsCode+="vvmagic."+temp;
+                        }else{
+                            printResult(false, "원인: 변수 "+temp+"가 선언되지 않았습니다.");
+                            return null;
                         }
                     }  
                 }
                 temp=""; //검사하고 비움
                 //심볼 검사
-                if(magicCode[i] in symbol){
-                    testCode+=symbol[magicCode[i]];
-                    jsCode+=symbol[magicCode[i]];
-                    if(magicCode[i]=="@")isNotUnitMagic=true;
+                if(magicCode[i] in MAGIC_DATA.symbol){
+                    testCode+=MAGIC_DATA.symbol[magicCode[i]];
+                    jsCode+=MAGIC_DATA.symbol[magicCode[i]];
+                    if(magicCode[i]=="@")isUserdefined=true;
                 }else{
                     testCode+=magicCode[i];
                     jsCode+=magicCode[i];
                 }
+                //if(magicCode[i]=="\r\n\t"||magicCode[i]=="\n"||magicCode[i]=="\r\t")++linenum;
+                if(magicCode[i]=="\n")++linenum;
             }
         }
         let magic=function(){};
+        let magicFactor;
         try {
             magic = eval("(function(player){"+MAGIC_DATA.unit_magic+jsCode+"})");
-            let testMagic=eval("(function(player){"+MAGIC_DATA.unit_magic+MAGIC_DATA.test_unit_magic+testCode+"})");
-            let temp = Game.p;Game.p = new Player(0,10000);
-            testMagic(Game.p);
-            Game.p=temp;
+            let testMagic=eval("(function(player){"+MAGIC_DATA.unit_magic+MAGIC_DATA.test_unit_magic+testCode+"return magicFactor})");
+            magicFactor=testMagic(new Player(0,10000));
         }catch(e){
-            printResult("Fail: "+name+"를 생성하지 못했습니다.","원인: 자바스크립트 문법 오류");
+            linenum="";
+            printResult(false,e);
+            console.error(e);
             console.log(testCode);
             return null;
         }
-        printResult("SUCCESS: "+name+"를 생성했습니다.", "cooltime: "+(magicFactor[0]/100)+"sec\nMP: "+magicFactor[1],true)
+        printResult(true, "cooltime: "+(magicFactor[0]/100)+"sec\nMP: "+magicFactor[1],true)
         return [name,magic, magicFactor[0],magicFactor[1],1];
     }
 }

@@ -66,7 +66,7 @@ let Input = {
         let c = Game.channel[Game.BUTTON_CHANNEL];
         for (let i = c.length - 1; i >= 0; i--) {
             if (c[i].x < x && x < c[i].x + c[i].w && c[i].y < y && y < c[i].y + c[i].h) {
-                c[i].collisionHandler(null, "down");
+                c[i].collisionHandler({x,y},'c');
                 break;
             }
         }
@@ -95,6 +95,7 @@ let Input = {
         //e.preventDefault();
         if(e.touches.length==0){
             keyUpHandler({keyCode:37});
+            keyUpHandler({keyCode:65});
         }
     }
 }

@@ -7,11 +7,12 @@ let Game = {
     BUTTON_CHANNEL : 2,
     time : 0,
     p:null,
-    p2:null,
+    interval:null,
+    dt:10,
     
     //CLIENT
     //keyboardOn:false,
-    isManager:false,
+    developerMode:false,
 
     //ENGINE FUNCTION
     resetGame:function() {
@@ -25,6 +26,8 @@ let Game = {
         Input.resetKeyInput();
         Screen.bgColor="#b2c3c8";
         //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A,맑은하늘:rgb(121, 155, 206), 녹색하늘색:#94a9ad}
+
+        if(this.developerMode)Component.developerTool()
     },
     startGame:function() {
 
@@ -33,8 +36,7 @@ let Game = {
         Magic.loadMagic();
         Screen.mainScreen();
 
-        setInterval(Game.updateWorld, 10);
-        //setInterval(Game.renderWorld, 30);
+        this.interval=setInterval(Game.updateWorld, 10);
     },
     updateWorld:function() {
         ctx.fillStyle=Screen.bgColor;
@@ -61,7 +63,20 @@ let Game = {
                 if (ei >= 0) Game.channel[channelLevel].splice(ei, 1);
             }
         }
-    }
+    },
+    setGameSpeed(speed=100){ //num 0~120%
+        const MAX_SPEED=120;
+        clearInterval(Game.interval);
+        if(speed<=0){
+            this.dt=0;
+            return;
+        }
+        if(speed>MAX_SPEED)speed=MAX_SPEED;
+        this.dt=Math.floor(1000/speed)
+        this.interval=setInterval(Game.updateWorld, Game.dt);
+        console.log("dt="+Game.dt);
+    },
+    develope:function(){this.developerMode=true;Component.developerTool()}
 }
 
 Game.startGame();
