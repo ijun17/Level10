@@ -94,8 +94,8 @@ let Input = {
     touchEndHandler:function(e) {
         //e.preventDefault();
         if(e.touches.length==0){
-            keyUpHandler({keyCode:37});
-            keyUpHandler({keyCode:65});
+            Input.keyUpHandler({keyCode:37});
+            Input.keyUpHandler({keyCode:65});
         }
     }
 }

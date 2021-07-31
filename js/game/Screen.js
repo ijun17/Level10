@@ -352,7 +352,7 @@ let Screen= {
         Component.playerStatusView(player1, 1, 11, "player1");
         Component.playerStatusView(player2, 57, 11, "player2");
 
-        let nameTag=new Entity(0,-10000,Game.PHYSICS_CHANNEL).update=function(){
+        new Entity(0,-10000,Game.TEXT_CHANNEL).update=function(){
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
             ctx.font="bold 15px Arial";
@@ -361,7 +361,6 @@ let Screen= {
             ctx.fillStyle="red";
             Camera.fillText("player2",player2.x+player2.w/2,player2.y-20);
         }
-        nameTag.canInteract=false;
 
         function countdown(textset, index){
             let text = new Text(Screen.perX(50),Screen.perY(50), textset[index], Screen.perX(20), "yellow", null,100,false);
@@ -487,11 +486,7 @@ let Screen= {
                 [0,3],
                 [1,"마법을쓰는법"],
                 [2,"pc - 키보드 q,w,e,r키"],
-                [2,"모바일 - 스크린 하단 Q,W,E,R 버튼"],
-                [0,3],
-                [1,"문제가발생했을때"],
-                [2,"새로고침하면 대부분의 문제가 해결됩니다"],
-                [2,"*중요 정보들은 저장됩니다"]
+                [2,"모바일 - 스크린 하단 Q,W,E,R 버튼"]
             ]
         }
 
@@ -502,10 +497,13 @@ let Screen= {
                 [2,"마법코드 - create(type, vx, vy, w, h)"],
                 [0,1],
                 [2,"type - FIRE,ELECTRICITY,ICE,ARROW,ENERGY,WIND,BLOCK,TRIGGER"],
-                [2,"vx - 가로방향 속력"],
-                [2,"vy - 세로방향 속력"],
+                [2,"vx - 가로방향 속력(오른쪽방향이 플러스)"],
+                [2,"vy - 세로방향 속력(위 방향이 플러스)"],
                 [2,"w - 가로크기"],
-                [2,"h - 세로크기"]
+                [2,"h - 세로크기"],
+                [0,2],
+                [2,"ex) create(FIRE,20,-10)"],
+                [2,"   불(FIRE)을 생성하고 오른쪽으로 20, 아래쪽으로 -10만큼 속도를 지정한다."]
             ]
         }
 
@@ -519,7 +517,7 @@ let Screen= {
                 [2,"invisible(e,time) - 대상(e)을 time동안 보이지 않게 한다."],
                 [2,"giveLife(e,life) - 대상(e)의 생명력을 life만큼 증가시킨다."],
                 [2,"order(e,startT,endT,f) - 대상(e)에게 startT부터 endT까지 행동(f)을 시킨다."],
-                [2,"setTrigger(t,f) - 트리거(t)에게 트리거를 발동 시킨 대상에게 할 행동(f)을 정한다."]
+                [2,"setTrigger(t,f) - 트리거(t)와 충돌한 대상에게 할 행동(f)을 정한다."]
             ]
         }
 
@@ -532,8 +530,8 @@ let Screen= {
                 [2,"getVY(e) - 대상(e)의 y축 속도를 얻는다."],
                 [2,"getX(e) - 플레이어를 기준으로 대상(e)의 x축 거리를 얻는다."],
                 [2,"getY(e) - 플레이어를 기준으로 대상(e)의 y축 거리를 얻는다."],
-                [2,"front() - 플레이어가 보고있는 방향이 오른쪽이면 1, 왼쪽이면 -1"],
-                [2,"player - 플레이어"]
+                [2,"front(n) - 플레이어가 보고있는 방향이 오른쪽이면 n, 왼쪽이면 -n을 반환"],
+                [2,"player - 마법을 시전한 플레이어"]
             ]
         }
 

@@ -181,19 +181,23 @@ let Component={
         new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall");//right
         new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize,"grass");
     },
-    particleSpray:function(type,xy,width,particleSize,particleVy,delay){
+    particleSpray:function(type,xy,range,particleSize,particleVy,delay){
         let spray = new Entity(0,0,Game.BUTTON_CHENNEL);
         spray.canMove=false;
-        spray.addAction(1,1000000,function(){
-            if(Game.time%delay==0){
-                let randomX = (Math.random()-0.5)*width;
+        spray.canCollision=false;
+        spray.canRemoved=false;
+        let count=0;
+        spray.update=function(){
+            if(++count==delay){
+                let randomX = (Math.random()-0.5)*range;
                 let particle=new Particle(type,randomX+xy.x,xy.y);
                 particle.w=particleSize;
                 particle.h=particleSize;
                 particle.life=400;
                 particle.vy-=particleVy;
+                count=0;
             }
-        });
+        };
     },
     developerTool:function(){
         const perSize=Screen.perX(4);

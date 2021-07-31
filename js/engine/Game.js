@@ -9,16 +9,12 @@ let Game = {
     p:null,
     interval:null,
     dt:10,
-    
-    //CLIENT
-    //keyboardOn:false,
     developerMode:false,
 
     //ENGINE FUNCTION
     resetGame:function() {
         Game.channel = [[], [], [], []];
         Game.time = 0;
-        Game.keyboardOn=false;
         Level.stageLevel = -1;
         Level.stageMonsterCount = -1;
         Camera.cameraOn = false;

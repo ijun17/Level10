@@ -38,11 +38,7 @@ let Level= {
             textE.textAlign="left";
         }
         function makeSuperMob(e, hp = 2, size = 2, power = 2, speed = 2) {
-            e.life *= hp;
-            e.w *= size; e.h = e.w;
-            e.inv_mass /= size * size;
-            e.power *= power;
-            e.speed *= speed;
+            e.life *= hp;e.w *= size; e.h = e.w;e.inv_mass /= size * size;e.power *= power;e.speed *= speed;
         }
         //level에 따라 달라지는 변수
         Screen.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
@@ -55,7 +51,8 @@ let Level= {
             case 1:
                 this.stageMonsterCount = 1;
                 mainMonster=new Monster(0, 1000, -1000);
-                makeSuperMob(mainMonster,2.5,2,5,1)
+                makeSuperMob(mainMonster,2.5,2,5,1);
+                Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 break;
             case 2:
                 this.stageMonsterCount = 4;
@@ -63,6 +60,7 @@ let Level= {
                 new Monster(0, 900, -1000);
                 new Monster(0, 800, -1000);
                 mainMonster=new Monster(1, 700, -1000);
+                Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 Screen.bgColor="#cde5e4";
                 break;
             case 3:
@@ -70,19 +68,23 @@ let Level= {
                 mapSizeW=3000;
                 mainMonster=new Monster(2, 3000, -1000);
                 for(let i=0; i<15; i++)new Monster(2, 200*i, -1000);
+                Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 //Screen.bgColor="#424146";
                 break;
             case 4:
                 this.stageMonsterCount = 1;
                 mainMonster=new Monster(3,1000, -250);
                 Screen.bgColor="#657d87";
+                Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 break;
             case 5:
                 this.stageMonsterCount = 1;
                 mainMonster=new Monster(4,Screen.perX(50), -400)
                 mainMonster.addAction(1,100,function(){Camera.vibrate(10);});
                 weatherNum=0;
+                
                 Screen.bgColor="#424146";
+                Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 break;
             case 6:
                 break;
@@ -105,18 +107,18 @@ let Level= {
         //vs text코드 출력
         printMonsterName(mainMonster.name);
         //날씨 뿌리기
-        let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
-        ashSpray.canAct=true;
-        ashSpray.canInteract=false;
-        ashSpray.addAction(1,1000000,function(){
-            if(Game.time%5==0){
-                let r = Math.random()*2000;
-                let ash=new Particle(weatherNum,Game.p.x-1000+r,Game.p.y-600);
-                ash.life=300;
-                ash.vy-=1.5;
-            }
-        });
+        // let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
+        // ashSpray.canAct=true;
+        // ashSpray.canInteract=false;
+        // ashSpray.addAction(1,1000000,function(){
+        //     if(Game.time%5==0){
+        //         let r = Math.random()*2000;
+        //         let ash=new Particle(weatherNum,Game.p.x-1000+r,Game.p.y-600);
+        //         ash.life=300;
+        //         ash.vy-=1.5;
+        //     }
+        // });
         //양 끝 맵블럭
-        Component.worldWall(mapSizeW,mapSizeH,wallSize);
+        // Component.worldWall(mapSizeW,mapSizeH,wallSize);
     }
 }
