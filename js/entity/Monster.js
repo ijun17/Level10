@@ -33,38 +33,22 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI(10);return 50;},
-        function(e){if(e.canTarget())e.createMatterToTarget(2,e.getTargetDir()*2,0,10);return 200;}
+        function(e){if(e.canTarget())e.createMatterToTarget(2,e.getTargetDir()*2,0,20);return 200;}
     ]
 },
 {
     name: "지옥파리",
     image: {name:"hellfly",w:30,h:30,frame:8,MAX_X:[1,1]},
-    setStatus: function(e){e.w=30;e.h=30;e.life=20000;e.power=500;e.speed=5;e.inv_mass=2;e.ga=0;},
+    setStatus: function(e){e.w=30;e.h=30;e.life=20000;e.power=500;e.speed=5;e.inv_mass=1;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(5);return 10;}
     ]
 },
 {
-    name: "마법골렘",
-    image: {name:"golem",w:128,h:128,frame:32,MAX_X:[4,2]},
-    setStatus: function(e){e.w=200;e.h=200;e.life=10000000;e.power=4000;e.speed=3;e.inv_mass=0.01;e.ga=-1;e.canFallDie=false;},
-    attackEffect: function(e,v){},
-    skillList: [
-        function(e){e.AI();return 50;},
-        function(e){
-            if(!e.canTarget())return 100;
-            e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-700;e.vx = 0;e.vy = -5;
-            let effect = new Particle(5, e.x+e.w-e.h, e.y);effect.w=e.h*2;effect.h=e.h*2;
-            let temp=e.power;e.power=9999;e.addAction(40,40,function(){e.power=temp});
-            return 501;},
-        function(e){e.vx=e.getTargetDir()*30;return 600;}
-    ]
-},
-{
     name: "심연의흑염룡",
     image: {name:"wyvern",w:80,h:80,frame:16,MAX_X:[4,1]},
-    setStatus: function(e){e.w=300;e.h=300;e.life=10000000;e.power=4000;e.speed=5;e.inv_mass=0.1;e.ga=0;},
+    setStatus: function(e){e.w=300;e.h=300;e.life=5000000;e.power=4000;e.speed=5;e.inv_mass=0.1;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
@@ -78,20 +62,48 @@ const MONSTERS = [{
     ]
 },
 {
-    name: "투명 드래곤",
-    image: { name: "invisible_wyvern", w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
-    setStatus: function(e){ e.w=120;e.h=200;e.life=1000000;e.power=2000;e.speed=6;e.inv_mass=0.1;e.canDraw=false;},
+    name: "마법골렘",
+    image: {name:"golem",w:128,h:128,frame:32,MAX_X:[4,2]},
+    setStatus: function(e){e.w=200;e.h=200;e.life=5000000;e.power=4000;e.speed=3;e.inv_mass=0.01;e.ga=-1;e.canFallDie=false;e.overlap=false;},
+    attackEffect: function(e,v){},
+    skillList: [
+        function(e){e.AI();return 50;},
+        function(e){
+            if(!e.canTarget())return 100;
+            e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-700;e.vx = 0;e.vy = -5;
+            let effect = new Particle(5, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=e.h*3;
+            let temp=e.power;e.power=9999;e.addAction(40,40,function(){e.power=temp});
+            return 501;},
+        function(e){
+            e.vx=e.getTargetDir()*30;
+            let effect = new Particle(5, e.x-e.w/2, e.y-e.h/2);effect.w=e.h*2;effect.h=e.h*2;
+            let noMatter = new Entity(effect.x,effect.y,Game.PHYSICS_CHANNEL);
+            noMatter.w=effect.w;noMatter.h=effect.h;
+            noMatter.collisionHandler=function(v){if(v instanceof Matter)v.throw();return false;}
+            return 888;
+        }
+    ]
+},
+{
+    name: "투명드래곤",
+    image: {name:"invisible_wyvern",w:80,h:80,frame:16,MAX_X:[4,1]},
+    setStatus: function(e){e.w=300;e.h=300;e.life=10000000;e.power=4000;e.speed=6;e.inv_mass=0.1;e.ga=0;e.canDraw=false;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
-        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,10);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(5,e.getTargetDir()*1.5,0,30);m.power=1000;m.life=10;return 111;},
         function(e){
-            for(let i=0; i<10; i++){
-                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-2-i*0.5,0,-30)).life=10;
-                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-1.5-i*0.5,0,-30)).life=10;
+            e.canInteract=false;
+            for(let i=0; i<20; i++){
+                for(let j=0; j<20; j++){
+                    let block=new Block(800+j*20,-1000+i*20,50,50,"skyblue");
+                    block.giveForce=function(){};
+                    block.canRemoved=false;
+                    block.addAction(1000,1000,function(){block.canRemoved=true;});
+                }
             }
-            return 500;
-        }
+            e.addAction(1000,1000,function(){e.canInteract=true;e.x=1000;e.y=-500;})
+            return 3000;}
     ]
 }
 ];
@@ -182,9 +194,9 @@ class Monster extends Entity {
             e.giveDamage((1 - Math.random()*2)*this.power/10+this.power);
             this.attackTick = this.animation.fps*this.animation.MAX_X[1];
             if (e.x + e.w / 2 > this.x + this.w / 2) {
-                e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.power)/5/e.inv_mass,0.3);
+                e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.power)/5,0.5);
             } else {
-                e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.power)/5/e.inv_mass,0.3);
+                e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.power)/5,0.5);
             }
         }
         return true;

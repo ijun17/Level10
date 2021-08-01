@@ -75,24 +75,22 @@ let Level= {
             case 4:
                 this.stageMonsterCount = 1;
                 mainMonster=new Monster(3,1000, -250);
-                Screen.bgColor="#657d87";
+                Screen.bgColor="#424146";
+                weatherNum=0;
                 Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 break;
             case 5:
                 this.stageMonsterCount = 1;
                 mainMonster=new Monster(4,Screen.perX(50), -400)
                 mainMonster.addAction(1,100,function(){Camera.vibrate(10);});
-                weatherNum=0;
                 
-                Screen.bgColor="#424146";
+                Screen.bgColor="#657d87";
                 Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 break;
             case 6:
-                for(let i=0; i<16;i++){
-                    for(let j=0; j<24; j++){
-                        let e = new Block(300+j*55,-1500+i*55,50,50);
-                    }
-                }
+                this.stageMonsterCount = 1;
+                mainMonster=new Monster(5,Screen.perX(50), -400);
+                weatherNum=0;
                 Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 break;
             case 7:
@@ -114,17 +112,17 @@ let Level= {
         //vs text코드 출력
         printMonsterName(mainMonster.name);
         //날씨 뿌리기
-        // let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
-        // ashSpray.canAct=true;
-        // ashSpray.canInteract=false;
-        // ashSpray.addAction(1,1000000,function(){
-        //     if(Game.time%5==0){
-        //         let r = Math.random()*2000;
-        //         let ash=new Particle(weatherNum,Game.p.x-1000+r,Game.p.y-600);
-        //         ash.life=300;
-        //         ash.vy-=1.5;
-        //     }
-        // });
+        let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
+        ashSpray.canAct=true;
+        ashSpray.canInteract=false;
+        ashSpray.addAction(1,1000000,function(){
+            if(Game.time%5==0){
+                let r = Math.random()*2000;
+                let ash=new Particle(weatherNum,Game.p.x-1000+r,Game.p.y-600);
+                ash.life=300;
+                ash.vy-=1.5;
+            }
+        });
         //양 끝 맵블럭
         // Component.worldWall(mapSizeW,mapSizeH,wallSize);
     }

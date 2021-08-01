@@ -86,9 +86,10 @@ const MATTERS=[
     },
     {
         name:"wind",
-        setStatus:function(e){e.power=100;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.0001;e.addAction(0,99999999,function(){--e.life;})},
+        setStatus:function(e){e.power=0;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.0001;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveForce(e.vx-v.vx,e.vy-v.vy+1);
+            v.giveDamage(e.power);
             if(e.vx==0&&e.vy==0)e.throw();
         }
     },

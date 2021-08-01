@@ -4,7 +4,7 @@ class Entity {
     x = 0; y = 0; w = 0; h = 0; 
     vx = 0; 
     vy = 0; 
-    ga = -0.04; //gravity acceleration
+    ga = -0.2; //gravity acceleration
 
     defense=100;
     
