@@ -90,7 +90,7 @@ let Level= {
             case 6:
                 this.stageMonsterCount = 1;
                 mainMonster=new Monster(5,Screen.perX(50), -400);
-                weatherNum=0;
+                Screen.bgColor="#424146";
                 Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 break;
             case 7:

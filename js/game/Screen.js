@@ -235,27 +235,28 @@ let Screen= {
             printInfo("", "cooltime: " + (Magic.magicList[magicListIndex][2] / 100) + "sec\nMP: " + Magic.magicList[magicListIndex][3]);
         }
         //CUSTOM MAGIC LIST
+        const customX=83
         let plusButton = new Button(Screen.perX(83), Screen.perX(6), Screen.perX(16), Screen.perX(3));
         plusButton.setStatic();
         plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagic.length+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
         plusButton.code=function(){ 
             if(Magic.customMagic.length<10){
                 Magic.addEmptyMagic();
-                Component.magicButton(83,200,Magic.magicList.length-1,buttonSelector, function(btn){customMagicButtonCode(Magic.magicList.length-1);})
+                Component.magicButton(Screen.perX(customX),200,Magic.magicList.length-1,buttonSelector, function(btn){customMagicButtonCode(Magic.magicList.length-1);})
                 plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagic.length+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
             }
         };
         for(let i=Magic.basicMagic.length; i<Magic.magicList.length; i++)
-            Component.magicButton(Screen.perX(83),Screen.perX(10+4*(i-Magic.basicMagic.length)),i,buttonSelector,function(btn){customMagicButtonCode(i);})
+            Component.magicButton(Screen.perX(customX),Screen.perX(10+4*(i-Magic.basicMagic.length)),i,buttonSelector,function(btn){customMagicButtonCode(i);})
         //BASIC MAGIC LIST
-        const list_x=8;
+        const basicX=8;
         let list_start=Game.channel[Game.BUTTON_CHANNEL].length;
         for(let i=0; i<Magic.basicMagic.length; i++){
             if(Magic.magicList[i][4]>Level.playerLevel)break;
-            Component.magicButton(Screen.perX(list_x),Screen.perX(10+6*i),i,buttonSelector,function(btn){basicMagicButtonCode(i);})
+            Component.magicButton(Screen.perX(basicX),Screen.perX(10+6*i),i,buttonSelector,function(btn){basicMagicButtonCode(i);})
         }
         let list_end=Game.channel[Game.BUTTON_CHANNEL].length;
-        Component.listScroll(list_x, 16, list_start, list_end);
+        Component.listScroll(basicX, 16, list_start, list_end);
 
         //COMPILE BUTTON CLICK EVENT
         compileBtn.onclick = function(){
