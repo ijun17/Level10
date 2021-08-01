@@ -262,7 +262,7 @@ let Magic = {
         if(localStorage.skillNum!=null){
             this.skillNum = JSON.parse(localStorage.skillNum);
             for(let i=0; i<this.skillNum.length; i++){
-                if(this.magicList[this.skillNum[i]]==null)this.skillNum[i]=-1;
+                if(this.magicList[this.skillNum[i]]==null)this.skillNum[i]=i;
             }
         } else {
             this.skillNum = [0,1,2,3];
@@ -271,8 +271,8 @@ let Magic = {
         if(localStorage.pvp_skillNum!=null){
             this.pvp_skillNum = JSON.parse(localStorage.pvp_skillNum);
             for(let i=0; i<this.skillNum.length; i++){
-                if(this.magicList[this.pvp_skillNum[0][i]]==null)this.pvp_skillNum[i]=-1;
-                if(this.magicList[this.pvp_skillNum[1][i]]==null)this.pvp_skillNum[i]=-1;
+                if(this.magicList[this.pvp_skillNum[0][i]]==null)this.pvp_skillNum[0][i]=i;
+                if(this.magicList[this.pvp_skillNum[1][i]]==null)this.pvp_skillNum[1][i]=i;
             }
         } else {
             this.pvp_skillNum = [[0,1,2,3],[0,1,2,3]];

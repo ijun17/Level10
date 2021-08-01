@@ -68,12 +68,14 @@ let Component={
     },
     keyButton:function(perX,perY,keys,skillNum,selector,name=""){
         for (let i = 0; i < 4; i++) {
+            if(skillNum[i]>=Magic.magicList.length)skillNum[i]=i;
             let temp = new Button(Screen.perX(perX+8), Screen.perX(perY-4+9*i), Screen.perX(16), Screen.perX(4));
             temp.setStatic();
             let keyBtn = new Button(Screen.perX(perX), Screen.perX(perY+9*i), Screen.perX(8), Screen.perX(8))
             keyBtn.code = function () {
                 let selectMagic=selector.selectedBtn;
                 if(selectMagic != null){
+                    
                     skillNum[i]=selectMagic.temp[0];
                     const boxFill=(selectMagic.temp[0]<Magic.basicMagic.length ? `rgba(119, 138, 202,0.8)` : `rgba(65, 105, 225,0.8)`);
                     keyBtn.temp[0].drawOption(boxFill, "black", Magic.magicList[skillNum[i]][0], Screen.perX(2), "black");
