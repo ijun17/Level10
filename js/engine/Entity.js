@@ -1,33 +1,40 @@
 class Entity {
     channelLevel;
 
-    x = 0; y = 0; w = 0; h = 0; vx = 0; vy = 0; 
-    ga = -0.2; friction = 0.4; inv_mass=1;//phisics;
-    life = 1;defense=100;
-    max_speed=80;
+    x = 0; y = 0; w = 0; h = 0; 
+    vx = 0; 
+    vy = 0; 
+    ga = -0.04; //gravity acceleration
+
+    defense=100;
     
-    canDraw = true; //보일 수 있는가
-    canMove = true; //움직일 수 있는가
-    canAct = true; //행동을 할 수 있는가
-    canInteract = true;//다른 물체 상호작용할 수 있는지
-    overlap = true;//다른 물체와 겹칠 수 있는지
-    canCollision=true; //물리적 충돌을 하는지(flase여도 collisionHandler 작동)
-    canRemoved = true; //삭제될 수 있는가
-    canFallDie=true;//낙사하는지
+    inv_mass=1;
+    COR=0;//coefficient of restitution
+    life = 1;
+    friction=0.4;
+    SFV=1; //static friction velocity
+    action=[];
 
     action = new Array(); //한 틱마다 행위들 [시작시간, 종료시간-1, 코드]
+
+    overlap = false; //다른 엔티티와 겹쳐질 수 있는가, if one overlap true and other overlap false, they overlap false;
+    canInteract = true;
+    canDraw=true;
+    canMove=true;
+    canAct=true;
+    canRemoved = true; 
+    canFallDie=true;
     
     constructor(x, y, channelLevel = 0) {
         this.x = x;
         this.y = y;
         this.channelLevel = channelLevel;
-        Game.channel[channelLevel][Game.channel[channelLevel].length] = this;
+        Game.channel[channelLevel].push(this);
     }
     update() {
         if (this.canDraw) this.draw();
-        if (this.canAct) this.act();
-        if (this.canInteract) this.interact();
         if(this.canMove)this.move();
+        if (this.canAct) this.act();
     }
     draw() {
     }
@@ -46,66 +53,18 @@ class Entity {
         }
         this.action.splice(0, i+1);
     }
-    interact() {
-        const maxV=this.max_speed;
-        if(this.vx>maxV)this.vx=maxV;
-        else if(this.vx<-maxV)this.vx=-maxV;
-        if(this.vy>maxV)this.vy=maxV;
-        else if(this.vy<-maxV)this.vy=-maxV;
-        if (this.canFallDie&&this.y > 2000) this.life = 0;
-        let downCollision=false;
-        for(let i=Game.channel[this.channelLevel].length-1; i>=0; i--){ //check collision
-            let e = Game.channel[this.channelLevel][i];
-            if (e != this && this.x + this.vx < e.x + e.w&& this.x + this.vx + this.w > e.x && this.y - this.vy < e.y + e.h && this.y - this.vy + this.h > e.y) {
-                let collisionType = null;
-                if (!(this.overlap && e.overlap)) {
-                    if (this.x + this.w <= e.x) { //right collision
-                        collisionType = 'R';
-                    } else if (this.x >= e.x + e.w) { //left collision
-                        collisionType = 'L';
-                    } else if (this.y + this.h <= e.y) { //down collision
-                        collisionType = 'D';
-                        downCollision=true;
-                    } else if (this.y >= e.y + e.h) { //up collision
-                        collisionType = 'U';
-                    }
-                }
-                this.collisionHandler(e, collisionType, true);
-                if (this.canCollision&&e.canCollision&&!(this.overlap && e.overlap)&&this.canMove) {
-                    if (collisionType == 'R') { //right collision
-                        this.vx = 0;
-                        this.x = e.x - this.w;
-                    } else if (collisionType == 'L') { //left collision
-                        this.vx = 0;
-                        this.x = e.x + e.w;
-                    } else if (collisionType == 'D') { //down collision
-                        this.vy = 0;
-                        this.y = e.y - this.h;
-                    } else if (collisionType == 'U') { //up collision
-                        this.vy = 0;
-                        this.y = e.y + e.h;
-                    }
-                }
-            }
-        }
-        if (this.canMove) {
-            if (downCollision) {
-                if (Math.abs(this.vx) < 1) this.vx = 0;
-                else if (this.vx > 0) this.vx -= this.friction;
-                else this.vx += this.friction;
-            }
-        }
-    }
+
     move(){
+        if(Math.abs(this.vx)>100)this.vx=Math.sign(this.vx)*80;
+        if(Math.abs(this.vy)>100)this.vy=Math.sign(this.vy)*80;
         this.x += this.vx;
         this.y -= this.vy;
         this.vy += this.ga;
     }
     giveForce(ax, ay) {
-        if(this.canMove){
-            this.vx += ax*this.inv_mass;
-            this.vy += ay*this.inv_mass;
-        }
+        this.vx += ax*this.inv_mass;
+        this.vy += ay*this.inv_mass;
+
     }
     giveDamage(d){
         if(this.defense<d){
@@ -114,6 +73,7 @@ class Entity {
         }
         return false;
     }
+    setStatic(){this.COR=0; this.inv_mass=0; this.ga=0; this.canMove=false;this.canInteract=true;}
     enlarge(per){this.w*=per; this.h*=per;}
     throw(){this.y=10000;this.life=0;this.canRemoved=true;this.update=function(){};}
     getVectorLength(){
@@ -122,6 +82,6 @@ class Entity {
     getX(){return this.x+this.w/2}
     getY(){return this.y+this.h/2}
     //event handler
-    collisionHandler(e, collisionType, isActor) { }
-    removeHandler() { }
+    collisionHandler(e, collisionType, isActor) { return true;}
+    removeHandler() { return true}
 }

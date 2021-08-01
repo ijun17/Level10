@@ -1,70 +1,137 @@
-class EntityManager {
-    interaction=true;
+class EntityManager{
     entitys;
-    constructor(){
-        entitys=[];
+    entityInteraction=true;
+    MAX_V=80;
+    LIMIT_Y=2000;
+    constructor(ei=true){
+        this.entitys=[];
+        this.entityInteraction=ei;
     }
-
-    clear(){entitys=[];}
+    push(e){this.entitys[this.entitys.length]=e;if(!(e instanceof Entity))console.log("non entity pushed")}
+    get(i){return this.entitys[i];}
+    clear(){this.entitys=[];}
+    length(){return this.entitys.length;}
 
     update(){
-        if(this.interaction)this.interact();
+        let entitys=this.entitys;//important
+        //1.interlaction
+        if(this.entityInteraction)this.interact();
+        //2. move and draw and die
+        let entity;
+        for(let i=entitys.length-1; i>=0;i--){
+            entity=entitys[i];
+            if (entity.canRemoved && (entity.life < 1 || (entity.y>this.LIMIT_Y&&entity.canFallDie)) && entity.removeHandler()) {
+                entitys.splice(i, 1);
+            }else entity.update();
+        }
     }
 
     interact(){
-        for(let i=entitys.length-1; i>=0; i--){
-            let e1=entitys[i];
-            //최고속도 제한
-            const maxV=80;
-            if(e1.vx>maxV)e1.vx=maxV;
-            else if(e1.vx<-maxV)e1.vx=-maxV;
-            if(e1.vy>maxV)e1.vy=maxV;
-            else if(e1.vy<-maxV)e1.vy=-maxV;
-            if (e1.canFallDie&&e1.y > 2000) e1.life = 0;
+        for(let i=this.entitys.length-1; i>0;i--){
+            let e=this.entitys[i];
 
-            for(let j=i-1; j>=0; j--){
-                let e2=entitys[j];
-                let collisionType=this.AABB(e1,e2);
-                if(this.AABB(e1,e2)>0){
-                    e1.collisionHandler(e2, collisionType, true);
-                    e2.collisionHandler(e1, 5-collisionType, true);
-                    if (this.canCollision&&e.canCollision&&!(this.overlap && e.overlap)&&this.canMove) {
-                        if (collisionType == 2) { //right collision
-                            e1.vx = 0;
-                            e1.x = e2.x - e1.w;
-                        } else if (collisionType == 3) { //left collision
-                            e1.vx = 0;
-                            e1.x = e2.x + e2.w;
-                        } else if (collisionType == 4) { //down collision
-                            e1.vy = 0;
-                            e1.y = e2.y - e1.h;
-                            if (Math.abs(e1.vx) < 1) e1.vx = 0;
-                            else e1.vx+= (e1.vx < 0 ? e1.friction : -e1.friction);
-                        } else if (collisionType == 1) { //up collision
-                            e1.vy = 0;
-                            e1.y = e2.y + e2.h;
-                            if (Math.abs(e2.vx) < 1) e2.vx = 0;
-                            else e2.vx+= (e2.vx < 0 ? e2.friction : -e2.friction);
-                        }
+            if(e.canInteract){
+                for (let j = i - 1; j >= 0; j--) {
+                    let e2 = this.entitys[j];
+                    if (e2.canInteract && this.isCollision(e, e2)) {
+                        const maxV = 100;
+                        //
+                        if(Math.abs(e.vx)>maxV)e.vx=Math.sign(e.vx)*maxV;
+                        if(Math.abs(e.vy)>maxV)e.vy=Math.sign(e.vy)*maxV;
+                        if(Math.abs(e2.vx)>maxV)e2.vx=Math.sign(e2.vx)*maxV;
+                        if(Math.abs(e2.vy)>maxV)e2.vy=Math.sign(e2.vy)*maxV;
+
+                        //collision handling
+                        this.collision(e, e2);
                     }
                 }
             }
         }
     }
 
-    AABB(e1,e2){
-        //충돌체크
-        if(e2.x+e2.vx < e1.x+e1.w&& e2.x+e2.vx+e2.w > e1.x && e2.y-e2.vy < e1.y+e1.h && e2.y-e2.vy+e2.h > e1.y){ 
-            if (e1.y >= e2.y + e2.h) { //up collision
-                return 1;
-            } else if (e1.x + e1.w <= e2.x) { //right collision
-                return 2;
-            } else if (e1.x >= e2.x + e2.w) { //left collision
-                return 3;
-            }else if (e1.y + e1.h <= e2.y) { //down collision
-                return 4;
-            }else return 0;
+    isCollision(a,b){
+        if(a.x>=b.x+b.w||a.x+a.w<=b.x)return false;
+        if(a.y>=b.y+b.h||a.y+a.h<=b.y)return false;
+        return true;
+    }
+    collision(entity1,entity2){
+        let a=(entity1.inv_mass>entity2.inv_mass?entity1:entity2); //light
+        let b=(entity1.inv_mass<=entity2.inv_mass?entity1:entity2); //heavy
+
+        let normalAndOverlap = this.getCollisionNormal(a,b);
+        let normal=normalAndOverlap[0];
+        let overlap=normalAndOverlap[1];
+
+        let collisionHandling = a.collisionHandler(b, normal[0]+normal[1]*2);
+        if(!(b.collisionHandler(a,-normal[0]-normal[1]*2)&&collisionHandling))return; //prevent defalult
+        if(a.overlap&&b.overlap)return; //ignore phsics collision
+        if(a.inv_mass===0 && b.inv_mass===0){
+            //special collision 
+            let changeE=a;
+            let fixedE=b;
+            if(normal[0]==0){
+                if(a.vy==0&&b.vy==0)return;
+                if(Math.abs(a.vy)<Math.abs(b.vy)){changeE=b;fixedE=a;normal=[-normal[0], -normal[1]]}
+                changeE.y=(normal[1]>0?fixedE.y+fixedE.h : fixedE.y-changeE.h);
+                changeE.vy=0;
+            }else{
+                if(a.vx==0&&b.vx==0)return;
+                if(Math.abs(a.vx)<Math.abs(b.vx)){changeE=b;fixedE=a;normal=[-normal[0], -normal[1]]}
+                changeE.x=(normal[1]>0?fixedE.x+fixedE.w : fixedE.x-changeE.w);
+                changeE.vx=0;
+            }
+            return;
+        }else{
+            //coordinate fix
+            let milyunam=[0,0];
+            let temp=b.inv_mass/(a.inv_mass+b.inv_mass);
+            milyunam=[1-temp,temp];
+            a.x-=milyunam[0]*overlap*normal[0];
+            b.x+=milyunam[1]*overlap*normal[0];
+            a.y+=milyunam[0]*overlap*normal[1];
+            b.y-=milyunam[1]*overlap*normal[1];
+
+            //friction
+            if(normal[0]==0){
+                if (Math.abs(a.vx) < a.SFV) a.vx = 0;
+                else a.vx += a.vx > 0 ? -a.friction : a.friction;
+                if (Math.abs(b.vx) < b.SFV) b.vx = 0;
+                else b.vx += b.vx > 0 ? -b.friction : b.friction;
+            }
+
+            //action and reaction
+            let velAlongNormal=(b.vx-a.vx)*normal[0] + (b.vy-a.vy)*normal[1];
+            if(velAlongNormal>0){return;}//collsion normal =/= vector direction
+            let e=(a.COR<b.COR ? a.COR : b.COR);
+            let j = -(1+e)*velAlongNormal/(a.inv_mass+b.inv_mass);
+            let imperse = [j*normal[0], j*normal[1]];
+            a.giveForce(-imperse[0], -imperse[1]);
+            b.giveForce(imperse[0], imperse[1]);
         }
-        return -1;
+    }
+
+    getCollisionNormal(a, b){
+        let normal=[0,0];
+        let overlaps=[Math.abs(a.x+a.w-(b.x)),Math.abs(a.x-(b.x+b.w)),Math.abs(a.y-(b.y+b.h)),Math.abs(a.y+a.h-b.y)]; //[right, left, top, bottom]
+
+        let min_i=0;
+        min_i= overlaps[min_i]<overlaps[1] ? min_i : 1;
+        min_i= overlaps[min_i]<overlaps[2] ? min_i : 2;
+        min_i= overlaps[min_i]<overlaps[3] ? min_i : 3;
+        switch(min_i){
+            case 0:
+                normal=[1,0];//right
+                break;
+            case 1:
+                normal=[-1,0];//left
+                break;
+            case 2:
+                normal=[0,1];//top
+                break;
+            case 3:
+                normal=[0,-1];//bottom
+                break;
+        }
+        return [normal, overlaps[min_i]];
     }
 }

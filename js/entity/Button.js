@@ -18,6 +18,8 @@ class Button extends Entity {
         this.w = w;
         this.h = h;
         this.ga = 0;
+        this.inv_mass=0;
+        this.COR=1;
         this.overlap=false;
         this.canAct = false;
         this.canInteract=false;
@@ -61,5 +63,6 @@ class Button extends Entity {
 
     collisionHandler(e,ct) {
         if (ct=="c") this.code(e,ct);//c=click
+        return true;
     }
 }

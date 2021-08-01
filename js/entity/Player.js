@@ -17,7 +17,9 @@ class Player extends Entity{
         this.h=60;
         this.ga=-0.2;
         this.friction=0.4;
-        this.inv_mass=1;
+        this.inv_mass=0.2;
+        this.COR=0;
+        this.overlap=true;
         //magic
         for(let i=0; i<4; i++){
             this.magicList[i]=(skillNum[i]>=0?Magic.magicList[skillNum[i]]:["none", function(){},0,0,0]);
@@ -31,10 +33,7 @@ class Player extends Entity{
     }
 
     update() {
-        if (this.canDraw) this.draw();
-        if (this.canAct) this.act();
-        if (this.canInteract) this.interact();
-        if(this.canMove)this.move();
+        super.update();
         //damage
         if (this.totalDamage > 0) {
             new Text(this.x + this.w / 2, this.y - 50,this.totalDamage,30,"red","black",40);
@@ -56,9 +55,11 @@ class Player extends Entity{
     }
     
     move(){
-        this.x += this.vx;
-        this.y -= this.vy;
-        this.vy += this.ga;
+        super.move();
+        this.move_run();
+    }   
+
+    move_run(){
         if (this.isMoving) {
             if (this.isRight && this.vx <= this.speed) this.vx++;
             else if (!this.isRight && this.vx >= -this.speed) this.vx--;
@@ -73,13 +74,12 @@ class Player extends Entity{
     }
 
     collisionHandler(e,ct){
-        if(ct=='D'&&!this.canJump)this.canJump=true;
-        else if(ct==null&&e instanceof MapBlock)this.giveDamage(10000);
-        //else e.giveForce((this.getX()<e.getX()?1:-1),0);
+        if(ct==-2&&!this.canJump)this.canJump=true;
+        return true;
     }
 
     giveDamage(d) {
-        if(this.damageTick==0){
+        if(this.damageTick==0&&Math.floor(d)>0){
             this.totalDamage += Math.floor(d);
             Camera.vibrate((d<20000 ? d/200 : 50)+5);
         }

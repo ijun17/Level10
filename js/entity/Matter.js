@@ -63,7 +63,7 @@ const MATTERS=[
     {
         name:"arrow",
         setStatus:function(e){e.power=100;},
-        effect:function(e,v){--this.life;v.giveDamage(Math.floor(e.getVectorLength()*e.power));v.giveForce(e.vx/e.inv_mass,(e.vy+1)/e.inv_mass);}
+        effect:function(e,v){--this.life;v.giveDamage(Math.floor(e.getVectorLength()*e.power));v.giveForce(e.vx/e.inv_mass,(e.vy)/e.inv_mass);}
     },
     {
         name:"energy",
@@ -86,7 +86,7 @@ const MATTERS=[
     },
     {
         name:"wind",
-        setStatus:function(e){e.power=100;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.01;e.addAction(0,99999999,function(){--e.life;})},
+        setStatus:function(e){e.power=100;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.0001;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveForce(e.vx-v.vx,e.vy-v.vy+1);
             if(e.vx==0&&e.vy==0)e.throw();
@@ -125,7 +125,8 @@ class Matter extends Entity {
         this.w = 30;
         this.h = 30;
         this.ga = -0.02;
-        this.inv_mass=4;
+        this.inv_mass=1;
+        this.overlap=true;
         let type=MATTERS[typenum];
         this.typenum=typenum;
         type.setStatus(this);
@@ -186,7 +187,7 @@ class Matter extends Entity {
     }
 
     collisionHandler(e) {
-        if(!e.canCollision)return;
         this.effect(this,e);
+        return true;
     }
 }

@@ -125,6 +125,9 @@ class Monster extends Entity {
         let type=MONSTERS[typenum];
         this.typenum=typenum;
         this.name=type.name;
+        this.overlap=true;
+        this.ga=-0.2;
+        this.COR=0;
         type.setStatus(this);
         this.attackEffect=type.attackEffect;
         this.attackFilter=function(e){return (e==this.target || e instanceof Block)}
@@ -148,22 +151,17 @@ class Monster extends Entity {
     }
 
     update() {
-        if (this.canDraw) this.draw();
-        if (this.canAct) this.act();
-        if (this.canInteract) this.interact();
-        if(this.canMove){
-            this.move();
-            if (this.isMoving) {
-                if (this.isRight && this.vx <= this.speed) this.vx++;
-                else if (!this.isRight && this.vx >= -this.speed) this.vx--;
-            }
-        }
+        super.update();
         if (this.totalDamage > 0) {
             let damageText = new Text(this.x + this.w / 2, this.y - 50,Math.floor(this.totalDamage),30,"orange","black",40);
             damageText.vy=1;
             this.life-=Math.floor(this.totalDamage);
             this.totalDamage=0;
         }
+    }
+    move(){
+        super.move();
+        this.move_run();
     }
 
     draw() {
@@ -177,7 +175,7 @@ class Monster extends Entity {
     }
 
     collisionHandler(e,ct) {
-        if (ct=='D') this.canJump = true;
+        if (ct==-2) this.canJump = true;
         //공격
         if(this.attackFilter(e)){
             if(this.target==null)this.target=e;
@@ -189,9 +187,7 @@ class Monster extends Entity {
                 e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.power)/5/e.inv_mass,0.3);
             }
         }
-        // if(e instanceof Matter){
-        //     e.giveForce((e.x + e.w / 2 > this.x + this.w / 2?1:-1)*Math.sqrt(this.power)/5/e.inv_mass,0.3);
-        // }
+        return true;
     }
 
     removeHandler() {
@@ -206,6 +202,7 @@ class Monster extends Entity {
             }
         }
         Camera.vibrate(50);
+        return true;
     }
 
     giveDamage(d) {
@@ -256,6 +253,12 @@ class Monster extends Entity {
         return  new Matter(type, matter_x, matter_y,vx,vy);
     }
     //MONSTER MOVING
+    move_run(){
+        if (this.isMoving) {
+            if (this.isRight && this.vx <= this.speed) this.vx++;
+            else if (!this.isRight && this.vx >= -this.speed) this.vx--;
+        }
+    }
     jump(){
         if (this.canJump) {
             this.canJump = false;

@@ -135,12 +135,13 @@ let Screen= {
 
         //LEVEL BUTTON
         let block = new Button((canvas.width - Screen.perX(16)) /2, -100, Screen.perX(16), space+100);
-        block.canInteract=true;
+        block.setStatic();
         for (let i = 1; i <= Level.playerLevel; i++) {
-            let levelButton = new Button((canvas.width - Screen.perX(16)) /2, Screen.perX(16) + i * (space+Screen.perX(4)), Screen.perX(16), Screen.perX(4));
+            let levelButton = new Button((canvas.width - Screen.perX(16)) /2, Screen.perX(16) + i * (space+Screen.perX(6)), Screen.perX(16), Screen.perX(4));
             levelButton.code = function () { Screen.gameScreen(); Level.makeStage(i); };
             levelButton.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)", "black", "LEVEL" + i, Screen.perX(3), "black");
-            levelButton.ga = 0.5;
+            levelButton.ga = 0.01;
+            levelButton.vy=10;
             levelButton.canInteract=true;
             levelButton.canMove=true;
         }
@@ -170,25 +171,26 @@ let Screen= {
         }
 
         //사용자가 사용할 수 있는 모든 마법들
-        let listStart=Game.channel[Game.BUTTON_CHANNEL].length;
+        let listStart=Game.channel[Game.BUTTON_CHANNEL].length();
         let listEnd;
+        
         for (let i = 0; i < Magic.magicList.length; i++) {
             if(Magic.magicList[i][4]>Level.playerLevel)continue;
-            Component.magicButton(Screen.perX(32), Screen.perX(3) + Screen.perX(4) * i,i,buttonSelector)
+            Component.magicButton(Screen.perX(32), Screen.perX(20) + Screen.perX(10) * i,i,buttonSelector)
         }
-        listEnd=Game.channel[Game.BUTTON_CHANNEL].length;
+        listEnd=Game.channel[Game.BUTTON_CHANNEL].length();
         Component.listScroll(32,16,listStart,listEnd);
 
         //TEST WORLD
         new MapBlock(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "wall");
-        function makePlayer(){Game.p=new Player(canvas.width*5/9+20, 0);Game.p.magicList=[null,null,null,null];Game.p.removeHandler=function(){makePlayer();};}
-        Camera.cameraOn=false;
-        makePlayer();
+        Game.p=new Player(Screen.perX(70),0,10);
+        Game.p.removeHandler=function(){this.life=100000;this.x=Screen.perX(70);this.y=0;this.vx=0;this.vy=0;return false;}
         Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
-        let monster = new Monster(0, canvas.width-100, 0);
+        Camera.cameraOn=false;
+        
+        let monster = new Monster(0, canvas.width-100, 0,false);
         monster.life = 0;
-        monster.action = [];
-        monster.addAction(100,100,function(){monster.canMove=false;});
+        monster.inv_mass=0;
         monster.canRemoved = false;
     },
 
@@ -234,6 +236,7 @@ let Screen= {
         }
         //CUSTOM MAGIC LIST
         let plusButton = new Button(Screen.perX(83), Screen.perX(6), Screen.perX(16), Screen.perX(3));
+        plusButton.setStatic();
         plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagic.length+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
         plusButton.code=function(){ 
             if(Magic.customMagic.length<10){
@@ -249,7 +252,7 @@ let Screen= {
         let list_start=Game.channel[Game.BUTTON_CHANNEL].length;
         for(let i=0; i<Magic.basicMagic.length; i++){
             if(Magic.magicList[i][4]>Level.playerLevel)break;
-            Component.magicButton(Screen.perX(list_x),Screen.perX(10+4*i),i,buttonSelector,function(btn){basicMagicButtonCode(i);})
+            Component.magicButton(Screen.perX(list_x),Screen.perX(10+6*i),i,buttonSelector,function(btn){basicMagicButtonCode(i);})
         }
         let list_end=Game.channel[Game.BUTTON_CHANNEL].length;
         Component.listScroll(list_x, 16, list_start, list_end);
@@ -271,12 +274,12 @@ let Screen= {
         
         //TEST MAP
         Component.worldWall(1000,500,200);
+        Game.p=new Player(Screen.perX(70),0,10);
+        Game.p.removeHandler=function(){this.life=100000;this.x=Screen.perX(70);this.y=0;this.vx=0;this.vy=0;return false;}
+        Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
         Camera.makeMovingCamera(Game.p,0,0,10);
         Camera.extension=1000/canvas.width;
-        function makePlayer(){Game.p=new Player(100, -100,10);Game.p.magicList=[null,null,null,null];
-            Camera.e.temp=Game.p;Game.p.removeHandler=function(){makePlayer();};}
-        function makeTester(){let p=new Player(500, -100,10);p.removeHandler=function(){makeTester();};}
-        makePlayer();
+        function makeTester(){let p=new Player(500, -100,10);p.removeHandler=function(){makeTester();return true;};}
         makeTester();
         Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
     },
@@ -320,7 +323,7 @@ let Screen= {
         let listStart=Game.channel[Game.BUTTON_CHANNEL].length;
         for (let i = 0; i < Magic.magicList.length; i++) {
             if(Magic.magicList[i][4]>Level.playerLevel)continue;
-            Component.magicButton(Screen.perX(listX), Screen.perX(3) + Screen.perX(4) * i,i,buttonSelector)
+            Component.magicButton(Screen.perX(listX), Screen.perX(3) + Screen.perX(6) * i,i,buttonSelector)
         }
         let listEnd=Game.channel[Game.BUTTON_CHANNEL].length;
         Component.listScroll(listX,16,listStart,listEnd);
@@ -339,11 +342,11 @@ let Screen= {
         player2.isRight=false;
         function printWin(text){
             let winText = new Text(Screen.perX(50),Screen.perY(50), text, Screen.perX(10), "yellow", null,300,false);
-            winText.removeHandler=function(){Screen.localPVPScreen();};
+            winText.removeHandler=function(){Screen.localPVPScreen();return true;};
             player2.canRemoved=false;player1.canRemoved=false;
         }
-        player1.removeHandler=function(){printWin("PLAYER 2  WIN");}
-        player2.removeHandler=function(){printWin("PLAYER 1  WIN");}
+        player1.removeHandler=function(){printWin("PLAYER 2  WIN");return true;}
+        player2.removeHandler=function(){printWin("PLAYER 1  WIN");return true;}
         Input.addMoveKey(player1, Input.KEY_MOVE[1]);
         Input.addMoveKey(player2, Input.KEY_MOVE[0]);
         
@@ -365,7 +368,7 @@ let Screen= {
         function countdown(textset, index){
             let text = new Text(Screen.perX(50),Screen.perY(50), textset[index], Screen.perX(20), "yellow", null,100,false);
             if(index==textset.length-1){Input.addSkillKey(player1, Input.KEY_SKILL[2]);Input.addSkillKey(player2, Input.KEY_SKILL[1]);
-            }else text.removeHandler=function(){countdown(textset, index+1);}
+            }else text.removeHandler=function(){countdown(textset, index+1);return true;}
         }
         countdown(['3','2','1',"FIGHT"],0);
     },
@@ -376,15 +379,13 @@ let Screen= {
         Component.backButton(function(){Screen.selectScreen()});
         //player
         Game.p = new Player(10, -60, Level.playerLevel);
-        //Game.p=new Monster(4,10, -200,false)//
-        //Game.p.attackFilter = function(e){return (e instanceof Block|| e instanceof Player || e instanceof Monster)}
         Game.p.removeHandler=function(){
-            Game.channel[Game.BUTTON_CHANNEL]=[];
-            Game.channel[Game.TEXT_CHANNEL]=[];
+            Game.channel[Game.BUTTON_CHANNEL].clear();
+            Game.channel[Game.TEXT_CHANNEL].clear();
             let text = new Text(Screen.perX(50),Screen.perY(50),"you die",Screen.perX(10),"red",null,200,false);
-            text.canAct=true;
-            text.removeHandler=function(){Screen.selectScreen();};
+            text.removeHandler=function(){Screen.selectScreen();return true;};
             Level.stageMonsterCount=0;
+            return true;
         };
         Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
         Input.addSkillKey(Game.p, Input.KEY_SKILL[0]);

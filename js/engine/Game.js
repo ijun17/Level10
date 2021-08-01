@@ -1,6 +1,6 @@
 let Game = {
     //ENGINE
-    channel : [[], [], [], []], //phisics, particle, button
+    channel : [], //phisics, particle, button
     PHYSICS_CHANNEL : 0,
     PARTICLE_CHANNEL : 1,
     TEXT_CHANNEL : 3,
@@ -13,7 +13,10 @@ let Game = {
 
     //ENGINE FUNCTION
     resetGame:function() {
-        Game.channel = [[], [], [], []];
+        Game.channel[0].clear();
+        Game.channel[1].clear();
+        Game.channel[2].clear();
+        Game.channel[3].clear();
         Game.time = 0;
         Level.stageLevel = -1;
         Level.stageMonsterCount = -1;
@@ -26,6 +29,7 @@ let Game = {
         if(this.developerMode)Component.developerTool()
     },
     startGame:function() {
+        this.channel=[new EntityManager(true), new EntityManager(false), new EntityManager(true), new EntityManager(false)];
 
         Input.startInput();
         Level.loadLevel();
@@ -37,11 +41,10 @@ let Game = {
     updateWorld:function() {
         ctx.fillStyle=Screen.bgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < 4; i++) {
-            //for (let j = 0, c = Game.channel[i],length=Game.channel[i].length; j <length; j++) { c[j].update(); }
-            for (let j = Game.channel[i].length-1, c = Game.channel[i]; j >=0; j--) { c[j].update(); }
-            Game.removeEntity(i);
-        }
+        Game.channel[0].update();
+        Game.channel[1].update();
+        Game.channel[2].update();
+        Game.channel[3].update();
         Game.time++;
     },
     renderWorld:function(){
@@ -49,15 +52,6 @@ let Game = {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < 4; i++) {
             for (let j = Game.channel[i].length - 1, c = Game.channel[i]; j >= 0; j--) { c[j].draw(); }
-        }
-    },
-    removeEntity:function(channelLevel) {
-        for (let e of Game.channel[channelLevel]) {
-            if (e.life < 1 && e.canRemoved) {
-                e.removeHandler();
-                let ei = Game.channel[channelLevel].indexOf(e);
-                if (ei >= 0) Game.channel[channelLevel].splice(ei, 1);
-            }
         }
     },
     setGameSpeed(speed=100){ //num 0~120%

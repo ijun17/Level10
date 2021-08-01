@@ -19,22 +19,23 @@ let Component={
     listScroll:function(perX,perSize,listStart, listEnd){
         //MAGIC LIST SCROLL
         let scroll = new Button(Screen.perX(perX-1), -Screen.perX(8), Screen.perX(perSize+2), Screen.perX(9));
+        scroll.setStatic();
         scroll.draw = function () {
             ctx.fillStyle = "rgba(0,0,0,0.2)";
             ctx.fillRect(scroll.x, 0, scroll.w, canvas.height);
         }
         function move(d){
             for(let i=listStart;i<=listEnd;i++){
-                if(Game.channel[Game.BUTTON_CHANNEL][i].temp[1]==null)Game.channel[Game.BUTTON_CHANNEL][i].y+=d;
+                if(Game.channel[Game.BUTTON_CHANNEL].get(i).temp[1]==null)Game.channel[Game.BUTTON_CHANNEL].get(i).y+=d;
             }
         }
         const MOVE_DISTANCE=Screen.perY(20);
         let upButton = new Button(Screen.perX(perX+perSize+1),0,Screen.perX(4),Screen.perX(4));
         upButton.drawOption("rgba(0,0,0,0.5)",null,"▲", Screen.perX(3),"white");
-        upButton.code=function(){if(Game.channel[Game.BUTTON_CHANNEL][listEnd].y<-Screen.perX(8))move(MOVE_DISTANCE);};
+        upButton.code=function(){if(Game.channel[Game.BUTTON_CHANNEL].get(listEnd).y<-Screen.perX(8))move(MOVE_DISTANCE);};
         let downButton = new Button(Screen.perX(perX+perSize+1),canvas.height-Screen.perX(4),Screen.perX(4),Screen.perX(4));
         downButton.drawOption("rgba(0,0,0,0.5)",null,"▼", Screen.perX(3),"white");
-        downButton.code=function(){if(Screen.perX(3)*(listEnd-listStart)+Screen.perX(8)+Game.channel[Game.BUTTON_CHANNEL][listEnd].y>canvas.height)move(-MOVE_DISTANCE);};
+        downButton.code=function(){if(Screen.perX(3)*(listEnd-listStart)+Screen.perX(8)+Game.channel[Game.BUTTON_CHANNEL].get(listEnd).y>canvas.height)move(-MOVE_DISTANCE);};
     },
     magicButton:function(x,y,magicListIndex,selector=null,extraCode=function(){}){
         let magicBtn = new Button(x,y,Screen.perX(16),Screen.perX(3));
@@ -46,8 +47,8 @@ let Component={
             extraCode(magicBtn);
         }
         magicBtn.temp[0] = magicListIndex;
-        magicBtn.ga = 0.5;
-        magicBtn.vy = 20;
+        magicBtn.ga = 0.4;
+        magicBtn.vy = 10;
         magicBtn.canMove = true;
         magicBtn.canInteract = true;
         return magicBtn;
@@ -68,6 +69,7 @@ let Component={
     keyButton:function(perX,perY,keys,skillNum,selector,name=""){
         for (let i = 0; i < 4; i++) {
             let temp = new Button(Screen.perX(perX+8), Screen.perX(perY-4+9*i), Screen.perX(16), Screen.perX(4));
+            temp.setStatic();
             let keyBtn = new Button(Screen.perX(perX), Screen.perX(perY+9*i), Screen.perX(8), Screen.perX(8))
             keyBtn.code = function () {
                 let selectMagic=selector.selectedBtn;

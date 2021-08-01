@@ -27,10 +27,10 @@ let Level= {
         Game.p.canRemoved=false;
         let clearText = new Text(Screen.perX(50),Screen.perY(0), "CLEAR", Screen.perX(20), "yellow", null,300,false);
         clearText.vy=-Screen.perY(100)/300;
-        clearText.removeHandler=function(){Screen.selectScreen();};
+        clearText.removeHandler=function(){Screen.selectScreen();return true;};
     },
 
-    makeStage:function(level) {
+    makeStage:function(level,player) {
         this.stageLevel = level;
         function printMonsterName(name=""){
             let textE = new Text(Screen.perX(10),Screen.perY(3),"vs "+name,Screen.perX(3), "black", null, 400, false);
@@ -61,6 +61,7 @@ let Level= {
                 new Monster(0, 800, -1000);
                 mainMonster=new Monster(1, 700, -1000);
                 Component.worldWall(mapSizeW,mapSizeH,wallSize);
+                //Component.particleSpray(3)
                 Screen.bgColor="#cde5e4";
                 break;
             case 3:
@@ -87,6 +88,12 @@ let Level= {
                 Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 break;
             case 6:
+                for(let i=0; i<16;i++){
+                    for(let j=0; j<24; j++){
+                        let e = new Block(300+j*55,-1500+i*55,50,50);
+                    }
+                }
+                Component.worldWall(mapSizeW,mapSizeH,wallSize);
                 break;
             case 7:
                 break;

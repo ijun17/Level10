@@ -6,8 +6,10 @@ class Block extends Entity{
         this.w=w;
         this.h=h;
         this.color = color;
-        this.overlap=false;
+        //this.overlap=false;
         this.life=w*h*10;
+        this.COR=1;
+        this.inv_mass=10/(w*h);
         //this.brokenSound.src="resource/sound/broken.mp3";
         
     }
@@ -18,11 +20,11 @@ class Block extends Entity{
     }
 
     collisionHandler(e){
-        this.life--;
-        var damage=(this.w*this.h)*(this.getVectorLength()**1.2+0.5)/10;
-        e.giveDamage(damage);
-        e.giveForce(this.vx/2, this.vy/2);
-        
+        //this.life--;
+        var damage=(this.w*this.h)*(Math.floor(this.getVectorLength())**1.2)/10;
+        e.giveDamage(Math.floor(damage));
+        //e.giveForce(this.vx/2, this.vy/2);
+        return true;
     }
     removeHandler(){
         //let temp = this.w*this.h/1000/Math.sqrt((Game.p.x+Game.p.w/2-this.x-this.w/2)**2+(Game.p.y+Game.p.h/2-this.y-this.h/2)**2)
@@ -32,7 +34,6 @@ class Block extends Entity{
         //     this.brokenSound.currentTime = 0;
         //     this.brokenSound.play();
         // }
+        return true;
     }
-
-    giveForce(ax,ay){}
 }

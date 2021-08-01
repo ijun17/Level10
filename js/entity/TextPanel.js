@@ -41,4 +41,8 @@ class TextPanel extends Entity{
             }
         }
     }
+    setColorAndPX(colors,px){
+        this.colors=colors;
+        this.px=px;
+    }
 }

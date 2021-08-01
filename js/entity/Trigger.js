@@ -27,8 +27,9 @@ class Trigger extends Entity{
     giveForce(){}
 
     collisionHandler(e){
-        if(e instanceof MapBlock||!e.canCollision)return;
+        if(e instanceof MapBlock)return false;
         this.code(e);
         this.life=0;
+        return false;
     }
 }

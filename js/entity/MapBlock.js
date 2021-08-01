@@ -5,11 +5,12 @@ class MapBlock extends Entity{
         this.w=w;
         this.h=h;
         this.ga=0;
+        this.inv_mass=0;
+        this.COR=0;
         this.overlap=false;
         this.canRemoved=false;
         this.canAct=false;
         this.canMove=false;
-        this.canInteract=false;
         this.draw = MapBlock.getTexture(textureType);
     }
 
