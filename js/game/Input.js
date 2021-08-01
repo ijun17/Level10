@@ -3,7 +3,7 @@
 let Input = {
     keyDowns:[],
     keyUps:[],
-    KEY_MOVE:[[37,38,39],[65,87,68]], //left up right / a w d
+    KEY_MOVE:[[37,38,39,40],[65,87,68,83]], //left up right down / a w d s
     KEY_SKILL:[[81,87,69,82],[96,97,98,99],[82,84,89,85]], //qwer / 0123 / rtyu 
     startInput:function(){
         keyDowns=new Array();
@@ -19,7 +19,7 @@ let Input = {
     },
     
     //key up down
-    addMoveKey:function(player, keyset){
+    addMoveKey:function(player, keyset){ // 땅에서 걷는 엔티티를 조종할때
         const a=keyset[0],b=keyset[1],c=keyset[2];
         this.keyDowns.push(function(e){
             switch(e.keyCode){
@@ -31,6 +31,23 @@ let Input = {
         this.keyUps.push(function(e){
             switch(e.keyCode){
                 case a: case c:player.isMoving = false;break;
+            }
+        })
+    },
+    addFlyKey:function(player, keyset){//하늘을 나는 엔티티를 조종할때
+        const a=keyset[0],b=keyset[1],c=keyset[2],d=keyset[3];
+        this.keyDowns.push(function(e){
+            switch(e.keyCode){
+                case a:player.isMoving = true;player.isRight = false;break;//left
+                case b:player.isFlying = true;player.isUp=true;break;//up
+                case c:player.isMoving = true;player.isRight = true;break;//right
+                case d:player.isFlying = true;player.isUp=true;break;
+            }
+        })
+        this.keyUps.push(function(e){
+            switch(e.keyCode){
+                case a: case c:player.isMoving = false;break;
+                case b: case d:player.isFlying = false;break;
             }
         })
     },

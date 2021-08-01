@@ -17,7 +17,7 @@ class Player extends Entity{
         this.h=60;
         this.ga=-0.2;
         this.friction=0.4;
-        this.inv_mass=0.2;
+        this.inv_mass=1;
         this.COR=0;
         this.overlap=true;
         //magic

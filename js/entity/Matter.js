@@ -86,7 +86,7 @@ const MATTERS=[
     },
     {
         name:"wind",
-        setStatus:function(e){e.power=0;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.0001;e.addAction(0,99999999,function(){--e.life;})},
+        setStatus:function(e){e.power=0;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.001;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveForce(e.vx-v.vx,e.vy-v.vy+1);
             v.giveDamage(e.power);
@@ -126,7 +126,7 @@ class Matter extends Entity {
         this.w = 30;
         this.h = 30;
         this.ga = -0.02;
-        this.inv_mass=1;
+        this.inv_mass=4;
         this.overlap=true;
         let type=MATTERS[typenum];
         this.typenum=typenum;

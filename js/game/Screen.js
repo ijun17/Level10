@@ -242,7 +242,7 @@ let Screen= {
         plusButton.code=function(){ 
             if(Magic.customMagic.length<10){
                 Magic.addEmptyMagic();
-                Component.magicButton(Screen.perX(customX),200,Magic.magicList.length-1,buttonSelector, function(btn){customMagicButtonCode(Magic.magicList.length-1);})
+                Component.magicButton(Screen.perX(customX),Screen.perX(10+6*Magic.customMagic.length),Magic.magicList.length-1,buttonSelector, function(btn){customMagicButtonCode(Magic.magicList.length-1);})
                 plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagic.length+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
             }
         };
@@ -250,12 +250,12 @@ let Screen= {
             Component.magicButton(Screen.perX(customX),Screen.perX(10+4*(i-Magic.basicMagic.length)),i,buttonSelector,function(btn){customMagicButtonCode(i);})
         //BASIC MAGIC LIST
         const basicX=8;
-        let list_start=Game.channel[Game.BUTTON_CHANNEL].length;
+        let list_start=Game.channel[Game.BUTTON_CHANNEL].length();
         for(let i=0; i<Magic.basicMagic.length; i++){
             if(Magic.magicList[i][4]>Level.playerLevel)break;
             Component.magicButton(Screen.perX(basicX),Screen.perX(10+6*i),i,buttonSelector,function(btn){basicMagicButtonCode(i);})
         }
-        let list_end=Game.channel[Game.BUTTON_CHANNEL].length;
+        let list_end=Game.channel[Game.BUTTON_CHANNEL].length();
         Component.listScroll(basicX, 16, list_start, list_end);
 
         //COMPILE BUTTON CLICK EVENT
@@ -321,12 +321,12 @@ let Screen= {
 
         Game.p=new Player(0,Screen.perY(200),1);
         const listX=10;
-        let listStart=Game.channel[Game.BUTTON_CHANNEL].length;
+        let listStart=Game.channel[Game.BUTTON_CHANNEL].length();
         for (let i = 0; i < Magic.magicList.length; i++) {
             if(Magic.magicList[i][4]>Level.playerLevel)continue;
             Component.magicButton(Screen.perX(listX), Screen.perX(3) + Screen.perX(6) * i,i,buttonSelector)
         }
-        let listEnd=Game.channel[Game.BUTTON_CHANNEL].length;
+        let listEnd=Game.channel[Game.BUTTON_CHANNEL].length();
         Component.listScroll(listX,16,listStart,listEnd);
 
         let startButton = new Button(Screen.perX(90), Screen.perY(10), Screen.perX(9), Screen.perY(90)-Screen.perX(1));
@@ -390,11 +390,9 @@ let Screen= {
         };
         Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
         Input.addSkillKey(Game.p, Input.KEY_SKILL[0]);
-
         Camera.makeMovingCamera(Game.p,0,0,10);
         //VIEW
         Component.playerStatusView(Game.p, 58,1.5);
-        
         //MOBILE BUTTON 
         if (Screen.isMobile) Component.mobileButton(Game.p, 70);
     },
@@ -418,7 +416,7 @@ let Screen= {
         //MENU BAR
         new MapBlock(0,0,Screen.perX(20), Screen.perY(100)); //어두운 바탕
         Component.backButton(function(){Screen.selectScreen();})
-        let helpText=Component.screenName("help");
+        Component.screenName("help");
         //let howToText = new Text(Screen.perX(15), Screen.perY(5),"About",Screen.perX(2),"black",null,-1,false);
         let nextBtnY=Screen.perX(6);
         function makeMenuButton(text,f=function(){clearPanel();},isEmphasis=true){
@@ -435,7 +433,6 @@ let Screen= {
             
         }
         makeMenuButton("조작법",gameControlPanel);
-        //makeMenuButton("마법을쓰는법",howToUseMagic);
         makeMenuButton("마법을선택하는법",howToSelectMagicPanel);
         makeMenuButton("마법을만드는법",howToCreateMagicPanel);
         makeMenuButton("물질 생성 마법",create_magicCodePanel,false);

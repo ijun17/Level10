@@ -84,18 +84,58 @@ addAction(player,1,5,#{
     j++;
 })`,4],
 
-    ["구도옥",`//검은색 물체를 앞으로 발사
-@a = create(BLOCK, front(30), 0,30,30);
-giveLife(a,2000)
-@speed= front(30)
-addAction(a, 1,500, #{giveForce(a,-getVX(a)+speed, -getVY(a))})`,5],
-
     ["끌어당기기",`//닿은 물체를 끌어 당김
 @t = create(TRIGGER,front(10),0,20,100);
 giveLife(t,100);
 setTrigger(t,#{
     giveForce($, front(-10), 4);
-});`,5],
+});`,4],
+
+    ["번개",`//번개는 전기들이 서로 일정 수 부딪히면 생성된다.
+addAction(player,1,20,#{
+    @a=create(ELECTRICITY, 0,0);
+    move(a, front(300),0);
+    giveLife(a,400)
+        
+    @b=create(ELECTRICITY, 0,0);
+    move(b, front(300),0);
+    giveLife(b,400);
+        
+    @c=create(ELECTRICITY, 0,0);
+    move(c, front(300),0);
+    giveLife(c, 400)
+        
+    @d=create(ELECTRICITY, 0,0);
+    move(d, front(300),0);
+    giveLife(d,400)
+        
+    @e=create(ELECTRICITY, 0,0);
+    move(e, front(300),0);
+    giveLife(e,400)
+})`,5],
+
+    ["폭발 비",`//불끼리 부딪히면 폭발한다.
+@count=0;
+addAction(player, 1,10,#{
+    @fire= create(FIRE, 0,-20)
+    move(fire, front(count*70+150),300)
+    giveLife(fire,10);
+    @fire2= create(FIRE, 0,-20)
+    move(fire2, front(count*70+150),400)
+    giveLife(fire2,10);
+    count++;
+})`,5],
+
+    ["연막",`//수증기는 불과 얼음이 부딪히면 생성된다.
+@i=0;
+addAction(player, 1, 10, #{
+    move(create(FIRE,front(10),1),front(100*i), 0);
+    move(create(ICE,front(10),1),front(100*i), 0);
+    move(create(FIRE,front(10),1),front(100*i), 100);
+    move(create(ICE,front(10),1),front(100*i), 100);
+    ++i;
+})`,5],
+
     ["파이어토네이도V",`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
 @plusX=front(1);

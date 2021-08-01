@@ -47,7 +47,7 @@ let Component={
             extraCode(magicBtn);
         }
         magicBtn.temp[0] = magicListIndex;
-        magicBtn.ga = 0.4;
+        magicBtn.ga = 0.1;
         magicBtn.vy = 10;
         magicBtn.canMove = true;
         magicBtn.canInteract = true;

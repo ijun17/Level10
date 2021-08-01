@@ -23,7 +23,7 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI(1);return 50;},
-        function(e){e.vx+=(e.isRight ? 5 : -5);e.vy+=7;return 503;}
+        function(e){e.vx+=(e.isRight ? 5 : -5);e.vy+=7;e.canJump=false;return 503;}
     ]
 },
 {
@@ -42,7 +42,8 @@ const MONSTERS = [{
     setStatus: function(e){e.w=30;e.h=30;e.life=20000;e.power=500;e.speed=5;e.inv_mass=1;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI2(5);return 10;}
+        function(e){e.AI2(5);return 10;},
+        function(e){e.addAction(1,1,function(){e.speed=15});e.addAction(100,100,function(){e.speed=5}); return 500;}
     ]
 },
 {
@@ -127,6 +128,7 @@ class Monster extends Entity {
     totalDamage=0;
     canJump = true;
     isRight=false;
+    isUp=false;
     isMoving=false;
     isFlying=false;
     
@@ -272,10 +274,10 @@ class Monster extends Entity {
             else if (!this.isRight && this.vx >= -this.speed) this.vx--;
         }
     }
-    jump(){
+    jump(s=(this.speed-0.5)){
         if (this.canJump) {
             this.canJump = false;
-            this.vy = this.speed - 0.5;
+            this.vy = s;
         }
     }
     AI(noise = 0) { //걸어 댕기는 놈
