@@ -157,7 +157,7 @@ let Component={
                 ctx.fillText(keys[i], keyButton.x + 35, keyButton.y + 43);
                 ctx.fillStyle = "white";
                 ctx.font = "bold 15px Arial";
-                ctx.fillText(player.magicList[i][0], keyButton.x + 35, keyButton.y + 11);
+                ctx.fillText(player.skillList[i][0], keyButton.x + 35, keyButton.y + 11);
             }
         }
     },
