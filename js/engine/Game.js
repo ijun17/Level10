@@ -18,8 +18,6 @@ let Game = {
         Game.channel[2].clear();
         Game.channel[3].clear();
         Game.time = 0;
-        Level.stageLevel = -1;
-        Level.stageMonsterCount = -1;
         Camera.cameraOn = false;
         Camera.extension=canvas.width/(Screen.isMobile ? 1200 : 1400);
         Input.resetKeyInput();

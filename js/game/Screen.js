@@ -138,7 +138,7 @@ let Screen= {
         block.setStatic();
         for (let i = 1; i <= Level.playerLevel; i++) {
             let levelButton = new Button((canvas.width - Screen.perX(16)) /2, Screen.perX(16) + i * (space+Screen.perX(6)), Screen.perX(16), Screen.perX(4));
-            levelButton.code = function () { Screen.gameScreen(); Level.makeStage(i); };
+            levelButton.code = function () { Screen.gameScreen(i);};
             levelButton.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)", "black", "LEVEL" + i, Screen.perX(3), "black");
             levelButton.ga = 0.01;
             levelButton.vy=10;
@@ -299,12 +299,7 @@ let Screen= {
         localPVPButton.code=function(){Screen.localPVPScreen()}
         let monsterPVPButton = new Button(Screen.perX(50)-btnW/2, Screen.perY(51),btnW,btnH);
         monsterPVPButton.drawOption(`rgba(119, 138, 202,0.8)`,"white","MONSTER PVP",textSize,`rgba(245, 245, 245,1)`);
-        monsterPVPButton.code=function(){Screen.localPVPScreen()}
-        // let onlinePVPButton = new Button(Screen.perX(50)-btnW/2, Screen.perY(40), btnW, btnH);
-        // onlinePVPButton.drawOption(`rgba(119, 138, 202,0.8)`,"white","온라인 PVP",textSize,`rgba(245, 245, 245,1)`);
-        // onlinePVPButton.code=function(){
-        //     if(Multi.serverOn){}else{new Text(Screen.perX(50),Screen.perY(50), "서버와 연결되어 있지 않습니다.", Screen.perX(4), "black", null,300,false);}
-        // }
+        monsterPVPButton.code=function(){Screen.monsterPVPGameScreen()}
         new Text(Screen.perX(50),localPVPButton.y+Screen.perX(8.7), "한개의 pc로 두명이서 플레이", Screen.perX(1.5), "lightgray", null,-1,false);
         new Text(Screen.perX(50),monsterPVPButton.y+Screen.perX(8.7), "몬스터가 되어 플레이", Screen.perX(1.5), "lightgray", null,-1,false);
 
@@ -355,16 +350,46 @@ let Screen= {
 
         Component.playerStatusView(player1, 1, 11, "player1");
         Component.playerStatusView(player2, 57, 11, "player2");
+        if (Screen.isMobile) Component.mobileButton(player1, 70);
+        player1.setName("player 1", "green");
+        player2.setName("player 2", "red");
 
-        new Entity(0,-10000,Game.TEXT_CHANNEL).update=function(){
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            ctx.font="bold 15px Arial";
-            ctx.fillStyle="green";
-            Camera.fillText("player1",player1.x+player1.w/2,player1.y-20);
-            ctx.fillStyle="red";
-            Camera.fillText("player2",player2.x+player2.w/2,player2.y-20);
+        function countdown(textset, index){
+            let text = new Text(Screen.perX(50),Screen.perY(50), textset[index], Screen.perX(20), "yellow", null,100,false);
+            if(index==textset.length-1){Input.addSkillKey(player1, Input.KEY_SKILL[2]);Input.addSkillKey(player2, Input.KEY_SKILL[1]);
+            }else text.removeHandler=function(){countdown(textset, index+1);return true;}
         }
+        countdown(['3','2','1',"FIGHT"],0);
+    },
+    monsterPVPScreen(){
+
+    },
+    monsterPVPGameScreen(){
+        Game.resetGame();
+        Component.backButton(function(){Screen.pvpScreen()});
+        Component.worldWall(2000,1000,300);
+        let player1 = new Monster(4,1000-200,-60,false);
+        let player2 = new Monster(3,1000+200,-60,false);
+        player2.isRight=false;
+        function printWin(text){
+            let winText = new Text(Screen.perX(50),Screen.perY(50), text, Screen.perX(10), "yellow", null,300,false);
+            winText.removeHandler=function(){Screen.pvpScreen();return true;};
+            player2.canRemoved=false;player1.canRemoved=false;
+        }
+        player1.removeHandler=function(){printWin("PLAYER 2  WIN");return true;}
+        player2.removeHandler=function(){printWin("PLAYER 1  WIN");return true;}
+        player1.target=player2;
+        player2.target=player1;
+        if(player1.ga==0)Input.addFlyKey(player1, Input.KEY_MOVE[1]);
+        else Input.addMoveKey(player1, Input.KEY_MOVE[1]);
+        if(player2.ga==0)Input.addFlyKey(player2, Input.KEY_MOVE[0]);
+        else Input.addMoveKey(player2, Input.KEY_MOVE[0]);
+
+        Camera.makeTwoTargetCamera(player1, player2, 0,0, 20);
+
+        Component.playerStatusView(player1, 1, 7, "player1");
+        Component.playerStatusView(player2, 57, 7, "player2");
+        if (Screen.isMobile) Component.mobileButton(player1, 70);
 
         function countdown(textset, index){
             let text = new Text(Screen.perX(50),Screen.perY(50), textset[index], Screen.perX(20), "yellow", null,100,false);
@@ -374,27 +399,25 @@ let Screen= {
         countdown(['3','2','1',"FIGHT"],0);
     },
 
-    gameScreen:function() {
+    gameScreen:function(level) {
         Game.resetGame();
         Game.keyboardOn=true;
         Component.backButton(function(){Screen.selectScreen()});
         //player
-        Game.p = new Player(10, -60, Level.playerLevel);
-        Game.p.removeHandler=function(){
+        let player = new Player(10, -60, Level.playerLevel);
+        player.removeHandler=function(){
             Game.channel[Game.BUTTON_CHANNEL].clear();
             Game.channel[Game.TEXT_CHANNEL].clear();
             let text = new Text(Screen.perX(50),Screen.perY(50),"you die",Screen.perX(10),"red",null,200,false);
             text.removeHandler=function(){Screen.selectScreen();return true;};
-            Level.stageMonsterCount=0;
             return true;
         };
-        Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
-        Input.addSkillKey(Game.p, Input.KEY_SKILL[0]);
-        Camera.makeMovingCamera(Game.p,0,0,10);
-        //VIEW
-        Component.playerStatusView(Game.p, 58,1.5);
-        //MOBILE BUTTON 
-        if (Screen.isMobile) Component.mobileButton(Game.p, 70);
+        Input.addMoveKey(player, Input.KEY_MOVE[0]);
+        Input.addSkillKey(player, Input.KEY_SKILL[0]);
+        Camera.makeMovingCamera(player,0,0,10);
+        Component.playerStatusView(player, 58,1.5);
+        if (Screen.isMobile) Component.mobileButton(player, 70);
+        Level.makeStage(level,player)
     },
     multiplayScreen:function(){
         Game.resetGame();

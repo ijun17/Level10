@@ -1,8 +1,10 @@
 class Player extends Entity{
+    name="player";
+    nameColor="black";
     lv=1;
     mp=40;
     speed=4; 
-    magicList=[];
+    skillList=[];
     coolTime=[0,0,0,0];
     isRight=true;
     isMoving=false;
@@ -20,9 +22,10 @@ class Player extends Entity{
         this.inv_mass=1;
         this.COR=0;
         this.overlap=true;
+        this.setName("player", "black");
         //magic
         for(let i=0; i<4; i++){
-            this.magicList[i]=(skillNum[i]>=0?Magic.magicList[skillNum[i]]:["none", function(){},0,0,0]);
+            this.skillList[i]=(skillNum[i]>=0?Magic.magicList[skillNum[i]]:["none", function(){},0,0,0]);
         }
         //lv
         this.lv=Number(lv);
@@ -51,6 +54,11 @@ class Player extends Entity{
         });
         return function(){
             animation.draw(Camera.getX(p.x), Camera.getY(p.y), Camera.getS(p.w), Camera.getS(p.h),p.isRight);
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            ctx.font="bold 15px Arial";
+            ctx.fillStyle=this.nameColor;
+            Camera.fillText(this.name,this.x+this.w/2,this.y-20);
         }
     }
     
@@ -87,13 +95,18 @@ class Player extends Entity{
 
     castSkill(num){
         //num 0:q 1:w 2:e 3:r
-        if(this.coolTime[num]<Game.time&&this.mp>this.magicList[num][3]){
+        if(this.coolTime[num]<Game.time&&this.mp>this.skillList[num][3]){
             let magicEffect = new Particle(5, this.x+this.w/2-this.h/2, this.y);
             magicEffect.w=this.h;
             magicEffect.h=this.h;
-            this.magicList[num][1](this);
-            this.coolTime[num]=this.magicList[num][2]+Game.time;
-            this.mp-=this.magicList[num][3];
+            this.skillList[num][1](this);
+            this.coolTime[num]=this.skillList[num][2]+Game.time;
+            this.mp-=this.skillList[num][3];
         }
+    }
+
+    setName(name, color){
+        this.name=name;
+        this.nameColor=color;
     }
 }

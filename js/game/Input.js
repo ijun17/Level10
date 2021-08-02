@@ -41,7 +41,7 @@ let Input = {
                 case a:player.isMoving = true;player.isRight = false;break;//left
                 case b:player.isFlying = true;player.isUp=true;break;//up
                 case c:player.isMoving = true;player.isRight = true;break;//right
-                case d:player.isFlying = true;player.isUp=true;break;
+                case d:player.isFlying = true;player.isUp=false;break;
             }
         })
         this.keyUps.push(function(e){

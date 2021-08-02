@@ -43,7 +43,7 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(5);return 10;},
-        function(e){e.addAction(1,1,function(){e.speed=15});e.addAction(100,100,function(){e.speed=5}); return 500;}
+        function(e){e.addAction(1,1,function(){e.speed=15;e.power=1000;});e.addAction(100,100,function(){e.speed=5;e.power=500;}); return 700;}
     ]
 },
 {
@@ -56,8 +56,8 @@ const MONSTERS = [{
         function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,10);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
         function(e){
             for(let i=0; i<10; i++){
-                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-2-i*0.5,0,-30)).life=10;
-                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-1.5-i*0.5,0,-30)).life=10;
+                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-2-i*0.1,0,-30)).life=10;
+                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-1.5-i*0.1,0,-30)).life=10;
             }
             return 500;}
     ]
@@ -92,7 +92,7 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
-        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(5,e.getTargetDir()*1.5,0,30);m.power=1000;m.life=10;return 111;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(5,e.getTargetDir()*1.5,0,30);m.power=1000;m.life=50;return 300;},
         function(e){
             e.canInteract=false;
             for(let i=0; i<20; i++){
@@ -123,7 +123,8 @@ class Monster extends Entity {
     power=100;
     speed=1;
     
-    coolTime=[0,0,0,0];
+    skillList=[];
+    coolTime=[];
 
     totalDamage=0;
     canJump = true;
@@ -146,12 +147,18 @@ class Monster extends Entity {
         type.setStatus(this);
         this.attackEffect=type.attackEffect;
         this.attackFilter=function(e){return (e==this.target || e instanceof Block)}
+        //skill
+        for(let i=1; i<type.skillList.length; i++){
+            this.skillList[i-1]=[i,type.skillList[i],0,0];
+            this.coolTime[i-1]=0;
+        }
         //AI
         if(ai){
-            this.target = Game.p;
+            this.searchTarget();
             for(let i=type.skillList.length-1; i>=0;i--){
                 this.addSkill(200,type.skillList[i]);
             }
+            this.move=super.move;
         }
         //image
         let temp = this;
@@ -177,6 +184,7 @@ class Monster extends Entity {
     move(){
         super.move();
         this.move_run();
+        if(this.ga==0)this.move_fly();
     }
 
     draw() {
@@ -206,8 +214,6 @@ class Monster extends Entity {
     }
 
     removeHandler() {
-        Level.stageMonsterCount--;
-        if (Level.stageMonsterCount == 0) Level.clearLevel();
         for(let i=this.w/10; i>=0; i--){
             for(let j=this.h/10; j>=0; j--){
                 let e = new Particle(1, this.x + i * 10, this.y + j * 10);
@@ -228,8 +234,9 @@ class Monster extends Entity {
     }
     castSkill(num){
         //num 0:q 1:w 2:e 3:r
-        if(MONSTERS[this.typenum].skillList.length>num&&this.coolTime[num]<Game.time){
-            this.coolTime[num]=MONSTERS[this.typenum].skillList[num](this)+Game.time;
+        //Monstet skillList[0] is skill to Move
+        if(this.skillList.length>num&&this.coolTime[num]<Game.time){
+            this.coolTime[num]=this.skillList[num][1](this)+Game.time;
         }
     }
 
@@ -240,7 +247,7 @@ class Monster extends Entity {
     //편의기능
     canTarget(){return (this.target!=null&&this.target.canDraw&&this.target.life>0)}
     searchTarget(){
-        let c=Game.channel[Game.PHYSICS_CHANNEL]
+        let c=Game.channel[Game.PHYSICS_CHANNEL].entitys;
         let targetPriority=3; //타겟 우선순위
         for(let i=c.length-1; i>=0; i--){
             if(c[i] instanceof Player){
@@ -273,6 +280,11 @@ class Monster extends Entity {
             if (this.isRight && this.vx <= this.speed) this.vx++;
             else if (!this.isRight && this.vx >= -this.speed) this.vx--;
         }
+    }
+    move_fly(){
+        if (this.isFlying) {
+            this.vy=this.isUp?this.speed:-this.speed;
+        }else this.vy=0;
     }
     jump(s=(this.speed-0.5)){
         if (this.canJump) {

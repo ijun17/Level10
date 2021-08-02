@@ -100,18 +100,13 @@ let Component={
         const viewTextSize2=Screen.perX(1.8);
         const MAX_HP=player.life;
         const MAX_MP=player.mp;
-        const printSkillInfo=(player instanceof Player?function(){
-            for(let i = 0; i < 4; i++){
+        const printSkillInfo=function(){
+            for(let i = player.skillList.length-1; i >=0 ; i--){
                 let coolT = player.coolTime[i] - Game.time;
-                let magic = player.magicList[i];
-                ctx.fillText(magic[0] + "(" + magic[3] + "): " + (coolT > 0 ? (coolT * 0.01).toFixed(2) : "ready"),Screen.perX(perX+19),Screen.perX(perY)+Screen.perX(2) * i);
+                let skill = player.skillList[i];
+                ctx.fillText(skill[0] + "(" + skill[3] + "): " + (coolT > 0 ? (coolT * 0.01).toFixed(2) : "ready"),Screen.perX(perX+19),Screen.perX(perY)+Screen.perX(2) * i);
             }
-        }:function(){
-            for(let i=0,l=MONSTERS[player.typenum].skillList.length; i<l; i++){
-                let coolT = player.coolTime[i] - Game.time;
-                ctx.fillText((i+1)+": " + (coolT > 0 ? (coolT * 0.01).toFixed(2) : "ready"), Screen.perX(perX+19),Screen.perX(perY)+Screen.perX(2) * i);
-            }
-        })
+        }
         let view = new Button(Screen.perX(perX),Screen.perX(perY),Screen.perX(45),Screen.perX(8),Game.TEXT_CHANNEL);
         view.draw=function(){
             ctx.fillStyle="rgba(0,0,0,0.1)";
@@ -181,8 +176,8 @@ let Component={
     },
     worldWall:function(mapSizeW,mapSizeH,wallSize){
         new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top
-        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall"); //left
-        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*2,"wall");//right
+        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*4,"wall"); //left
+        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*4,"wall");//right
         new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize,"grass");
     },
     particleSpray:function(type,xy,range,particleSize,particleVy,delay){
