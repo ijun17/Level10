@@ -48,12 +48,12 @@ class Player extends Entity{
         if(this.damageTick>0)this.damageTick--;
     }
     static getDraw(p){
-        let animation = new Animation("resource/player/"+`player.png`,30,60,[1,1],function(){
+        p.animation = new Animation("resource/player/"+`player.png`,30,60,[1,1],function(){
             if(p.isMoving)return 1;
             else return 0;
         });
         return function(){
-            animation.draw(Camera.getX(p.x), Camera.getY(p.y), Camera.getS(p.w), Camera.getS(p.h),p.isRight);
+            p.animation.draw(Camera.getX(p.x), Camera.getY(p.y), Camera.getS(p.w), Camera.getS(p.h),p.isRight);
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
             ctx.font="bold 15px Arial";

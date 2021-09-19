@@ -52,7 +52,7 @@ let Screen= {
 
     mainScreen:function() {
         Game.resetGame();
-        Component.particleSpray(3,{x:Screen.perX(50),y:0}, Screen.perX(120), 20, 1, 10);
+        Component.particleSpray(3,{x:Screen.perX(50),y:0}, Screen.perX(120),0, 20, 1, 10);
 
         var startButton = new Button((canvas.width - Screen.perX(25))/2, (canvas.height-Screen.perX(8))/2, Screen.perX(25), Screen.perX(8));
         startButton.canAct=true;
@@ -89,20 +89,8 @@ let Screen= {
         Game.resetGame();
 
         const space=Screen.perX(1);
-
-        let ashSpray = new Button(-100,-100,0,0,Game.BUTTON_CHENNEL);
-        ashSpray.canAct=true;
-        ashSpray.canInteract=false;
-        ashSpray.addAction(1,1000000,function(){
-            if(Game.time%10==0){
-                let r = Math.random()*canvas.width;
-                let ash=new Particle(3,r,0);
-                ash.w=20;
-                ash.h=20;
-                ash.life=400;
-                ash.vy-=1.5;
-            }
-        });
+        
+        Component.particleSpray(3,{x:Screen.perX(50),y:0}, Screen.perX(120),0, 20, 2, 10);
         //BACK
         Component.backButton(function () { Screen.mainScreen() });
         //HELP BUTTON
@@ -389,7 +377,6 @@ let Screen= {
 
         Component.playerStatusView(player1, 1, 7, "player1");
         Component.playerStatusView(player2, 57, 7, "player2");
-        if (Screen.isMobile) Component.mobileButton(player1, 70);
 
         function countdown(textset, index){
             let text = new Text(Screen.perX(50),Screen.perY(50), textset[index], Screen.perX(20), "yellow", null,100,false);

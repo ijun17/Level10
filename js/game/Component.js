@@ -176,11 +176,11 @@ let Component={
     },
     worldWall:function(mapSizeW,mapSizeH,wallSize){
         new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top
-        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH*4,"wall"); //left
-        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH*4,"wall");//right
+        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall"); //left
+        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall");//right
         new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize,"grass");
     },
-    particleSpray:function(type,xy,range,particleSize,particleVy,delay){
+    particleSpray:function(type,xy,rangeW,rangeH,particleSize,particleVy,delay){
         let spray = new Entity(0,0,Game.BUTTON_CHENNEL);
         spray.canMove=false;
         spray.canCollision=false;
@@ -188,8 +188,8 @@ let Component={
         let count=0;
         spray.update=function(){
             if(++count==delay){
-                let randomX = (Math.random()-0.5)*range;
-                let particle=new Particle(type,randomX+xy.x,xy.y);
+                let randomX = (Math.random()-0.5)*rangeW;
+                let particle=new Particle(type,randomX+xy.x,xy.y+rangeH);
                 particle.w=particleSize;
                 particle.h=particleSize;
                 particle.life=400;

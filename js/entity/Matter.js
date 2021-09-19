@@ -105,7 +105,7 @@ const MATTERS=[
         name: "lightning",
         setStatus:function(e){e.power=1000;e.w=300;e.h=1200;e.inv_mass=0;e.life=50;e.move=function(){};e.addAction(0,99999999,function(){--e.life;Camera.vibrate(5);})},
         effect:function(e,v){
-            if(v instanceof Matter && (v.typenum==1||v.typenum==7)){
+            if(v instanceof Matter && (v.typenum==1)){
                 v.throw();
                 e.power+=v.power;
             }else{

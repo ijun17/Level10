@@ -40,6 +40,7 @@ let Level= {
             let entitys=Game.channel[Game.PHYSICS_CHANNEL].entitys;
             for(let i=entitys.length; i>=0; i--){
                 if(entitys[i] instanceof Monster)entitys[i].life=0;
+                else if(entitys[i] instanceof Player)entitys[i].canRemoved=false;
             }
             Camera.vibrate(50);
             return true;
@@ -62,12 +63,12 @@ let Level= {
                 Component.worldWall(1000,1000,300);
                 break;
             case 2: 
+                Level.createMainMonster(1, 700, -1000);
                 new Monster(0, 1000, -1000);
                 new Monster(0, 900, -1000);
                 new Monster(0, 800, -1000);
-                Level.createMainMonster(1, 700, -1000);
                 Component.worldWall(2000,1000,300);
-                Component.particleSpray(3,player,2000,10,1.5,5)
+                Component.particleSpray(3,player,2000,-1000,10,1.5,5)
                 Screen.bgColor="#cde5e4";
                 break;
             case 3: 
@@ -80,7 +81,7 @@ let Level= {
                 Level.createMainMonster(3,1000, -250);
                 Screen.bgColor="#424146";
                 Component.worldWall(2000,1000,300);
-                Component.particleSpray(0,player,2000,10,1.5,5)
+                Component.particleSpray(0,player,2000,-1000,10,1.5,5)
                 break;
             case 5:
                 Level.createMainMonster(4,Screen.perX(50), -400).addAction(1,100,function(){Camera.vibrate(10);});
