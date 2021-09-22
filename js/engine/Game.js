@@ -19,7 +19,7 @@ let Game = {
         Game.channel[3].clear();
         Game.time = 0;
         Camera.cameraOn = false;
-        Camera.extension=canvas.width/(Screen.isMobile ? 1200 : 1400);
+        Camera.extension=canvas.width/1600;
         Input.resetKeyInput();
         Screen.bgColor="#b2c3c8";
         //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A,맑은하늘:rgb(121, 155, 206), 녹색하늘색:#94a9ad}

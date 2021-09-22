@@ -22,7 +22,12 @@ class EntityManager{
             entity=entitys[i];
             if (entity.canRemoved && (entity.life < 1 || (entity.y>this.LIMIT_Y&&entity.canFallDie)) && entity.removeHandler()) {
                 entitys.splice(i, 1);
-            }else entity.update();
+            }else {
+                const maxV = 80;
+                if(Math.abs(entity.vx)>maxV)entity.vx=Math.sign(entity.vx)*maxV;
+                if(Math.abs(entity.vy)>maxV)entity.vy=Math.sign(entity.vy)*maxV;
+                entity.update();
+            }
         }
     }
 
@@ -34,14 +39,6 @@ class EntityManager{
                 for (let j = i - 1; j >= 0; j--) {
                     let e2 = this.entitys[j];
                     if (e2.canInteract && this.isCollision(e, e2)) {
-                        const maxV = 100;
-                        //
-                        if(Math.abs(e.vx)>maxV)e.vx=Math.sign(e.vx)*maxV;
-                        if(Math.abs(e.vy)>maxV)e.vy=Math.sign(e.vy)*maxV;
-                        if(Math.abs(e2.vx)>maxV)e2.vx=Math.sign(e2.vx)*maxV;
-                        if(Math.abs(e2.vy)>maxV)e2.vy=Math.sign(e2.vy)*maxV;
-
-                        //collision handling
                         this.collision(e, e2);
                     }
                 }
@@ -109,7 +106,6 @@ class EntityManager{
             b.giveForce(imperse[0], imperse[1]);
         }
     }
-
     getCollisionNormal(a, b){
         let normal=[0,0];
         let overlaps=[Math.abs(a.x+a.w-(b.x)),Math.abs(a.x-(b.x+b.w)),Math.abs(a.y-(b.y+b.h)),Math.abs(a.y+a.h-b.y)]; //[right, left, top, bottom]

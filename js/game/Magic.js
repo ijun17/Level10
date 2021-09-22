@@ -150,7 +150,17 @@ addAction(player, 1,12,#{
     });
     addAction(fire,81,81,#{giveForce(fire,-getVX(fire)+plusX*20,-getVY(fire));})
     i++;
-});`,10]
+});`,10],
+
+    ["유도미사일",`//유도미사일
+@t=create(TRIGGER, front(50),0,30,200)
+setTrigger(t,#{
+    @target=$
+    @e=create(ENERGY, 0,0)
+    giveLife(e,4000)
+    addAction(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
+    for(@i=0;i<30;i++)create(ENERGY, 0,0)
+})`,10]
 ],
 
 //

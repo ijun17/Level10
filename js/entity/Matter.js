@@ -70,6 +70,7 @@ const MATTERS=[
         setStatus:function(e){e.power=1000;e.inv_mass=0.5;e.ga=-0.01;e.friction=0;},
         effect:function(e,v){
             --this.life;
+            if(e.life<1)return;//e와 v의 collisionHandler가 중복해서 실행되는걸 방지
             if(v instanceof Matter&&v.typenum==4){
                 e.life+=v.life+1;v.life=0; //생명 합
                 e.x=(e.x*e.w+v.x*v.w)/(e.w+v.w);   e.y=(e.y*e.h+v.y*v.h)/(e.h+v.h); //좌표 조정

@@ -89,7 +89,7 @@ let Screen= {
         Game.resetGame();
 
         const space=Screen.perX(1);
-        
+
         Component.particleSpray(3,{x:Screen.perX(50),y:0}, Screen.perX(120),0, 20, 2, 10);
         //BACK
         Component.backButton(function () { Screen.mainScreen() });
@@ -357,7 +357,7 @@ let Screen= {
         Component.backButton(function(){Screen.pvpScreen()});
         Component.worldWall(2000,1000,300);
         let player1 = new Monster(4,1000-200,-60,false);
-        let player2 = new Monster(3,1000+200,-60,false);
+        let player2 = new Monster(5,1000+200,-60,false);
         player2.isRight=false;
         function printWin(text){
             let winText = new Text(Screen.perX(50),Screen.perY(50), text, Screen.perX(10), "yellow", null,300,false);
