@@ -193,7 +193,7 @@ const vvmagic={
     giveForce:function(e,ax,ay){e.vx+=ax;e.vy+=ay;},
     giveLife:function(e,d){e.life+=d;},
     invisible:function(e,time){e.canDraw=false;e.addAction(time,time,function(){e.canDraw=true;});},
-    move:function(e,vx,vy){if(e instanceof Monster)return;e.x+=vx;e.y-=vy;},
+    move:function(e,vx,vy){if(e instanceof Monster||e instanceof Player&&e!==player)return;e.x+=vx;e.y-=vy;},
     addAction:function(e,startTime,endTime,f){e.addAction(startTime,endTime,f);},
     getX:function(e){return e.getX()-player.getX();},
     getY:function(e){return player.getY()-e.getY();},
@@ -205,10 +205,13 @@ const vvmagic={
 //
 test_unit_magic:`
 let magicFactor = [100,100]; //[cooltime, magic point]
-function getEnergy(e){let test = new Entity(0,10000,Game.PHYSICS_CHANNEL);test.life=0;e.collisionHandler(test);return Math.abs(test.life);}
+function getEnergy(e){
+    let test = new Entity(0,10000,Game.PHYSICS_CHANNEL);
+    test.life=0;e.collisionHandler(test,[Math.sign(e.vx),Math.sign(e.vy)]);
+    return Math.abs(test.life);}
 function addMF(mf) {magicFactor[0] = Math.floor(Math.sqrt(magicFactor[0]**2 + mf[0]**2));magicFactor[1] += Math.floor(Math.abs(mf[1]));}
 const vvtest={
-    test_create:function(typenum=vvmagic.BLOCK,vx=0,vy=0,w=30,h=30){let e=vvmagic.create(typenum,vx,vy,w,h);addMF([50,getEnergy(e)*(w*h)/900+e.getVectorLength()]);return e;},
+    test_create:function(typenum=vvmagic.BLOCK,vx=0,vy=0,w=30,h=30){let e=vvmagic.create(typenum,vx,(vy==0?1:vy),w,h);addMF([50,getEnergy(e)*(w*h)/900+e.getVectorLength()]);return e;},
     test_setTrigger:function(t,f){vvmagic.setTrigger(t,f);addMF([100,t.w*t.h+getEnergy(t)+1]);},
     test_giveForce:function(e,ax,ay){let oldE = getEnergy(e);vvmagic.giveForce(e,ax,ay);let newE=getEnergy(e);addMF([0, newE-oldE]);},
     test_giveLife:function(e,d){addMF([0,d]);vvmagic.giveLife(e,d);},

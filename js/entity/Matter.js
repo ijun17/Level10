@@ -8,7 +8,7 @@ const MATTERS=[
         effect:function(e,v){
             --this.life;
             if(v instanceof Matter&&(v.typenum==0||v.typenum==6)){
-                new Audio("resource/sound/explosion.mp3").play();
+                Sound.play(Sound.audios.explosion,0.2);
                 let explosion = new Matter(6, e.x-35, e.y-35,0,0);
                 e.throw();
                 if(v.typenum==0)v.throw();
@@ -18,6 +18,7 @@ const MATTERS=[
             }else{
                 v.giveDamage(e.power);v.giveForce(e.vx/e.inv_mass,(e.vy+1)/e.inv_mass);
             }
+            return true;
         }
     },
     {
@@ -28,6 +29,8 @@ const MATTERS=[
             if(v instanceof Matter && v.typenum==1){
                 if(++e.lightningPoint>8000){
                     if(e.lightningPoint==10000){
+                        Sound.play(Sound.audios.explosion,1);
+                        Sound.play(Sound.audios.blockCrashing,1);
                         new Matter(7, e.x+e.w/2-150,e.y-900);
                         e.throw();
                         v.throw();
@@ -37,6 +40,7 @@ const MATTERS=[
                     }
                 }
             }
+            return true;
         }
     },
     {
@@ -59,12 +63,13 @@ const MATTERS=[
                 v.giveDamage(Math.floor(this.getVectorLength())+e.power);
                 v.addAction(1,150,function(){v.vx=0;v.vy=0;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
             }
+            return true;
         }
     },
     {
         name:"arrow",
         setStatus:function(e){e.power=100;},
-        effect:function(e,v){--this.life;v.giveDamage(Math.floor(e.getVectorLength()*e.power));v.giveForce(e.vx/e.inv_mass,(e.vy)/e.inv_mass);}
+        effect:function(e,v){--this.life;v.giveDamage(Math.floor(e.getVectorLength()*e.power));v.giveForce(e.vx/e.inv_mass,(e.vy)/e.inv_mass);return true;}
     },
     {
         name:"energy",
@@ -84,15 +89,17 @@ const MATTERS=[
                 v.giveDamage(e.power);
                 v.giveForce(e.vx/e.inv_mass+(e.getX()<v.getX()?e.w/10:-e.w/10), e.vy/e.inv_mass+(e.getY()<v.getY()?e.h/10:-e.h/10)+1);
             }
+            return true;
         }
     },
     {
         name:"wind",
-        setStatus:function(e){e.power=0;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.001;e.addAction(0,99999999,function(){--e.life;})},
+        setStatus:function(e){e.power=0;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.1;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveForce(e.vx-v.vx,e.vy-v.vy+1);
             v.giveDamage(e.power);
             if(e.vx==0&&e.vy==0)e.throw();
+            return true;
         }
     },
     {
@@ -101,11 +108,15 @@ const MATTERS=[
         effect:function(e,v){
             v.giveDamage(e.power);
             v.giveForce((e.getX()<v.getX()?1:-1), (e.getY()<v.getY()?1:-1));
+            return false;
         }
     },
     {
         name: "lightning",
-        setStatus:function(e){e.power=1000;e.brightness=10;e.w=300;e.h=1200;e.inv_mass=0;e.life=50;e.move=function(){};e.addAction(0,99999999,function(){--e.life;Camera.vibrate(5);})},
+        setStatus:function(e){
+            e.power=1000;e.brightness=10;e.w=300;e.h=1200;e.inv_mass=0;e.life=50;e.move=function(){};
+            e.addAction(0,99999999,function(){--e.life;Camera.vibrate(5);});
+        },
         effect:function(e,v){
             if(v instanceof Matter && (v.typenum==1)){
                 v.throw();
@@ -113,6 +124,7 @@ const MATTERS=[
             }else{
                 v.giveDamage(e.power);
             }
+            return false;
         }
     }
 ];
@@ -190,7 +202,6 @@ class Matter extends Entity {
     }
 
     collisionHandler(e) {
-        this.effect(this,e);
-        return true;
+        return this.effect(this,e);
     }
 }

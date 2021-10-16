@@ -59,8 +59,9 @@ class EntityManager{
         let normal=normalAndOverlap[0];
         let overlap=normalAndOverlap[1];
 
-        let collisionHandling = a.collisionHandler(b, normal[0]+normal[1]*2);
-        if(!(b.collisionHandler(a,-normal[0]-normal[1]*2)&&collisionHandling))return; //ignore phsics collision
+        // normal  normal[0]+normal[1]*2   right:1 left:-1 top:2 bottom:-2
+        let collisionHandling = a.collisionHandler(b, normal);
+        if(!(b.collisionHandler(a,[-normal[0],-normal[1]])&&collisionHandling))return; //ignore phsics collision
         if(a.overlap&&b.overlap)return; //ignore phsics collision
         if(a.inv_mass===0 && b.inv_mass===0){
             //special collision 

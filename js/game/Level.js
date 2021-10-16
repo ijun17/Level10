@@ -78,11 +78,11 @@ let Level= {
                 Component.worldWall(3000,2000,300);
                 //Screen.bgColor="#424146";
                 Component.particleSpray(3,player,2000,-1000,10,1.5,5);
-                Component.shader("#230505",0.5);
+                //Component.shader("white",0);
                 break;
             case 4:
                 Level.createMainMonster(3,1000, -250);
-                Screen.bgColor="#424146";
+                Screen.bgColor="rgb(35,5,5)"//"#424146";
                 Component.worldWall(2000,1000,300);
                 Component.particleSpray(0,player,2000,-1000,10,1.5,5);
                 Component.shader(background="rgb(1,1,7)", globalAlpha=0.9);
@@ -91,12 +91,13 @@ let Level= {
                 Level.createMainMonster(4,Screen.perX(50), -400).addAction(1,100,function(){Camera.vibrate(10);});
                 Screen.bgColor="#657d87";
                 Component.worldWall(2000,1000,300);
-                Component.shader(Screen.bgColor,0.2);
+                Component.shader(Screen.bgColor,0.3);
                 break;
             case 6:
                 Level.createMainMonster(5,Screen.perX(50), -400);
                 Screen.bgColor="#424146";
                 Component.worldWall(3000,2000,300);
+                Component.shader();
                 break;
             case 7:
                 Component.worldWall(2000,1000,300);
@@ -107,9 +108,13 @@ let Level= {
                 break;
             case 9:
                 Component.worldWall(2000,1000,300);
+                Screen.bgColor="white"
+                Component.shader(background="rgb(5,5,15)", globalAlpha=0.8);
                 break;
             case 10:
                 Component.worldWall(2000,1000,300);
+                Screen.bgColor="rgb(5,5,35)"
+                Component.shader(background="rgb(5,5,15)", globalAlpha=0.9);
                 break;
             default:
                 break;

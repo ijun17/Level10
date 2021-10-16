@@ -6,10 +6,10 @@ class Block extends Entity{
         this.w=w;
         this.h=h;
         this.color = color;
-        //this.overlap=false;
+        this.overlap=false;
         this.life=w*h*10;
         this.COR=1;
-        this.inv_mass=10/(w*h);
+        this.inv_mass=20/(w*h);
         //this.brokenSound.src="resource/sound/broken.mp3";
         
     }
@@ -19,21 +19,18 @@ class Block extends Entity{
         Camera.fillRect(this.x,this.y,this.w,this.h);
     }
 
-    collisionHandler(e){
+    collisionHandler(e,ct=[0,0]){
         //this.life--;
-        var damage=(this.w*this.h)*(Math.floor(this.getVectorLength())**1.2)/10;
-        e.giveDamage(Math.floor(damage));
+        if(!(e instanceof MapBlock)&&(ct[0]!==0&&ct[0]*this.vx>0||ct[1]!==0&&ct[1]*this.vy>0)){
+            var damage = (Math.floor((this.w * this.h) * this.getVectorLength()) / 50);
+            e.giveDamage(Math.floor(damage));
+        }
         //e.giveForce(this.vx/2, this.vy/2);
         return true;
     }
     removeHandler(){
-        //let temp = this.w*this.h/1000/Math.sqrt((Game.p.x+Game.p.w/2-this.x-this.w/2)**2+(Game.p.y+Game.p.h/2-this.y-this.h/2)**2)
-        //this.brokenSound.volume=(temp > 1 ? 1 :temp);
-        // if(this.brokenSound.volume>0.01){
-        //     this.brokenSound.pause();
-        //     this.brokenSound.currentTime = 0;
-        //     this.brokenSound.play();
-        // }
+        let temp = this.w*this.h/10000  //Math.sqrt(Math.sqrt((Game.p.getX()-this.getX())**2+(Game.p.getY()-this.getY())**2))
+        Sound.play(Sound.audios.blockCrashing, temp);
         return true;
     }
 }

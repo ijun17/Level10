@@ -82,8 +82,8 @@ class Player extends Entity{
         }
     }
 
-    collisionHandler(e,ct){
-        if(ct==-2&&!this.canJump)this.canJump=true;
+    collisionHandler(e,ct=[0,0]){
+        if(ct[1]===-1&&!this.canJump)this.canJump=true;
         return true;
     }
 

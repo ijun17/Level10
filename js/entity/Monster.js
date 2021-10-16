@@ -39,7 +39,7 @@ const MONSTERS = [{
 {
     name: "지옥파리",
     image: {name:"hellfly",w:30,h:30,frame:8,MAX_X:[1,1]},
-    setStatus: function(e){e.w=30;e.h=30;e.life=20000;e.power=500;e.speed=5;e.inv_mass=1;e.ga=0;},
+    setStatus: function(e){e.w=30;e.h=30;e.life=30000;e.power=500;e.speed=5;e.inv_mass=1;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(5);return 10;},
@@ -49,7 +49,7 @@ const MONSTERS = [{
 {
     name: "심연의흑염룡",
     image: {name:"wyvern",w:80,h:80,frame:16,MAX_X:[4,1]},
-    setStatus: function(e){e.w=300;e.h=300;e.life=5000000;e.power=4000;e.speed=5;e.inv_mass=0.1;e.ga=0;},
+    setStatus: function(e){e.w=300;e.h=300;e.life=5000000;e.power=4000;e.speed=4;e.inv_mass=0.1;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
@@ -95,11 +95,11 @@ const MONSTERS = [{
         function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(5,e.getTargetDir()*1.5,0,30);m.power=1000;m.life=50;return 300;},
         function(e){
             e.canInteract=false;
-            for(let i=0; i<20; i++){
+            for(let i=0; i<10; i++){
                 for(let j=0; j<20; j++){
                     let block=new Block(800+j*20,-1000+i*20,50,50,"rgba(252, 64, 12,0.5)");
                     block.giveForce=function(){};
-                    block.COR=0;
+                    block.brightness=1;
                     block.canRemoved=false;
                     block.addAction(1000,1000,function(){block.canRemoved=true;});
                 }
@@ -197,8 +197,8 @@ class Monster extends Entity {
         
     }
 
-    collisionHandler(e,ct) {
-        if (ct==-2) this.canJump = true;
+    collisionHandler(e,ct=[0,0]) {
+        if (ct[1]===-1) this.canJump = true;
         //공격
         if(this.attackFilter(e)){
             if(this.target==null)this.target=e;
