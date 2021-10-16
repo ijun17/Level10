@@ -77,7 +77,7 @@ let Screen= {
         let clickHereText = new Button(Screen.perX(50),Screen.perY(62),0,0);
         clickHereText.drawOption(null, null, "click here",Screen.perX(1.6),"black");
         //decorate1
-        new Text(Screen.perX(50),Screen.perY(90), "Magic & Monster & Arena", Screen.perX(5),"rgb(42, 42, 42)",null,-1,false);
+        new Text(Screen.perX(50),Screen.perY(92), "LEVEL10", Screen.perX(8),"rgb(35, 35, 40)",null,-1,false);
         new MapBlock(Screen.perX(5),Screen.perY(62),Screen.perX(15),Screen.perY(30));
         new MapBlock(Screen.perX(27),Screen.perY(70),Screen.perX(15),Screen.perY(50));
         new MapBlock(Screen.perX(58),Screen.perY(70),Screen.perX(15),Screen.perY(50));

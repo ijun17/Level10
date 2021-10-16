@@ -46,7 +46,7 @@ let Level= {
             Camera.vibrate(50);
             return true;
         }
-        let textE = new Text(Screen.perX(10),Screen.perY(3),"vs "+m.name,Screen.perX(3), "black", null, 400, false);
+        let textE = new Text(Screen.perX(10),Screen.perY(3),`LEVEL${typenum+1}`,Screen.perX(4), "#2B2B2B", null, 400, false);
         textE.textBaseline = "top";
         textE.textAlign="left";
         return m;
