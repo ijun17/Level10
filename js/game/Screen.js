@@ -83,6 +83,13 @@ let Screen= {
         new MapBlock(Screen.perX(58),Screen.perY(70),Screen.perX(15),Screen.perY(50));
         new MapBlock(Screen.perX(80),Screen.perY(62),Screen.perX(15),Screen.perY(30));
         new MapBlock(Screen.perX(8),Screen.perY(80),Screen.perX(84),Screen.perY(50));
+        Component.shader("#657d87",0.2)
+        // let fire=new Matter(0,Screen.perX(11),0)
+        // fire.canRemoved=false;
+        // fire.enlarge(2)
+        // new Matter(0,Screen.perX(33),0).canRemoved=false;
+        // new Matter(0,Screen.perX(65),0).canRemoved=false;
+        // new Matter(0,Screen.perX(87),0).canRemoved=false;
     },
 
     selectScreen:function() {
@@ -109,9 +116,9 @@ let Screen= {
         };
         mobileButton.drawOption(null,"black","to mobile",Screen.perX(1.7),"black");
 
-        let nightModeButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space*2 - Screen.perX(6), Screen.perX(8), Screen.perX(3));
-        nightModeButton.drawOption(null,"darkblue","night mode",Screen.perX(1.7),"darkblue");
-        nightModeButton.code=function(){Level.nightMode=true;}
+        // let nightModeButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space*2 - Screen.perX(6), Screen.perX(8), Screen.perX(3));
+        // nightModeButton.drawOption(null,"darkblue","night mode",Screen.perX(1.7),"darkblue");
+        // nightModeButton.code=function(){Level.nightMode=true;}
         
         //SELECT MAGIC BUTTON
         let selectMagicButton = new Button(canvas.width - Screen.perX(16)-space, space, Screen.perX(16), Screen.perX(4));

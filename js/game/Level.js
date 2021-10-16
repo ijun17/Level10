@@ -1,6 +1,5 @@
 let Level= {
     playerLevel:0,
-    nightMode:false,
 
     loadLevel:function() {
         this.playerLevel = localStorage.betalevel2;
@@ -46,9 +45,6 @@ let Level= {
             Camera.vibrate(50);
             return true;
         }
-        let textE = new Text(Screen.perX(10),Screen.perY(3),`LEVEL${typenum+1}`,Screen.perX(4), "#2B2B2B", null, 400, false);
-        textE.textBaseline = "top";
-        textE.textAlign="left";
         return m;
     },
 
@@ -58,6 +54,10 @@ let Level= {
         }
         //level에 따라 달라지는 변수
         Screen.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
+        let textE = new Text(Screen.perX(10),Screen.perY(3),`LEVEL${level}`,Screen.perX(4), "#2B2B2B", null, 400, false);
+        textE.textBaseline = "top";
+        textE.textAlign="left";
+        
         switch (level) {
             case 1: 
                 makeSuperMob(Level.createMainMonster(0, 1000, -1000),2.5,2,5,1);
@@ -77,17 +77,21 @@ let Level= {
                 for(let i=0; i<15; i++)new Monster(2, 200*i, -1000);
                 Component.worldWall(3000,2000,300);
                 //Screen.bgColor="#424146";
+                Component.particleSpray(3,player,2000,-1000,10,1.5,5);
+                Component.shader("#230505",0.5);
                 break;
             case 4:
                 Level.createMainMonster(3,1000, -250);
                 Screen.bgColor="#424146";
                 Component.worldWall(2000,1000,300);
-                Component.particleSpray(0,player,2000,-1000,10,1.5,5)
+                Component.particleSpray(0,player,2000,-1000,10,1.5,5);
+                Component.shader(background="rgb(1,1,7)", globalAlpha=0.9);
                 break;
             case 5:
                 Level.createMainMonster(4,Screen.perX(50), -400).addAction(1,100,function(){Camera.vibrate(10);});
                 Screen.bgColor="#657d87";
                 Component.worldWall(2000,1000,300);
+                Component.shader(Screen.bgColor,0.2);
                 break;
             case 6:
                 Level.createMainMonster(5,Screen.perX(50), -400);
@@ -99,14 +103,16 @@ let Level= {
                 
                 break;
             case 8:
+                Component.worldWall(2000,1000,300);
                 break;
             case 9:
+                Component.worldWall(2000,1000,300);
                 break;
             case 10:
+                Component.worldWall(2000,1000,300);
                 break;
             default:
                 break;
         }
-        if(this.nightMode)Component.ShadowMaker();
     }
 }

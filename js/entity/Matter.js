@@ -8,6 +8,7 @@ const MATTERS=[
         effect:function(e,v){
             --this.life;
             if(v instanceof Matter&&(v.typenum==0||v.typenum==6)){
+                new Audio("resource/sound/explosion.mp3").play();
                 let explosion = new Matter(6, e.x-35, e.y-35,0,0);
                 e.throw();
                 if(v.typenum==0)v.throw();

@@ -211,7 +211,7 @@ let Component={
         }
     },
 
-    ShadowMaker: function (background="rgb(1,1,5)", globalAlpha=0.9) {
+    shader: function (background="rgb(1,1,7)", globalAlpha=0.8) {
         function getBrightness(e){
             if(e.brightness==undefined)return 0;
             else return e.brightness;
@@ -222,7 +222,7 @@ let Component={
             tempctx.fill();
             tempctx.closePath();
         }
-        let sm = new Entity(0,0,Game.BUTTON_CHANNEL);
+        let sm = new Entity(0,0,Game.PARTICLE_CHANNEL);
         sm.update = function () {
             tempctx.clearRect(0, 0, tempcanvas.width, tempcanvas.height);
             tempctx.fillStyle="#FAFFAF";//자연광  rgb(250, 255, 175)
