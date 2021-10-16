@@ -1,5 +1,6 @@
 let Level= {
     playerLevel:0,
+    nightMode:false,
 
     loadLevel:function() {
         this.playerLevel = localStorage.betalevel2;
@@ -94,6 +95,8 @@ let Level= {
                 Component.worldWall(3000,2000,300);
                 break;
             case 7:
+                Component.worldWall(2000,1000,300);
+                
                 break;
             case 8:
                 break;
@@ -104,5 +107,6 @@ let Level= {
             default:
                 break;
         }
+        if(this.nightMode)Component.ShadowMaker();
     }
 }

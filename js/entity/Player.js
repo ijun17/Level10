@@ -22,6 +22,7 @@ class Player extends Entity{
         this.inv_mass=1;
         this.COR=0;
         this.overlap=true;
+        this.brightness=0.2
         this.setName("player", "black");
         //magic
         for(let i=0; i<4; i++){

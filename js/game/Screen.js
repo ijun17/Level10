@@ -108,6 +108,11 @@ let Screen= {
             full.code=function(){startFs(canvas);full.x=10000;Input.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);}
         };
         mobileButton.drawOption(null,"black","to mobile",Screen.perX(1.7),"black");
+
+        let nightModeButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space*2 - Screen.perX(6), Screen.perX(8), Screen.perX(3));
+        nightModeButton.drawOption(null,"darkblue","night mode",Screen.perX(1.7),"darkblue");
+        nightModeButton.code=function(){Level.nightMode=true;}
+        
         //SELECT MAGIC BUTTON
         let selectMagicButton = new Button(canvas.width - Screen.perX(16)-space, space, Screen.perX(16), Screen.perX(4));
         selectMagicButton.code = function () { Screen.selectMagicScreen(); };

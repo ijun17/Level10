@@ -99,6 +99,7 @@ const MONSTERS = [{
                 for(let j=0; j<20; j++){
                     let block=new Block(800+j*20,-1000+i*20,50,50,"rgba(252, 64, 12,0.5)");
                     block.giveForce=function(){};
+                    block.COR=0;
                     block.canRemoved=false;
                     block.addAction(1000,1000,function(){block.canRemoved=true;});
                 }

@@ -24,8 +24,7 @@ class Entity {
     canAct=true;
     canRemoved = true; 
     canFallDie=true;
-    
-    constructor(x, y, channelLevel = 0) {
+    constructor(x, y, channelLevel=0) {
         this.x = x;
         this.y = y;
         this.channelLevel = channelLevel;
@@ -55,8 +54,8 @@ class Entity {
     }
 
     move(){
-        if(Math.abs(this.vx)>100)this.vx=Math.sign(this.vx)*80;
-        if(Math.abs(this.vy)>100)this.vy=Math.sign(this.vy)*80;
+        if(Math.abs(this.vx)>80)this.vx=Math.sign(this.vx)*80;
+        if(Math.abs(this.vy)>80)this.vy=Math.sign(this.vy)*80;
         this.x += this.vx;
         this.y -= this.vy;
         this.vy += this.ga;

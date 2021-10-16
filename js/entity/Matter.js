@@ -2,7 +2,7 @@ const MATTERS=[
     {
         name:"fire",
         setStatus:function(e){
-            e.power=500;
+            e.power=500;e.brightness=1;
             e.addAction(1,10000,function (){if(Game.time%15==0){new Particle(1,e.x,e.y);new Particle(0,e.x,e.y);}});
         },
         effect:function(e,v){
@@ -21,7 +21,7 @@ const MATTERS=[
     },
     {
         name:"electricity",
-        setStatus:function(e){e.power=110;e.ga=0;e.inv_mass=0;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
+        setStatus:function(e){e.power=110;e.brightness=1;e.ga=0;e.inv_mass=0;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveDamage(e.power);v.vx=0;v.vy=0;
             if(v instanceof Matter && v.typenum==1){
@@ -67,7 +67,7 @@ const MATTERS=[
     },
     {
         name:"energy",
-        setStatus:function(e){e.power=1000;e.inv_mass=0.5;e.ga=-0.01;e.friction=0;},
+        setStatus:function(e){e.power=1000;e.brightness=2;e.inv_mass=0.5;e.ga=-0.01;e.friction=0;},
         effect:function(e,v){
             --this.life;
             if(e.life<1)return;//e와 v의 collisionHandler가 중복해서 실행되는걸 방지
@@ -96,7 +96,7 @@ const MATTERS=[
     },
     {
         name:"explosion",
-        setStatus:function(e){e.power=3000;e.w=100;e.h=100;e.ga=0;e.life=50;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
+        setStatus:function(e){e.power=3000;e.brightness=3;e.w=100;e.h=100;e.ga=0;e.life=50;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveDamage(e.power);
             v.giveForce((e.getX()<v.getX()?1:-1), (e.getY()<v.getY()?1:-1));
@@ -104,7 +104,7 @@ const MATTERS=[
     },
     {
         name: "lightning",
-        setStatus:function(e){e.power=1000;e.w=300;e.h=1200;e.inv_mass=0;e.life=50;e.move=function(){};e.addAction(0,99999999,function(){--e.life;Camera.vibrate(5);})},
+        setStatus:function(e){e.power=1000;e.brightness=10;e.w=300;e.h=1200;e.inv_mass=0;e.life=50;e.move=function(){};e.addAction(0,99999999,function(){--e.life;Camera.vibrate(5);})},
         effect:function(e,v){
             if(v instanceof Matter && (v.typenum==1)){
                 v.throw();

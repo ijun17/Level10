@@ -6,7 +6,7 @@ let Component={
     backButton:function(code){
         let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.code = code;
-        backButton.drawOption(null, null, "<", Screen.perX(6), "black");
+        backButton.drawOption(null, null, "<", Screen.perX(6), "black","white");
         return backButton;
     },
     
@@ -95,9 +95,9 @@ let Component={
             ctx.fillRect(Screen.perX(perX-0.5), Screen.perX(perY-0.5), Screen.perX(26), Screen.perX(36));
         }
     },
-    playerStatusView:function(player,perX,perY,playerName="Level "+Level.playerLevel){
-        const viewTextSize=Screen.perX(1.5);
-        const viewTextSize2=Screen.perX(1.8);
+    playerStatusView:function(player,perX,perY,playerName="Player",textColor="white"){
+        const viewTextSize=Screen.perX(1.8);
+        const viewTextSize2=Screen.perX(1.4);
         const MAX_HP=player.life;
         const MAX_MP=player.mp;
         const printSkillInfo=function(){
@@ -111,21 +111,21 @@ let Component={
         view.draw=function(){
             ctx.fillStyle="rgba(0,0,0,0.1)";
             ctx.fillRect(this.x-Screen.perX(0.5),this.y-Screen.perX(0.5), Screen.perX(42), Screen.perX(8))
-            ctx.strokeStyle="black";
+            ctx.strokeStyle=textColor;
             ctx.strokeRect(this.x,this.y+Screen.perX(2.5),Screen.perX(18),Screen.perX(2));
             ctx.strokeRect(this.x,this.y+Screen.perX(5),Screen.perX(18),Screen.perX(2));
+            let playerLife=player.life>0?player.life:0;
             ctx.fillStyle="brown";
-            ctx.fillRect(this.x,this.y+Screen.perX(2.5),Screen.perX(18)*(player.life/MAX_HP),Screen.perX(2));
+            ctx.fillRect(this.x,this.y+Screen.perX(2.5),Screen.perX(18)*(playerLife/MAX_HP),Screen.perX(2));
             ctx.fillStyle="royalblue";
             ctx.fillRect(this.x,this.y+Screen.perX(5),Screen.perX(18)*(player.mp/MAX_MP),Screen.perX(2));
             ctx.textBaseline = "top";
             ctx.textAlign = "left";
-            ctx.fillStyle="black";
-            ctx.font = "bold "+viewTextSize2+"px Arial";
-            ctx.fillText(playerName, this.x,this.y);
-            ctx.fillStyle="black";
+            ctx.fillStyle=textColor;
             ctx.font = "bold "+viewTextSize+"px Arial";
-            ctx.fillText(player.life, this.x+Screen.perX(0.5),this.y+Screen.perX(3));
+            ctx.fillText(playerName, this.x,this.y);
+            ctx.font = viewTextSize2+"px Arial";
+            ctx.fillText(playerLife, this.x+Screen.perX(0.5),this.y+Screen.perX(3));
             ctx.fillText(player.mp, this.x+Screen.perX(0.5),this.y+Screen.perX(5.5));
             printSkillInfo();
         }
@@ -209,5 +209,51 @@ let Component={
             speedBtn.code=function(){Game.setGameSpeed(speed[i])}
             speedBtn.canCollision=false;
         }
+    },
+
+    ShadowMaker: function (background="rgb(1,1,5)", globalAlpha=0.9) {
+        function getBrightness(e){
+            if(e.brightness==undefined)return 0;
+            else return e.brightness;
+        }
+        function fillLight(e,r){
+            tempctx.beginPath();
+            tempctx.arc(Camera.getX(e.getX()), Camera.getY(e.getY()), r, 0, Math.PI * 2, true);
+            tempctx.fill();
+            tempctx.closePath();
+        }
+        let sm = new Entity(0,0,Game.BUTTON_CHANNEL);
+        sm.update = function () {
+            tempctx.clearRect(0, 0, tempcanvas.width, tempcanvas.height);
+            tempctx.fillStyle="#FAFFAF";//자연광  rgb(250, 255, 175)
+            tempctx.globalCompositeOperation = "source-over";
+            let entitys = Game.channel[Game.PHYSICS_CHANNEL].entitys;
+            let e;
+            let brightness;
+            let sumBrightness=0;
+            for (let i = entitys.length - 1; i > -1; i--) {
+                e = entitys[i];
+                brightness=getBrightness(e);
+                if(brightness>0){
+                    sumBrightness+=brightness;
+                    tempctx.globalAlpha = 0.1;
+                    fillLight(e,200*brightness);
+                    tempctx.globalAlpha = 0.2;
+                    fillLight(e,60*brightness);
+                    tempctx.globalAlpha = 0.3;
+                    fillLight(e,20*brightness);
+                }
+            }
+            tempctx.globalCompositeOperation = "xor";
+            if(sumBrightness<1){
+                tempctx.globalAlpha = globalAlpha;
+            }else{
+                tempctx.globalAlpha = globalAlpha-0.1;
+            }
+            tempctx.fillStyle=background;
+            tempctx.fillRect(0,0,tempcanvas.width, tempcanvas.height);
+            ctx.drawImage(tempcanvas,0,0);
+        }
+        return sm;
     }
 }
