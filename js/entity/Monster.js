@@ -96,9 +96,9 @@ const MONSTERS = [{
         function(e){
             if(!e.canTarget())return 70;
             let block=new Block(e.target.x-30,-3000,100,300,"rgba(255, 229, 0,0.5)");
-            block.collisionHandler=function(e){if(e instanceof Monster&&e.typenum==5)return false;e.giveDamage(3000);return true;}
+            block.collisionHandler=function(e){if(e instanceof Monster&&e.typenum==5)return false;if(e instanceof Matter)e.life=0;e.giveDamage(3000);return true;}
             block.brightness=5;
-            block.vy=-30;
+            block.vy=-20;block.ga=-1;
             return 1000;
         },
         function(e){
