@@ -135,17 +135,17 @@ let Component={
         //move button
         let leftButton = new Button(5, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
         leftButton.code = function () { player.isMoving = true; player.isRight = false; };
-        leftButton.drawOption("rgba(61, 61, 61,0.5)", "black", "<", 80, "black");
+        leftButton.drawOption("rgba(61, 61, 61,0.5)", "black", "<", mobileButtonSize, "black");
         let upButton = new Button(10 + mobileButtonSize, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
         upButton.code = function () { player.jump() };
-        upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", 80, "black");
+        upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", mobileButtonSize, "black");
         let rightButton = new Button(15 + mobileButtonSize * 2, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
         rightButton.code = function () { player.isMoving = true; player.isRight = true; };
-        rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", 80, "black");
+        rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", mobileButtonSize, "black");
         //skill button
         const keys = ["Q", "W", "E", "R"];
         const font1="bold " + (Math.floor(mobileButtonSize*0.7)) + "px Arial";
-        const font2="bold " + (Math.floor(mobileButtonSize*0.2)) + "px Arial";
+        const font2="bold " + (Math.floor(mobileButtonSize*0.19)) + "px Arial";
         for (let i = 0; i < 4; i++) {
             let keyButton = new Button(canvas.width +(i-4) * (mobileButtonSize + 5), canvas.height - mobileButtonSize -5, mobileButtonSize, mobileButtonSize);
             keyButton.code = function () { player.castSkill(i); };

@@ -105,24 +105,24 @@ let Screen= {
         helpButton.code = function () { Screen.helpScreen() };
         helpButton.drawOption(null, "white", "?", Screen.perX(3),"white");
         //MOBILE MODE BUTTON
-        let mobileButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
-        mobileButton.code = function () {
-            if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
-            startFs(canvas);
-            Screen.mainScreen();
-            let full = new Button(Screen.perX(38), Screen.perY(50)-Screen.perX(4), Screen.perX(24), Screen.perX(8));
-            full.code=function(){startFs(canvas);full.x=10000;Input.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);}
-        };
-        mobileButton.drawOption(null,"black","to mobile",Screen.perX(1.7),"black");
+        // let mobileButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
+        // mobileButton.code = function () {
+        //     if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
+        //     startFs(canvas);
+        //     Screen.mainScreen();
+        //     let full = new Button(Screen.perX(38), Screen.perY(50)-Screen.perX(4), Screen.perX(24), Screen.perX(8));
+        //     full.code=function(){startFs(canvas);full.x=10000;Input.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);}
+        // };
+        // mobileButton.drawOption(null,"black","to mobile",Screen.perX(1.7),"black");
         //web app button
-        let webappButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space*2 - Screen.perX(6), Screen.perX(8), Screen.perX(3));
+        let webappButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
         webappButton.code = function () {
             if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
             canvas.height=Math.floor(canvas.width*screen.height/screen.width);
             tempcanvas.height=canvas.height;
             Screen.mainScreen();
         };
-        webappButton.drawOption(null,"black","web app",Screen.perX(1.7),"black");
+        webappButton.drawOption(null,"black","to mibile",Screen.perX(1.7),"black");
         
         //SELECT MAGIC BUTTON
         let selectMagicButton = new Button(canvas.width - Screen.perX(16)-space, space, Screen.perX(16), Screen.perX(4));
@@ -205,10 +205,10 @@ let Screen= {
         Component.screenName("create magic");
 
         //모바일 모드이면 엘레멘트 생성 중단
-        if(Screen.isMobile){
-            new Text(Screen.perX(50),Screen.perY(50), "모바일 모드에서 동작하지 않습니다", Screen.perX(3),"black",null,-1,null);
-            return;
-        }
+        // if(Screen.isMobile){
+        //     new Text(Screen.perX(50),Screen.perY(50), "모바일 모드에서 동작하지 않습니다", Screen.perX(3),"black",null,-1,null);
+        //     return;
+        // }
 
         //텍스트박스 생성
         tb.style.display="block";
