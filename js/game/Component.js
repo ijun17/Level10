@@ -179,6 +179,12 @@ let Component={
         new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall"); //left
         new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall");//right
         new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize,"grass");
+
+        const deadzoneSize=100000000
+        new MapBlock(-deadzoneSize, -deadzoneSize-mapSizeH,deadzoneSize,deadzoneSize*2,"deadzone")//.collisionHandler=function(e){if(e instanceof Player)e.life=0;}
+        new MapBlock(mapSizeW,  -deadzoneSize-mapSizeH, deadzoneSize, deadzoneSize*2,"deadzone")//.collisionHandler=function(e){if(e instanceof Player)e.life=0;}
+        new MapBlock(-deadzoneSize,-mapSizeH-deadzoneSize,deadzoneSize*2+mapSizeW,deadzoneSize,"deadzone")//.collisionHandler=function(e){if(e instanceof Player)e.life=0;}
+        
     },
     particleSpray:function(type,xy,rangeW,rangeH,particleSize,particleVy,delay){
         let spray = new Entity(0,0,Game.BUTTON_CHENNEL);

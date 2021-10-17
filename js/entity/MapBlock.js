@@ -32,6 +32,7 @@ class MapBlock extends Entity{
             case "ice":
                 return function(){ctx.fillStyle = "rgb(92,150,212)";Camera.fillRect(this.x, this.y, this.w, this.h);}
             default:
+                return function(){}
                 break;
         }
     }

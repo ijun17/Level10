@@ -9,6 +9,7 @@ const MATTERS=[
             --this.life;
             if(v instanceof Matter&&(v.typenum==0||v.typenum==6)){
                 Sound.play(Sound.audios.explosion,0.2);
+                Camera.vibrate(5);
                 let explosion = new Matter(6, e.x-35, e.y-35,0,0);
                 e.throw();
                 if(v.typenum==0)v.throw();
@@ -23,7 +24,7 @@ const MATTERS=[
     },
     {
         name:"electricity",
-        setStatus:function(e){e.power=110;e.brightness=1;e.ga=0;e.inv_mass=0;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
+        setStatus:function(e){e.power=110;e.brightness=1;e.ga=0;e.inv_mass=0.1;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveDamage(e.power);v.vx=0;v.vy=0;
             if(v instanceof Matter && v.typenum==1){
