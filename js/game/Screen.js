@@ -118,8 +118,11 @@ let Screen= {
         let webappButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
         webappButton.code = function () {
             if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
-            canvas.height=Math.floor(canvas.width*screen.height/screen.width);
+            let canvasRatio=(screen.height<screen.width?screen.height/screen.width:screen.width/screen.height);
+            canvas.height=Math.floor(canvas.width*canvasRatio);
             tempcanvas.height=canvas.height;
+            const textbox = document.querySelector(".textbox");
+            textbox.style.fontSize="30px";
             Screen.mainScreen();
         };
         webappButton.drawOption(null,"black","to mibile",Screen.perX(1.7),"black");

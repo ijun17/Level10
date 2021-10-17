@@ -15,17 +15,18 @@
 
     <canvas id="myCanvas" width="1200" height="600"></canvas>
     <canvas id="tempCanvas" style="display: none;" width="1200" height="600"></canvas>
+
     <div class="box">
         <div class="box-inner">
             <!--input-->
-            <div class="input" style="text-align:center;flex:1;">
-                <div>
-                    <p style="color: cornsilk;">magic name</p>
+            <div class="input">
+                <p style="color: cornsilk;">magic name</p>
+                <div style="display:inline-block;position:relative;">
                     <textarea class="namebox" spellcheck="false"></textarea>
-                    <p style="color: cornsilk;">magic code</p>
-                    <textarea class="textbox" spellcheck="false"></textarea>
+                    <button class="compilebutton">create</button>
                 </div>
-                <button class="compilebutton">create</button>
+                <p style="color: cornsilk;">magic code</p>
+                <textarea class="textbox" spellcheck="false"></textarea>
             </div>
             <!--output-->
             <div class="output" style="text-align: center;background:#1C1C1C;flex:1;">

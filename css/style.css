@@ -30,29 +30,32 @@ canvas {
 }
 
 .namebox {
-    width: 500px;
-    height:20px;
-    margin: 5px;
+    width: 800px;
+    height: 23px;
+    margin: 5px 10px 5px 10px;
     padding: 10px;
     background-color: black;
     resize: none;
     color: brown;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .textbox {
-    width: 500px;
-    height: 300px;
-    margin: 5px;
+    width: 800px;
+    height: 600px;
+    margin: 5px 10px 5px 10px;
     padding: 10px;
     background-color: black;
     color: royalblue;
     resize: none;
-    font-size: 18px;
+    font-size: 24px;
     font-family: system-ui;
 }
 
 .compilebutton {
+    position:absolute;
+    bottom:10px;
+    right:12px;
     width: 100px;
     height: 40px;
     background-color: royalblue;
@@ -61,13 +64,9 @@ canvas {
 
 .box-inner{
     text-align: center;
-    width: 1200px; height: 500px;
+    width: 1200px; height: 750px;
     display:flex;
     position: relative;
-    /*
-    left:50%;
-    transform: translateX(-50%);
-    */
     margin: 0 auto;
 }
 
