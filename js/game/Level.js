@@ -95,7 +95,7 @@ let Level= {
                 break;
             case 6:
                 Level.createMainMonster(5,Screen.perX(50), -400);
-                Screen.bgColor="#424146";
+                Screen.bgColor="rgb(5,5,35)";
                 Component.worldWall(3000,2000,300);
                 Component.shader();
                 break;

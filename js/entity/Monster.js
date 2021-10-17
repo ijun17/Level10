@@ -77,7 +77,7 @@ const MONSTERS = [{
             return 501;},
         function(e){
             e.vx=e.getTargetDir()*30;
-            let effect = new Particle(5, e.x-e.w/2, e.y-e.h/2);effect.w=e.h*2;effect.h=e.h*2;
+            let effect = new Particle(5, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=e.h*3;
             let noMatter = new Entity(effect.x,effect.y,Game.PHYSICS_CHANNEL);
             noMatter.w=effect.w;noMatter.h=effect.h;
             noMatter.collisionHandler=function(v){if(v instanceof Matter)v.throw();return false;}
@@ -86,25 +86,32 @@ const MONSTERS = [{
     ]
 },
 {
-    name: "투명드래곤",
-    image: {name:"invisible_wyvern",w:80,h:80,frame:16,MAX_X:[4,1]},
-    setStatus: function(e){e.w=300;e.h=300;e.life=10000000;e.power=4000;e.speed=6;e.inv_mass=0.1;e.ga=0;e.canDraw=false;},
+    name: "골드드래곤",
+    image: {name:"golden_dragon",w:80,h:80,frame:16,MAX_X:[4,1]},
+    setStatus: function(e){e.w=300;e.h=300;e.life=10000000;e.power=2000;e.speed=5;e.inv_mass=0.1;e.ga=0;e.brightness=6},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
-        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(5,e.getTargetDir()*1.5,0,30);m.power=1000;m.life=50;return 300;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(5,e.getTargetDir()*1.5,0,30);m.power=500;m.life=50;m.vx*=0.5;m.vy*=0.5;return 500;},
         function(e){
-            e.canInteract=false;
+            if(!e.canTarget())return 70;
+            let block=new Block(e.target.x-30,-3000,100,300,"rgba(255, 229, 0,0.5)");
+            block.collisionHandler=function(e){if(e instanceof Monster&&e.typenum==5)return false;e.giveDamage(3000);return true;}
+            block.brightness=5;
+            block.vy=-30;
+            return 1000;
+        },
+        function(e){
             for(let i=0; i<10; i++){
                 for(let j=0; j<20; j++){
-                    let block=new Block(800+j*20,-1000+i*20,50,50,"rgba(252, 64, 12,0.5)");
+                    let block=new Block(e.x+j*10,e.y+i*10,50,50,"rgba(255, 229, 0,0.5)");
                     block.giveForce=function(){};
+                    block.collisionHandler=function(e){if(e instanceof Monster&&e.typenum==5)return false;e.giveDamage(1000);return true;}
                     block.brightness=1;
                     block.canRemoved=false;
                     block.addAction(1000,1000,function(){block.canRemoved=true;});
                 }
             }
-            e.addAction(1000,1000,function(){e.canInteract=true;e.x=1000;e.y=-500;})
             return 3000;}
     ]
 }
