@@ -19,7 +19,7 @@ attack:{}
 const MONSTERS = [{
     name: "뾰족버섯",
     image: { name: "crazymushroom",w: 60, h: 60, frame: 8, MAX_X: [3, 3] },
-    setStatus: function(e){ e.w=60; e.h=60; e.life=20000; e.power=200; e.speed=3; e.inv_mass=1;},
+    setStatus: function(e){ e.w=120; e.h=120; e.life=100000; e.power=1000; e.speed=3; e.inv_mass=0.2;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI(1);return 50;},
@@ -29,7 +29,7 @@ const MONSTERS = [{
 {
     name: "혹한의군주 미눅",
     image: { name: "crazymonkey", w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
-    setStatus: function(e){ e.w=120;e.h=200;e.life=100000;e.power=1000;e.speed=5;e.inv_mass=0.2},
+    setStatus: function(e){ e.w=120;e.h=200;e.life=200000;e.power=1000;e.speed=5;e.inv_mass=0.1},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI(10);return 50;},
@@ -39,7 +39,7 @@ const MONSTERS = [{
 {
     name: "지옥파리",
     image: {name:"hellfly",w:30,h:30,frame:8,MAX_X:[1,1]},
-    setStatus: function(e){e.w=30;e.h=30;e.life=30000;e.power=500;e.speed=5;e.inv_mass=1;e.ga=0;},
+    setStatus: function(e){e.w=30;e.h=30;e.life=50000;e.power=100;e.speed=5;e.inv_mass=1;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(5);return 10;},
@@ -49,7 +49,7 @@ const MONSTERS = [{
 {
     name: "심연의흑염룡",
     image: {name:"wyvern",w:80,h:80,frame:16,MAX_X:[4,1]},
-    setStatus: function(e){e.w=300;e.h=300;e.life=5000000;e.power=4000;e.speed=4;e.inv_mass=0.1;e.ga=0;},
+    setStatus: function(e){e.w=300;e.h=300;e.life=5000000;e.power=1000;e.speed=4;e.inv_mass=0.1;e.ga=0;},
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI2(4);return 50;},
@@ -227,10 +227,8 @@ class Monster extends Entity {
     }
 
     giveDamage(d) {
-        if(this.defense<d){
-            this.totalDamage += d;
-            Camera.vibrate((d<8000 ? d/400 : 20)+1);
-        }
+        this.totalDamage += d;
+        Camera.vibrate((d<8000 ? d/400 : 20)+1);
     }
     castSkill(num){
         //num 0:q 1:w 2:e 3:r

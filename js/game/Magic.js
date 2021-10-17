@@ -70,8 +70,7 @@ addAction(player,1,500,#{
 })`, 4],
 
     ["전격실드", `//전기 실드를 생성
-@j=0;
-addAction(player,1,5,#{
+for(@j=0;j<5;j++){
     @a=create(ELECTRICITY,0,0);
     move(a,front(20-j*20),60);
     giveLife(a,500);
@@ -81,8 +80,7 @@ addAction(player,1,5,#{
     @c=create(ELECTRICITY,0,0);
     move(c,front(-80),60-j*20);
     giveLife(c,500);
-    j++;
-})`,4],
+}`,4],
 
     ["끌어당기기",`//닿은 물체를 끌어 당김
 @t = create(TRIGGER,front(10),0,20,100);
@@ -119,10 +117,10 @@ addAction(player,1,20,#{
 addAction(player, 1,10,#{
     @fire= create(FIRE, 0,-20)
     move(fire, front(count*70+150),300)
-    giveLife(fire,10);
+    giveLife(fire,50);
     @fire2= create(FIRE, 0,-20)
     move(fire2, front(count*70+150),400)
-    giveLife(fire2,10);
+    giveLife(fire2,50);
     count++;
 })`,5],
 

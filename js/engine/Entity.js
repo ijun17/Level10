@@ -6,7 +6,7 @@ class Entity {
     vy = 0; 
     ga = -0.2; //gravity acceleration
 
-    defense=100;
+    defense=0;
     
     inv_mass=1;
     COR=0;//coefficient of restitution
@@ -66,11 +66,8 @@ class Entity {
 
     }
     giveDamage(d){
-        if(this.defense<d){
-            this.life-=Math.floor(d);
-            return true;
-        }
-        return false;
+        this.life-=Math.floor(d);
+        return true;
     }
     setStatic(){this.COR=0; this.inv_mass=0; this.ga=0; this.canMove=false;this.canInteract=true;}
     enlarge(per){this.w*=per; this.h*=per;}

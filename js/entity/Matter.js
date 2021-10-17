@@ -24,9 +24,9 @@ const MATTERS=[
     },
     {
         name:"electricity",
-        setStatus:function(e){e.power=110;e.brightness=1;e.ga=0;e.inv_mass=0.1;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
+        setStatus:function(e){e.power=50;e.brightness=1;e.ga=0;e.inv_mass=1;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
-            v.giveDamage(e.power);v.vx=0;v.vy=0;
+            v.giveDamage(e.power);v.vx*=0.5;v.vy*=0.5;
             if(v instanceof Matter && v.typenum==1){
                 if(++e.lightningPoint>8000){
                     if(e.lightningPoint==10000){
@@ -62,7 +62,7 @@ const MATTERS=[
                 }
             }else{
                 v.giveDamage(Math.floor(this.getVectorLength())+e.power);
-                v.addAction(1,150,function(){v.vx=0;v.vy=0;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
+                v.addAction(1,100,function(){v.vx=0;v.vy=0;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
             }
             return true;
         }
@@ -105,7 +105,7 @@ const MATTERS=[
     },
     {
         name:"explosion",
-        setStatus:function(e){e.power=3000;e.brightness=3;e.w=100;e.h=100;e.ga=0;e.life=50;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
+        setStatus:function(e){e.power=1000;e.brightness=3;e.w=100;e.h=100;e.ga=0;e.life=50;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveDamage(e.power);
             v.giveForce((e.getX()<v.getX()?1:-1), (e.getY()<v.getY()?1:-1));

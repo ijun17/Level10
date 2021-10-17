@@ -60,7 +60,7 @@ let Level= {
         
         switch (level) {
             case 1: 
-                makeSuperMob(Level.createMainMonster(0, 1000, -1000),2.5,2,5,1);
+                Level.createMainMonster(0, 1000, -1000);
                 Component.worldWall(1000,1000,300);
                 break;
             case 2: 
