@@ -100,7 +100,6 @@ let Input = {
         touch.life=10;
         for(let i=0, max=e.touches.length; i<max; i++){
             Input.click(e.touches[i].clientX, e.touches[i].clientY);
-            console.log(e.touches[i])
         }
     },
     touchMoveHandler:function(e) {

@@ -224,7 +224,7 @@ let Component={
         }
         function fillLight(e,r){
             tempctx.beginPath();
-            tempctx.arc(Camera.getX(e.getX()), Camera.getY(e.getY()), r, 0, Math.PI * 2, true);
+            tempctx.arc(Camera.getX(e.getX()), Camera.getY(e.getY()), Camera.getS(r), 0, Math.PI * 2, true);
             tempctx.fill();
             tempctx.closePath();
         }
