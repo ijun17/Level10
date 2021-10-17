@@ -28,25 +28,26 @@ class Button extends Entity {
     }
 
     draw() {
+        let x=Math.floor(this.x);let y=Math.floor(this.y);
         if (this.boxFill != null) {
             ctx.fillStyle = this.boxFill;
-            ctx.fillRect(this.x, this.y, this.w, this.h);
+            ctx.fillRect(x, y, this.w, this.h);
         }
         if (this.boxLine != null) {
             ctx.strokeStyle = this.boxLine;
-            ctx.strokeRect(this.x, this.y, this.w, this.h);
+            ctx.strokeRect(x, y, this.w, this.h);
         }
         if (this.text != null) {
-            ctx.font = "bold " + this.px + "px Arial";
+            ctx.font = `bold ${this.px}px Arial`;//"bold " + this.px + "px Arial";
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
             if (this.textFill != null) {
                 ctx.fillStyle = this.textFill;
-                ctx.fillText(this.text, this.x + this.textX, this.y + this.textY);
+                ctx.fillText(this.text, x + this.textX, y + this.textY);
             }
             if (this.textLine != null) {
                 ctx.strokeStyle = this.textLine;
-                ctx.strokeText(this.text, this.x + this.textX, this.y + this.textY);
+                ctx.strokeText(this.text, x + this.textX, y + this.textY);
             }
         }
     }

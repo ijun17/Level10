@@ -75,7 +75,7 @@ let Input = {
     //touch and mouse
     convertToMobileMode:function(a) {
         document.addEventListener("touchstart", this.touchStartHandler, false); //
-        canvas.addEventListener("touchmove", this.touchMoveHandler, true); //캔버스로 해야 더 빠름
+        canvas.addEventListener("touchmove", this.touchMoveHandler, false); //캔버스로 해야 더 빠름
         document.addEventListener("touchend", this.touchEndHandler, false);
         canvas.removeEventListener("mousedown", this.clickDownHandler, false);
     },

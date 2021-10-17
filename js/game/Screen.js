@@ -110,7 +110,7 @@ let Screen= {
             if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
             startFs(canvas);
             Screen.mainScreen();
-            let full = new Button(Screen.perX(38), Screen.perY(50)-Screen.perX(4), Screen.perX(24), Screen.perX(8));
+            //let full = new Button(Screen.perX(38), Screen.perY(50)-Screen.perX(4), Screen.perX(24), Screen.perX(8));
             full.code=function(){startFs(canvas);full.x=10000;Input.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);}
         };
         mobileButton.drawOption(null,"black","to mobile",Screen.perX(1.7),"black");
