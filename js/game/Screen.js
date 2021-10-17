@@ -13,6 +13,10 @@ function startFs(element) {
     }
     canvas.width = screen.width;
     canvas.height = screen.height;
+    tempcanvas.width = screen.width;
+    tempcanvas.height = screen.height;
+    document.querySelector("meta[name=viewport]").setAttribute('content', 'width=device-width, user-scalable=no');
+
 }
 
 function exitFs(element) {		

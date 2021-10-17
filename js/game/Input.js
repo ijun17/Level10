@@ -75,7 +75,7 @@ let Input = {
     //touch and mouse
     convertToMobileMode:function(a) {
         document.addEventListener("touchstart", this.touchStartHandler, false); //
-        canvas.addEventListener("touchmove", this.touchMoveHandler, false); //캔버스로 해야 더 빠름
+        canvas.addEventListener("touchmove", this.touchMoveHandler, true); //캔버스로 해야 더 빠름
         document.addEventListener("touchend", this.touchEndHandler, false);
         canvas.removeEventListener("mousedown", this.clickDownHandler, false);
     },
@@ -94,16 +94,12 @@ let Input = {
     },
     touchStartHandler:function(e) {
         //e.preventDefault();
-        let touch= new Button(e.touches[0].clientX, e.touches[0].clientY, 0,0,Game.PARTICLE_CHANNEL);
-        touch.canRemoved=true;
-        touch.drawCode = function(){ctx.strokeRect(touch.x-5,touch.y-5, 10, 10);touch.life--;}
-        touch.life=10;
         for(let i=0, max=e.touches.length; i<max; i++){
             Input.click(e.touches[i].clientX, e.touches[i].clientY);
         }
     },
     touchMoveHandler:function(e) {
-        //e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         for(let i=0, max=e.touches.length; i<max; i++){
             Input.click(e.touches[i].clientX, e.touches[i].clientY);
         }
