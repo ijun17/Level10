@@ -43,18 +43,14 @@ let Screen= {
     isMobile : false,
     bgColor : "black",
 
-    perX:function(percentile){
-        return Math.floor(canvas.width*0.01*percentile);
-    },
-    perY:function(percentile){
-        return Math.floor(canvas.height*0.01*percentile);
-    },
+    perX:function(percentile){return Math.floor(canvas.width*0.01*percentile);},
+    perY:function(percentile){return Math.floor(canvas.height*0.01*percentile);},
 
     mainScreen:function() {
         Game.resetGame();
         Component.particleSpray(3,{x:Screen.perX(50),y:0}, Screen.perX(120),0, 20, 1, 10);
 
-        var startButton = new Button((canvas.width - Screen.perX(25))/2, (canvas.height-Screen.perX(8))/2, Screen.perX(25), Screen.perX(8));
+        var startButton = new Button(Screen.perX(38), Screen.perY(50)-Screen.perX(4), Screen.perX(24), Screen.perX(8));
         startButton.canAct=true;
         startButton.code = function () { 
             const ash_interval = Screen.perX(25/30);
@@ -64,8 +60,8 @@ let Screen= {
                     e.ga=0;
                     e.w=ash_interval*1.7;
                     e.h=ash_interval*1.7;
-                    e.vx/=20/ash_interval;
-                    e.vy/=20/ash_interval;
+                    e.vx*=ash_interval*0.05;
+                    e.vy*=ash_interval*0.05;
                 }
             }
             startButton.addAction(50,50,function(){Screen.selectScreen();});
@@ -73,9 +69,9 @@ let Screen= {
             startButton.code=function(){};
         };
         startButton.drawOption(null, "black", "START", Screen.perX(6), "black");
-        
-        let clickHereText = new Button(Screen.perX(50),Screen.perY(62),0,0);
-        clickHereText.drawOption(null, null, "click here",Screen.perX(1.6),"black");
+
+        new Text(Screen.perX(50),Screen.perY(62), "click here", Screen.perX(1.6),"black",null,-1,null);
+
         //decorate1
         new Text(Screen.perX(50),Screen.perY(92), "LEVEL10", Screen.perX(8),"rgb(35, 35, 40)",null,-1,false);
         new MapBlock(Screen.perX(5),Screen.perY(62),Screen.perX(15),Screen.perY(30));
@@ -107,18 +103,13 @@ let Screen= {
         //MOBILE MODE BUTTON
         let mobileButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
         mobileButton.code = function () {
-            if(!Screen.isMobile){Input.convertToMobileMode(true);}
+            if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
             startFs(canvas);
-            Screen.isMobile=true;
             Screen.mainScreen();
-            let full = new Button((canvas.width - 300)/2, (canvas.height-100)/2, 300, 100);
+            let full = new Button(Screen.perX(38), Screen.perY(50)-Screen.perX(4), Screen.perX(24), Screen.perX(8));
             full.code=function(){startFs(canvas);full.x=10000;Input.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);}
         };
         mobileButton.drawOption(null,"black","to mobile",Screen.perX(1.7),"black");
-
-        // let nightModeButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space*2 - Screen.perX(6), Screen.perX(8), Screen.perX(3));
-        // nightModeButton.drawOption(null,"darkblue","night mode",Screen.perX(1.7),"darkblue");
-        // nightModeButton.code=function(){Level.nightMode=true;}
         
         //SELECT MAGIC BUTTON
         let selectMagicButton = new Button(canvas.width - Screen.perX(16)-space, space, Screen.perX(16), Screen.perX(4));
