@@ -99,7 +99,7 @@ let Input = {
         }
     },
     touchMoveHandler:function(e) {
-        if (e.cancelable) e.preventDefault();
+        //if (e.cancelable) e.preventDefault();
         for(let i=0, max=e.touches.length; i<max; i++){
             Input.click(e.touches[i].clientX, e.touches[i].clientY);
         }

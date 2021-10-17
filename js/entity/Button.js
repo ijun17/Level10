@@ -52,7 +52,7 @@ class Button extends Entity {
     }
 
     drawOption(boxFill = null, boxLine = null, text = null, px = 10, textFill = null, textLine = null) {
-        this.textX=this.w >> 1; this.textY=(this.h >> 1) + this.h / 20;
+        this.textX=Math.floor(this.w >> 1); this.textY=Math.floor((this.h >> 1) + (this.h >>4));
         this.boxFill=boxFill;
         this.boxLine=boxLine;
         this.text=text;
