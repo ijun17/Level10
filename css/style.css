@@ -19,10 +19,14 @@
     }
 }*/
 
+html, body{
+    /* 모바일 웹 브라우저 당겨서 새로고침 막기 */
+    overscroll-behavior: contain;
+}
+
 canvas {
     display: block;
     margin: 0 auto;
-    overscroll-behavior: contain;
 }
 
 .namebox {
