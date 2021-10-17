@@ -6,13 +6,16 @@
 
 @media( orientation: portrait ){
     html {
-        transform: rotate(-90deg);
-        transform-origin: top left;
+        transform: rotate(90deg);
+        transform-origin: right top;
+        
         position: absolute;
+
         top: 100%;
-        left: 0;
+        
         width: 100vh;
         height: 100vw;
+        
     }
 }
 

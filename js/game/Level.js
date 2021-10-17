@@ -82,10 +82,10 @@ let Level= {
                 break;
             case 4:
                 Level.createMainMonster(3,1000, -250);
-                Screen.bgColor="rgb(35,5,5)"//"#424146";
+                Screen.bgColor="rgb(55,25,25)"//"#424146";
                 Component.worldWall(2000,1000,300);
                 Component.particleSpray(0,player,2000,-1000,10,1.5,5);
-                Component.shader(background="rgb(1,1,7)", globalAlpha=0.8);
+                Component.shader(background="rgb(1,1,7)", globalAlpha=0.9);
                 break;
             case 5:
                 Level.createMainMonster(4,Screen.perX(50), -400).addAction(1,100,function(){Camera.vibrate(10);});

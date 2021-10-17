@@ -91,6 +91,7 @@ let Input = {
     clickDownHandler:function(e) {
         e.preventDefault();
         Input.click(e.layerX, e.layerY);
+        console.log(e.layerX,e.layerY);
     },
     touchStartHandler:function(e) {
         //e.preventDefault();
