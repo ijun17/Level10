@@ -132,6 +132,7 @@ let Component={
         return view;
     },
     mobileButton: function (player, mobileButtonSize = 70) {
+        //move button
         let leftButton = new Button(5, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
         leftButton.code = function () { player.isMoving = true; player.isRight = false; };
         leftButton.drawOption("rgba(61, 61, 61,0.5)", "black", "<", 80, "black");
@@ -141,9 +142,12 @@ let Component={
         let rightButton = new Button(15 + mobileButtonSize * 2, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
         rightButton.code = function () { player.isMoving = true; player.isRight = true; };
         rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", 80, "black");
-        let keys = ["Q", "W", "E", "R"];
+        //skill button
+        const keys = ["Q", "W", "E", "R"];
+        const font1="bold " + (Math.floor(mobileButtonSize*0.7)) + "px Arial";
+        const font2="bold " + (Math.floor(mobileButtonSize*0.2)) + "px Arial";
         for (let i = 0; i < 4; i++) {
-            let keyButton = new Button(canvas.width - (5 * 4 + mobileButtonSize * 4) + i * (mobileButtonSize + 5), canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
+            let keyButton = new Button(canvas.width +(i-4) * (mobileButtonSize + 5), canvas.height - mobileButtonSize -5, mobileButtonSize, mobileButtonSize);
             keyButton.code = function () { player.castSkill(i); };
             keyButton.draw = function () {
                 ctx.fillStyle = (player.coolTime[i] < Game.time ? "rgb(121, 140, 205)" : "rgba(61, 61, 61,0.5)");//"rgba(61, 61, 61,0.5)";
@@ -151,13 +155,13 @@ let Component={
                 ctx.strokeStyle = "black";
                 ctx.strokeRect(keyButton.x, keyButton.y, keyButton.w, keyButton.h);
                 ctx.fillStyle = "black";
-                ctx.font = "bold " + (mobileButtonSize - 20) + "px Arial";
+                ctx.font = font1;
                 ctx.textBaseline = "middle";
                 ctx.textAlign = "center";
-                ctx.fillText(keys[i], keyButton.x + 35, keyButton.y + 43);
+                ctx.fillText(keys[i], keyButton.x + mobileButtonSize*0.5, keyButton.y + mobileButtonSize*0.6);
                 ctx.fillStyle = "white";
-                ctx.font = "bold 15px Arial";
-                ctx.fillText(player.skillList[i][0], keyButton.x + 35, keyButton.y + 11);
+                ctx.font = font2;
+                ctx.fillText(player.skillList[i][0], keyButton.x + mobileButtonSize*0.5, keyButton.y + mobileButtonSize*0.2);
             }
         }
     },

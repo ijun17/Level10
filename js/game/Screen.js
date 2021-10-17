@@ -110,10 +110,19 @@ let Screen= {
             if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
             startFs(canvas);
             Screen.mainScreen();
-            //let full = new Button(Screen.perX(38), Screen.perY(50)-Screen.perX(4), Screen.perX(24), Screen.perX(8));
+            let full = new Button(Screen.perX(38), Screen.perY(50)-Screen.perX(4), Screen.perX(24), Screen.perX(8));
             full.code=function(){startFs(canvas);full.x=10000;Input.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);}
         };
         mobileButton.drawOption(null,"black","to mobile",Screen.perX(1.7),"black");
+        //web app button
+        let webappButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space*2 - Screen.perX(6), Screen.perX(8), Screen.perX(3));
+        webappButton.code = function () {
+            if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
+            canvas.height=Math.floor(canvas.width*screen.height/screen.width);
+            tempcanvas.height=canvas.height;
+            Screen.mainScreen();
+        };
+        webappButton.drawOption(null,"black","web app",Screen.perX(1.7),"black");
         
         //SELECT MAGIC BUTTON
         let selectMagicButton = new Button(canvas.width - Screen.perX(16)-space, space, Screen.perX(16), Screen.perX(4));
@@ -345,7 +354,7 @@ let Screen= {
 
         Component.playerStatusView(player1, 1, 11, "player1");
         Component.playerStatusView(player2, 57, 11, "player2");
-        if (Screen.isMobile) Component.mobileButton(player1, 70);
+        if (Screen.isMobile) Component.mobileButton(player1, Screen.perX(8));
         player1.setName("player 1", "green");
         player2.setName("player 2", "red");
 
@@ -410,7 +419,7 @@ let Screen= {
         Input.addSkillKey(player, Input.KEY_SKILL[0]);
         Camera.makeMovingCamera(player,0,0,10);
         Component.playerStatusView(player, 58,1.5);
-        if (Screen.isMobile) Component.mobileButton(player, 70);
+        if (Screen.isMobile) Component.mobileButton(player, Screen.perX(8));
         Level.makeStage(level,player)
     },
     multiplayScreen:function(){
