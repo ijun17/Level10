@@ -40,7 +40,7 @@ class Player extends Entity{
         super.update();
         //damage
         if (this.totalDamage > 0) {
-            new Text(this.x + this.w / 2, this.y - 50,this.totalDamage,30,"red","black",40);
+            new Text(this.getX(), this.y - 50,this.totalDamage,30,"red","black",40);
             this.life -= this.totalDamage;
             this.totalDamage = 0;
             this.damageTick=10;
@@ -49,7 +49,7 @@ class Player extends Entity{
         if(this.damageTick>0)this.damageTick--;
     }
     static getDraw(p){
-        p.animation = new Animation("resource/player/"+`player.png`,30,60,[1,1],function(){
+        p.animation = new Animation(ImageManager.player,30,60,[1,1],function(){
             if(p.isMoving)return 1;
             else return 0;
         });
@@ -59,7 +59,7 @@ class Player extends Entity{
             ctx.textAlign = "center";
             ctx.font="bold 15px Arial";
             ctx.fillStyle=this.nameColor;
-            Camera.fillText(this.name,this.x+this.w/2,this.y-20);
+            Camera.fillText(this.name,this.getX(),this.y-20);
         }
     }
     

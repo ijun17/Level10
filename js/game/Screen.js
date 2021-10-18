@@ -1,43 +1,3 @@
-function startFs(element) {
-    //canvas.requestFullScreen();
-    if(element.requestFullScreen) {
-        element.requestFullScreen();
-    } else if(element.webkitRequestFullScreen ) {
-        element.webkitRequestFullScreen();
-    } else if(element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-    } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen(); // IE
-    } else {
-        return;
-    }
-    canvas.width = screen.width;
-    canvas.height = screen.height;
-    tempcanvas.width = screen.width;
-    tempcanvas.height = screen.height;
-    document.querySelector("meta[name=viewport]").setAttribute('content', 'width=device-width, user-scalable=no');
-
-}
-
-function exitFs(element) {		
-    if (element.exitFullscreen){
-        element.exitFullscreen();
-    }else if(element.cancelFullScreen) {
-        element.cancelFullScreen();
-    } else if(element.webkitCancelFullScreen ) {
-        element.webkitCancelFullScreen();
-    } else if(element.mozCancelFullScreen) {
-        element.mozCancelFullScreen();
-    } else if (element.msExitFullscreen) {
-        element.msExitFullscreen(); // IE        
-    }
-    canvas.width = Screen.CANVAS_W;
-    canvas.height = Screen.CANVAS_H;
-}
-
-
-
-
 let Screen= {
     //const
     CANVAS_W:1200,
@@ -105,16 +65,6 @@ let Screen= {
         helpButton.code = function () { Screen.helpScreen() };
         helpButton.drawOption(null, "white", "?", Screen.perX(3),"white");
         //MOBILE MODE BUTTON
-        // let mobileButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
-        // mobileButton.code = function () {
-        //     if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
-        //     startFs(canvas);
-        //     Screen.mainScreen();
-        //     let full = new Button(Screen.perX(38), Screen.perY(50)-Screen.perX(4), Screen.perX(24), Screen.perX(8));
-        //     full.code=function(){startFs(canvas);full.x=10000;Input.click((canvas.width - 300)/2+150, (canvas.height-100)/2+50);}
-        // };
-        // mobileButton.drawOption(null,"black","to mobile",Screen.perX(1.7),"black");
-        //web app button
         let webappButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
         webappButton.code = function () {
             if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}

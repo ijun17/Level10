@@ -8,7 +8,7 @@ const MATTERS=[
         effect:function(e,v){
             --this.life;
             if(v instanceof Matter&&(v.typenum==0||v.typenum==6)){
-                Sound.play(Sound.audios.explosion,0.2);
+                SoundManager.play(SoundManager.explosion,0.2);
                 Camera.vibrate(5);
                 let explosion = new Matter(6, e.x-35, e.y-35,0,0);
                 e.throw();
@@ -30,8 +30,8 @@ const MATTERS=[
             if(v instanceof Matter && v.typenum==1){
                 if(++e.lightningPoint>8000){
                     if(e.lightningPoint==10000){
-                        Sound.play(Sound.audios.explosion,1);
-                        Sound.play(Sound.audios.blockCrashing,1);
+                        SoundManager.play(SoundManager.explosion,1);
+                        SoundManager.play(SoundManager.blockCrashing,1);
                         new Matter(7, e.x+e.w/2-150,e.y-900);
                         e.throw();
                         v.throw();
@@ -150,46 +150,44 @@ class Matter extends Entity {
         this.draw=Matter.getDraw(this);
     }
 
-    static getDraw(e) {
+    static getDraw(e) {//ImageManager[MATTERS[e.typenum].name]
         switch (e.typenum) {
             case 0: //애니메이션이고 방향성이 있음 : 불
-                e.animation = new Animation("resource/matter/" + MATTERS[e.typenum].name + ".png", 10, 10, [3], function () { return 0; });
+                e.animation = new Animation(ImageManager[MATTERS[e.typenum].name], 10, 10, [3], function () { return 0; });
                 return function () {
                     var r = Math.atan2(this.vx, this.vy);
                     ctx.save();
-                    ctx.translate(Camera.getX(this.x + this.w / 2), Camera.getY(this.y + this.h / 2));
+                    ctx.translate(Camera.getX(this.getX()), Camera.getY(this.getY()));
                     ctx.rotate(r);
-                    this.animation.draw(Camera.getS(-this.w / 2), Camera.getS(-this.h / 2), Camera.getS(this.w), Camera.getS(this.h));
+                    this.animation.draw(Camera.getS(-this.w>>1), Camera.getS(-this.h>>1), Camera.getS(this.w), Camera.getS(this.h));
                     ctx.restore();
                 }
                 break;
             case 1: //애니메이션이고 방향성 없음 : 전기
-                e.animation = new Animation("resource/matter/" + MATTERS[e.typenum].name + ".png", 10, 10, [3], function () { return 0; });
+                e.animation = new Animation(ImageManager[MATTERS[e.typenum].name], 10, 10, [3], function () { return 0; });
                 return function () {
                     this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
                 }
                 break;
             case 2: case 3: case 5: //그림이고 방향성 있음 : 얼음, 화살, 검격
-                e.img = new Image();
-                e.img.src = "resource/matter/" + MATTERS[e.typenum].name + ".png";
+                e.img = ImageManager[MATTERS[e.typenum].name];
                 return function () {
                     var r = Math.atan2(this.vx, this.vy);
                     ctx.save();
-                    ctx.translate(Camera.getX(this.x + this.w / 2), Camera.getY(this.y + this.h / 2));
+                    ctx.translate(Camera.getX(this.getX()), Camera.getY(this.getY()));
                     ctx.rotate(r);
-                    ctx.drawImage(this.img, Camera.getS(-this.w / 2), Camera.getS(-this.h / 2), Camera.getS(this.w), Camera.getS(this.h));
+                    ctx.drawImage(this.img, Camera.getS(-this.w>>1), Camera.getS(-this.h>>1), Camera.getS(this.w), Camera.getS(this.h));
                     ctx.restore();
                 }
                 break;
             case 4: case 6: //그림이고 방향 없음 : 에너지, 폭발
-                e.img = new Image();
-                e.img.src = "resource/matter/" + MATTERS[e.typenum].name + ".png";
+                e.img = ImageManager[MATTERS[e.typenum].name];
                 return function () {
                     ctx.drawImage(this.img, Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
                 }
                 break;
             case 7:
-                e.animation = new Animation("resource/matter/" + MATTERS[e.typenum].name + ".png", 100, 400, [3], function () { return 0; });
+                e.animation = new Animation(ImageManager[MATTERS[e.typenum].name], 100, 400, [3], function () { return 0; });
                 e.animation.fps=4;
                 return function () {
                     this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));

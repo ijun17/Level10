@@ -7,7 +7,7 @@ const particleTypes=[{name:"ember",speed:1,ga:-0.01},
     
 
 class Particle extends Entity{
-    img=new Image();
+    img
     type;
     constructor(typeNum,x,y,channelLevel=Game.PARTICLE_CHANNEL){
         super(x,y,channelLevel);
@@ -16,7 +16,7 @@ class Particle extends Entity{
         this.h=10;
         this.ga=this.type.ga;
         this.life=50;
-        this.img.src="resource/particle/"+this.type.name+".png";
+        this.img=ImageManager[this.type.name];
         this.vx=(1-Math.random()*2)*this.type.speed;
         this.vy=(1-Math.random()*2)*this.type.speed;
     }

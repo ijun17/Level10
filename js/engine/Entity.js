@@ -75,8 +75,8 @@ class Entity {
     getVectorLength(){
         return Math.sqrt(this.vx*this.vx+this.vy*this.vy);
     }
-    getX(){return this.x+this.w/2}
-    getY(){return this.y+this.h/2}
+    getX(){return this.x+(this.w>>1)}
+    getY(){return this.y+(this.h>>1)}
     //event handler
     collisionHandler(e, collisionType, isActor) { return true;}
     removeHandler() { return true}

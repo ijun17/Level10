@@ -71,7 +71,7 @@ const MONSTERS = [{
         function(e){e.AI();return 50;},
         function(e){
             if(!e.canTarget())return 100;
-            e.x = e.target.x+e.target.w/2-e.w/2;e.y=e.target.y-700;e.vx = 0;e.vy = -5;
+            e.x = e.target.getX()-e.w/2;e.y=e.target.y-700;e.vx = 0;e.vy = -5;
             let effect = new Particle(5, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=e.h*3;
             let temp=e.power;e.power=9999;e.addAction(40,40,function(){e.power=temp});
             return 501;},
@@ -169,11 +169,8 @@ class Monster extends Entity {
         }
         //image
         let temp = this;
-        this.animation=new Animation("resource/monster/" + type.image.name + ".png",type.image.w,type.image.h,type.image.MAX_X,function(){
-            if(temp.attackTick>0){
-                temp.attackTick--;
-                return 1;
-            }
+        this.animation=new Animation(ImageManager[type.image.name],type.image.w,type.image.h,type.image.MAX_X,function(){
+            if(temp.attackTick>0)return 1;
             else return 0;
         });
         this.animation.fps=type.image.frame;
@@ -182,11 +179,12 @@ class Monster extends Entity {
     update() {
         super.update();
         if (this.totalDamage > 0) {
-            let damageText = new Text(this.x + this.w / 2, this.y - 50,Math.floor(this.totalDamage),30,"orange","black",40);
+            let damageText = new Text(this.getX(), this.y - 50,Math.floor(this.totalDamage),30,"orange","black",40);
             damageText.vy=1;
             this.life-=Math.floor(this.totalDamage);
             this.totalDamage=0;
         }
+        if(this.attackTick>0)this.attackTick--;
     }
     move(){
         super.move();
@@ -200,7 +198,7 @@ class Monster extends Entity {
         ctx.textAlign = "center";
         ctx.font = "bold 15px Arial";
         ctx.fillStyle = "black"
-        Camera.fillText("hp:"+(Math.floor(this.life)), this.x+this.w/2, this.y - 20);
+        Camera.fillText("hp:"+(Math.floor(this.life)), this.getX(), this.y - 20);
         
     }
 
@@ -209,12 +207,12 @@ class Monster extends Entity {
         //공격
         if(this.attackFilter(e)){
             if(this.target==null)this.target=e;
-            e.giveDamage((1 - Math.random()*2)*this.power/10+this.power);
+            e.giveDamage((1 - Math.random()*2)*this.power*0.1+this.power);
             this.attackTick = this.animation.fps*this.animation.MAX_X[1];
-            if (e.x + e.w / 2 > this.x + this.w / 2) {
-                e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.power)/5,0.5);
+            if (e.getX() > this.getX()) {
+                e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.power)*0.2,0.4);
             } else {
-                e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.power)/5,0.5);
+                e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.power)*0.2,0.4);
             }
         }
         return true;
@@ -261,22 +259,22 @@ class Monster extends Entity {
         }
     }
     getTargetDir(){
-        if(this.canTarget())return (this.x+this.w/2 < this.target.x+this.target.w/2 ? 1 : -1);
+        if(this.canTarget())return (this.getX() < this.target.getX() ? 1 : -1);
         else return (Math.random()-0.5>0 ? 1 : -1);
         
     }
     front(n=1){return (this.isRight?n:-n)}
     createMatterToTarget(type,xDir,yDir,power){
-        let matter_x = this.x+this.w/2+(this.w/2+15)*xDir-15;
-        let matter_y = this.y+this.h/2+(this.h/2+15)*yDir-15;
+        let matter_x = this.getX()+((this.w>>1)+15)*xDir-15;
+        let matter_y = this.getY()+((this.h>>1)+15)*yDir-15;
         let matter_vx = (this.target.x-matter_x);
         let matter_vy = -(this.target.y-matter_y);
         let vector_length = Math.sqrt(matter_vx**2+matter_vy**2);
         return  new Matter(type, matter_x, matter_y, matter_vx*power/vector_length, matter_vy*power/vector_length+1);
     }
     createMatter(type,xDir,yDir,vx,vy){
-        let matter_x = this.x+this.w/2+(this.w/2+15)*xDir-15;
-        let matter_y = this.y+this.h/2+(this.h/2+15)*yDir-15;
+        let matter_x = this.getX()+((this.w>>1)+15)*xDir-15;
+        let matter_y = this.getY()+((this.h>>1)+15)*yDir-15;
         return  new Matter(type, matter_x, matter_y,vx,vy);
     }
     //MONSTER MOVING
