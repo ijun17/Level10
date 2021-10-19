@@ -3,7 +3,7 @@ creature은 몬스터와 플레이어로 자의식을 갖고 움직일수있고,
 
 */
 
-class Creature extends Entity{
+class Actor extends Entity{
     animation;
     nameTag=function(){return this.life}
     
@@ -17,10 +17,12 @@ class Creature extends Entity{
     canJump = true;
     isRight=false;
     isUp=false;
-    isMoving=false;
-    isFlying=false;
+    isMovingX=false;
+    isMovingY=false;
+    isFlying=false;//CONST
     constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel=Game.PHYSICS_CHANNEL)
+        this.overlap=true;
     }
 
     castSkill(num){
@@ -40,19 +42,19 @@ class Creature extends Entity{
     }
     move(){
         super.move();
-        if(this.isFlying)this.move_fly();
-        else this.move_run();
+        this.moveX();
+        if(this.isFlying)this.moveY();
     }
-    move_run(){
-        if (this.isMoving) {
+    moveX(){
+        if (this.isMovingX) {
             if (this.isRight && this.vx <= this.speed) this.vx++;
             else if (!this.isRight && this.vx >= -this.speed) this.vx--;
         }
     }
-    move_fly(){
-        if (this.isFlying) {
-            this.vy=this.isUp?this.speed:-this.speed;
-        }else this.vy=0;
+    moveY(){
+        if (this.isMovingY) {
+            this.vy=this.isUp?this.speed:-this.speed-this.ga;;
+        }
     }
     jump(s=(this.speed-0.5)){
         if (this.canJump) {

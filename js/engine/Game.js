@@ -29,6 +29,9 @@ let Game = {
     startGame:function() {
         this.channel=[new EntityManager(true), new EntityManager(false), new EntityManager(true), new EntityManager(false)];
 
+        Input.startInput();
+        Level.loadLevel();
+        Magic.loadMagic();
         //check mobile
         var UserAgent = navigator.userAgent;
         if (UserAgent.match(/iPhone|ipad|iPod|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i) != null || UserAgent.match(/LG|SAMSUNG|Samsung/) != null) {
@@ -38,10 +41,6 @@ let Game = {
             tempcanvas.height=canvas.height;
             document.querySelector(".textbox").style.fontSize="30px";
         }
-
-        Input.startInput();
-        Level.loadLevel();
-        Magic.loadMagic();
         Screen.mainScreen();
 
         this.interval=setInterval(Game.updateWorld, 10);

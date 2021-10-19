@@ -74,9 +74,9 @@ let Input = {
     },
     //touch and mouse
     convertToMobileMode:function(a) {
-        document.addEventListener("touchstart", this.touchStartHandler, false); //
-        canvas.addEventListener("touchmove", this.touchMoveHandler, false); //캔버스로 해야 더 빠름
-        document.addEventListener("touchend", this.touchEndHandler, false);
+        canvas.addEventListener("touchstart", this.touchStartHandler, {passive: true}); //
+        canvas.addEventListener("touchmove", this.touchMoveHandler, {passive: true}); //캔버스로 해야 더 빠름
+        canvas.addEventListener("touchend", this.touchEndHandler, false);
         canvas.removeEventListener("mousedown", this.clickDownHandler, false);
     },
     click:function(x, y) {
