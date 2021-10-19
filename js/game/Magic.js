@@ -232,7 +232,7 @@ const vvtest={
 `,
 prohibitedWord:["new","function","let","var", "addMF", "setPlayer"],
 prohibitedSymbol:[],
-predefinedKeyword:["player","if","for","while","switch"],
+predefinedKeyword:["player","if","for","while","switch","else"],
 vvmagics:["front","create","setTrigger","giveForce","giveLife","invisible","move","addAction","getX","getY","getVX","getVY",
     "FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"],
 vvtests:["giveForce","giveLife","invisible", "create","move","addAction","setTrigger"],

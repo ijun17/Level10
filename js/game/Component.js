@@ -179,9 +179,9 @@ let Component={
         return checker;
     },
     worldWall:function(mapSizeW,mapSizeH,wallSize){
-        new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top
-        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall"); //left
-        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall");//right
+        new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall").canInteract=false;//top
+        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall").canInteract=false; //left
+        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall").canInteract=false;//right
         new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize,"grass");
 
         const deadzoneSize=100000000

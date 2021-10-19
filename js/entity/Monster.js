@@ -197,7 +197,7 @@ class Monster extends Entity {
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
         ctx.font = "bold 15px Arial";
-        ctx.fillStyle = "black"
+        ctx.fillStyle = "black";
         Camera.fillText("hp:"+(Math.floor(this.life)), this.getX(), this.y - 20);
         
     }
@@ -232,8 +232,12 @@ class Monster extends Entity {
     }
 
     giveDamage(d) {
-        this.totalDamage += d;
-        Camera.vibrate((d<8000 ? d/400 : 20)+1);
+        if(super.giveDamage(d)){
+            this.totalDamage += d;
+            Camera.vibrate((d<8000 ? d/400 : 20)+1);
+            return true;
+        }
+        return false;
     }
     castSkill(num){
         //num 0:q 1:w 2:e 3:r
@@ -260,7 +264,7 @@ class Monster extends Entity {
     }
     getTargetDir(){
         if(this.canTarget())return (this.getX() < this.target.getX() ? 1 : -1);
-        else return (Math.random()-0.5>0 ? 1 : -1);
+        else return (Math.random()>0.5 ? 1 : -1);
         
     }
     front(n=1){return (this.isRight?n:-n)}

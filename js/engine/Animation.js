@@ -17,20 +17,25 @@ class Animation {
     imageX;//시간에 따라 변화하는 스프라이트에서 가로 이미지들
     imageY;//조건에 따라 변경되는 스프라이트에서 세로 이미지들 
     MAX_X; //스프라이트에서 각 행마다 최대 이미지의 수
-    imageStartPointX=[];//스프라이트에서 각 이미지에 시작점
-    imageStartPointY=[];//스프라이트에서 각 이미지에 시작점
+    imageStartPointX=[0];//스프라이트에서 각 이미지에 시작점
+    imageStartPointY=[0];//스프라이트에서 각 이미지에 시작점
     fps=8;//8틱마다 이미지 변경
-    counter;//draw()할때마다 더해지는 시계
+    counter=0;//draw()할때마다 더해지는 시계
     condition=function(){};//imageY를 정하는 메소드
-    constructor(image,w,h,MAX_X,cdt){
+    constructor(image,w=0,h=0,MAX_X=[1],cdt=function(){return 0}){
         this.image=image;
-        this.imageW=w;
-        this.imageH=h;
         this.condition=cdt;
-        this.MAX_X=MAX_X;//array
-        //계산을 줄이기 위해 미리 구함
-        for(let i=0;i*this.imageW<this.image.width; i++)this.imageStartPointX[i]=Math.floor(i*this.imageW);
-        for(let j=0;j*this.imageH<this.image.height; j++)this.imageStartPointY[j]=Math.floor(j*this.imageH);
+        this.MAX_X=MAX_X;
+        if(w===0){//image가 한개라는 뜻
+            this.imageW=image.width;
+            this.imageH=image.height;
+        }else{
+            this.imageW=w;
+            this.imageH=h;
+            //계산을 줄이기 위해 미리 구함
+            for(let i=0;i*w<image.width; i++)this.imageStartPointX[i]=Math.floor(i*w);
+            for(let j=0;j*h<image.height; j++)this.imageStartPointY[j]=Math.floor(j*h);
+        }
     }
     draw(x,y,w,h,isNotInverse=true){
         //calculate imageX

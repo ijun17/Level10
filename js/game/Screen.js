@@ -43,13 +43,6 @@ let Screen= {
         new MapBlock(Screen.perX(58),Screen.perY(70),Screen.perX(15),Screen.perY(50));
         new MapBlock(Screen.perX(80),Screen.perY(62),Screen.perX(15),Screen.perY(30));
         new MapBlock(Screen.perX(8),Screen.perY(80),Screen.perX(84),Screen.perY(50));
-        Component.shader("#657d87",0.2)
-        // let fire=new Matter(0,Screen.perX(11),0)
-        // fire.canRemoved=false;
-        // fire.enlarge(2)
-        // new Matter(0,Screen.perX(33),0).canRemoved=false;
-        // new Matter(0,Screen.perX(65),0).canRemoved=false;
-        // new Matter(0,Screen.perX(87),0).canRemoved=false;
     },
 
     selectScreen:function() {
@@ -65,17 +58,15 @@ let Screen= {
         helpButton.code = function () { Screen.helpScreen() };
         helpButton.drawOption(null, "white", "?", Screen.perX(3),"white");
         //MOBILE MODE BUTTON
-        let webappButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
-        webappButton.code = function () {
-            if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
-            let canvasRatio=(screen.height<screen.width?screen.height/screen.width:screen.width/screen.height);
-            canvas.height=Math.floor(canvas.width*canvasRatio);
-            tempcanvas.height=canvas.height;
-            const textbox = document.querySelector(".textbox");
-            textbox.style.fontSize="30px";
-            Screen.mainScreen();
-        };
-        webappButton.drawOption(null,"black","to mibile",Screen.perX(1.7),"black");
+        // let webappButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
+        // webappButton.code = function () {
+        //     if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
+        //     canvas.height=Math.floor(canvas.width*(screen.height<screen.width?screen.height/screen.width:screen.width/screen.height));
+        //     tempcanvas.height=canvas.height;
+        //     document.querySelector(".textbox").style.fontSize="30px";
+        //     Screen.mainScreen();
+        // };
+        // webappButton.drawOption(null,"black","to mibile",Screen.perX(1.7),"black");
         
         //SELECT MAGIC BUTTON
         let selectMagicButton = new Button(canvas.width - Screen.perX(16)-space, space, Screen.perX(16), Screen.perX(4));
@@ -357,7 +348,6 @@ let Screen= {
 
     gameScreen:function(level) {
         Game.resetGame();
-        Game.keyboardOn=true;
         Component.backButton(function(){Screen.selectScreen()});
         //player
         let player = new Player(10, -60, Level.playerLevel);
