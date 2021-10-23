@@ -136,13 +136,6 @@ let Screen= {
         //BACK
         Component.backButton(function () {Screen.selectScreen();tb.style.display="none"; });
         Component.screenName("create magic");
-
-        //모바일 모드이면 엘레멘트 생성 중단
-        // if(Screen.isMobile){
-        //     new Text(Screen.perX(50),Screen.perY(50), "모바일 모드에서 동작하지 않습니다", Screen.perX(3),"black",null,-1,null);
-        //     return;
-        // }
-
         //텍스트박스 생성
         tb.style.display="block";
         const namebox=document.querySelector(".namebox");
@@ -305,8 +298,8 @@ let Screen= {
         Game.resetGame();
         Component.backButton(function(){Screen.pvpScreen()});
         Component.worldWall(2000,1000,300);
-        let player1 = new Monster(4,1000-200,-60,false);
-        let player2 = new Monster(5,1000+200,-60,false);
+        let player1 = new Monster(5,1000-200,-60,false);
+        let player2 = new Monster(4,1000+200,-60,false);
         player2.isRight=false;
         function printWin(text){
             let winText = new Text(Screen.perX(50),Screen.perY(50), text, Screen.perX(10), "yellow", null,300,false);
@@ -321,6 +314,7 @@ let Screen= {
         else Input.addMoveKey(player1, Input.KEY_MOVE[1]);
         if(player2.isFlying)Input.addFlyKey(player2, Input.KEY_MOVE[0]);
         else Input.addMoveKey(player2, Input.KEY_MOVE[0]);
+        if(Screen.isMobile)Component.mobileButton(player1, Screen.perX(8));
 
         Camera.makeTwoTargetCamera(player1, player2, 0,0, 20);
 

@@ -66,6 +66,9 @@ let Component={
         }
         return selector;
     },
+    buttonStack:function(perX,perY,count,createCode){
+        
+    },
     keyButton:function(perX,perY,keys,skillNum,selector,name=""){
         for (let i = 0; i < 4; i++) {
             if(skillNum[i]>=Magic.magicList.length)skillNum[i]=i;
@@ -158,9 +161,19 @@ let Component={
         let leftButton = new Button(5, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
         leftButton.code = function () { player.isMovingX = true; player.isRight = false; };
         leftButton.drawOption("rgba(61, 61, 61,0.5)", "black", "<", mobileButtonSize, "black");
-        let upButton = new Button(10 + mobileButtonSize, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
-        upButton.code = function () { player.jump() };
-        upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", mobileButtonSize, "black");
+        if(player.isFlying){
+            let upButton = new Button(10 + mobileButtonSize, canvas.height - mobileButtonSize*2 - 10, mobileButtonSize, mobileButtonSize);
+            upButton.code = function () { player.isMovingY = true; player.isUp = true; };
+            upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", mobileButtonSize, "black");
+            let downButton = new Button(10 + mobileButtonSize, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
+            downButton.code = function () { player.isMovingY = true; player.isUp = false; };
+            downButton.drawOption("rgba(61, 61, 61,0.5)", "black", "v", mobileButtonSize, "black");
+        }else{
+            let upButton = new Button(10 + mobileButtonSize, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
+            upButton.code = function () { player.jump() };
+            upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", mobileButtonSize, "black");
+        }
+        
         let rightButton = new Button(15 + mobileButtonSize * 2, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
         rightButton.code = function () { player.isMovingX = true; player.isRight = true; };
         rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", mobileButtonSize, "black");
@@ -168,7 +181,7 @@ let Component={
         const keys = ["Q", "W", "E", "R"];
         const font1="bold " + (Math.floor(mobileButtonSize*0.7)) + "px Arial";
         const font2="bold " + (Math.floor(mobileButtonSize*0.19)) + "px Arial";
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < player.skillList.length; i++) {
             let keyButton = new Button(canvas.width +(i-4) * (mobileButtonSize + 5), canvas.height - mobileButtonSize -5, mobileButtonSize, mobileButtonSize);
             keyButton.code = function () { player.castSkill(i); };
             keyButton.draw = function () {

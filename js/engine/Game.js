@@ -33,7 +33,7 @@ let Game = {
         Level.loadLevel();
         Magic.loadMagic();
         //check mobile
-        var UserAgent = navigator.userAgent;
+        let UserAgent = navigator.userAgent;
         if (UserAgent.match(/iPhone|ipad|iPod|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i) != null || UserAgent.match(/LG|SAMSUNG|Samsung/) != null) {
             Screen.isMobile=true;
             Input.convertToMobileMode(true);

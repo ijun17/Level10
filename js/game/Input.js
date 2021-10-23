@@ -93,13 +93,13 @@ let Input = {
         Input.click(e.offsetX, e.offsetY);
     },
     touchStartHandler:function(e) {
-        //e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         for(let i=0, max=e.touches.length; i<max; i++){
             Input.click(e.touches[i].clientX, e.touches[i].clientY);
         }
     },
     touchMoveHandler:function(e) {
-        //if (e.cancelable) e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         for(let i=0, max=e.touches.length; i<max; i++){
             Input.click(e.touches[i].clientX, e.touches[i].clientY);
         }
@@ -109,6 +109,8 @@ let Input = {
         if(e.touches.length==0){
             Input.keyUpHandler({keyCode:37});
             Input.keyUpHandler({keyCode:65});
+            Input.keyUpHandler({keyCode:38});
+            Input.keyUpHandler({keyCode:87});
         }
     }
 }

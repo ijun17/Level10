@@ -56,6 +56,11 @@ let Camera={
 
         }
     },
+    makeSameSizeScreenCamera:function(){
+        Camera.cameraOn=true;
+        Camera.e={x:canvas.width/2,y:canvas.height/2};
+        Camera.extension=1;
+    },
     vibrate: function(power){
         if(this.cameraOn){
             Camera.e.x+=power*(Math.random()-0.5>0 ? 1 : -1);
