@@ -19,40 +19,52 @@ attack:{}
 const MONSTERS = [{
     name: "뾰족버섯",
     image: { name: "crazymushroom",w: 60, h: 60, frame: 8, MAX_X: [3, 3] },
-    setStatus: function(e){ e.w=120; e.h=120; e.life=100000; e.power=1000; e.speed=3; e.inv_mass=0.2;},
+    setup: function(e){ 
+        e.w=120; e.h=120; e.life=100000; e.power=500; e.speed=3;e.jumpSpeed=3; e.inv_mass=0.2;
+        e.animation=new Animation(ImageManager.crazymushroom,60,60,[3, 3],function(){return (e.attackTick>0?1:0)});e.animation.fps=8;
+    },
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI(1);return 50;},
+        function(e){e.AI();return 50;},
         function(e){e.vx+=(e.isRight ? 5 : -5);e.vy+=7;e.canJump=false;return 503;}
     ]
 },
 {
     name: "혹한의군주 미눅",
     image: { name: "crazymonkey", w: 120, h: 200, frame: 8, MAX_X: [1, 1] },
-    setStatus: function(e){ e.w=120;e.h=200;e.life=200000;e.power=1000;e.speed=5;e.inv_mass=0.1},
+    setup: function(e){ 
+        e.w=120;e.h=200;e.life=200000;e.power=1000;e.speed=8;e.jumpSpeed=4;e.inv_mass=0.1;
+        e.animation=new Animation(ImageManager.crazymonkey,120,200,[1, 1],function(){return (e.attackTick>0?1:0)});e.animation.fps=8;
+    },
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI(10);return 50;},
+        function(e){e.AI();return 50;},
         function(e){if(e.canTarget())e.createMatterToTarget(2,e.getTargetDir()*2,0,20);return 200;}
     ]
 },
 {
     name: "지옥파리",
     image: {name:"hellfly",w:30,h:30,frame:8,MAX_X:[1,1]},
-    setStatus: function(e){e.w=30;e.h=30;e.life=50000;e.power=100;e.speed=5;e.inv_mass=1;e.ga=0;},
+    setup: function(e){
+        e.w=30;e.h=30;e.life=50000;e.power=100;e.ga=-0.03;e.speed=10;e.inv_mass=1;e.isFlying=true;
+        e.animation=new Animation(ImageManager.hellfly,30,30,[1, 1],function(){return (e.attackTick>0?1:0)});e.animation.fps=8;
+    },
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI2(5);return 10;},
-        function(e){e.addAction(1,1,function(){e.speed=15;e.power=1000;});e.addAction(100,100,function(){e.speed=5;e.power=500;}); return 700;}
+        function(e){e.AI();return 4;},
+        function(e){e.addAction(1,1,function(){e.speed=30;e.power=1000;});e.addAction(100,100,function(){e.speed=10;e.power=500;}); return 700;}
     ]
 },
 {
     name: "심연의흑염룡",
     image: {name:"wyvern",w:80,h:80,frame:16,MAX_X:[4,1]},
-    setStatus: function(e){e.w=300;e.h=300;e.life=5000000;e.power=1000;e.speed=4;e.inv_mass=0.1;e.ga=0;},
+    setup: function(e){
+        e.w=300;e.h=300;e.life=5000000;e.power=1000;e.speed=4;e.inv_mass=0.1;e.isFlying=true;
+        e.animation=new Animation(ImageManager.wyvern,80,80,[4, 1],function(){return (e.attackTick>0?1:0)});e.animation.fps=16;
+    },
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI2(4);return 50;},
+        function(e){e.AI();return 50;},
         function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,10);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
         function(e){
             for(let i=0; i<10; i++){
@@ -65,7 +77,10 @@ const MONSTERS = [{
 {
     name: "마법골렘",
     image: {name:"golem",w:128,h:128,frame:32,MAX_X:[4,2]},
-    setStatus: function(e){e.w=200;e.h=200;e.life=5000000;e.power=4000;e.speed=3;e.inv_mass=0.01;e.ga=-1;e.canFallDie=false;e.overlap=false;},
+    setup: function(e){
+        e.w=200;e.h=200;e.life=5000000;e.power=4000;e.speed=1;e.jumpSpeed=2;e.inv_mass=0.01;e.ga=-1;e.canFallDie=false;e.overlap=false;
+        e.animation=new Animation(ImageManager.golem,128,128,[4, 2],function(){return (e.attackTick>0?1:0)});e.animation.fps=32;
+    },
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI();return 50;},
@@ -76,7 +91,7 @@ const MONSTERS = [{
             let temp=e.power;e.power=9999;e.addAction(40,40,function(){e.power=temp});
             return 501;},
         function(e){
-            e.vx=e.getTargetDir()*30;
+            e.addAction(50,50,function(){e.vx=e.getTargetDir()*30;})
             let effect = new Particle(5, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=e.h*3;
             let noMatter = new Entity(effect.x,effect.y,Game.PHYSICS_CHANNEL);
             noMatter.w=effect.w;noMatter.h=effect.h;
@@ -88,15 +103,18 @@ const MONSTERS = [{
 {
     name: "골드드래곤",
     image: {name:"golden_dragon",w:80,h:80,frame:16,MAX_X:[4,1]},
-    setStatus: function(e){e.w=300;e.h=300;e.life=10000000;e.power=2000;e.speed=5;e.inv_mass=0.1;e.ga=0;e.brightness=6},
+    setup: function(e){
+        e.w=300;e.h=300;e.life=10000000;e.power=2000;e.speed=5;e.inv_mass=0.1;e.isFlying=true;e.brightness=6;
+        e.animation=new Animation(ImageManager.golden_dragon,80,80,[4, 1],function(){return (e.attackTick>0?1:0)});e.animation.fps=16;
+    },
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI2(4);return 50;},
-        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(5,e.getTargetDir()*1.5,0,30);m.power=500;m.life=50;m.vx*=0.5;m.vy*=0.5;return 500;},
+        function(e){e.AI();return 50;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(5,e.getTargetDir()*1.5,0,30);m.power=500;m.life=100;m.vx*=0.5;m.vy*=0.5;return 500;},
         function(e){
             if(!e.canTarget())return 70;
-            let block=new Block(e.target.x-30,-3000,100,300,"rgba(255, 229, 0,0.5)");
-            block.collisionHandler=function(e){if(e instanceof Monster&&e.typenum==5)return false;if(e instanceof Matter)e.life=0;e.giveDamage(3000);return true;}
+            let block=new Block(e.target.x-50+(e.target.w>>1),-3000,100,300,"rgba(255, 229, 0,0.5)");
+            block.collisionHandler=function(en){if(en===e)return false;if(en instanceof Matter)en.life=0;en.giveDamage(3000);return true;}
             block.brightness=5;
             block.vy=-20;block.ga=-1;
             return 1000;
@@ -106,21 +124,45 @@ const MONSTERS = [{
                 for(let j=0; j<20; j++){
                     let block=new Block(e.x+j*10,e.y+i*10,50,50,"rgba(255, 229, 0,0.5)");
                     block.giveForce=function(){};
-                    block.collisionHandler=function(e){if(e instanceof Monster&&e.typenum==5)return false;e.giveDamage(1000);return true;}
+                    block.giveDamage=function(){};
+                    block.collisionHandler=function(en){if(en===e)return false;en.giveDamage(1000);return true;}
                     block.brightness=1;
                     block.canRemoved=false;
-                    block.addAction(1000,1000,function(){block.canRemoved=true;});
+                    block.addAction(1000,1000,function(){block.throw();});
                 }
             }
             return 3000;}
     ]
+},
+{
+    name:"warrior",
+    setup:function(e){
+        e.w=60;e.h=90;e.life=1000000;e.power=4000;e.speed=5;e.jumpSpeed=5;e.inv_mass=1;e.isFlying=true;e.brightness=6;
+        e.animation=new Animation(ImageManager.warrior,40,60,[1,3,3],function(){
+            if(e.attackTick>0)return 2;
+            else return (e.isMovingX?1:0);
+        });
+        e.animation.fps=16;
+    },
+    attackEffect: function(e,v){},
+    skillList: [
+        function(e){e.AI(4);return 20;},
+        function(e){//플레이어에게 돌진 
+            if(e.canTarget()){
+                let effect = new Particle(5, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=effect.w;
+                e.addAction(1,50,function(){effect.x--;effect.h--;effect.w+=2;effect.h+=2;})
+                e.canMove=false;
+                e.addAction(50,50,function(){e.canMove=true;e.vx=e.target.getX()-e.getX();e.vy=e.getY()-e.target.getY();})
+                
+            }
+            return 500;
+        }
+    ]
 }
 ];
 
-class Monster extends Entity {
+class Monster extends Actor {
     typenum;
-    animation;
-    name;
     target=null;
     targets=[];
     attackEffect=function(){};
@@ -128,20 +170,7 @@ class Monster extends Entity {
     attackTick=0; //몬스터가 공격하는 자세
 
     power=100;
-    speed=1;
-    
-    skillList=[];
-    coolTime=[];
-
-    totalDamage=0;
-    canJump = true;
-    isRight=false;
-    isUp=false;
-    isMoving=false;
-    isFlying=false;
-    
-
-    mp=0;//쓰지는 않으나 플레이어와 연동을 위해 만듬
+    damageTick=0;
 
     constructor(typenum, x, y, ai=true, channelLevel = Game.PHYSICS_CHANNEL) {
         super(x, y, channelLevel);
@@ -151,7 +180,7 @@ class Monster extends Entity {
         this.overlap=true;
         this.ga=-0.2;
         this.COR=0;
-        type.setStatus(this);
+        type.setup(this);
         this.attackEffect=type.attackEffect;
         this.attackFilter=function(e){return (e==this.target || e instanceof Block)}
         //skill
@@ -165,54 +194,36 @@ class Monster extends Entity {
             for(let i=type.skillList.length-1; i>=0;i--){
                 this.addSkill(200,type.skillList[i]);
             }
-            this.move=super.move;
         }
-        //image
-        let temp = this;
-        this.animation=new Animation(ImageManager[type.image.name],type.image.w,type.image.h,type.image.MAX_X,function(){
-            if(temp.attackTick>0)return 1;
-            else return 0;
-        });
-        this.animation.fps=type.image.frame;
+        //
+        this.totalDamageHandler=function(){
+            if(this.damageTick>0){
+                this.damageTick--;
+                return false;
+            }else if(this.totalDamage > 0){
+                this.damageTick=5;
+                Camera.vibrate((this.totalDamage<10000 ? this.totalDamage*0.001 : 10)+5);
+                return true;
+            }
+        }
     }
 
     update() {
         super.update();
-        if (this.totalDamage > 0) {
-            let damageText = new Text(this.getX(), this.y - 50,Math.floor(this.totalDamage),30,"orange","black",40);
-            damageText.vy=1;
-            this.life-=Math.floor(this.totalDamage);
-            this.totalDamage=0;
-        }
         if(this.attackTick>0)this.attackTick--;
-    }
-    move(){
-        super.move();
-        this.move_run();
-        if(this.ga==0)this.move_fly();
-    }
-
-    draw() {
-        this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h),this.isRight);
-        ctx.textBaseline = "middle";
-        ctx.textAlign = "center";
-        ctx.font = "bold 15px Arial";
-        ctx.fillStyle = "black";
-        Camera.fillText("hp:"+(Math.floor(this.life)), this.getX(), this.y - 20);
-        
     }
 
     collisionHandler(e,ct=[0,0]) {
-        if (ct[1]===-1) this.canJump = true;
+        super.collisionHandler(e,ct);
         //공격
         if(this.attackFilter(e)){
             if(this.target==null)this.target=e;
             e.giveDamage((1 - Math.random()*2)*this.power*0.1+this.power);
             this.attackTick = this.animation.fps*this.animation.MAX_X[1];
             if (e.getX() > this.getX()) {
-                e.giveForce((e instanceof Player?-e.vx:0)+Math.sqrt(this.power)*0.2,0.4);
+                e.giveForce((e instanceof Player?-e.vx:0)+((this.power+1000)>>9)+this.vx,0.2-e.ga);
             } else {
-                e.giveForce((e instanceof Player?-e.vx:0)-Math.sqrt(this.power)*0.2,0.4);
+                e.giveForce((e instanceof Player?-e.vx:0)-((this.power+1000)>>9)+this.vx,0.2-e.ga);
             }
         }
         return true;
@@ -231,14 +242,6 @@ class Monster extends Entity {
         return true;
     }
 
-    giveDamage(d) {
-        if(super.giveDamage(d)){
-            this.totalDamage += d;
-            Camera.vibrate((d<8000 ? d/400 : 20)+1);
-            return true;
-        }
-        return false;
-    }
     castSkill(num){
         //num 0:q 1:w 2:e 3:r
         //Monstet skillList[0] is skill to Move
@@ -281,33 +284,14 @@ class Monster extends Entity {
         let matter_y = this.getY()+((this.h>>1)+15)*yDir-15;
         return  new Matter(type, matter_x, matter_y,vx,vy);
     }
-    //MONSTER MOVING
-    move_run(){
-        if (this.isMoving) {
-            if (this.isRight && this.vx <= this.speed) this.vx++;
-            else if (!this.isRight && this.vx >= -this.speed) this.vx--;
-        }
-    }
-    move_fly(){
-        if (this.isFlying) {
-            this.vy=this.isUp?this.speed:-this.speed;
-        }else this.vy=0;
-    }
-    jump(s=(this.speed-0.5)){
-        if (this.canJump) {
-            this.canJump = false;
-            this.vy = s;
-        }
-    }
-    AI(noise = 0) { //걸어 댕기는 놈
-        this.isRight=(this.getTargetDir()>0);
-        if(Math.abs(this.vx)<this.speed)this.vx += (this.speed+(1 - Math.random()*2)*noise)*(this.isRight ? 1 : -1);
-        this.jump();
-    }
-    AI2(noise = 0) {// 날아 댕기는 놈
-        this.isRight=(this.getTargetDir()>0);
-        this.vx=this.speed*(this.isRight ? 1 : -1);
-        this.vy=this.speed*(this.y<this.target.y ? -1 : 1);
-        this.giveForce((1 - Math.random()*2)*noise, (1 - Math.random()*2)*noise);
+    AI() {
+        this.isRight=(this.canTarget() ? (this.getX() < this.target.getX()) : (Math.random()>0.5))
+        this.isRight=(Math.random()>0.1 ? this.isRight : !this.isRight)
+        this.isMovingX=true;
+        if(this.isFlying){
+            this.isUp=(this.canTarget() ? (this.getY() > this.target.getY()) : (Math.random()>0.5));
+            this.isUp=(Math.random()>0.1 ? this.isUp : !this.isUp)
+            this.isMovingY=true;
+        }else this.jump();
     }
 }

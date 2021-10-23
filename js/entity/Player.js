@@ -1,15 +1,5 @@
-class Player extends Entity{
-    name="player";
-    nameColor="black";
+class Player extends Actor{
     lv=1;
-    mp=40;
-    speed=4; 
-    skillList=[];
-    coolTime=[0,0,0,0];
-    isRight=true;
-    isMoving=false;
-    canJump=true;
-    totalDamage=0;
     damageTick=0;
 
     constructor(x,y,lv=1,skillNum=Magic.skillNum,channelLevel=Game.PHYSICS_CHANNEL){
@@ -23,75 +13,42 @@ class Player extends Entity{
         this.COR=0;
         this.overlap=true;
         this.brightness=0.2
-        this.setName("player", "black");
+        this.speed=4;
+        this.jumpSpeed=5;
         //magic
         for(let i=0; i<4; i++){
             this.skillList[i]=(skillNum[i]>=0?Magic.magicList[skillNum[i]]:["none", function(){},0,0,0]);
+            this.coolTime[i]=0;
         }
         //lv
         this.lv=Number(lv);
         this.life=this.lv*10000;
         this.mp=this.lv*30000;
         //draw
-        this.draw=Player.getDraw(this);
+        let temp = this;
+        this.animation = new Animation(ImageManager.player,30,60,[1,1],function(){
+            if(temp.isMovingX)return 1;
+            else return 0;
+        });
+        //damage
+        this.createDamageText=function(){new Text(this.getX(), this.y - 50,Math.floor(this.totalDamage),40,"brown","black",40).vy=1;}
+        this.totalDamageHandler=function(){
+            if(this.damageTick>0){
+                this.totalDamage=0;
+                this.damageTick--;
+                return false;
+            }else if(this.totalDamage > 0){
+                this.damageTick=10;
+                Camera.vibrate((this.totalDamage<10000 ? this.totalDamage*0.02 : 200)+5);
+                //Camera.vibrate((this.totalDamage<10000 ? this.totalDamage*0.02 : 200)+5); 적당한 타격감
+                return true;
+            }
+        }
     }
 
     update() {
         super.update();
-        //damage
-        if (this.totalDamage > 0) {
-            new Text(this.getX(), this.y - 50,this.totalDamage,30,"red","black",40);
-            this.life -= this.totalDamage;
-            this.totalDamage = 0;
-            this.damageTick=10;
-        }
-        (this.mp<this.lv*30000 ? this.mp+=this.lv*2 : this.mp=this.lv*30000)
-        if(this.damageTick>0)this.damageTick--;
-    }
-    static getDraw(p){
-        p.animation = new Animation(ImageManager.player,30,60,[1,1],function(){
-            if(p.isMoving)return 1;
-            else return 0;
-        });
-        return function(){
-            p.animation.draw(Camera.getX(p.x), Camera.getY(p.y), Camera.getS(p.w), Camera.getS(p.h),p.isRight);
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-            ctx.font="bold 15px Arial";
-            ctx.fillStyle=this.nameColor;
-            Camera.fillText(this.name,this.getX(),this.y-20);
-        }
-    }
-    
-    move(){
-        super.move();
-        this.move_run();
-    }   
-
-    move_run(){
-        if (this.isMoving) {
-            if (this.isRight && this.vx <= this.speed) this.vx++;
-            else if (!this.isRight && this.vx >= -this.speed) this.vx--;
-        }
-    }
-
-    jump(){
-        if(this.canJump){
-            this.vy=this.speed+1;
-            this.canJump=false;
-        }
-    }
-
-    collisionHandler(e,ct=[0,0]){
-        if(ct[1]===-1&&!this.canJump)this.canJump=true;
-        return true;
-    }
-
-    giveDamage(d) {
-        if(this.damageTick==0&&Math.floor(d)>0){
-            this.totalDamage += Math.floor(d);
-            Camera.vibrate((d<20000 ? d/200 : 50)+5);
-        }
+        (this.mp<this.lv*30000 ? this.mp+=this.lv<<1 : this.mp=this.lv*30000)
     }
 
     castSkill(num){
@@ -104,10 +61,5 @@ class Player extends Entity{
             this.coolTime[num]=this.skillList[num][2]+Game.time;
             this.mp-=this.skillList[num][3];
         }
-    }
-
-    setName(name, color){
-        this.name=name;
-        this.nameColor=color;
     }
 }

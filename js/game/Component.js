@@ -131,16 +131,38 @@ let Component={
         }
         return view;
     },
+    bossMonsterStatusView:function(bossMonster,perX,perY,name="Boss",textColor="white"){
+        const viewTextSize=Screen.perX(1.8);
+        const MAX_HP=bossMonster.life;
+        let view=new Button(Screen.perX(perX),Screen.perX(perY),Screen.perX(40),Screen.perX(6.5),Game.TEXT_CHANNEL)
+        view.draw=function(){
+            ctx.fillStyle="rgba(0,0,0,0.1)";
+            ctx.fillRect(this.x,this.y, this.w, this.h);
+            ctx.textBaseline = "top";
+            ctx.textAlign = "left";
+            ctx.fillStyle=textColor;
+            ctx.font = "bold "+viewTextSize+"px Arial";
+            ctx.fillText(name, this.x+Screen.perX(0.5),this.y+Screen.perX(0.5));
+            ctx.strokeStyle=textColor;
+            ctx.strokeRect(this.x+Screen.perX(0.5),this.y+Screen.perX(3),this.w-Screen.perX(1),Screen.perX(3));
+            ctx.fillStyle="DarkSlateBlue";
+            let bossMonsterLife=bossMonster.life>0?bossMonster.life:0;
+            ctx.fillRect(this.x+Screen.perX(0.5),this.y+Screen.perX(3),(this.w-Screen.perX(1))*(bossMonsterLife/MAX_HP),Screen.perX(3));
+            ctx.fillStyle="white";
+            ctx.fillText(bossMonsterLife,this.x+Screen.perX(1),this.y+Screen.perX(3.7));
+        }
+        return view;
+    },
     mobileButton: function (player, mobileButtonSize = 70) {
         //move button
         let leftButton = new Button(5, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
-        leftButton.code = function () { player.isMoving = true; player.isRight = false; };
+        leftButton.code = function () { player.isMovingX = true; player.isRight = false; };
         leftButton.drawOption("rgba(61, 61, 61,0.5)", "black", "<", mobileButtonSize, "black");
         let upButton = new Button(10 + mobileButtonSize, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
         upButton.code = function () { player.jump() };
         upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", mobileButtonSize, "black");
         let rightButton = new Button(15 + mobileButtonSize * 2, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
-        rightButton.code = function () { player.isMoving = true; player.isRight = true; };
+        rightButton.code = function () { player.isMovingX = true; player.isRight = true; };
         rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", mobileButtonSize, "black");
         //skill button
         const keys = ["Q", "W", "E", "R"];

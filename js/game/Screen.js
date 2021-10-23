@@ -57,17 +57,6 @@ let Screen= {
         let helpButton = new Button(space, canvas.height-space-Screen.perX(3), Screen.perX(3), Screen.perX(3));
         helpButton.code = function () { Screen.helpScreen() };
         helpButton.drawOption(null, "white", "?", Screen.perX(3),"white");
-        //MOBILE MODE BUTTON
-        // let webappButton = new Button(canvas.width - space - Screen.perX(8), canvas.height - space - Screen.perX(3), Screen.perX(8), Screen.perX(3));
-        // webappButton.code = function () {
-        //     if(!Screen.isMobile){Input.convertToMobileMode(true);Screen.isMobile=true;}
-        //     canvas.height=Math.floor(canvas.width*(screen.height<screen.width?screen.height/screen.width:screen.width/screen.height));
-        //     tempcanvas.height=canvas.height;
-        //     document.querySelector(".textbox").style.fontSize="30px";
-        //     Screen.mainScreen();
-        // };
-        // webappButton.drawOption(null,"black","to mibile",Screen.perX(1.7),"black");
-        
         //SELECT MAGIC BUTTON
         let selectMagicButton = new Button(canvas.width - Screen.perX(16)-space, space, Screen.perX(16), Screen.perX(4));
         selectMagicButton.code = function () { Screen.selectMagicScreen(); };
@@ -299,8 +288,8 @@ let Screen= {
         Component.playerStatusView(player1, 1, 11, "player1");
         Component.playerStatusView(player2, 57, 11, "player2");
         if (Screen.isMobile) Component.mobileButton(player1, Screen.perX(8));
-        player1.setName("player 1", "green");
-        player2.setName("player 2", "red");
+        player1.getNameTag=function(){ctx.fillStyle="green";return "player 1"};
+        player2.getNameTag=function(){ctx.fillStyle="red";return "player 2"};
 
         function countdown(textset, index){
             let text = new Text(Screen.perX(50),Screen.perY(50), textset[index], Screen.perX(20), "yellow", null,100,false);
@@ -328,9 +317,9 @@ let Screen= {
         player2.removeHandler=function(){printWin("PLAYER 1  WIN");return true;}
         player1.target=player2;
         player2.target=player1;
-        if(player1.ga==0)Input.addFlyKey(player1, Input.KEY_MOVE[1]);
+        if(player1.isFlying)Input.addFlyKey(player1, Input.KEY_MOVE[1]);
         else Input.addMoveKey(player1, Input.KEY_MOVE[1]);
-        if(player2.ga==0)Input.addFlyKey(player2, Input.KEY_MOVE[0]);
+        if(player2.isFlying)Input.addFlyKey(player2, Input.KEY_MOVE[0]);
         else Input.addMoveKey(player2, Input.KEY_MOVE[0]);
 
         Camera.makeTwoTargetCamera(player1, player2, 0,0, 20);
@@ -361,7 +350,7 @@ let Screen= {
         Input.addMoveKey(player, Input.KEY_MOVE[0]);
         Input.addSkillKey(player, Input.KEY_SKILL[0]);
         Camera.makeMovingCamera(player,0,0,10);
-        Component.playerStatusView(player, 58,1.5);
+        Component.playerStatusView(player, 10,1.5);
         if (Screen.isMobile) Component.mobileButton(player, Screen.perX(8));
         Level.makeStage(level,player)
     },

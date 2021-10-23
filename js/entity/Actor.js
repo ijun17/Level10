@@ -5,24 +5,46 @@ creature은 몬스터와 플레이어로 자의식을 갖고 움직일수있고,
 
 class Actor extends Entity{
     animation;
-    nameTag=function(){return this.life}
+    getNameTag=function(){return `HP:${this.life}`}
+    createDamageText=function(){new Text(this.getX(), this.y - 50,Math.floor(this.totalDamage),40,"orange","black",40).vy=1;}
+    loop=function(){}
+    totalDamage=0;
+    noDamageTick=0;
     
     skillList=[];
     coolTime=[];
     mp=0;
+    MAX_MP=0;
 
     totalDamage=0;
 
     speed=1;
-    canJump = true;
-    isRight=false;
-    isUp=false;
+    jumpSpeed=1;
+    canJump = false;
+    isRight=true;
+    isUp=true;
     isMovingX=false;
     isMovingY=false;
     isFlying=false;//CONST
+
+    totalDamageHandler=function(){return true;}
+    castSkillHandler=function(){return true;}
+
     constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
         super(x,y,channelLevel=Game.PHYSICS_CHANNEL)
-        this.overlap=true;
+    }
+
+    update() {
+        super.update();
+        //damage
+        if (this.totalDamageHandler()&&this.totalDamage > 0) {
+            this.createDamageText()
+            //Camera.vibrate((this.totalDamage<10000 ? this.totalDamage/500 : 20)+5);
+            this.life -= Math.floor(this.totalDamage);
+            this.totalDamage = 0;
+        }
+        //this.loop();
+        //if(this.damageTick>0)this.damageTick--;
     }
 
     castSkill(num){
@@ -30,6 +52,7 @@ class Actor extends Entity{
         //Monstet skillList[0] is skill to Move
         if(this.skillList.length>num&&this.coolTime[num]<Game.time){
             this.coolTime[num]=this.skillList[num][1](this)+Game.time;
+            this.castSkillHandler();
         }
     }
     draw() {
@@ -38,7 +61,7 @@ class Actor extends Entity{
         ctx.textAlign = "center";
         ctx.font = "bold 15px Arial";
         ctx.fillStyle = "black";
-        Camera.fillText(this.nameTag(), this.getX(), this.y - 20);
+        Camera.fillText(this.getNameTag(), this.getX(), this.y - 20);
     }
     move(){
         super.move();
@@ -53,13 +76,33 @@ class Actor extends Entity{
     }
     moveY(){
         if (this.isMovingY) {
-            this.vy=this.isUp?this.speed:-this.speed-this.ga;;
+            if (this.isUp && this.vy <= this.speed) ++this.vy;
+            else if (!this.isUp && this.vy >= -this.speed) --this.vy;
+            this.vy-=this.ga;
         }
     }
-    jump(s=(this.speed-0.5)){
+    jump(){
         if (this.canJump) {
             this.canJump = false;
-            this.vy = s;
+            this.vy = this.jumpSpeed;
         }
+    }
+    collisionHandler(e,ct){
+        if (ct[1]===-1) this.canJump = true;
+        return true;
+    }
+    // giveDamage(d) {
+    //     if(this.damageTick==0&&d>0){
+    //         this.totalDamage += Math.floor(d);
+    //         Camera.vibrate((d<20000 ? d/200 : 50)+5);
+    //     }
+    // }
+
+    giveDamage(d) {
+        if(d>this.defense){
+            this.totalDamage += d;
+            return true;
+        }
+        return false;
     }
 }

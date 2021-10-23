@@ -11,5 +11,5 @@ let ImageManager={
 
 ImageManager.preloading("player", [`player`]);
 ImageManager.preloading("particle", ["ember","cloud","snow","smoke","ash","magiceffect"]);
-ImageManager.preloading("monster", ["crazymushroom","crazymonkey","hellfly","wyvern","golem","golden_dragon"]);
+ImageManager.preloading("monster", ["crazymushroom","crazymonkey","hellfly","wyvern","golem","golden_dragon","warrior"]);
 ImageManager.preloading("matter", ["fire","energy","electricity","arrow","ice","wind","explosion","lightning"]);

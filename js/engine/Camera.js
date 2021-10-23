@@ -48,10 +48,11 @@ let Camera={
         Camera.e=new Entity(x,y,Game.BUTTON_CHANNEL);
         const MAX_SPEED=100;
         Camera.e.update=function(){
-            Camera.e.x+=(((target1.x+target2.x)/2)-Camera.e.x)>>5;
-            Camera.e.y+=(((target1.y+target2.y)/2)-Camera.e.y)>>5;
-            let distance=Math.abs(Math.floor(target1.x-target2.x));
-            Camera.extension=(canvas.width/(distance+canvas.width));
+            Camera.e.x+=(((target1.x+target2.x)*0.5)-Camera.e.x)>>5;
+            Camera.e.y+=(((target1.y+target2.y)*0.5)-Camera.e.y)>>5;
+            let distanceX=Math.abs(Math.floor(target1.x-target2.x));
+            let distanceY=Math.abs(Math.floor(target1.y-target2.y+600));
+            Camera.extension=(canvas.width/(distanceX>distanceY?distanceX+canvas.width:distanceY+canvas.width));
 
         }
     },

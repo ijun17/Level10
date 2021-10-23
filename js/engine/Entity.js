@@ -40,6 +40,7 @@ class Entity {
     addAction(start, end, code) {
         let i,j;
         for (i = 0, j=this.action.length; i < j; i++) {
+            if(this.action[i][2]==code)console.log("같다");
             if (this.action[i][1] >= end + Game.time) break;
         }
         this.action.splice(i, 0, [start + Game.time, end + Game.time, code]);

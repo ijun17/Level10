@@ -23,14 +23,14 @@ let Input = {
         const a=keyset[0],b=keyset[1],c=keyset[2];
         this.keyDowns.push(function(e){
             switch(e.keyCode){
-                case a:player.isMoving = true;player.isRight = false;break;//left
+                case a:player.isMovingX = true;player.isRight = false;break;//left
                 case b:player.jump();break;//up
-                case c:player.isMoving = true;player.isRight = true;break;//right
+                case c:player.isMovingX = true;player.isRight = true;break;//right
             }
         })
         this.keyUps.push(function(e){
             switch(e.keyCode){
-                case a: case c:player.isMoving = false;break;
+                case a: case c:player.isMovingX = false;break;
             }
         })
     },
@@ -38,16 +38,16 @@ let Input = {
         const a=keyset[0],b=keyset[1],c=keyset[2],d=keyset[3];
         this.keyDowns.push(function(e){
             switch(e.keyCode){
-                case a:player.isMoving = true;player.isRight = false;break;//left
-                case b:player.isFlying = true;player.isUp=true;break;//up
-                case c:player.isMoving = true;player.isRight = true;break;//right
-                case d:player.isFlying = true;player.isUp=false;break;
+                case a:player.isMovingX = true;player.isRight = false;break;//left
+                case b:player.isMovingY = true;player.isUp=true;break;//up
+                case c:player.isMovingX = true;player.isRight = true;break;//right
+                case d:player.isMovingY = true;player.isUp=false;break;
             }
         })
         this.keyUps.push(function(e){
             switch(e.keyCode){
-                case a: case c:player.isMoving = false;break;
-                case b: case d:player.isFlying = false;break;
+                case a: case c:player.isMovingX = false;break;
+                case b: case d:player.isMovingY = false;break;
             }
         })
     },

@@ -18,13 +18,11 @@ giveForce(player,front(20),0);`,1],
 giveLife(player,2000);`,1],
     
     ["얼음비", `//많은 얼음을 소환
-@count=0;
-addAction(player, 1,10,#{
+for(@i=0;i<10;i++){
     @ice = create(ICE, 0,-20)
-    move(ice, front(count*40+100),300)
+    move(ice, front(i*40+100),300+i*40)
     giveLife(ice,100);
-    count++;
-})`,2],
+}`,2],
 
     ["얼음지뢰",`//얼음 지뢰 생성
 @e = create(ICE,0,0);
@@ -191,7 +189,7 @@ const vvmagic={
     giveForce:function(e,ax,ay){e.vx+=ax;e.vy+=ay;},
     giveLife:function(e,d){e.life+=d;},
     invisible:function(e,time){e.canDraw=false;e.addAction(time,time,function(){e.canDraw=true;});},
-    move:function(e,vx,vy){if(e instanceof Monster||e instanceof Player&&e!==player)return;e.x+=vx;e.y-=vy;},
+    move:function(e,vx,vy){if(e instanceof Actor&&e!==player)return;e.x+=vx;e.y-=vy;},
     addAction:function(e,startTime,endTime,f){e.addAction(startTime,endTime,f);},
     getX:function(e){return e.getX()-player.getX();},
     getY:function(e){return player.getY()-e.getY();},

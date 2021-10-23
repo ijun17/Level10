@@ -3,7 +3,7 @@ const MATTERS=[
         name:"fire",
         drawOption:function(e){
             e.animation=new Animation(ImageManager.fire, 10,10,[3],function(){return 0})
-            e.draw=function(){this.drawRotate(Math.atan2(this.vx, this.vy));}
+            e.draw=function(){this.drawRotate(function(){e.animation.draw(-Camera.getS(e.w>>1), -Camera.getS(e.h>>1), Camera.getS(e.w), Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
         },
         setStatus:function(e){
             e.power=500;e.brightness=1;
@@ -17,7 +17,6 @@ const MATTERS=[
                 new Matter(6, e.x-35, e.y-35,0,0);
                 e.throw();
                 if(v.typenum==0)v.throw();
-                else if(v.typenum==6)v.power+=1000;
             }else{
                 v.giveDamage(e.power);v.giveForce(e.vx/e.inv_mass,(e.vy+1)/e.inv_mass);
             }
@@ -28,7 +27,7 @@ const MATTERS=[
         name:"electricity",
         drawOption:function(e){
             e.animation=new Animation(ImageManager.electricity, 10,10,[3],function(){return 0})
-            e.draw=function(){e.drawRotate(0);}
+            e.draw=function(){this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h))}
         },
         setStatus:function(e){e.power=50;e.brightness=1;e.ga=0;e.inv_mass=1;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
@@ -53,8 +52,7 @@ const MATTERS=[
     {
         name:"ice",
         drawOption:function(e){
-            e.animation=new Animation(ImageManager.ice)
-            e.draw=function(){e.drawRotate(Math.atan2(this.vx, this.vy));}
+            e.draw=function(){this.drawRotate(function(){ctx.drawImage(ImageManager.ice,-Camera.getS(e.w>>1),-Camera.getS(e.h>>1),Camera.getS(e.w),Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
         },
         setStatus: function (e) { e.power = 110; },
         effect: function (e, v) {
@@ -67,7 +65,8 @@ const MATTERS=[
                 v.throw();
             } else {
                 v.giveDamage(Math.floor(this.getVectorLength())+e.power);
-                v.addAction(1,100,function(){v.vx=0;v.vy=0;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
+                if(v instanceof Actor)
+                v.addAction(1,100,function(){v.isMovingX=false;v.isMovingY=false;v.canJump=false;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
             }
             return true;
         }
@@ -75,17 +74,15 @@ const MATTERS=[
     {
         name:"arrow",
         drawOption:function(e){
-            e.animation=new Animation(ImageManager.arrow)
-            e.draw=function(){e.drawRotate(Math.atan2(this.vx, this.vy));}
+            e.draw=function(){this.drawRotate(function(){ctx.drawImage(ImageManager.arrow,-Camera.getS(e.w>>1),-Camera.getS(e.h>>1),Camera.getS(e.w),Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
         },
-        setStatus:function(e){e.power=100;},
+        setStatus:function(e){e.power=100;e.inv_mass=2},
         effect:function(e,v){--this.life;v.giveDamage(Math.floor(e.getVectorLength()*e.power));v.giveForce(e.vx/e.inv_mass,(e.vy)/e.inv_mass);return true;}
     },
     {
         name:"energy",
         drawOption:function(e){
-            e.animation=new Animation(ImageManager.energy)
-            e.draw=function(){e.drawRotate(0);}
+            e.draw=function(){Camera.drawImage(ImageManager.energy,this.x,this.y,this.w,this.h)}
         },
         setStatus:function(e){e.power=1000;e.brightness=2;e.inv_mass=0.5;e.ga=-0.01;e.friction=0;},
         effect:function(e,v){
@@ -109,8 +106,7 @@ const MATTERS=[
     {
         name:"wind",
         drawOption:function(e){
-            e.animation=new Animation(ImageManager.wind)
-            e.draw=function(){e.drawRotate(Math.atan2(this.vx, this.vy));}
+            e.draw=function(){this.drawRotate(function(){ctx.drawImage(ImageManager.wind,-Camera.getS(e.w>>1),-Camera.getS(e.h>>1),Camera.getS(e.w),Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
         },
         setStatus:function(e){e.power=0;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.1;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
@@ -123,8 +119,7 @@ const MATTERS=[
     {
         name:"explosion",
         drawOption:function(e){
-            e.animation=new Animation(ImageManager.explosion)
-            e.draw=function(){e.drawRotate(Math.atan2(this.vx, this.vy));}
+            e.draw=function(){Camera.drawImage(ImageManager.explosion,this.x,this.y,this.w,this.h)}
         },
         setStatus:function(e){e.power=1000;e.brightness=3;e.w=100;e.h=100;e.ga=0;e.life=50;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
@@ -137,7 +132,7 @@ const MATTERS=[
         name: "lightning",
         drawOption:function(e){
             e.animation=new Animation(ImageManager.lightning, 100,400,[3],function(){return 0})
-            e.draw=function(){e.drawRotate();}
+            e.draw=function(){this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h))}
         },
         setStatus:function(e){
             e.power=1000;e.brightness=10;e.w=300;e.h=1200;e.inv_mass=0;e.life=50;e.move=function(){};
@@ -167,7 +162,7 @@ class Matter extends Entity {
         this.w = 30;
         this.h = 30;
         this.ga = -0.02;
-        this.inv_mass=4;
+        this.inv_mass=2;
         this.overlap=true;
         let type=MATTERS[typenum];
         this.typenum=typenum;
@@ -176,11 +171,11 @@ class Matter extends Entity {
         type.drawOption(this);
     }
 
-    drawRotate(r){
+    drawRotate(code, r){
         ctx.save();
         ctx.translate(Camera.getX(this.getX()), Camera.getY(this.getY()));
         ctx.rotate(r);
-        this.animation.draw(Camera.getS(-this.w>>1), Camera.getS(-this.h>>1), Camera.getS(this.w), Camera.getS(this.h));
+        code();
         ctx.restore();
     }
 

@@ -45,6 +45,7 @@ let Level= {
             Camera.vibrate(50);
             return true;
         }
+        Component.bossMonsterStatusView(m,59,1)
         return m;
     },
 
@@ -54,9 +55,6 @@ let Level= {
         }
         //level에 따라 달라지는 변수
         Screen.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
-        let textE = new Text(Screen.perX(10),Screen.perY(3),`LEVEL${level}`,Screen.perX(4), "#2B2B2B", null, 400, false);
-        textE.textBaseline = "top";
-        textE.textAlign="left";
         
         switch (level) {
             case 1: 
@@ -65,9 +63,9 @@ let Level= {
                 break;
             case 2: 
                 Level.createMainMonster(1, 700, -1000);
-                new Monster(0, 1000, -1000);
-                new Monster(0, 900, -1000);
-                new Monster(0, 800, -1000);
+                //new Monster(0, 1000, -1000);
+                //new Monster(0, 900, -1000);
+                //new Monster(0, 800, -1000);
                 Component.worldWall(2000,1000,300);
                 Component.particleSpray(3,player,2000,-1000,10,1.5,5)
                 Screen.bgColor="#cde5e4";
@@ -101,7 +99,9 @@ let Level= {
                 break;
             case 7:
                 Component.worldWall(2000,1000,300);
-                
+                Level.createMainMonster(6,Screen.perX(50), -400);
+                Screen.bgColor="rgb(100,100,100)";
+                //Component.shader();
                 break;
             case 8:
                 Component.worldWall(2000,1000,300);
