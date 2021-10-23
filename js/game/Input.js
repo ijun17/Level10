@@ -74,8 +74,8 @@ let Input = {
     },
     //touch and mouse
     convertToMobileMode:function(a) {
-        canvas.addEventListener("touchstart", this.touchStartHandler, {passive: true}); //
-        canvas.addEventListener("touchmove", this.touchMoveHandler, {passive: true}); //캔버스로 해야 더 빠름
+        canvas.addEventListener("touchstart", this.touchStartHandler, {passive: false}); //
+        canvas.addEventListener("touchmove", this.touchMoveHandler, {passive: false}); //캔버스로 해야 더 빠름
         canvas.addEventListener("touchend", this.touchEndHandler, false);
         canvas.removeEventListener("mousedown", this.clickDownHandler, false);
     },
@@ -93,13 +93,13 @@ let Input = {
         Input.click(e.offsetX, e.offsetY);
     },
     touchStartHandler:function(e) {
-        if (e.cancelable) e.preventDefault();
+        e.preventDefault();
         for(let i=0, max=e.touches.length; i<max; i++){
             Input.click(e.touches[i].clientX, e.touches[i].clientY);
         }
     },
     touchMoveHandler:function(e) {
-        if (e.cancelable) e.preventDefault();
+        e.preventDefault();
         for(let i=0, max=e.touches.length; i<max; i++){
             Input.click(e.touches[i].clientX, e.touches[i].clientY);
         }
