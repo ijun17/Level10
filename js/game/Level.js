@@ -2,7 +2,7 @@ let Level= {
     playerLevel:0,
 
     loadLevel:function() {
-        this.playerLevel = localStorage.betalevel2;
+        this.playerLevel = Number(localStorage.betalevel2);
         if (this.playerLevel == undefined) {
             this.playerLevel = 1;
             this.saveLevel();
@@ -27,6 +27,7 @@ let Level= {
 
     createMainMonster:function(typenum,x,y){
         let m=new Monster(typenum,x,y);
+        m.isRight=false;
         m.removeHandler=function(){
             Level.clearLevel(typenum+1);
             for(let i=this.w/10; i>=0; i--){

@@ -69,19 +69,13 @@ let Screen= {
         let multiplayButton =new Button(canvas.width - Screen.perX(16)-space, 3*space+Screen.perX(8),Screen.perX(16), Screen.perX(4));
         multiplayButton.code = function () { Screen.pvpScreen(); };
         multiplayButton.drawOption(null, "purple", "PVP", Screen.perX(2.5), "purple");//"rgb(65, 105, 225)"
-
-        //LEVEL BUTTON
-        let block = new Button((canvas.width - Screen.perX(16)) /2, -100, Screen.perX(16), space+100);
-        block.setStatic();
-        for (let i = 1; i <= Level.playerLevel; i++) {
-            let levelButton = new Button((canvas.width - Screen.perX(16)) /2, Screen.perX(16) + i * (space+Screen.perX(6)), Screen.perX(16), Screen.perX(4));
-            levelButton.code = function () { Screen.gameScreen(i);};
-            levelButton.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)", "black", "LEVEL" + i, Screen.perX(3), "black");
-            levelButton.ga = 0.01;
-            levelButton.vy=10;
-            levelButton.canInteract=true;
-            levelButton.canMove=true;
-        }
+        //Level Btn
+        Component.buttonStack(42, 0, Level.playerLevel,false,function(i){
+            let levelButton = new Button(0,0,Screen.perX(16), Screen.perX(4));
+            levelButton.code = function () { Screen.gameScreen(i+1);};
+            levelButton.drawOption("rgba("+(255-(i+1)*25)+","+(255-(i+1)*25)+","+(255-(i+1)*20)+",0.5)", "black", `LEVEL${i+1}`, Screen.perX(3), "black");
+            return levelButton;
+        })
     },
 
     selectMagicScreen:function() {
@@ -91,41 +85,32 @@ let Screen= {
         Component.screenName("select magic");
 
         let buttonSelector=Component.buttonSelector();
-        Component.keyButton(1,10,['q','w','e','r'],Magic.skillNum,buttonSelector,"선택된 마법");
-        
-        new Entity(0,0,Game.BUTTON_CHANNEL).update=function(){
-            //magic explanation
-            if(buttonSelector.selectedBtn==null)return;
-            let temp1 = Screen.perX(53);
-            let temp2 = Screen.perX(2.4);
-            ctx.fillStyle = "black";
-            ctx.font = "bold " + temp2 + "px Arial";
-            ctx.textBaseline = "top";
-            ctx.textAlign = "left";
-            ctx.fillText("<" + Magic.magicList[buttonSelector.selectedBtn.temp[0]][0] + ">", temp1, 10 + temp2 * 2);
-            ctx.fillText("cooltime: " + (Magic.magicList[buttonSelector.selectedBtn.temp[0]][2] / 100) + "sec", temp1, 10 + temp2 * 3);
-            ctx.fillText("mp: " + (Magic.magicList[buttonSelector.selectedBtn.temp[0]][3]), temp1, 10 + temp2 * 4);
-        }
+        let kb=Component.keyButton(1-32,10,['q','w','e','r'],Magic.skillNum,buttonSelector,"선택된 마법");
+        kb.addAction(1,Screen.perX(2),function(){kb.moveComponent(16,0)})
 
-        //사용자가 사용할 수 있는 모든 마법들
-        let listStart=Game.channel[Game.BUTTON_CHANNEL].length();
-        let listEnd;
-        
-        for (let i = 0; i < Magic.magicList.length; i++) {
-            if(Magic.magicList[i][4]>Level.playerLevel)continue;
-            Component.magicButton(Screen.perX(32), Screen.perX(20) + Screen.perX(10) * i,i,buttonSelector)
-        }
-        listEnd=Game.channel[Game.BUTTON_CHANNEL].length();
-        Component.listScroll(32,16,listStart,listEnd);
+        let magicView=new TextPanel(Screen.perX(53),Screen.perX(6),0,0);
+        magicView.colors=[null, "black"];
+        magicView.px=[0, Screen.perX(2.5)];
+        magicView.texts=[[0,""]];
+
+        let bs=Component.buttonStack(0,0,Magic.magicList.length,true,function(i){
+            if(Magic.magicList[i][4]>Level.playerLevel)return null;
+            else return Component.magicButton(0,0,i,buttonSelector,function(btn){
+                magicView.texts=[[1,`<${Magic.magicList[btn.temp[0]][0]}>`],
+                [1,`cooltime: ${Magic.magicList[btn.temp[0]][2]/100}`],
+                [1,`mp: ${Magic.magicList[btn.temp[0]][3]}`]];
+            })
+        })
+        bs.addAction(1,Screen.perX(2),function(){bs.moveComponent(16,0)})
 
         //TEST WORLD
         new MapBlock(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "wall");
-        Game.p=new Player(Screen.perX(70),0,10);
+        Game.p=new Player(Screen.perX(63),0,10);
         Game.p.removeHandler=function(){this.life=100000;this.x=Screen.perX(70);this.y=0;this.vx=0;this.vy=0;return false;}
         Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
         Camera.cameraOn=false;
         
-        let monster = new Monster(0, canvas.width-100, 0,false);
+        let monster = new Monster(0,Screen.perX(87), 0,false);
         monster.life = 0;
         monster.inv_mass=0;
         monster.canRemoved = false;
@@ -164,29 +149,23 @@ let Screen= {
             textbox.value = Magic.customMagic[magicListIndex - Magic.basicMagic.length][1];
             printInfo("", "cooltime: " + (Magic.magicList[magicListIndex][2] / 100) + "sec\nMP: " + Magic.magicList[magicListIndex][3]);
         }
-        //CUSTOM MAGIC LIST
-        const customX=83
-        let plusButton = new Button(Screen.perX(83), Screen.perX(6), Screen.perX(16), Screen.perX(3));
-        plusButton.setStatic();
-        plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagic.length+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
-        plusButton.code=function(){ 
+        //custom magic list
+        let customMagicStackHead=Component.buttonStack(83,8,Magic.customMagic.length,false,function(i){
+            return Component.magicButton(0,0,i+Magic.basicMagic.length,buttonSelector,function(btn){customMagicButtonCode(i+Magic.basicMagic.length)})
+        })
+        customMagicStackHead.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagic.length+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
+        customMagicStackHead.code=function(){ 
             if(Magic.customMagic.length<10){
                 Magic.addEmptyMagic();
-                Component.magicButton(Screen.perX(customX),Screen.perX(10+6*Magic.customMagic.length),Magic.magicList.length-1,buttonSelector, function(btn){customMagicButtonCode(Magic.magicList.length-1);})
-                plusButton.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagic.length+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
+                customMagicStackHead.addStack(Component.magicButton(0,0,Magic.magicList.length-1,buttonSelector, function(btn){customMagicButtonCode(Magic.magicList.length-1);}))
+                customMagicStackHead.drawOption(null,"rgba(0,0,255,0.3)","+magic ("+Magic.customMagic.length+"/10)",Screen.perX(2.2),"rgba(0,0,255,0.3)");
             }
         };
-        for(let i=Magic.basicMagic.length; i<Magic.magicList.length; i++)
-            Component.magicButton(Screen.perX(customX),Screen.perX(10+4*(i-Magic.basicMagic.length)),i,buttonSelector,function(btn){customMagicButtonCode(i);})
-        //BASIC MAGIC LIST
-        const basicX=8;
-        let list_start=Game.channel[Game.BUTTON_CHANNEL].length();
-        for(let i=0; i<Magic.basicMagic.length; i++){
-            if(Magic.magicList[i][4]>Level.playerLevel)break;
-            Component.magicButton(Screen.perX(basicX),Screen.perX(10+6*i),i,buttonSelector,function(btn){basicMagicButtonCode(i);})
-        }
-        let list_end=Game.channel[Game.BUTTON_CHANNEL].length();
-        Component.listScroll(basicX, 16, list_start, list_end);
+        //basic magic list
+        Component.buttonStack(8,0,Magic.basicMagic.length,true,function(i){
+            if(Magic.magicList[i][4]>Level.playerLevel)return null;
+            return Component.magicButton(0,0,i,buttonSelector,function(){basicMagicButtonCode(i);})
+        })
 
         //COMPILE BUTTON CLICK EVENT
         compileBtn.onclick = function(){
@@ -218,88 +197,84 @@ let Screen= {
         Game.resetGame();
         Component.backButton(function(){Screen.selectScreen()});
         Component.screenName("PVP","rgba(128, 0, 128,0.5)");
-        //Component.serverConnectionChecker();
+        Game.p=new Player(0,Screen.perY(200),1); 
+        //Component.particleSpray(1,{x:Screen.perX(50),y:0}, Screen.perX(120),0, 15, 1, 10);
+        //Component.particleSpray(0,{x:Screen.perX(50),y:0}, Screen.perX(120),0, 15, 1, 10);
+        //Screen.bgColor="rgb(220,235,240)"
+        //Component.shader("rgb(50,40,60)", globalAlpha=0.3);
+        let magicSelector=Component.buttonSelector();
         
-        const btnW=Screen.perX(33);
-        const btnH=Screen.perX(10);
-        const btnDistance=Screen.perX(1);
-        const textSize=Screen.perX(4);
-        let localPVPButton = new Button(Screen.perX(50)-btnW/2, Screen.perY(49)-btnH,btnW,btnH);
-        localPVPButton.drawOption(`rgba(119, 138, 202,0.8)`,"white","로컬 PVP",textSize,`rgba(245, 245, 245,1)`);
-        localPVPButton.code=function(){Screen.localPVPScreen()}
-        let monsterPVPButton = new Button(Screen.perX(50)-btnW/2, Screen.perY(51),btnW,btnH);
-        monsterPVPButton.drawOption(`rgba(119, 138, 202,0.8)`,"white","MONSTER PVP",textSize,`rgba(245, 245, 245,1)`);
-        monsterPVPButton.code=function(){Screen.monsterPVPGameScreen()}
-        new Text(Screen.perX(50),localPVPButton.y+Screen.perX(8.7), "한개의 pc로 두명이서 플레이", Screen.perX(1.5), "lightgray", null,-1,false);
-        new Text(Screen.perX(50),monsterPVPButton.y+Screen.perX(8.7), "몬스터가 되어 플레이", Screen.perX(1.5), "lightgray", null,-1,false);
+        let magicList=Component.buttonStack(0,0,Magic.magicList.length,true,function(i){
+            if(Magic.magicList[i][4]>Level.playerLevel)return null;
+            else return Component.magicButton(0,0,i,magicSelector)
+        })
+        let keyButton1=Component.keyButton(0,canvas.height,['r','t','y','u'],Magic.pvp_skillNum[0],magicSelector,"player1");
+        let keyButton2=Component.keyButton(0,canvas.height,['0','1','2','3'],Magic.pvp_skillNum[1],magicSelector,"player2");
 
-        
-    },
-    localPVPScreen:function(){
-        Game.resetGame();
-        Component.backButton(function(){Screen.pvpScreen()});
-        Component.screenName("Local PVP","rgba(128, 0, 128,0.5)");
-
-        let buttonSelector=Component.buttonSelector();
-        Component.keyButton(32,9,['r','t','y','u'],Magic.pvp_skillNum[0],buttonSelector,"player1");
-        Component.keyButton(60,9,['0','1','2','3'],Magic.pvp_skillNum[1],buttonSelector,"player2");
-
-        Game.p=new Player(0,Screen.perY(200),1);
-        const listX=10;
-        let listStart=Game.channel[Game.BUTTON_CHANNEL].length();
-        for (let i = 0; i < Magic.magicList.length; i++) {
-            if(Magic.magicList[i][4]>Level.playerLevel)continue;
-            Component.magicButton(Screen.perX(listX), Screen.perX(3) + Screen.perX(6) * i,i,buttonSelector)
+        let background=new Button(0,0,canvas.width,canvas.heigth);
+        background.drawOption("rgba(0,0,0,0.85)");
+        background.code=function(){
+            this.w=0;this.h=0;
+            magicList.moveComponent(Screen.perX(-30)-magicList.x,0)
+            keyButton1.moveComponent(Screen.perX(37)-keyButton1.x,canvas.height-keyButton1.y+Screen.perX(5))
+            keyButton2.moveComponent(Screen.perX(37)-keyButton2.x,canvas.height-keyButton2.y+Screen.perX(5))
         }
-        let listEnd=Game.channel[Game.BUTTON_CHANNEL].length();
-        Component.listScroll(listX,16,listStart,listEnd);
+        background.code();
+
+        let player1Selctor=Component.buttonSelector();
+        let player2Selctor=Component.buttonSelector();
+
+        function playerButton(num,selector){
+            let btn = new Button(0,0,Screen.perX(16),Screen.perX(3.5));
+            btn.drawOption(`rgba(65, 105, 225,0.8)`,"black","wizard",Screen.perX(3), "black")
+            btn.code=function(){
+                background.w=canvas.width;background.h=canvas.height;//검은 배경 생성
+                magicList.addAction(1,Screen.perX(2),function(){magicList.moveComponent(20,0)})
+                if(num===1)keyButton1.addAction(1,Screen.perX(2),function(){keyButton1.moveComponent(0,-23)})
+                else keyButton2.addAction(1,Screen.perX(2),function(){keyButton2.moveComponent(0,-23)})
+                selector.selectedBtn=this;
+            }
+            selector.selectedBtn=btn;
+            btn.player_type=0;
+            return btn;
+        }
+
+        function monsterButton(i,selector){
+            let btn = new Button(0,0,Screen.perX(16),Screen.perX(3.5));
+            btn.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)","black",`LEVEL${i}`,Screen.perX(3), "black")
+            btn.code=function(){
+                selector.selectedBtn=this;
+            }
+            btn.player_type=i;
+            return btn;
+        }
+
+        let player1List = Component.buttonStack(13,5,1+10,false,function(i){
+            if(i-1>Level.playerLevel||i>MONSTERS.length)return false;
+            else if(i===0)return playerButton(1,player1Selctor);
+            else return monsterButton(i,player1Selctor);
+        })
+        player1List.drawOption(null,null,"player1",Screen.perX(2.5),"rgba(255,255,255,0.7)")
+
+        let player2List = Component.buttonStack(32,5,1+10,false,function(i){
+            if(i-1>Level.playerLevel||i>MONSTERS.length)return false;
+            else if(i===0)return playerButton(2,player2Selctor);
+            else return monsterButton(i,player2Selctor);
+        })
+        player2List.drawOption(null,null,"player2",Screen.perX(2.5),"rgba(255,255,255,0.7)")
 
         let startButton = new Button(Screen.perX(90), Screen.perY(10), Screen.perX(9), Screen.perY(90)-Screen.perX(1));
         startButton.drawOption("rgba(128, 0, 128,0.8)","white","START",Screen.perX(2),"white");
-        startButton.code=function(){Screen.localPVPGameScreen();}
-    },
-
-    localPVPGameScreen:function(){
-        Game.resetGame();
-        Component.backButton(function(){Screen.localPVPScreen()});
-        Component.worldWall(2000,1000,300);
-        let player1 = new Player(1000-200,-60,10,Magic.pvp_skillNum[0]);
-        let player2 = new Player(1000+200,-60,10,Magic.pvp_skillNum[1]);
-        player2.isRight=false;
-        function printWin(text){
-            let winText = new Text(Screen.perX(50),Screen.perY(50), text, Screen.perX(10), "yellow", null,300,false);
-            winText.removeHandler=function(){Screen.localPVPScreen();return true;};
-            player2.canRemoved=false;player1.canRemoved=false;
-        }
-        player1.removeHandler=function(){printWin("PLAYER 2  WIN");return true;}
-        player2.removeHandler=function(){printWin("PLAYER 1  WIN");return true;}
-        Input.addMoveKey(player1, Input.KEY_MOVE[1]);
-        Input.addMoveKey(player2, Input.KEY_MOVE[0]);
+        startButton.code=function(){Screen.pvpGameScreen(player1Selctor.selectedBtn.player_type,player2Selctor.selectedBtn.player_type);}
         
-        Camera.makeTwoTargetCamera(player1, player2, 0,0, 20);
-
-        Component.playerStatusView(player1, 1, 11, "player1");
-        Component.playerStatusView(player2, 57, 11, "player2");
-        if (Screen.isMobile) Component.mobileButton(player1, Screen.perX(8));
-        player1.getNameTag=function(){ctx.fillStyle="green";return "player 1"};
-        player2.getNameTag=function(){ctx.fillStyle="red";return "player 2"};
-
-        function countdown(textset, index){
-            let text = new Text(Screen.perX(50),Screen.perY(50), textset[index], Screen.perX(20), "yellow", null,100,false);
-            if(index==textset.length-1){Input.addSkillKey(player1, Input.KEY_SKILL[2]);Input.addSkillKey(player2, Input.KEY_SKILL[1]);
-            }else text.removeHandler=function(){countdown(textset, index+1);return true;}
-        }
-        countdown(['3','2','1',"FIGHT"],0);
     },
-    monsterPVPScreen(){
-
-    },
-    monsterPVPGameScreen(){
+    pvpGameScreen:function(player1_type, player2_type){
         Game.resetGame();
         Component.backButton(function(){Screen.pvpScreen()});
+
         Component.worldWall(2000,1000,300);
-        let player1 = new Monster(5,1000-200,-60,false);
-        let player2 = new Monster(4,1000+200,-60,false);
+        let player1 = (player1_type===0 ? new Player(1000-200,-60,10,Magic.pvp_skillNum[0]):new Monster(player1_type-1,1000-200,-60,false))
+        let player2 = (player2_type===0 ? new Player(1000+200,-60,10,Magic.pvp_skillNum[1]):new Monster(player2_type-1,1000+200,-60,false))
         player2.isRight=false;
         function printWin(text){
             let winText = new Text(Screen.perX(50),Screen.perY(50), text, Screen.perX(10), "yellow", null,300,false);
@@ -328,7 +303,6 @@ let Screen= {
         }
         countdown(['3','2','1',"FIGHT"],0);
     },
-
     gameScreen:function(level) {
         Game.resetGame();
         Component.backButton(function(){Screen.selectScreen()});
@@ -347,21 +321,6 @@ let Screen= {
         Component.playerStatusView(player, 10,1.5);
         if (Screen.isMobile) Component.mobileButton(player, Screen.perX(8));
         Level.makeStage(level,player)
-    },
-    multiplayScreen:function(){
-        Game.resetGame();
-        Component.backButton(function(){Screen.selectScreen()});
-        
-        let multiPlayText = new Text(Screen.perX(99),Screen.perX(1), "multi play", Screen.perX(3),"rgba(255,255,255,0.5)",null,-1,null);
-        multiPlayText.textBaseline = "top";
-        multiPlayText.textAlign="right";
-
-        Game.convertMultiMode(true);
-        let playButton=new Button(Screen.perX(-100),Screen.perY(-100),Screen.perX(30),Screen.perX(8));
-        playButton.drawOption("rgba(1, 1, 1,0.1)","black", "PLAY", Screen.perX(4), "black");
-        playButton.code=function(){Multi.enterGame();};
-
-        let serverOnView = Component.serverConnectionChecker();
     },
     helpScreen:function(){
         Game.resetGame();

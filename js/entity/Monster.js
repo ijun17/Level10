@@ -70,6 +70,7 @@ const MONSTERS = [{
             for(let i=0; i<10; i++){
                 (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-2-i*0.1,0,-30)).life=10;
                 (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-1.5-i*0.1,0,-30)).life=10;
+                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-2.5-i*0.1,0,-30)).life=10;
             }
             return 500;}
     ]

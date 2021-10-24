@@ -81,7 +81,7 @@ let Input = {
     },
     click:function(x, y) {
         let c = Game.channel[Game.BUTTON_CHANNEL].entitys;
-        for (let i = c.length - 1; i >= 0; i--) {
+        for (let i = 0,l=c.length; i < l; i++) {
             if (c[i].x < x && x < c[i].x + c[i].w && c[i].y < y && y < c[i].y + c[i].h) {
                 c[i].collisionHandler({x,y},'c');
                 break;

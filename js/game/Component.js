@@ -5,7 +5,8 @@
 let Component={
     backButton:function(code){
         let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
-        backButton.code = code;
+        backButton.canAct=true;
+        backButton.code = function(){backButton.addAction(10,10,code); backButton.code=function(){}}
         backButton.drawOption(null, null, "<", Screen.perX(6), "black","white");
         return backButton;
     },
@@ -16,26 +17,54 @@ let Component={
         screenNameText.textAlign="right";
         return screenNameText;
     },
-    listScroll:function(perX,perSize,listStart, listEnd){
-        //MAGIC LIST SCROLL
-        let scroll = new Button(Screen.perX(perX-1), -Screen.perX(8), Screen.perX(perSize+2), Screen.perX(9));
-        scroll.setStatic();
-        scroll.draw = function () {
-            ctx.fillStyle = "rgba(0,0,0,0.2)";
-            ctx.fillRect(scroll.x, 0, scroll.w, canvas.height);
+    buttonStack:function(perX,perY,count,hasScroll,createCode){
+        let maxBtnWidth=0;
+        let maxBtnHeight=0;
+        
+        let stackHead = new Button(Screen.perX(perX), Screen.perX(perY-9), 0, Screen.perX(10));
+        stackHead.stack_id=Game.channel[Game.BUTTON_CHANNEL].entitys.length;
+        stackHead.stack_list=[stackHead];
+        stackHead.stack_interface_list=[];
+        let btns=stackHead.stack_list;
+        stackHead.moveComponent=function(x,y){
+            for(let i=0,l=this.stack_list.length;i<l;i++){btns[i].x+=x;btns[i].y+=y;}
+            for(let i=0,l=this.stack_interface_list.length;i<l;i++){stackHead.stack_interface_list[i].x+=x;}
         }
-        function move(d){
-            for(let i=listStart;i<=listEnd;i++){
-                if(Game.channel[Game.BUTTON_CHANNEL].get(i).temp[1]==null)Game.channel[Game.BUTTON_CHANNEL].get(i).y+=d;
-            }
+        stackHead.addStack=function(btn){
+            let last=this.stack_list[this.stack_list.length-1];
+            btn.x=last.x;btn.y=last.y+last.h+Screen.perY(3);
+            btn.ga = 0.1;btn.vy = 10;btn.canMove = true;btn.canInteract = true;
+            btn.stack_id=this.stack_id;
+            btn.collisionHandler=function(e,ct){if(ct==='c')this.code(e,ct);else return (e.stack_id===this.stack_id)}
+            this.stack_list.push(btn);
         }
-        const MOVE_DISTANCE=Screen.perY(20);
-        let upButton = new Button(Screen.perX(perX+perSize+1),0,Screen.perX(4),Screen.perX(4));
-        upButton.drawOption("rgba(0,0,0,0.5)",null,"▲", Screen.perX(3),"white");
-        upButton.code=function(){if(Game.channel[Game.BUTTON_CHANNEL].get(listEnd).y<-Screen.perX(8))move(MOVE_DISTANCE);};
-        let downButton = new Button(Screen.perX(perX+perSize+1),canvas.height-Screen.perX(4),Screen.perX(4),Screen.perX(4));
-        downButton.drawOption("rgba(0,0,0,0.5)",null,"▼", Screen.perX(3),"white");
-        downButton.code=function(){if(Screen.perX(3)*(listEnd-listStart)+Screen.perX(8)+Game.channel[Game.BUTTON_CHANNEL].get(listEnd).y>canvas.height)move(-MOVE_DISTANCE);};
+        stackHead.collisionHandler=function(e,ct){if(ct==='c')this.code(e,ct);else return (e.stack_id===this.stack_id)}
+        stackHead.canAct=true;
+        stackHead.canInteract = true;
+        for(let i=0;i<count;i++){
+            let btn=createCode(i);
+            if(btn===null)continue;
+            stackHead.addStack(btn);
+            if(btn.w>maxBtnWidth)maxBtnWidth=btn.w;
+            if(btn.h>maxBtnHeight)maxBtnHeight=btn.h;
+        }
+        //스택헤드 위치 크기 조정
+        stackHead.w=maxBtnWidth;stackHead.y=Screen.perX(1+perY)-maxBtnHeight;stackHead.h=maxBtnHeight;
+        if(hasScroll){
+            let background=new Button(Screen.perX(perX-1), 0, maxBtnWidth+Screen.perX(2), 0);
+            background.draw = function () { ctx.fillStyle = "rgba(0,0,0,0.2)";ctx.fillRect(this.x, 0, this.w, canvas.height);}
+            const MOVE_DISTANCE=Screen.perY(20);
+            let upButton = new Button(stackHead.w+stackHead.x+Screen.perX(1), 0, Screen.perX(4), Screen.perX(4));
+            upButton.drawOption("rgba(0,0,0,0.5)", null, "▲", Screen.perX(3), "white");
+            upButton.code = function () {if(btns[0].y+btns[0].h<0) stackHead.moveComponent(0,MOVE_DISTANCE); };
+            let downButton = new Button(stackHead.w+stackHead.x+Screen.perX(1), canvas.height - Screen.perX(4), Screen.perX(4), Screen.perX(4));
+            downButton.drawOption("rgba(0,0,0,0.5)", null, "▼", Screen.perX(3), "white");
+            downButton.code =function(){if(btns[btns.length-1].y+btns[btns.length-1].h > canvas.height) stackHead.moveComponent(0,-MOVE_DISTANCE);};
+            stackHead.stack_interface_list.push(background);
+            stackHead.stack_interface_list.push(upButton);
+            stackHead.stack_interface_list.push(downButton);
+        }
+        return stackHead;
     },
     magicButton:function(x,y,magicListIndex,selector=null,extraCode=function(){}){
         let magicBtn = new Button(x,y,Screen.perX(16),Screen.perX(3));
@@ -66,10 +95,9 @@ let Component={
         }
         return selector;
     },
-    buttonStack:function(perX,perY,count,createCode){
-        
-    },
     keyButton:function(perX,perY,keys,skillNum,selector,name=""){
+        let components=[];
+        const ID=Game.channel[Game.BUTTON_CHANNEL].entitys.length;
         for (let i = 0; i < 4; i++) {
             if(skillNum[i]>=Magic.magicList.length)skillNum[i]=i;
             let temp = new Button(Screen.perX(perX+8), Screen.perX(perY-4+9*i), Screen.perX(16), Screen.perX(4));
@@ -78,7 +106,6 @@ let Component={
             keyBtn.code = function () {
                 let selectMagic=selector.selectedBtn;
                 if(selectMagic != null){
-                    
                     skillNum[i]=selectMagic.temp[0];
                     const boxFill=(selectMagic.temp[0]<Magic.basicMagic.length ? `rgba(119, 138, 202,0.8)` : `rgba(65, 105, 225,0.8)`);
                     keyBtn.temp[0].drawOption(boxFill, "black", Magic.magicList[skillNum[i]][0], Screen.perX(2), "black");
@@ -88,15 +115,24 @@ let Component={
                 }
             };
             keyBtn.drawOption("rgb(60, 60, 60)", "black", keys[i],Screen.perX(7), "black");
-            keyBtn.temp[0]=Component.magicButton(Screen.perX(perX+9), Screen.perX(perY) + Screen.perX(9*i+1), skillNum[i])
+            keyBtn.temp[0]=Component.magicButton(Screen.perX(perX+9), Screen.perX(perY) + Screen.perX(9*i+1), skillNum[i]);
+            components.push(temp);components.push(keyBtn);components.push(keyBtn.temp[0]);
         }
         let nameText = new Text(Screen.perX(perX),Screen.perX(perY-3), name, Screen.perX(2),"rgba(255,255,255,0.5)",null,-1,null);
         nameText.textBaseline = "top";
         nameText.textAlign="left";
-        new Entity(0,0,Game.BUTTON_CHANNEL).update=function(){
-            ctx.fillStyle = "rgba(0,0,0,0.1)";
-            ctx.fillRect(Screen.perX(perX-0.5), Screen.perX(perY-0.5), Screen.perX(26), Screen.perX(36));
+        let keyButtonComponent= new Button(Screen.perX(perX-0.5), Screen.perX(perY-0.5), Screen.perX(26), Screen.perX(36))
+        keyButtonComponent.drawOption("rgba(0,0,0,0.2)");
+        components.push(nameText);components.push(keyButtonComponent);
+        keyButtonComponent.interface_list=components;
+        keyButtonComponent.canAct=true;
+        let list=keyButtonComponent.interface_list
+        for(let i=0; i<list.length; i++){
+            list[i].component_id=ID;
+            list[i].collisionHandler=function(e,ct){if(ct==='c')this.code(e,ct);else return (e.component_id===this.component_id)}
         }
+        keyButtonComponent.moveComponent=function(x,y){for(let i=0,l=this.interface_list.length;i<l;i++){this.interface_list[i].x+=x;this.interface_list[i].y+=y;}}
+        return keyButtonComponent;
     },
     playerStatusView:function(player,perX,perY,playerName="Player",textColor="white"){
         const viewTextSize=Screen.perX(1.8);

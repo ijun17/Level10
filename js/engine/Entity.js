@@ -64,7 +64,7 @@ class Entity {
     giveForce(ax, ay) {
         this.vx += ax*this.inv_mass;
         this.vy += ay*this.inv_mass;
-
+        this.limitVector(80);
     }
     giveDamage(d){
         if(d>this.defense){
@@ -78,6 +78,10 @@ class Entity {
     throw(){this.y=10000;this.life=0;this.canRemoved=true;this.update=function(){};}
     getVectorLength(){
         return Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+    }
+    limitVector(maxV){
+        if(Math.abs(this.vx)>maxV)this.vx=Math.sign(this.vx)*maxV;
+        if(Math.abs(this.vy)>maxV)this.vy=Math.sign(this.vy)*maxV;
     }
     getX(){return this.x+(this.w>>1)}
     getY(){return this.y+(this.h>>1)}

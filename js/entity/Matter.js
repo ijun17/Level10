@@ -17,8 +17,9 @@ const MATTERS=[
                 new Matter(6, e.x-35, e.y-35,0,0);
                 e.throw();
                 if(v.typenum==0)v.throw();
+                else v.power+=500;
             }else{
-                v.giveDamage(e.power);v.giveForce(e.vx/e.inv_mass,(e.vy+1)/e.inv_mass);
+                v.giveDamage(e.power);v.giveForce(e.vx/e.inv_mass,(e.vy+0.5)/e.inv_mass);
             }
             return true;
         }
@@ -65,6 +66,7 @@ const MATTERS=[
                 v.throw();
             } else {
                 v.giveDamage(Math.floor(this.getVectorLength())+e.power);
+                v.giveForce(e.vx/e.inv_mass,e.vy/e.inv_mass);
                 if(v instanceof Actor)
                 v.addAction(1,100,function(){v.isMoving=false;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
                 v.addAction(101,101,function(){v.isMoving=true;});
@@ -125,7 +127,7 @@ const MATTERS=[
         setStatus:function(e){e.power=1000;e.brightness=3;e.w=100;e.h=100;e.ga=0;e.life=50;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveDamage(e.power);
-            v.giveForce((e.getX()<v.getX()?1:-1), (e.getY()<v.getY()?1:-1));
+            v.giveForce((e.getX()<v.getX()?1:-1), (e.getY()>v.getY()?0.3:0.3));
             return false;
         }
     },
@@ -163,7 +165,7 @@ class Matter extends Entity {
         this.w = 30;
         this.h = 30;
         this.ga = -0.02;
-        this.inv_mass=2;
+        this.inv_mass=3;
         this.overlap=true;
         let type=MATTERS[typenum];
         this.typenum=typenum;

@@ -23,9 +23,7 @@ class EntityManager{
             if (entity.canRemoved && (entity.life < 1 || (entity.y>this.LIMIT_Y&&entity.canFallDie)) && entity.removeHandler()) {
                 entitys.splice(i, 1);
             }else {
-                const maxV = 80;
-                if(Math.abs(entity.vx)>maxV)entity.vx=Math.sign(entity.vx)*maxV;
-                if(Math.abs(entity.vy)>maxV)entity.vy=Math.sign(entity.vy)*maxV;
+                entity.limitVector(this.MAX_V);
                 entity.update();
             }
         }

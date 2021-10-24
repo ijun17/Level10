@@ -203,6 +203,7 @@ test_unit_magic:`
 let magicFactor = [100,100]; //[cooltime, magic point]
 function getEnergy(e){
     let test = new Entity(0,10000,Game.PHYSICS_CHANNEL);
+    e.limitVector(80);
     test.life=0;e.collisionHandler(test,[Math.sign(e.vx),Math.sign(e.vy)]);
     return Math.abs(test.life);}
 function addMF(mf) {magicFactor[0] = Math.floor(Math.sqrt(magicFactor[0]**2 + mf[0]**2));magicFactor[1] += Math.floor(Math.abs(mf[1]));}
