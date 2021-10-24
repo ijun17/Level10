@@ -66,7 +66,8 @@ const MATTERS=[
             } else {
                 v.giveDamage(Math.floor(this.getVectorLength())+e.power);
                 if(v instanceof Actor)
-                v.addAction(1,100,function(){v.isMovingX=false;v.isMovingY=false;v.canJump=false;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
+                v.addAction(1,100,function(){v.isMoving=false;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
+                v.addAction(101,101,function(){v.isMoving=true;});
             }
             return true;
         }

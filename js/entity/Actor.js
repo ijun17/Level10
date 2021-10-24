@@ -18,6 +18,7 @@ class Actor extends Entity{
 
     totalDamage=0;
 
+    isMoving=true;//액터가 자신의 의지로 움직일 수 있는지
     speed=1;
     jumpSpeed=1;
     canJump = false;
@@ -43,8 +44,6 @@ class Actor extends Entity{
             this.life -= Math.floor(this.totalDamage);
             this.totalDamage = 0;
         }
-        //this.loop();
-        //if(this.damageTick>0)this.damageTick--;
     }
 
     castSkill(num){
@@ -65,8 +64,10 @@ class Actor extends Entity{
     }
     move(){
         super.move();
-        this.moveX();
-        if(this.isFlying)this.moveY();
+        if(this.isMoving){
+            this.moveX();
+            if(this.isFlying)this.moveY();
+        }
     }
     moveX(){
         if (this.isMovingX) {
@@ -82,7 +83,7 @@ class Actor extends Entity{
         }
     }
     jump(){
-        if (this.canJump) {
+        if (this.isMoving&&this.canJump) {
             this.canJump = false;
             this.vy = this.jumpSpeed;
         }
