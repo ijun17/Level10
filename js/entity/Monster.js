@@ -222,9 +222,9 @@ class Monster extends Actor {
             e.giveDamage((1 - Math.random()*2)*this.power*0.1+this.power);
             this.attackTick = this.animation.fps*this.animation.MAX_X[1];
             if (e.getX() > this.getX()) {
-                e.giveForce((e instanceof Player?-e.vx:0)+((this.power+1000)>>9)+this.vx,0.2-e.ga);
+                e.giveForce((e instanceof Actor?-e.vx:0)+((this.power+1000)>>9)+this.vx,0.2-e.ga);
             } else {
-                e.giveForce((e instanceof Player?-e.vx:0)-((this.power+1000)>>9)+this.vx,0.2-e.ga);
+                e.giveForce((e instanceof Actor?-e.vx:0)-((this.power+1000)>>9)+this.vx,0.2-e.ga);
             }
         }
         return true;

@@ -193,7 +193,7 @@ let Screen= {
         makeTester();
         Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
     },
-    pvpScreen:function(){
+    pvpScreen:function(player1_type=0, player2_type=0){
         Game.resetGame();
         Component.backButton(function(){Screen.selectScreen()});
         Component.screenName("PVP","rgba(128, 0, 128,0.5)");
@@ -203,7 +203,7 @@ let Screen= {
         //Screen.bgColor="rgb(220,235,240)"
         //Component.shader("rgb(50,40,60)", globalAlpha=0.3);
         let magicSelector=Component.buttonSelector();
-        
+
         let magicList=Component.buttonStack(0,0,Magic.magicList.length,true,function(i){
             if(Magic.magicList[i][4]>Level.playerLevel)return null;
             else return Component.magicButton(0,0,i,magicSelector)
@@ -213,11 +213,15 @@ let Screen= {
 
         let background=new Button(0,0,canvas.width,canvas.heigth);
         background.drawOption("rgba(0,0,0,0.85)");
+        background.canAct=true;
         background.code=function(){
             this.w=0;this.h=0;
+            magicList.action=[];
+            keyButton1.action=[];
+            keyButton2.action=[];
             magicList.moveComponent(Screen.perX(-30)-magicList.x,0)
-            keyButton1.moveComponent(Screen.perX(37)-keyButton1.x,canvas.height-keyButton1.y+Screen.perX(5))
-            keyButton2.moveComponent(Screen.perX(37)-keyButton2.x,canvas.height-keyButton2.y+Screen.perX(5))
+            keyButton1.moveComponent(Screen.perX(37)-keyButton1.x,canvas.height-keyButton1.y+Screen.perX(5));
+            keyButton2.moveComponent(Screen.perX(37)-keyButton2.x,canvas.height-keyButton2.y+Screen.perX(5));
         }
         background.code();
 
@@ -241,7 +245,7 @@ let Screen= {
 
         function monsterButton(i,selector){
             let btn = new Button(0,0,Screen.perX(16),Screen.perX(3.5));
-            btn.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)","black",`LEVEL${i}`,Screen.perX(3), "black")
+            btn.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)","black",`LEVEL${i}`,Screen.perX(3), "black")//
             btn.code=function(){
                 selector.selectedBtn=this;
             }
@@ -249,20 +253,22 @@ let Screen= {
             return btn;
         }
 
-        let player1List = Component.buttonStack(13,5,1+10,false,function(i){
+        let player1List = Component.buttonStack(13,3,1+10,false,function(i){
             if(i-1>Level.playerLevel||i>MONSTERS.length)return false;
-            else if(i===0)return playerButton(1,player1Selctor);
-            else return monsterButton(i,player1Selctor);
+            let btn=(i===0 ? playerButton(1,player1Selctor) : monsterButton(i,player1Selctor));
+            if(i===player1_type)player1Selctor.selectedBtn=btn;
+            return btn;
         })
-        player1List.drawOption(null,null,"player1",Screen.perX(2.5),"rgba(255,255,255,0.7)")
+        player1List.drawOption(null,null,"player1",Screen.perX(2.5),"rgba(255,255,255,0.8)")
 
-        let player2List = Component.buttonStack(32,5,1+10,false,function(i){
+        let player2List = Component.buttonStack(30,3,1+10,false,function(i){
             if(i-1>Level.playerLevel||i>MONSTERS.length)return false;
-            else if(i===0)return playerButton(2,player2Selctor);
-            else return monsterButton(i,player2Selctor);
+            let btn=(i===0 ? playerButton(2,player2Selctor) : monsterButton(i,player2Selctor));
+            if(i===player2_type)player2Selctor.selectedBtn=btn;
+            return btn;
         })
-        player2List.drawOption(null,null,"player2",Screen.perX(2.5),"rgba(255,255,255,0.7)")
-
+        player2List.drawOption(null,null,"player2",Screen.perX(2.5),"rgba(255,255,255,0.8)")
+        new Button(player1List.x-Screen.perX(1), 0, player2List.x+player2List.w-player1List.x+Screen.perX(2),canvas.height).drawOption("rgba(0,0,0,0.2)")
         let startButton = new Button(Screen.perX(90), Screen.perY(10), Screen.perX(9), Screen.perY(90)-Screen.perX(1));
         startButton.drawOption("rgba(128, 0, 128,0.8)","white","START",Screen.perX(2),"white");
         startButton.code=function(){Screen.pvpGameScreen(player1Selctor.selectedBtn.player_type,player2Selctor.selectedBtn.player_type);}
@@ -270,7 +276,7 @@ let Screen= {
     },
     pvpGameScreen:function(player1_type, player2_type){
         Game.resetGame();
-        Component.backButton(function(){Screen.pvpScreen()});
+        Component.backButton(function(){Screen.pvpScreen(player1_type, player2_type)});
 
         Component.worldWall(2000,1000,300);
         let player1 = (player1_type===0 ? new Player(1000-200,-60,10,Magic.pvp_skillNum[0]):new Monster(player1_type-1,1000-200,-60,false))
@@ -278,7 +284,7 @@ let Screen= {
         player2.isRight=false;
         function printWin(text){
             let winText = new Text(Screen.perX(50),Screen.perY(50), text, Screen.perX(10), "yellow", null,300,false);
-            winText.removeHandler=function(){Screen.pvpScreen();return true;};
+            winText.removeHandler=function(){Screen.pvpScreen(player1_type, player2_type);return true;};
             player2.canRemoved=false;player1.canRemoved=false;
         }
         player1.removeHandler=function(){printWin("PLAYER 2  WIN");return true;}

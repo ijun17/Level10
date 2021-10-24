@@ -118,7 +118,7 @@ let Component={
             keyBtn.temp[0]=Component.magicButton(Screen.perX(perX+9), Screen.perX(perY) + Screen.perX(9*i+1), skillNum[i]);
             components.push(temp);components.push(keyBtn);components.push(keyBtn.temp[0]);
         }
-        let nameText = new Text(Screen.perX(perX),Screen.perX(perY-3), name, Screen.perX(2),"rgba(255,255,255,0.5)",null,-1,null);
+        let nameText = new Text(Screen.perX(perX),Screen.perX(perY-3), name, Screen.perX(2),"rgba(255,255,255,0.7)",null,-1,null);
         nameText.textBaseline = "top";
         nameText.textAlign="left";
         let keyButtonComponent= new Button(Screen.perX(perX-0.5), Screen.perX(perY-0.5), Screen.perX(26), Screen.perX(36))
