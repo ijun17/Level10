@@ -21,11 +21,11 @@ const MONSTERS = [{
     image: { name: "crazymushroom",w: 60, h: 60, frame: 8, MAX_X: [3, 3] },
     setup: function(e){ 
         e.w=120; e.h=120; e.life=100000; e.power=500; e.speed=3;e.jumpSpeed=3; e.inv_mass=0.2;
-        e.animation=new Animation(ImageManager.crazymushroom,60,60,[3, 3],function(){return (e.attackTick>0?1:0)});e.animation.fps=8;
+        e.animation=new Animation(ImageManager.crazymushroom,60,60,[3, 3],function(){return (e.attackTick>0?1:0)});e.animation.fps=16;
     },
     attackEffect: function(e,v){},
     skillList: [
-        function(e){e.AI();return 50;},
+        function(e){e.AI();return 48;},
         function(e){e.vx+=(e.isRight ? 5 : -5);e.vy+=7;e.canJump=false;return 503;}
     ]
 },
@@ -180,6 +180,7 @@ class Monster extends Actor {
         this.name=type.name;
         this.overlap=true;
         this.ga=-0.2;
+        this.friction=1;
         this.COR=0;
         type.setup(this);
         this.attackEffect=type.attackEffect;
@@ -195,6 +196,7 @@ class Monster extends Actor {
             for(let i=type.skillList.length-1; i>=0;i--){
                 this.addSkill(200,type.skillList[i]);
             }
+            this.SFV=this.speed;
         }
         //
         this.totalDamageHandler=function(){

@@ -6,7 +6,7 @@ let Component={
     backButton:function(code){
         let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
         backButton.canAct=true;
-        backButton.code = function(){backButton.addAction(10,10,code); backButton.code=function(){}}
+        backButton.code = function(){code()}
         backButton.drawOption(null, null, "<", Screen.perX(6), "black","white");
         return backButton;
     },
@@ -197,22 +197,28 @@ let Component={
         let leftButton = new Button(5, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
         leftButton.code = function () { player.isMovingX = true; player.isRight = false; };
         leftButton.drawOption("rgba(61, 61, 61,0.5)", "black", "<", mobileButtonSize, "black");
+        leftButton.collisionHandler=function(e,ct){if (ct==="t"||ct==="c") this.code(e,ct);return true;}
+        let rightButton = new Button(15 + mobileButtonSize * 2, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
+        rightButton.code = function () { player.isMovingX = true; player.isRight = true; };
+        rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", mobileButtonSize, "black");
+        rightButton.collisionHandler=function(e,ct){if (ct==="t"||ct==="c") this.code(e,ct);return true;}
         if(player.isFlying){
             let upButton = new Button(10 + mobileButtonSize, canvas.height - mobileButtonSize*2 - 10, mobileButtonSize, mobileButtonSize);
             upButton.code = function () { player.isMovingY = true; player.isUp = true; };
             upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", mobileButtonSize, "black");
+            upButton.collisionHandler=function(e,ct){if (ct==="t"||ct==="c") this.code(e,ct);return true;}
             let downButton = new Button(10 + mobileButtonSize, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
             downButton.code = function () { player.isMovingY = true; player.isUp = false; };
             downButton.drawOption("rgba(61, 61, 61,0.5)", "black", "v", mobileButtonSize, "black");
+            downButton.collisionHandler=function(e,ct){if (ct==="t"||ct==="c") this.code(e,ct);return true;}
         }else{
             let upButton = new Button(10 + mobileButtonSize, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
             upButton.code = function () { player.jump() };
             upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", mobileButtonSize, "black");
+            upButton.collisionHandler=function(e,ct){if (ct==="t"||ct==="c") this.code(e,ct);return true;}
         }
         
-        let rightButton = new Button(15 + mobileButtonSize * 2, canvas.height - mobileButtonSize - 5, mobileButtonSize, mobileButtonSize);
-        rightButton.code = function () { player.isMovingX = true; player.isRight = true; };
-        rightButton.drawOption("rgba(61, 61, 61,0.5)", "black", ">", mobileButtonSize, "black");
+        
         //skill button
         const keys = ["Q", "W", "E", "R"];
         const font1="bold " + (Math.floor(mobileButtonSize*0.7)) + "px Arial";

@@ -79,11 +79,11 @@ let Input = {
         canvas.addEventListener("touchend", this.touchEndHandler, false);
         canvas.removeEventListener("mousedown", this.clickDownHandler, false);
     },
-    click:function(x, y) {
+    click:function(x, y,ct=`c`) {
         let c = Game.channel[Game.BUTTON_CHANNEL].entitys;
         for (let i = 0,l=c.length; i < l; i++) {
             if (c[i].x < x && x < c[i].x + c[i].w && c[i].y < y && y < c[i].y + c[i].h) {
-                c[i].collisionHandler({x,y},'c');
+                c[i].collisionHandler({x,y},ct);
                 break;
             }
         }
@@ -101,7 +101,7 @@ let Input = {
     touchMoveHandler:function(e) {
         e.preventDefault();
         for(let i=0, max=e.touches.length; i<max; i++){
-            Input.click(e.touches[i].clientX, e.touches[i].clientY);
+            Input.click(e.touches[i].clientX, e.touches[i].clientY,`t`);
         }
     },
     touchEndHandler:function(e) {
