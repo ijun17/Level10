@@ -289,6 +289,8 @@ let Screen= {
         }
         player1.removeHandler=function(){printWin("PLAYER 2  WIN");return true;}
         player2.removeHandler=function(){printWin("PLAYER 1  WIN");return true;}
+        player1.getNameTag=function(){ctx.fillStyle="green";return "player1"}
+        player2.getNameTag=function(){ctx.fillStyle="red";return "player2"}
         player1.target=player2;
         player2.target=player1;
         if(player1.isFlying)Input.addFlyKey(player1, Input.KEY_MOVE[1]);

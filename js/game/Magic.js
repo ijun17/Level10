@@ -175,7 +175,7 @@ setTrigger(t,#{
 unit_magic:`
 let vvobject={};
 const vvmagic={
-    FIRE:0, ELECTRICITY:1,ICE:2,ARROW:3,ENERGY:4,WIND:5,BLOCK:6,TRIGGER:7,
+    FIRE:TYPE.fire, ELECTRICITY:TYPE.electricity,ICE:TYPE.ice,ARROW:TYPE.arrow,ENERGY:TYPE.energy,WIND:TYPE.wind,BLOCK:6,TRIGGER:7,
     create:function(typenum=this.BLOCK,vx=0,vy=0,w=30,h=30){
         let e;
         let p=player;

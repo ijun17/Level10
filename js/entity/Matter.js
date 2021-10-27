@@ -5,16 +5,14 @@ const MATTERS=[
             e.animation=new Animation(ImageManager.fire, 10,10,[3],function(){return 0})
             e.draw=function(){this.drawRotate(function(){e.animation.draw(-Camera.getS(e.w>>1), -Camera.getS(e.h>>1), Camera.getS(e.w), Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
         },
-        setStatus:function(e){
+        setup:function(e){
             e.power=500;e.brightness=1;
-            e.addAction(1,10000,function (){if(Game.time%15==0){new Particle(1,e.x,e.y);new Particle(0,e.x,e.y);}});
+            e.addAction(1,10000,function (){if(Game.time%15==0){new Particle(TYPE.ember,e.x,e.y);new Particle(TYPE.smoke,e.x,e.y);}});
         },
         effect:function(e,v){
             --this.life;
             if(v instanceof Matter&&(v.typenum==0||v.typenum==6)){
-                SoundManager.play(SoundManager.explosion,0.2);
-                Camera.vibrate(5);
-                new Matter(6, e.x-35, e.y-35,0,0);
+                new Matter(TYPE.explosion, e.x-35, e.y-35,0,0);
                 e.throw();
                 if(v.typenum==0)v.throw();
                 else v.power+=500;
@@ -30,15 +28,13 @@ const MATTERS=[
             e.animation=new Animation(ImageManager.electricity, 10,10,[3],function(){return 0})
             e.draw=function(){this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h))}
         },
-        setStatus:function(e){e.power=50;e.brightness=1;e.ga=0;e.inv_mass=1;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
+        setup:function(e){e.power=50;e.brightness=1;e.ga=0;e.inv_mass=1;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveDamage(e.power);v.vx*=0.5;v.vy*=0.5;
             if(v instanceof Matter && v.typenum==1){
                 if(++e.lightningPoint>8000){
                     if(e.lightningPoint==10000){
-                        SoundManager.play(SoundManager.explosion,1);
-                        SoundManager.play(SoundManager.blockCrashing,1);
-                        new Matter(7, e.getX()-150,e.y-900);
+                        new Matter(TYPE.lightning, e.getX()-150,e.y-900);
                         e.throw();
                         v.throw();
                     }else if(e.lightningPoint==8001){
@@ -55,21 +51,23 @@ const MATTERS=[
         drawOption:function(e){
             e.draw=function(){this.drawRotate(function(){ctx.drawImage(ImageManager.ice,-Camera.getS(e.w>>1),-Camera.getS(e.h>>1),Camera.getS(e.w),Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
         },
-        setStatus: function (e) { e.power = 110; },
+        setup: function (e) { e.power = 110; },
         effect: function (e, v) {
             --this.life;
             if (v instanceof Matter && v.typenum == 0) {
-                new Particle(2, e.x + 15 - 100, e.y + 15 - 100);
-                new Particle(2, e.x + 15 - 100, e.y + 15 - 100);
-                new Particle(2, e.x + 15 - 100, e.y + 15 - 100);
+                new Particle(TYPE.cloud, e.x + 15 - 100, e.y + 15 - 100);
+                new Particle(TYPE.cloud, e.x + 15 - 100, e.y + 15 - 100);
+                new Particle(TYPE.cloud, e.x + 15 - 100, e.y + 15 - 100);
                 e.throw();
                 v.throw();
             } else {
                 v.giveDamage(Math.floor(this.getVectorLength())+e.power);
                 v.giveForce(e.vx/e.inv_mass,e.vy/e.inv_mass);
-                if(v instanceof Actor)
-                v.addAction(1,100,function(){v.isMoving=false;ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
-                v.addAction(101,101,function(){v.isMoving=true;});
+                if(v instanceof Actor&&v.isMoving===true){
+                    v.isMoving=false;
+                    v.addAction(1,100,function(){ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
+                    v.addAction(101,101,function(){v.isMoving=true;});
+                }
             }
             return true;
         }
@@ -79,7 +77,7 @@ const MATTERS=[
         drawOption:function(e){
             e.draw=function(){this.drawRotate(function(){ctx.drawImage(ImageManager.arrow,-Camera.getS(e.w>>1),-Camera.getS(e.h>>1),Camera.getS(e.w),Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
         },
-        setStatus:function(e){e.power=100;e.inv_mass=2},
+        setup:function(e){e.power=100;e.inv_mass=2},
         effect:function(e,v){--this.life;v.giveDamage(Math.floor(e.getVectorLength()*e.power));v.giveForce(e.vx/e.inv_mass,(e.vy)/e.inv_mass);return true;}
     },
     {
@@ -87,7 +85,7 @@ const MATTERS=[
         drawOption:function(e){
             e.draw=function(){Camera.drawImage(ImageManager.energy,this.x,this.y,this.w,this.h)}
         },
-        setStatus:function(e){e.power=1000;e.brightness=2;e.inv_mass=0.5;e.ga=-0.01;e.friction=0;},
+        setup:function(e){e.power=1000;e.brightness=2;e.inv_mass=0.5;e.ga=-0.01;e.friction=0;},
         effect:function(e,v){
             --this.life;
             if(e.life<1)return;//e와 v의 collisionHandler가 중복해서 실행되는걸 방지
@@ -111,7 +109,7 @@ const MATTERS=[
         drawOption:function(e){
             e.draw=function(){this.drawRotate(function(){ctx.drawImage(ImageManager.wind,-Camera.getS(e.w>>1),-Camera.getS(e.h>>1),Camera.getS(e.w),Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
         },
-        setStatus:function(e){e.power=0;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.1;e.addAction(0,99999999,function(){--e.life;})},
+        setup:function(e){e.power=0;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.1;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveForce(e.vx-v.vx,e.vy-v.vy+1);
             v.giveDamage(e.power);
@@ -124,7 +122,11 @@ const MATTERS=[
         drawOption:function(e){
             e.draw=function(){Camera.drawImage(ImageManager.explosion,this.x,this.y,this.w,this.h)}
         },
-        setStatus:function(e){e.power=1000;e.brightness=3;e.w=100;e.h=100;e.ga=0;e.life=50;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})},
+        setup:function(e){
+            e.power=1000;e.brightness=3;e.w=100;e.h=100;e.ga=0;e.life=50;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})
+            SoundManager.play(SoundManager.explosion,0.2);
+            Camera.vibrate(5);
+        },
         effect:function(e,v){
             v.giveDamage(e.power);
             v.giveForce((e.getX()<v.getX()?1:-1), (e.getY()>v.getY()?0.3:0.3));
@@ -137,9 +139,11 @@ const MATTERS=[
             e.animation=new Animation(ImageManager.lightning, 100,400,[3],function(){return 0})
             e.draw=function(){this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h))}
         },
-        setStatus:function(e){
+        setup:function(e){
             e.power=1000;e.brightness=10;e.w=300;e.h=1200;e.inv_mass=0;e.life=50;e.move=function(){};
             e.addAction(0,99999999,function(){--e.life;Camera.vibrate(5);});
+            SoundManager.play(SoundManager.explosion,1);
+            SoundManager.play(SoundManager.blockCrashing,1);
         },
         effect:function(e,v){
             if(v instanceof Matter && (v.typenum==1)){
@@ -169,7 +173,7 @@ class Matter extends Entity {
         this.overlap=true;
         let type=MATTERS[typenum];
         this.typenum=typenum;
-        type.setStatus(this);
+        type.setup(this);
         this.effect=type.effect;
         type.drawOption(this);
     }

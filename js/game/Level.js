@@ -59,48 +59,48 @@ let Level= {
         
         switch (level) {
             case 1: 
-                Level.createMainMonster(0, 1000, -1000);
+                Level.createMainMonster(TYPE.crazyMushroom, 1000, -1000);
                 Component.worldWall(1000,1000,300);
                 break;
             case 2: 
-                Level.createMainMonster(1, 700, -1000);
+                Level.createMainMonster(TYPE.crazyMonkey, 700, -1000);
                 //new Monster(0, 1000, -1000);
                 //new Monster(0, 900, -1000);
                 //new Monster(0, 800, -1000);
                 Component.worldWall(2000,1000,300);
-                Component.particleSpray(3,player,2000,-1000,10,1.5,5)
+                Component.particleSpray(TYPE.snow,player,2000,-1000,10,1.5,5)
                 Screen.bgColor="#cde5e4";
                 break;
             case 3: 
-                Level.createMainMonster(2, 3000, -1000);
+                Level.createMainMonster(TYPE.hellFly, 3000, -1000);
                 for(let i=0; i<15; i++)new Monster(2, 200*i, -1000);
                 Component.worldWall(3000,2000,300);
                 //Screen.bgColor="#424146";
-                Component.particleSpray(3,player,2000,-1000,10,1.5,5);
+                Component.particleSpray(TYPE.snow,player,2000,-1000,10,1.5,5);
                 //Component.shader("white",0);
                 break;
             case 4:
-                Level.createMainMonster(3,1000, -250);
+                Level.createMainMonster(TYPE.wyvern,1000, -250);
                 Screen.bgColor="rgb(35,5,5)"//"#424146";
                 Component.worldWall(2000,1000,300);
-                Component.particleSpray(0,player,2000,-1000,10,1.5,5);
+                Component.particleSpray(TYPE.ember,player,2000,-1000,10,1.5,5);
                 Component.shader(background="rgb(1,1,7)", globalAlpha=0.9);
                 break;
             case 5:
-                Level.createMainMonster(4,Screen.perX(50), -400).addAction(1,100,function(){Camera.vibrate(10);});
+                Level.createMainMonster(TYPE.golem,Screen.perX(50), -400).addAction(1,100,function(){Camera.vibrate(10);});
                 Screen.bgColor="#657d87";
                 Component.worldWall(2000,1000,300);
                 Component.shader(Screen.bgColor,0.3);
                 break;
             case 6:
-                Level.createMainMonster(5,Screen.perX(50), -400);
+                Level.createMainMonster(TYPE.goldDragon,Screen.perX(50), -400);
                 Screen.bgColor="rgb(5,5,35)";
                 Component.worldWall(3000,2000,300);
                 Component.shader();
                 break;
             case 7:
                 Component.worldWall(2000,1000,300);
-                Level.createMainMonster(6,Screen.perX(50), -400);
+                Level.createMainMonster(TYPE.warrior,Screen.perX(50), -400);
                 Screen.bgColor="rgb(100,100,100)";
                 //Component.shader();
                 break;

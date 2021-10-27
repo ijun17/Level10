@@ -39,7 +39,7 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI();return 50;},
-        function(e){if(e.canTarget())e.createMatterToTarget(2,e.getTargetDir()*2,0,20);return 200;}
+        function(e){if(e.canTarget())e.createMatterToTarget(TYPE.ice,e.getTargetDir()*2,0,20);return 200;}
     ]
 },
 {
@@ -65,12 +65,12 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI();return 50;},
-        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(0,e.getTargetDir()*1.3,0,10);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(TYPE.fire,e.getTargetDir()*1.3,0,10);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
         function(e){
             for(let i=0; i<10; i++){
-                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-2-i*0.1,0,-30)).life=10;
-                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-1.5-i*0.1,0,-30)).life=10;
-                (e.createMatter(0,(e.isRight?1:-1)*(2+i*0.4),-2.5-i*0.1,0,-30)).life=10;
+                (e.createMatter(TYPE.fire,(e.isRight?1:-1)*(2+i*0.4),-2-i*0.1,0,-30)).life=10;
+                (e.createMatter(TYPE.fire,(e.isRight?1:-1)*(2+i*0.4),-1.5-i*0.1,0,-30)).life=10;
+                (e.createMatter(TYPE.fire,(e.isRight?1:-1)*(2+i*0.4),-2.5-i*0.1,0,-30)).life=10;
             }
             return 500;}
     ]
@@ -88,12 +88,12 @@ const MONSTERS = [{
         function(e){
             if(!e.canTarget())return 100;
             e.x = e.target.getX()-e.w/2;e.y=e.target.y-700;e.vx = 0;e.vy = -5;
-            let effect = new Particle(5, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=e.h*3;
+            let effect = new Particle(TYPE.magicEffect, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=e.h*3;
             let temp=e.power;e.power=9999;e.addAction(40,40,function(){e.power=temp});
             return 501;},
         function(e){
             e.addAction(50,50,function(){e.vx=e.getTargetDir()*30;})
-            let effect = new Particle(5, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=e.h*3;
+            let effect = new Particle(TYPE.magicEffect, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=e.h*3;
             let noMatter = new Entity(effect.x,effect.y,Game.PHYSICS_CHANNEL);
             noMatter.w=effect.w;noMatter.h=effect.h;
             noMatter.collisionHandler=function(v){if(v instanceof Matter)v.throw();return false;}
@@ -103,7 +103,7 @@ const MONSTERS = [{
 },
 {
     name: "골드드래곤",
-    image: {name:"golden_dragon",w:80,h:80,frame:16,MAX_X:[4,1]},
+    image: {name:"golddragon",w:80,h:80,frame:16,MAX_X:[4,1]},
     setup: function(e){
         e.w=300;e.h=300;e.life=10000000;e.power=2000;e.speed=5;e.inv_mass=0.1;e.isFlying=true;e.brightness=6;
         e.animation=new Animation(ImageManager.golden_dragon,80,80,[4, 1],function(){return (e.attackTick>0?1:0)});e.animation.fps=16;
@@ -111,7 +111,7 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI();return 50;},
-        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(5,e.getTargetDir()*1.5,0,30);m.power=500;m.life=100;m.vx*=0.5;m.vy*=0.5;return 500;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(TYPE.wind,e.getTargetDir()*1.5,0,30);m.power=500;m.life=100;m.vx*=0.5;m.vy*=0.5;return 500;},
         function(e){
             if(!e.canTarget())return 70;
             let block=new Block(e.target.x-50+(e.target.w>>1),-3000,100,300,"rgba(255, 229, 0,0.5)");
@@ -150,7 +150,7 @@ const MONSTERS = [{
         function(e){e.AI(4);return 20;},
         function(e){//플레이어에게 돌진 
             if(e.canTarget()){
-                let effect = new Particle(5, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=effect.w;
+                let effect = new Particle(TYPE.magicEffect, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=effect.w;
                 e.addAction(1,50,function(){effect.x--;effect.h--;effect.w+=2;effect.h+=2;})
                 e.canMove=false;
                 e.addAction(50,50,function(){e.canMove=true;e.vx=e.target.getX()-e.getX();e.vy=e.getY()-e.target.getY();})
@@ -180,7 +180,6 @@ class Monster extends Actor {
         this.name=type.name;
         this.overlap=true;
         this.ga=-0.2;
-        this.friction=1;
         this.COR=0;
         type.setup(this);
         this.attackEffect=type.attackEffect;
@@ -196,7 +195,6 @@ class Monster extends Actor {
             for(let i=type.skillList.length-1; i>=0;i--){
                 this.addSkill(200,type.skillList[i]);
             }
-            this.SFV=this.speed;
         }
         //
         this.totalDamageHandler=function(){

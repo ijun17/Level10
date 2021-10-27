@@ -51,8 +51,8 @@ let Camera={
             Camera.e.x+=(((target1.x+target2.x)*0.5)-Camera.e.x)>>5;
             Camera.e.y+=(((target1.y+target2.y)*0.5)-Camera.e.y)>>5;
             let distanceX=Math.abs(Math.floor(target1.x-target2.x));
-            let distanceY=Math.abs(Math.floor(target1.y-target2.y+600));
-            Camera.extension=(canvas.width/(distanceX>distanceY?distanceX+canvas.width:distanceY+canvas.width));
+            let distanceY=Math.abs(Math.floor(target1.y-target2.y));
+            Camera.extension=(distanceX>distanceY?canvas.height/(distanceX+canvas.height):canvas.height/(distanceY+canvas.height));
 
         }
     },
@@ -62,6 +62,7 @@ let Camera={
         Camera.extension=1;
     },
     vibrate: function(power){
+        
         if(this.cameraOn){
             Camera.e.x+=power*(Math.random()-0.5>0 ? 1 : -1);
         Camera.e.y+=power*(Math.random()-0.5>0 ? 1 : -1);
