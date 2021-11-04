@@ -88,7 +88,7 @@ let Screen= {
         let kb=Component.keyButton(1-32,10,['q','w','e','r'],Magic.skillNum,buttonSelector,"선택된 마법");
         kb.addAction(1,Screen.perX(2),function(){kb.moveComponent(16,0)})
 
-        let magicView=new TextPanel(Screen.perX(53),Screen.perX(6),0,0);
+        let magicView=Component.textPanel(Screen.perX(53),Screen.perX(6))//new TextPanel(Screen.perX(53),Screen.perX(6),0,0);
         magicView.colors=[null, "black"];
         magicView.px=[0, Screen.perX(2.5)];
         magicView.texts=[[0,""]];
@@ -349,7 +349,6 @@ let Screen= {
                 nextBtnY+=Screen.perX(2.5);
             }
             btn.code=f;
-            
         }
         makeMenuButton("조작법",gameControlPanel);
         makeMenuButton("마법을선택하는법",howToSelectMagicPanel);
@@ -362,7 +361,7 @@ let Screen= {
         nextBtnY += Screen.perX(8);
         makeMenuButton("",developerPanel);
 
-        let textPanel = new TextPanel(Screen.perX(25),Screen.perX(3),0,0);
+        let textPanel = Component.textPanel(Screen.perX(25),Screen.perX(3))//new TextPanel(Screen.perX(25),Screen.perX(3),0,0);
             textPanel.colors=[null, "white", "black"];
             textPanel.px=[Screen.perX(1), Screen.perX(3), Screen.perX(2)];
         function developerPanel(){

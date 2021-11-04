@@ -240,6 +240,35 @@ let Component={
             }
         }
     },
+    textPanel:function(x,y){
+        let textPanel=new Entity(x,y,Game.TEXT_CHANNEL);
+        textPanel.tx=0;
+        textPanel.ty=0;
+        textPanel.colors=[null];
+        textPanel.px=[0];
+        textPanel.textBaseline = "top";
+        textPanel.textAlign="left";
+        textPanel.texts=[];
+        textPanel.update=function(){
+            let lineY=this.ty+this.y;
+            let lineX=this.x+this.tx;
+            let textType;
+            ctx.textBaseline = this.textBaseline;
+            ctx.textAlign = this.textAlign;
+            for(let i=0, l=this.texts.length; i<l; i++){
+                textType=this.texts[i][0];
+                if(textType==0){
+                    lineY+=this.px[0]*this.texts[i][1];
+                }else {
+                    ctx.fillStyle=this.colors[textType];
+                    ctx.font = "bold " + this.px[textType] + "px Arial";
+                    ctx.fillText(this.texts[i][1],lineX,lineY);
+                    lineY+=this.px[textType]+this.px[0];
+                }
+            }
+        }
+        return textPanel;
+    },
     worldWall:function(mapSizeW,mapSizeH,wallSize){
         let top=new Block(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top
         let left=new Block(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall"); //left
