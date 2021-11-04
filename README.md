@@ -1,14 +1,10 @@
-# web-rpg-game
-마법을 만들어 몬스터와 싸우는 게임
+# Level10
+Player can create own magic with JavaScript to defeat 10 powerful monsters.
 
--------------------
-game link 게임 링크 ⬇
 
-https://ijun17.github.io/web-rpg-game/
 
-game link 게임 링크 ⬆
-
--------------------
+game link: 
+https://ijun17.github.io/Level/
 
 
 play video clip https://www.youtube.com/watch?v=iYIHrzt_TLk
