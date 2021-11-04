@@ -61,7 +61,8 @@ let Game = {
             for (let j = Game.channel[i].length - 1, c = Game.channel[i]; j >= 0; j--) { c[j].draw(); }
         }
     },
-    setGameSpeed(speed=100){ //num 0~120%
+    getTime:function(){return this.time},
+    setGameSpeed:function(speed=100){ //num 0~120%
         const MAX_SPEED=120;
         clearInterval(Game.interval);
         if(speed<=0){

@@ -20,12 +20,13 @@ class Animation {
     imageStartPointX=[0];//스프라이트에서 각 이미지에 시작점
     imageStartPointY=[0];//스프라이트에서 각 이미지에 시작점
     fps=8;//8틱마다 이미지 변경
-    counter=0;//draw()할때마다 더해지는 시계
+    time=0;
     condition=function(){};//imageY를 정하는 메소드
     constructor(image,w=0,h=0,MAX_X=[1],cdt=function(){return 0}){
         this.image=image;
         this.condition=cdt;
         this.MAX_X=MAX_X;
+        this.time=Game.getTime();
         if(w===0){//image가 한개라는 뜻
             this.imageW=image.width;
             this.imageH=image.height;
@@ -39,14 +40,14 @@ class Animation {
     }
     draw(x,y,w,h,isNotInverse=true){
         //calculate imageX
-        if(++this.counter===this.fps){
-            this.counter=0;
+        if(Game.getTime()-this.time>this.fps){
+            this.time=Game.getTime();
             if(++this.imageX===this.MAX_X[this.imageY])this.imageX=0;
         }
         //calculate imageY
         let tempY = this.condition();
         if(this.imageY !== tempY){
-            this.counter=0;
+            this.time=Game.getTime();
             this.imageX=0;
             this.imageY = tempY;
         }

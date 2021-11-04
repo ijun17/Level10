@@ -7,7 +7,6 @@ class Trigger extends Entity{
         this.life=time;
         this.code=f;
         this.ga=0;
-        this.canCollision=false;
         this.canRemoved = true;
         this.draw=Trigger.getDraw();
     }
@@ -27,9 +26,10 @@ class Trigger extends Entity{
     giveForce(){}
 
     collisionHandler(e){
-        if(e instanceof MapBlock)return false;
+        if(e.canMove==false)return false;
         this.code(e);
         this.life=0;
+        this.code=function(){};
         return false;
     }
 }

@@ -243,8 +243,7 @@ let Magic = {
     skillNum:[0,1,2,3],
     pvp_skillnum:[[0,1,2,3],[0,1,2,3]],
     magicList:[],//magicList = [name, magic function, coolTime, needed MagicPoint, needed Level]
-    magicEffectSound : new Audio(),
-    customMagic:[],
+    customMagic:[],//[name,code]
     basicMagic:[],
     saveMagic:function(){
         localStorage.CUSTOM_MAGIC=JSON.stringify(Magic.customMagic);
@@ -254,9 +253,6 @@ let Magic = {
         localStorage.pvp_skillNum=JSON.stringify(Magic.pvp_skillNum);
     },
     loadMagic:function(){
-        //sound
-        Magic.magicEffectSound.src="resource/sound/magic effect2.mp3";
-        Magic.magicEffectSound.volume=0.1;
         //load basic magic
         Magic.basicMagic=MAGIC_DATA.BASIC_MASIC;
         for(let i=0,j=Magic.basicMagic.length; i<j; i++){
@@ -271,14 +267,14 @@ let Magic = {
         }
         //load custom magic
         if (localStorage.CUSTOM_MAGIC == null) {
-            Magic.customMagic = [];
-        } else {
+            Magic.customMagic = [["my magic", ""]];
+        }else{
             Magic.customMagic = JSON.parse(localStorage.CUSTOM_MAGIC);
-            for (let i = 0, j = Magic.customMagic.length; i < j; i++) {
-                let magic = Magic.convertMagictoJS(Magic.customMagic[i][0], Magic.customMagic[i][1]);
-                if (magic == null) Magic.magicList.push([Magic.customMagic[i][0], function () { }, 100, 100, 1]);
-                else Magic.magicList.push(magic);
-            }
+        }
+        for (let i = 0, j = Magic.customMagic.length; i < j; i++) {
+            let magic = Magic.convertMagictoJS(Magic.customMagic[i][0], Magic.customMagic[i][1]);
+            if (magic == null) Magic.magicList.push([Magic.customMagic[i][0], function () { }, 100, 100, 1]);
+            else Magic.magicList.push(magic);
         }
         //selected skill num
         if(localStorage.skillNum!=null){

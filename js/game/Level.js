@@ -2,11 +2,11 @@ let Level= {
     playerLevel:0,
 
     loadLevel:function() {
-        this.playerLevel = Number(localStorage.betalevel2);
-        if (this.playerLevel == undefined) {
+        this.playerLevel = localStorage.betalevel2;
+        if (this.playerLevel === undefined) {
             this.playerLevel = 1;
             this.saveLevel();
-        }
+        }else this.playerLevel = Number(localStorage.betalevel2);
     },
     saveLevel:function() {
         localStorage.betalevel2 = this.playerLevel;
@@ -51,9 +51,6 @@ let Level= {
     },
 
     makeStage:function(level,player) {
-        function makeSuperMob(e, hp = 2, size = 2, power = 2, speed = 2) {
-            e.life *= hp;e.w *= size; e.h = e.w;e.inv_mass /= size * size;e.power *= power;e.speed *= speed;
-        }
         //level에 따라 달라지는 변수
         Screen.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
         
@@ -63,25 +60,21 @@ let Level= {
                 Component.worldWall(1000,1000,300);
                 break;
             case 2: 
-                Level.createMainMonster(TYPE.crazyMonkey, 700, -1000);
-                //new Monster(0, 1000, -1000);
-                //new Monster(0, 900, -1000);
-                //new Monster(0, 800, -1000);
+                Level.createMainMonster(TYPE.crazyMonkey, 1600, -1000);
                 Component.worldWall(2000,1000,300);
                 Component.particleSpray(TYPE.snow,player,2000,-1000,10,1.5,5)
+                Component.shader(background="rgb(10, 18, 33)", globalAlpha=0.5);
                 Screen.bgColor="#cde5e4";
                 break;
             case 3: 
                 Level.createMainMonster(TYPE.hellFly, 3000, -1000);
                 for(let i=0; i<15; i++)new Monster(2, 200*i, -1000);
                 Component.worldWall(3000,2000,300);
-                //Screen.bgColor="#424146";
                 Component.particleSpray(TYPE.snow,player,2000,-1000,10,1.5,5);
-                //Component.shader("white",0);
                 break;
             case 4:
                 Level.createMainMonster(TYPE.wyvern,1000, -250);
-                Screen.bgColor="rgb(35,5,5)"//"#424146";
+                Screen.bgColor="rgb(35,5,5)";
                 Component.worldWall(2000,1000,300);
                 Component.particleSpray(TYPE.ember,player,2000,-1000,10,1.5,5);
                 Component.shader(background="rgb(1,1,7)", globalAlpha=0.9);
@@ -105,6 +98,23 @@ let Level= {
                 //Component.shader();
                 break;
             case 8:
+                player.flyMode();
+                Camera.extension=0.5
+                let chainList =[];
+                for(let i=0; i<10; i++){
+                    let block=new Block(200*i+300, -1000,50,100,`rgb(${200-i*20},${200-i*10},${200-i*20})`);
+                    block.canRemoved=false;
+                    chainList.push(block);
+                    //block.inv_mass=1;
+                }
+                chainList[0].inv_mass=0;
+                chainList[0].canMove=false;
+                Component.chain(chainList,100,10,3)
+
+                //chainList=[new Monster(TYPE.crazyMushroom,500,-1000),new Block(600,-1000,150,150),new Block(600,-1000,200,200),new Block(600,-1000,150,150),new Block(700,-1000,100,100)]
+                //chainList[0].inv_mass=0.000001
+                //Component.chain(chainList, 60,1,1)
+
                 Component.worldWall(2000,1000,300);
                 break;
             case 9:

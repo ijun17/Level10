@@ -92,12 +92,6 @@ class Actor extends Entity{
         if (ct[1]===-1) this.canJump = true;
         return true;
     }
-    // giveDamage(d) {
-    //     if(this.damageTick==0&&d>0){
-    //         this.totalDamage += Math.floor(d);
-    //         Camera.vibrate((d<20000 ? d/200 : 50)+5);
-    //     }
-    // }
 
     giveDamage(d) {
         if(d>this.defense){

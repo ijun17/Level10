@@ -62,4 +62,8 @@ class Player extends Actor{
             this.mp-=this.skillList[num][3];
         }
     }
+    flyMode(){
+        this.isFlying=true;
+        Input.addFlyKey(this,Input.KEY_MOVE[0])
+    }
 }

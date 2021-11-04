@@ -217,8 +217,6 @@ let Component={
             upButton.drawOption("rgba(61, 61, 61,0.5)", "black", "^", mobileButtonSize, "black");
             upButton.collisionHandler=function(e,ct){if (ct==="t"||ct==="c") this.code(e,ct);return true;}
         }
-        
-        
         //skill button
         const keys = ["Q", "W", "E", "R"];
         const font1="bold " + (Math.floor(mobileButtonSize*0.7)) + "px Arial";
@@ -242,29 +240,22 @@ let Component={
             }
         }
     },
-    serverConnectionChecker:function(x,y){
-        Multi.connectOn();
-        let checker = new Button(x,y,Screen.perX(8),Screen.perX(2.5));
-        checker.drawOption(null,"brown","offline", Screen.perX(2),"brown",null);
-        checker.act=function(){
-            //check server
-            if(Game.time%20==0){
-                if(Multi.serverOn){checker.drawOption(null,"green","online", Screen.perX(2),"green",null);
-                }else{checker.drawOption(null,"brown","offline", Screen.perX(2),"brown",null);}
-            }
-        }
-        return checker;
-    },
     worldWall:function(mapSizeW,mapSizeH,wallSize){
-        new MapBlock(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall").canInteract=false;//top
-        new MapBlock(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall").canInteract=false; //left
-        new MapBlock(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall").canInteract=false;//right
-        new MapBlock(-wallSize,0,mapSizeW+wallSize*2,wallSize,"grass");
+        let top=new Block(0,-wallSize-mapSizeH,mapSizeW,wallSize,"wall");//top
+        let left=new Block(-wallSize, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall"); //left
+        let right=new Block(mapSizeW, -wallSize-mapSizeH, wallSize, mapSizeH+wallSize*2,"wall");//right
+        top.setMapBlock(TYPE.wall)
+        left.setMapBlock(TYPE.wall)
+        right.setMapBlock(TYPE.wall)
+        top.canInteract=false;
+        left.canInteract=false;
+        right.canInteract=false;
+        new Block(-wallSize,0,mapSizeW+wallSize*2,wallSize).setMapBlock(TYPE.grass);
 
         const deadzoneSize=100000000
-        new MapBlock(-deadzoneSize, -deadzoneSize-mapSizeH,deadzoneSize,deadzoneSize*2,"deadzone")//.collisionHandler=function(e){if(e instanceof Player)e.life=0;}
-        new MapBlock(mapSizeW,  -deadzoneSize-mapSizeH, deadzoneSize, deadzoneSize*2,"deadzone")//.collisionHandler=function(e){if(e instanceof Player)e.life=0;}
-        new MapBlock(-deadzoneSize,-mapSizeH-deadzoneSize,deadzoneSize*2+mapSizeW,deadzoneSize,"deadzone")//.collisionHandler=function(e){if(e instanceof Player)e.life=0;}
+        new Block(-deadzoneSize, -deadzoneSize-mapSizeH,deadzoneSize,deadzoneSize*2).setMapBlock()
+        new Block(mapSizeW,  -deadzoneSize-mapSizeH, deadzoneSize, deadzoneSize*2).setMapBlock()
+        new Block(-deadzoneSize,-mapSizeH-deadzoneSize,deadzoneSize*2+mapSizeW,deadzoneSize).setMapBlock()
         
     },
     particleSpray:function(type,xy,rangeW,rangeH,particleSize,particleVy,delay){
@@ -342,5 +333,47 @@ let Component={
             ctx.drawImage(tempcanvas,0,0);
         }
         return sm;
+    },
+    chain:function(list,chainDistance, power1,power2){
+        let chain = new Entity(0,0,Game.PHYSICS_CHANNEL);
+        chain.canInteract=false;
+        chain.chainList=list;
+        for(let i=0,l=list.length; i<l; i++){
+            list[i].chainType=33;
+            list[i].collisionHandler=function(e){if(e.chainType===this.chainType)return false; return true;}
+        }
+        chain.chainDistance=chainDistance;
+        chain.chainTension=power1;
+        chain.addChain=function(e){this.chainList[this.chainList.length]=e}
+        chain.update=function(){
+            //장력 적용
+            let a,b,c,vx,vy,temp;
+            for(let i=0,l=this.chainList.length-1;i<l;i++){
+                a=this.chainList[i];
+                b=this.chainList[i+1];
+                let distance=Math.sqrt((a.x-b.x)**2)+((a.y-b.y)**2)-this.chainDistance;
+                temp=(1-this.chainDistance/(Math.sqrt((a.x-b.x)**2)+((a.y-b.y)**2)+100))*0.5;
+                vx=(b.x-a.x)*temp;
+                vy=(a.y-b.y)*temp;
+                vx=vx*Math.abs(vx)*0.5*0.1;
+                vy=vy*Math.abs(vy)*0.5*0.1;
+                a.vx*=0.995;a.vy*=0.995;b.vx*=0.995;b.vy*=0.995
+                a.giveForce(vx,vy);
+                b.giveForce(-vx,-vy);
+            }
+
+            // for(let i,l=this.chainList.length-2;i<l;i++){
+            //     a=this.chainList[i];
+            //     b=this.chainList[i+1];
+            //     c=this.chainList[i+2];
+            //     temp=Math.sqrt((4*chainDistance**2)/((a.x-c.x)**2+(a.y-c.y)**2)-1)*0.5*power2;
+            //     vx=(c.y-a.y)*temp;
+            //     vy=(c.x-a.x)*temp;
+            //     a.giveForce(vx,vy);
+            //     b.giveForce(-vx,-vy);
+            //     c.giveForce(vx,vy);
+            // }
+        }
+        return chain;
     }
 }

@@ -66,4 +66,6 @@ class Button extends Entity {
         if (ct==="c") this.code(e,ct);//c=click
         return true;
     }
+
+    setStatic(){this.COR=0; this.inv_mass=0; this.ga=0; this.canMove=false;this.canInteract=true;}
 }

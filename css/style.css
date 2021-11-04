@@ -3,21 +3,6 @@
     padding: 0;
     margin: 0;
 }
-/*
-@media( orientation: portrait ){
-    html {
-        transform: rotate(90deg);
-        transform-origin: right top;
-        
-        position: absolute;
-
-        top: 100%;
-        
-        width: 100vh;
-        height: 100vw;
-        
-    }
-}*/
 
 html, body{
     /* 모바일 웹 브라우저 당겨서 새로고침 막기 */

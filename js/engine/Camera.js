@@ -45,7 +45,7 @@ let Camera={
     },
     makeTwoTargetCamera:function(target1, target2 ,x,y, movingDelay=10){
         Camera.cameraOn=true;
-        Camera.e=new Entity(x,y,Game.BUTTON_CHANNEL);
+        Camera.e=new Entity(x,y,Game.TEXT_CHANNEL);
         const MAX_SPEED=100;
         Camera.e.update=function(){
             Camera.e.x+=(((target1.x+target2.x)*0.5)-Camera.e.x)>>5;

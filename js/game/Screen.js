@@ -38,11 +38,11 @@ let Screen= {
 
         //decorate1
         new Text(Screen.perX(50),Screen.perY(92), "LEVEL10", Screen.perX(8),"rgb(35, 35, 40)",null,-1,false);
-        new MapBlock(Screen.perX(5),Screen.perY(62),Screen.perX(15),Screen.perY(30));
-        new MapBlock(Screen.perX(27),Screen.perY(70),Screen.perX(15),Screen.perY(50));
-        new MapBlock(Screen.perX(58),Screen.perY(70),Screen.perX(15),Screen.perY(50));
-        new MapBlock(Screen.perX(80),Screen.perY(62),Screen.perX(15),Screen.perY(30));
-        new MapBlock(Screen.perX(8),Screen.perY(80),Screen.perX(84),Screen.perY(50));
+        new Block(Screen.perX(5),Screen.perY(62),Screen.perX(15),Screen.perY(30)).setMapBlock(TYPE.wall);
+        new Block(Screen.perX(27),Screen.perY(70),Screen.perX(15),Screen.perY(50)).setMapBlock(TYPE.wall);
+        new Block(Screen.perX(58),Screen.perY(70),Screen.perX(15),Screen.perY(50)).setMapBlock(TYPE.wall);
+        new Block(Screen.perX(80),Screen.perY(62),Screen.perX(15),Screen.perY(30)).setMapBlock(TYPE.wall);
+        new Block(Screen.perX(8),Screen.perY(80),Screen.perX(84),Screen.perY(50)).setMapBlock(TYPE.wall);
     },
 
     selectScreen:function() {
@@ -104,7 +104,7 @@ let Screen= {
         bs.addAction(1,Screen.perX(2),function(){bs.moveComponent(16,0)})
 
         //TEST WORLD
-        new MapBlock(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3, "wall");
+        new Block(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3).setMapBlock(TYPE.wall);
         Game.p=new Player(Screen.perX(63),0,10);
         Game.p.removeHandler=function(){this.life=100000;this.x=Screen.perX(70);this.y=0;this.vx=0;this.vy=0;return false;}
         Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
@@ -230,7 +230,7 @@ let Screen= {
 
         function playerButton(num,selector){
             let btn = new Button(0,0,Screen.perX(16),Screen.perX(3.5));
-            btn.drawOption(`rgba(65, 105, 225,0.8)`,"black","wizard",Screen.perX(3), "black")
+            btn.drawOption(`rgb(65, 105, 225)`,"black","wizard",Screen.perX(3), "black")
             btn.code=function(){
                 background.w=canvas.width;background.h=canvas.height;//검은 배경 생성
                 magicList.addAction(1,Screen.perX(2),function(){magicList.moveComponent(20,0)})
@@ -245,7 +245,7 @@ let Screen= {
 
         function monsterButton(i,selector){
             let btn = new Button(0,0,Screen.perX(16),Screen.perX(3.5));
-            btn.drawOption("rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)","black",`LEVEL${i}`,Screen.perX(3), "black")//
+            btn.drawOption("rgb("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+")","black",`LEVEL${i}`,Screen.perX(3), "black")//
             btn.code=function(){
                 selector.selectedBtn=this;
             }
@@ -333,7 +333,7 @@ let Screen= {
     helpScreen:function(){
         Game.resetGame();
         //MENU BAR
-        new MapBlock(0,0,Screen.perX(20), Screen.perY(100)); //어두운 바탕
+        new Block(0,0,Screen.perX(20), Screen.perY(100)).setMapBlock(TYPE.wall); //어두운 바탕
         Component.backButton(function(){Screen.selectScreen();})
         Component.screenName("help");
         //let howToText = new Text(Screen.perX(15), Screen.perY(5),"About",Screen.perX(2),"black",null,-1,false);

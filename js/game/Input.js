@@ -20,19 +20,36 @@ let Input = {
     
     //key up down
     addMoveKey:function(player, keyset){ // 땅에서 걷는 엔티티를 조종할때
-        const a=keyset[0],b=keyset[1],c=keyset[2];
-        this.keyDowns.push(function(e){
-            switch(e.keyCode){
-                case a:player.isMovingX = true;player.isRight = false;break;//left
-                case b:player.jump();break;//up
-                case c:player.isMovingX = true;player.isRight = true;break;//right
-            }
-        })
-        this.keyUps.push(function(e){
-            switch(e.keyCode){
-                case a: case c:player.isMovingX = false;break;
-            }
-        })
+        const a=keyset[0],b=keyset[1],c=keyset[2],d=keyset[3];
+        if(player.isFlying){
+            this.keyDowns.push(function(e){
+                switch(e.keyCode){
+                    case a:player.isMovingX = true;player.isRight = false;break;//left
+                    case b:player.isMovingY = true;player.isUp=true;break;//up
+                    case c:player.isMovingX = true;player.isRight = true;break;//right
+                    case d:player.isMovingY = true;player.isUp=false;break;
+                }
+            })
+            this.keyUps.push(function(e){
+                switch(e.keyCode){
+                    case a: case c:player.isMovingX = false;break;
+                    case b: case d:player.isMovingY = false;break;
+                }
+            })
+        }else{
+            this.keyDowns.push(function (e) {
+                switch (e.keyCode) {
+                    case a: player.isMovingX = true; player.isRight = false; break;//left
+                    case b: player.jump(); break;//up
+                    case c: player.isMovingX = true; player.isRight = true; break;//right
+                }
+            })
+            this.keyUps.push(function (e) {
+                switch (e.keyCode) {
+                    case a: case c: player.isMovingX = false; break;
+                }
+            })
+        }
     },
     addFlyKey:function(player, keyset){//하늘을 나는 엔티티를 조종할때
         const a=keyset[0],b=keyset[1],c=keyset[2],d=keyset[3];

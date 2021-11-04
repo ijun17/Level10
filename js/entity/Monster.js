@@ -39,20 +39,33 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI();return 50;},
-        function(e){if(e.canTarget())e.createMatterToTarget(TYPE.ice,e.getTargetDir()*2,0,20);return 200;}
+        function(e){if(e.canTarget())e.createMatterToTarget(TYPE.ice,e.getTargetDir()*2,0,20);return 200;},
+        function(e){
+            e.canDraw=false;
+            for(let i=0; i<20; i++){
+                e.createMatter(TYPE.ice, i-10,0.5,0,0);
+                e.createMatter(TYPE.fire, i-10,0.5,0,0);
+                e.createMatter(TYPE.ice, i-10,-0.2,0,0);
+                e.createMatter(TYPE.fire, i-10,-0.2,0,0);
+                e.createMatter(TYPE.ice, i-10,-1,0,0);
+                e.createMatter(TYPE.fire, i-10,-1,0,0);
+            }
+            e.addAction(600,600,function(){e.canDraw=true;})
+            return 1500;
+        }
     ]
 },
 {
     name: "지옥파리",
     image: {name:"hellfly",w:30,h:30,frame:8,MAX_X:[1,1]},
     setup: function(e){
-        e.w=30;e.h=30;e.life=50000;e.power=100;e.ga=-0.03;e.speed=10;e.inv_mass=1;e.isFlying=true;
+        e.w=30;e.h=30;e.life=100000;e.power=50;e.ga=-0.03;e.speed=10;e.inv_mass=1;e.isFlying=true;
         e.animation=new Animation(ImageManager.hellfly,30,30,[1, 1],function(){return (e.attackTick>0?1:0)});e.animation.fps=8;
     },
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI();return 4;},
-        function(e){e.addAction(1,1,function(){e.speed=30;e.power=1000;});e.addAction(100,100,function(){e.speed=10;e.power=500;}); return 700;}
+        function(e){e.addAction(1,1,function(){e.speed=30;e.power=500;});e.addAction(100,100,function(){e.speed=10;e.power=50;}); return 700;}
     ]
 },
 {
@@ -65,12 +78,11 @@ const MONSTERS = [{
     attackEffect: function(e,v){},
     skillList: [
         function(e){e.AI();return 50;},
-        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(TYPE.fire,e.getTargetDir()*1.3,0,10);m.power=2000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
+        function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(TYPE.fire,e.getTargetDir()*1.3,0,10);m.power=1000;m.w=60;m.h=60;m.inv_mass=1;return 111;},
         function(e){
             for(let i=0; i<10; i++){
                 (e.createMatter(TYPE.fire,(e.isRight?1:-1)*(2+i*0.4),-2-i*0.1,0,-30)).life=10;
                 (e.createMatter(TYPE.fire,(e.isRight?1:-1)*(2+i*0.4),-1.5-i*0.1,0,-30)).life=10;
-                (e.createMatter(TYPE.fire,(e.isRight?1:-1)*(2+i*0.4),-2.5-i*0.1,0,-30)).life=10;
             }
             return 500;}
     ]
@@ -217,7 +229,7 @@ class Monster extends Actor {
     collisionHandler(e,ct=[0,0]) {
         super.collisionHandler(e,ct);
         //공격
-        if(this.attackFilter(e)){
+        if(e.canRemoved&&this.attackFilter(e)){
             if(this.target==null)this.target=e;
             e.giveDamage((1 - Math.random()*2)*this.power*0.1+this.power);
             this.attackTick = this.animation.fps*this.animation.MAX_X[1];
