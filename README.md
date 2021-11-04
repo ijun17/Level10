@@ -7,10 +7,10 @@ game link:
 https://ijun17.github.io/Level10/
 
 # fight monster
-<img src="resource/readme/fight.png">
+<img src="resource/readme/fight monster.png">
 
 # create magic
-<img src="resource/readme/createMagic.png">
+<img src="resource/readme/create magic.png">
 
 # multi play
-<img src="resource/readme/multi.png">
+<img src="resource/readme/multiplay.png">
