@@ -13,7 +13,7 @@ class Button extends Entity {
     textY=0;
 
 
-    constructor(x, y, w, h, channelLevel=Game.BUTTON_CHANNEL) {
+    constructor(x, y, w, h, channelLevel=World.BUTTON_CHANNEL) {
         super(x, y, channelLevel);
         this.w = w;
         this.h = h;
@@ -29,23 +29,23 @@ class Button extends Entity {
 
     draw() {
         let x=Math.floor(this.x);let y=Math.floor(this.y);
-        if (this.boxFill != null) {
+        if (this.boxFill !== null) {
             ctx.fillStyle = this.boxFill;
             ctx.fillRect(x, y, this.w, this.h);
         }
-        if (this.boxLine != null) {
+        if (this.boxLine !== null) {
             ctx.strokeStyle = this.boxLine;
             ctx.strokeRect(x, y, this.w, this.h);
         }
-        if (this.text != null) {
+        if (this.text !== null) {
             ctx.font = `bold ${this.px}px Arial`;//"bold " + this.px + "px Arial";
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
-            if (this.textFill != null) {
+            if (this.textFill !== null) {
                 ctx.fillStyle = this.textFill;
                 ctx.fillText(this.text, x + this.textX, y + this.textY);
             }
-            if (this.textLine != null) {
+            if (this.textLine !== null) {
                 ctx.strokeStyle = this.textLine;
                 ctx.strokeText(this.text, x + this.textX, y + this.textY);
             }

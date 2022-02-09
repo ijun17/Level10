@@ -31,8 +31,8 @@ class Actor extends Entity{
     totalDamageHandler=function(){return true;}
     castSkillHandler=function(){return true;}
 
-    constructor(x,y,channelLevel=Game.PHYSICS_CHANNEL){
-        super(x,y,channelLevel=Game.PHYSICS_CHANNEL)
+    constructor(x,y,channelLevel=World.PHYSICS_CHANNEL){
+        super(x,y,channelLevel=World.PHYSICS_CHANNEL)
     }
 
     update() {
@@ -49,8 +49,8 @@ class Actor extends Entity{
     castSkill(num){
         //num 0:q 1:w 2:e 3:r
         //Monstet skillList[0] is skill to Move
-        if(this.skillList.length>num&&this.coolTime[num]<Game.time){
-            this.coolTime[num]=this.skillList[num][1](this)+Game.time;
+        if(this.skillList.length>num&&this.coolTime[num]<Time.get()){
+            this.coolTime[num]=this.skillList[num][1](this)+Time.get();
             this.castSkillHandler();
         }
     }

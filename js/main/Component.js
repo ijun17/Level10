@@ -5,8 +5,7 @@
 let Component={
     backButton:function(code){
         let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
-        backButton.canAct=true;
-        backButton.code = function(){code()}
+        backButton.code = code;
         backButton.drawOption(null, null, "<", Screen.perX(6), "black","white");
         return backButton;
     },
@@ -22,7 +21,7 @@ let Component={
         let maxBtnHeight=0;
         
         let stackHead = new Button(Screen.perX(perX), Screen.perX(perY-9), 0, Screen.perX(10));
-        stackHead.stack_id=Game.channel[Game.BUTTON_CHANNEL].entitys.length;
+        stackHead.stack_id=stackHead;
         stackHead.stack_list=[stackHead];
         stackHead.stack_interface_list=[];
         let btns=stackHead.stack_list;
@@ -71,7 +70,7 @@ let Component={
         const color = (magicListIndex<Magic.basicMagic.length ? `rgba(119, 138, 202,0.8)` : `rgba(65, 105, 225,0.8)`); //119, 138, 202
         magicBtn.drawOption(color, "black", Magic.magicList[magicListIndex][0], Screen.perX(2), "black");
         magicBtn.code = function () {
-            (Magic.magicList[magicListIndex][1]) (Game.p);
+            //(Magic.magicList[magicListIndex][1]) (Game.p);
             if(selector!=null)selector.selectedBtn=this;
             extraCode(magicBtn);
         }
@@ -83,7 +82,7 @@ let Component={
         return magicBtn;
     },
     buttonSelector:function(extraCode=function(){}){
-        let selector = new Entity(0,0,Game.BUTTON_CHANNEL);
+        let selector = new Button(0,0,0,0)
         selector.selectedBtn=null;
         selector.update=function(){
             if (this.selectedBtn != null) {
@@ -97,7 +96,10 @@ let Component={
     },
     keyButton:function(perX,perY,keys,skillNum,selector,name=""){
         let components=[];
-        const ID=Game.channel[Game.BUTTON_CHANNEL].entitys.length;
+        let nameText = new Text(Screen.perX(perX),Screen.perX(perY-3), name, Screen.perX(2),"rgba(255,255,255,0.7)",null,-1,null);
+        nameText.textBaseline = "top";
+        nameText.textAlign="left";
+        const ID=nameText;
         for (let i = 0; i < 4; i++) {
             if(skillNum[i]>=Magic.magicList.length)skillNum[i]=i;
             let temp = new Button(Screen.perX(perX+8), Screen.perX(perY-4+9*i), Screen.perX(16), Screen.perX(4));
@@ -109,7 +111,7 @@ let Component={
                     skillNum[i]=selectMagic.temp[0];
                     const boxFill=(selectMagic.temp[0]<Magic.basicMagic.length ? `rgba(119, 138, 202,0.8)` : `rgba(65, 105, 225,0.8)`);
                     keyBtn.temp[0].drawOption(boxFill, "black", Magic.magicList[skillNum[i]][0], Screen.perX(2), "black");
-                    keyBtn.temp[0].code=function(){(Magic.magicList[skillNum[i]][1])(Game.p)};
+                    //keyBtn.temp[0].code=function(){(Magic.magicList[skillNum[i]][1])(Game.p)};
                     keyBtn.temp[0].y+=Screen.perX(1);
                     Magic.saveSkillNum();
                 }
@@ -118,9 +120,6 @@ let Component={
             keyBtn.temp[0]=Component.magicButton(Screen.perX(perX+9), Screen.perX(perY) + Screen.perX(9*i+1), skillNum[i]);
             components.push(temp);components.push(keyBtn);components.push(keyBtn.temp[0]);
         }
-        let nameText = new Text(Screen.perX(perX),Screen.perX(perY-3), name, Screen.perX(2),"rgba(255,255,255,0.7)",null,-1,null);
-        nameText.textBaseline = "top";
-        nameText.textAlign="left";
         let keyButtonComponent= new Button(Screen.perX(perX-0.5), Screen.perX(perY-0.5), Screen.perX(26), Screen.perX(36))
         keyButtonComponent.drawOption("rgba(0,0,0,0.2)");
         components.push(nameText);components.push(keyButtonComponent);
@@ -141,12 +140,12 @@ let Component={
         const MAX_MP=player.mp;
         const printSkillInfo=function(){
             for(let i = player.skillList.length-1; i >=0 ; i--){
-                let coolT = player.coolTime[i] - Game.time;
+                let coolT = player.coolTime[i] - Time.get();
                 let skill = player.skillList[i];
                 ctx.fillText(skill[0] + "(" + skill[3] + "): " + (coolT > 0 ? (coolT * 0.01).toFixed(2) : "ready"),Screen.perX(perX+19),Screen.perX(perY)+Screen.perX(2) * i);
             }
         }
-        let view = new Button(Screen.perX(perX),Screen.perX(perY),Screen.perX(45),Screen.perX(8),Game.TEXT_CHANNEL);
+        let view = new Button(Screen.perX(perX),Screen.perX(perY),Screen.perX(45),Screen.perX(8),World.TEXT_CHANNEL);
         view.draw=function(){
             ctx.fillStyle="rgba(0,0,0,0.1)";
             ctx.fillRect(this.x-Screen.perX(0.5),this.y-Screen.perX(0.5), Screen.perX(42), Screen.perX(8))
@@ -173,7 +172,7 @@ let Component={
     bossMonsterStatusView:function(bossMonster,perX,perY,name="Boss",textColor="white"){
         const viewTextSize=Screen.perX(1.8);
         const MAX_HP=bossMonster.life;
-        let view=new Button(Screen.perX(perX),Screen.perX(perY),Screen.perX(40),Screen.perX(6.5),Game.TEXT_CHANNEL)
+        let view=new Button(Screen.perX(perX),Screen.perX(perY),Screen.perX(40),Screen.perX(6.5),World.TEXT_CHANNEL)
         view.draw=function(){
             ctx.fillStyle="rgba(0,0,0,0.1)";
             ctx.fillRect(this.x,this.y, this.w, this.h);
@@ -225,7 +224,7 @@ let Component={
             let keyButton = new Button(canvas.width +(i-4) * (mobileButtonSize + 5), canvas.height - mobileButtonSize -5, mobileButtonSize, mobileButtonSize);
             keyButton.code = function () { player.castSkill(i); };
             keyButton.draw = function () {
-                ctx.fillStyle = (player.coolTime[i] < Game.time ? "rgb(121, 140, 205)" : "rgba(61, 61, 61,0.5)");//"rgba(61, 61, 61,0.5)";
+                ctx.fillStyle = (player.coolTime[i] < Time.time ? "rgb(121, 140, 205)" : "rgba(61, 61, 61,0.5)");//"rgba(61, 61, 61,0.5)";
                 ctx.fillRect(keyButton.x, keyButton.y, keyButton.w, keyButton.h);
                 ctx.strokeStyle = "black";
                 ctx.strokeRect(keyButton.x, keyButton.y, keyButton.w, keyButton.h);
@@ -241,7 +240,7 @@ let Component={
         }
     },
     textPanel:function(x,y){
-        let textPanel=new Entity(x,y,Game.TEXT_CHANNEL);
+        let textPanel=new Entity(x,y,World.TEXT_CHANNEL);
         textPanel.tx=0;
         textPanel.ty=0;
         textPanel.colors=[null];
@@ -288,7 +287,7 @@ let Component={
         
     },
     particleSpray:function(type,xy,rangeW,rangeH,particleSize,particleVy,delay){
-        let spray = new Entity(0,0,Game.BUTTON_CHENNEL);
+        let spray = new Entity(0,0,World.BUTTON_CHENNEL);
         spray.canMove=false;
         spray.canCollision=false;
         spray.canRemoved=false;
@@ -305,36 +304,46 @@ let Component={
             }
         };
     },
-    developerTool:function(){
-        const perSize=Screen.perX(4);
-        const perX=Screen.perX(50)-perSize*1.5;
-        const perY=Screen.perY(100)-perSize-Screen.perX(1);
-        speed=[0,10,100];
-        for(let i=0; i<speed.length; i++){
-            let speedBtn=new Button(perX+i*perSize, perY, perSize, perSize);
-            speedBtn.drawOption("rgba(125,125,125,0.5)","black",speed[i],Screen.perX(2),"black");
-            speedBtn.code=function(){Game.setGameSpeed(speed[i])}
-            speedBtn.canCollision=false;
-        }
-    },
+    // developerTool:function(){
+    //     const perSize=Screen.perX(4);
+    //     const perX=Screen.perX(50)-perSize*1.5;
+    //     const perY=Screen.perY(100)-perSize-Screen.perX(1);
+    //     speed=[0,10,100];
+    //     for(let i=0; i<speed.length; i++){
+    //         let speedBtn=new Button(perX+i*perSize, perY, perSize, perSize);
+    //         speedBtn.drawOption("rgba(125,125,125,0.5)","black",speed[i],Screen.perX(2),"black");
+    //         speedBtn.code=function(){Game.setGameSpeed(speed[i])}
+    //         speedBtn.canCollision=false;
+    //     }
+    // },
 
     shader: function (background="rgb(1,1,7)", globalAlpha=0.8) {
         function getBrightness(e){
             if(e.brightness==undefined)return 0;
             else return e.brightness;
         }
-        function fillLight(e,r){
-            tempctx.beginPath();
-            tempctx.arc(Camera.getX(e.getX()), Camera.getY(e.getY()), Camera.getS(r), 0, Math.PI * 2, true);
-            tempctx.fill();
-            tempctx.closePath();
+        let lightImg=document.createElement('canvas');
+        lightCTX=lightImg.getContext('2d');
+        lightImg.width=100;
+        lightImg.height=100;
+        lightCTX.fillStyle="#FAFFAF";
+        lightCTX.beginPath();
+        lightCTX.arc(50, 50, 50, 0, Math.PI * 2, true);
+        lightCTX.fill();
+        lightCTX.closePath();
+        let sm = new Entity(0,0,World.PARTICLE_CHANNEL);
+        sm.canvas=document.createElement('canvas');
+        sm.canvas.width=canvas.width;
+        sm.canvas.height=canvas.height;
+        sm.ctx=sm.canvas.getContext('2d');
+        sm.fillLight=function(e,r){
+            this.ctx.drawImage(lightImg, Camera.getX(e.getX()-r*0.5), Camera.getY(e.getY()-r*0.5), Camera.getS(r), Camera.getS(r));
         }
-        let sm = new Entity(0,0,Game.PARTICLE_CHANNEL);
         sm.update = function () {
-            tempctx.clearRect(0, 0, tempcanvas.width, tempcanvas.height);
-            tempctx.fillStyle="#FAFFAF";//자연광  rgb(250, 255, 175)
-            tempctx.globalCompositeOperation = "source-over";
-            let entitys = Game.channel[Game.PHYSICS_CHANNEL].entitys;
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle="#FAFFAF";//자연광  rgb(250, 255, 175)
+            this.ctx.globalCompositeOperation = "source-over";
+            let entitys = World.channel[World.PHYSICS_CHANNEL].entitys;
             let e;
             let brightness;
             let sumBrightness=0;
@@ -343,28 +352,28 @@ let Component={
                 brightness=getBrightness(e);
                 if(brightness>0){
                     sumBrightness+=brightness;
-                    tempctx.globalAlpha = 0.1;
-                    fillLight(e,200*brightness);
-                    tempctx.globalAlpha = 0.2;
-                    fillLight(e,60*brightness);
-                    tempctx.globalAlpha = 0.3;
-                    fillLight(e,20*brightness);
+                    this.ctx.globalAlpha = 0.1;
+                    this.fillLight(e,400*brightness);
+                    this.ctx.globalAlpha = 0.2;
+                    this.fillLight(e,120*brightness);
+                    this.ctx.globalAlpha = 0.3;
+                    this.fillLight(e,40*brightness);
                 }
             }
-            tempctx.globalCompositeOperation = "xor";
+            this.ctx.globalCompositeOperation = "xor";
             if(sumBrightness<1){
-                tempctx.globalAlpha = globalAlpha;
+                this.ctx.globalAlpha = globalAlpha;
             }else{
-                tempctx.globalAlpha = globalAlpha-0.1;
+                this.ctx.globalAlpha = globalAlpha-0.1;
             }
-            tempctx.fillStyle=background;
-            tempctx.fillRect(0,0,tempcanvas.width, tempcanvas.height);
-            ctx.drawImage(tempcanvas,0,0);
+            this.ctx.fillStyle=background;
+            this.ctx.fillRect(0,0,this.canvas.width, this.canvas.height);
+            ctx.drawImage(this.canvas,0,0);
         }
         return sm;
     },
     chain:function(list,chainDistance, power1,power2){
-        let chain = new Entity(0,0,Game.PHYSICS_CHANNEL);
+        let chain = new Entity(0,0,World.PHYSICS_CHANNEL);
         chain.canInteract=false;
         chain.chainList=list;
         for(let i=0,l=list.length; i<l; i++){

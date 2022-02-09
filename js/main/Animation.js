@@ -26,7 +26,7 @@ class Animation {
         this.image=image;
         this.condition=cdt;
         this.MAX_X=MAX_X;
-        this.time=Game.getTime();
+        this.time=this.fps;
         if(w===0){//image가 한개라는 뜻
             this.imageW=image.width;
             this.imageH=image.height;
@@ -40,14 +40,14 @@ class Animation {
     }
     draw(x,y,w,h,isNotInverse=true){
         //calculate imageX
-        if(Game.getTime()-this.time>this.fps){
-            this.time=Game.getTime();
+        if(this.time--<=0){
+            this.time=this.fps;
             if(++this.imageX===this.MAX_X[this.imageY])this.imageX=0;
         }
         //calculate imageY
         let tempY = this.condition();
         if(this.imageY !== tempY){
-            this.time=Game.getTime();
+            this.time=this.fps;
             this.imageX=0;
             this.imageY = tempY;
         }

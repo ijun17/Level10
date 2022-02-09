@@ -106,7 +106,7 @@ const MONSTERS = [{
         function(e){
             e.addAction(50,50,function(){e.vx=e.getTargetDir()*30;})
             let effect = new Particle(TYPE.magicEffect, e.x-e.w, e.y-e.h);effect.w=e.h*3;effect.h=e.h*3;
-            let noMatter = new Entity(effect.x,effect.y,Game.PHYSICS_CHANNEL);
+            let noMatter = new Entity(effect.x,effect.y,World.PHYSICS_CHANNEL);
             noMatter.w=effect.w;noMatter.h=effect.h;
             noMatter.collisionHandler=function(v){if(v instanceof Matter)v.throw();return false;}
             return 888;
@@ -126,7 +126,7 @@ const MONSTERS = [{
         function(e){if(!e.canTarget())return 70;let m=e.createMatterToTarget(TYPE.wind,e.getTargetDir()*1.5,0,30);m.power=500;m.life=100;m.vx*=0.5;m.vy*=0.5;return 500;},
         function(e){
             if(!e.canTarget())return 70;
-            let block=new Block(e.target.x-50+(e.target.w>>1),-3000,100,300,"rgba(255, 229, 0,0.5)");
+            let block=new Block(e.target.x-50+(e.target.w>>1),-3000,100,300,"rgba(255, 229, 0,0.5)");//"rgba(255, 229, 0,0.5)"
             block.collisionHandler=function(en){if(en===e)return false;if(en instanceof Matter)en.life=0;en.giveDamage(3000);return true;}
             block.brightness=5;
             block.vy=-20;block.ga=-1;
@@ -135,7 +135,7 @@ const MONSTERS = [{
         function(e){
             for(let i=0; i<10; i++){
                 for(let j=0; j<20; j++){
-                    let block=new Block(e.x+j*10,e.y+i*10,50,50,"rgba(255, 229, 0,0.5)");
+                    let block=new Block(e.x+j*10,e.y+i*10,50,50,"rgba(255, 72, 0,0.5)");
                     block.giveForce=function(){};
                     block.giveDamage=function(){};
                     block.collisionHandler=function(en){if(en===e)return false;en.giveDamage(1000);return true;}
@@ -185,7 +185,7 @@ class Monster extends Actor {
     power=100;
     damageTick=0;
 
-    constructor(typenum, x, y, ai=true, channelLevel = Game.PHYSICS_CHANNEL) {
+    constructor(typenum, x, y, ai=true, channelLevel = World.PHYSICS_CHANNEL) {
         super(x, y, channelLevel);
         let type=MONSTERS[typenum];
         this.typenum=typenum;
@@ -258,8 +258,8 @@ class Monster extends Actor {
     castSkill(num){
         //num 0:q 1:w 2:e 3:r
         //Monstet skillList[0] is skill to Move
-        if(this.skillList.length>num&&this.coolTime[num]<Game.time){
-            this.coolTime[num]=this.skillList[num][1](this)+Game.time;
+        if(this.skillList.length>num&&this.coolTime[num]<Time.time){
+            this.coolTime[num]=this.skillList[num][1](this)+Time.time;
         }
     }
 
@@ -270,7 +270,7 @@ class Monster extends Actor {
     //편의기능
     canTarget(){return (this.target!=null&&this.target.canDraw&&this.target.life>0)}
     searchTarget(){
-        let c=Game.channel[Game.PHYSICS_CHANNEL].entitys;
+        let c=World.channel[World.PHYSICS_CHANNEL].entitys;
         let targetPriority=3; //타겟 우선순위
         for(let i=c.length-1; i>=0; i--){
             if(c[i] instanceof Player){

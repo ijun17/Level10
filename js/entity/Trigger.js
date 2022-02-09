@@ -1,7 +1,7 @@
 class Trigger extends Entity{
     code=function(e){};
     constructor(x,y,w,h,time,f){
-        super(x,y,Game.PHYSICS_CHANNEL);
+        super(x,y,World.PHYSICS_CHANNEL);
         this.w=w;
         this.h=h;
         this.life=time;

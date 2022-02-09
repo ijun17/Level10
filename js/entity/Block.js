@@ -16,7 +16,7 @@ const MAPBLOCKS=[
 
 class Block extends Entity{
     color;
-    constructor(x,y,w,h,color = "#080808",channelLevel=Game.PHYSICS_CHANNEL){
+    constructor(x,y,w,h,color = "#080808",channelLevel=World.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
         this.w=w;
         this.h=h;

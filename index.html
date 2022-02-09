@@ -14,7 +14,6 @@
 <body style="background-color:black;" width="1200">
 
     <canvas id="myCanvas" width="1200" height="600"></canvas>
-    <canvas id="tempCanvas" style="display: none;" width="1200" height="600"></canvas>
 
     <div class="box">
         <div class="box-inner">
@@ -40,26 +39,20 @@
         "use strict";
         const canvas = document.getElementById("myCanvas");
         const ctx = canvas.getContext("2d");
-        const tempcanvas = document.getElementById("tempCanvas");
-        const tempctx = tempcanvas.getContext("2d");
         const tb = document.querySelector(".box");
     </script>
 
-    <!--스크립트-->
-    <script src="js/game/Input.js"></script>
-    <script src="js/game/Level.js"></script>
-    <script src="js/game/Magic.js"></script>
-    <script src="js/game/Screen.js"></script>
-    <script src="js/game/Component.js"></script>
-    <script src="js/game/Multi.js"></script>
-    <script src="js/resource/SoundManager.js"></script>
-    <script src="js/resource/ImageManager.js"></script>
-    <script src="js/engine/Animation.js"></script>
-    <script src="js/engine/Camera.js"></script>
+    <!--게임엔진-->
+    <script src="js/gameAPI/Time.js"></script>
+    <script src="js/gameAPI/World.js"></script>
+    <script src="js/main/Screen.js"></script>
+    <script src="js/gameAPI/Camera.js"></script>
+    <script src="js/gameAPI/EntityManager.js"></script>
+    <script src="js/gameAPI/Game.js"></script>
+    <script src="js/gameAPI/Entity.js"></script>
 
     <!--엔티티-->
     <script src="js/entity/TYPE.js"></script>
-    <script src="js/engine/Entity.js"></script>
     <script src="js/entity/Actor.js"></script>
     <script src="js/entity/Player.js"></script>
     <script src="js/entity/Monster.js"></script>
@@ -68,11 +61,32 @@
     <script src="js/entity/Particle.js"></script>
     <script src="js/entity/Button.js"></script>
     <script src="js/entity/Text.js"></script>
+    <script src="js/entity/TileMap.js"></script>
     <script src="js/entity/Trigger.js"></script>
 
-    <!--게임엔진-->
-    <script src="js/engine/EntityManager.js"></script>
-    <script src="js/engine/Game.js"></script>
+    <!--스크립트-->
+    <script src="js/main/Input.js"></script>
+    <script src="js/main/Level.js"></script>
+    <script src="js/main/Magic.js"></script>
+    <script src="js/main/Component.js"></script>
+    <script src="js/main/Multi.js"></script>
+    <script src="js/main/Animation.js"></script>
+    <script src="js/resource/SoundManager.js"></script>
+    <script src="js/resource/ImageManager.js"></script>
+
+    <!--스크린-->
+    <script src="js/screen/screen_main.js"></script>
+    <script src="js/screen/screen_select.js"></script>
+    <script src="js/screen/screen_selectMagic.js"></script>
+    <script src="js/screen/screen_makeMagic.js"></script>
+    <script src="js/screen/screen_game.js"></script>
+    <script src="js/screen/screen_pvp.js"></script>
+    <script src="js/screen/screen_pvpGame.js"></script>
+    <script src="js/screen/screen_help.js"></script>
+
+    <script src="js/main/main.js"></script>
+
+    
 
 </body>
 

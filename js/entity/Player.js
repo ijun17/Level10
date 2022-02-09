@@ -2,7 +2,7 @@ class Player extends Actor{
     lv=1;
     damageTick=0;
 
-    constructor(x,y,lv=1,skillNum=Magic.skillNum,channelLevel=Game.PHYSICS_CHANNEL){
+    constructor(x,y,lv=1,skillNum=Magic.skillNum,channelLevel=World.PHYSICS_CHANNEL){
         super(x,y,channelLevel);
         //default
         this.w=30;
@@ -53,12 +53,12 @@ class Player extends Actor{
 
     castSkill(num){
         //num 0:q 1:w 2:e 3:r
-        if(this.coolTime[num]<Game.time&&this.mp>this.skillList[num][3]){
+        if(this.coolTime[num]<Time.time&&this.mp>this.skillList[num][3]){
             let magicEffect = new Particle(5, this.x+this.w/2-this.h/2, this.y);
             magicEffect.w=this.h;
             magicEffect.h=this.h;
             this.skillList[num][1](this);
-            this.coolTime[num]=this.skillList[num][2]+Game.time;
+            this.coolTime[num]=this.skillList[num][2]+Time.time;
             this.mp-=this.skillList[num][3];
         }
     }

@@ -7,7 +7,7 @@ class Text extends Entity{
     textBaseline="middle";
     textAlign="center";
     constructor(x,y,text="",size="1",fillColor=null,strokeColor=null,life=100,camera=true){
-        super(x,y,Game.TEXT_CHANNEL);
+        super(x,y,World.TEXT_CHANNEL);
         this.text=text;
         this.font="bold " + size + "px Arial";
         this.strokeColor=strokeColor;

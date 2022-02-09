@@ -1,14 +1,42 @@
 let Screen= {
+    canvas:null,
+    ctx:null,
     //const
     CANVAS_W:1200,
     CANVAS_H:600,
 
-    //screen status
+    widthDividedBy100:0,
+    heightDividedBy100:0,
     isMobile : false,
     bgColor : "black",
 
+    init:function(){
+        this.canvas = document.getElementById("myCanvas");
+        this.ctx = canvas.getContext("2d");
+        const sw=screen.width,sh=screen.height;
+        if(this.isMobile)this.setSize(1200,1200*(sh<sw?sh/sw:sw/sh));
+        else this.setSize(1200,600);
+        this.setScreen("main");
+    },
+    setSize:function(w,h){this.canvas.width=Math.floor(w); this.canvas.height=Math.floor(h)},
+    clear:function(){this.ctx.fillStyle=this.bgColor;this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);},
     perX:function(percentile){return Math.floor(canvas.width*0.01*percentile);},
     perY:function(percentile){return Math.floor(canvas.height*0.01*percentile);},
+
+
+    screens:{"main":function(){}},
+    addScreen:function(screenName, f){this.screens[screenName]=f.bind(this)},
+    setScreen:function(screenName, para=undefined){
+        if(this.screens[screenName]===undefined){console.error(`"${screenName}" screen is undefined`);return;}
+        Game.resetGame();
+        (this.screens[screenName])(para)
+    },
+
+    /*
+    Screens
+    */
+
+
 
     mainScreen:function() {
         Game.resetGame();
@@ -197,11 +225,7 @@ let Screen= {
         Game.resetGame();
         Component.backButton(function(){Screen.selectScreen()});
         Component.screenName("PVP","rgba(128, 0, 128,0.5)");
-        Game.p=new Player(0,Screen.perY(200),1); 
-        //Component.particleSpray(1,{x:Screen.perX(50),y:0}, Screen.perX(120),0, 15, 1, 10);
-        //Component.particleSpray(0,{x:Screen.perX(50),y:0}, Screen.perX(120),0, 15, 1, 10);
-        //Screen.bgColor="rgb(220,235,240)"
-        //Component.shader("rgb(50,40,60)", globalAlpha=0.3);
+
         let magicSelector=Component.buttonSelector();
 
         let magicList=Component.buttonStack(0,0,Magic.magicList.length,true,function(i){

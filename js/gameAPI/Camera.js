@@ -1,13 +1,15 @@
 let Camera={
     e:null, //Entity
     cameraOn:false,
+    screenX:Screen.perX(50),
+    screenY:Screen.perY(65),
     extension:1, // 커지면 엔티티들이 작아짐
     getX:function(x){
-        if(Camera.cameraOn)return ((x-Camera.e.x)*Camera.extension+Screen.perX(50));
+        if(this.cameraOn)return (x-this.e.x)*this.extension+this.screenX;
         else return x;
     },
     getY:function(y){
-        if(Camera.cameraOn)return ((y-Camera.e.y)*Camera.extension+Screen.perY(65));
+        if(this.cameraOn)return (y-this.e.y)*this.extension+this.screenY;
         else return y;
     },
     getS:function(w){ //size

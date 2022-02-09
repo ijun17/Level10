@@ -97,7 +97,7 @@ let Input = {
         canvas.removeEventListener("mousedown", this.clickDownHandler, false);
     },
     click:function(x, y,ct=`c`) {
-        let c = Game.channel[Game.BUTTON_CHANNEL].entitys;
+        let c = World.channel[World.BUTTON_CHANNEL].entitys;
         for (let i = 0,l=c.length; i < l; i++) {
             if (c[i].x < x && x < c[i].x + c[i].w && c[i].y < y && y < c[i].y + c[i].h) {
                 c[i].collisionHandler({x,y},ct);

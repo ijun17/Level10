@@ -1,10 +1,17 @@
 let ImageManager={
     preloading:function(directoryName, imageArray) {
-        let img;
+        
         for (let i = 0,n = imageArray.length; i < n; i++) { 
+            let img;
             img = new Image();
-            img.src=`resource/${directoryName}/${imageArray[i]}.png`;
-            ImageManager[imageArray[i]]=img;
+            img.src=`resource/entity/${directoryName}/${imageArray[i]}.png`;
+            ImageManager[imageArray[i]]=document.createElement('canvas');
+            img.onload=function(){
+                ImageManager[imageArray[i]].width=img.width;
+                ImageManager[imageArray[i]].height=img.height;
+                ImageManager[imageArray[i]].getContext('2d').drawImage(img,0,0);
+            }
+            
         } 
     }
 }

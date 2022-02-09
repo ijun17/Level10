@@ -38,7 +38,7 @@ let Level= {
                     e.vy *= 4;
                 }
             }
-            let entitys=Game.channel[Game.PHYSICS_CHANNEL].entitys;
+            let entitys=World.channel[World.PHYSICS_CHANNEL].entitys;
             for(let i=entitys.length; i>=0; i--){
                 if(entitys[i] instanceof Monster)entitys[i].life=0;
                 else if(entitys[i] instanceof Player)entitys[i].canRemoved=false;
@@ -56,8 +56,10 @@ let Level= {
         
         switch (level) {
             case 1: 
+                Screen.bgColor="dimgray";
                 Level.createMainMonster(TYPE.crazyMushroom, 1000, -1000);
                 Component.worldWall(1000,1000,300);
+                Component.shader("black",0.4);
                 break;
             case 2: 
                 Level.createMainMonster(TYPE.crazyMonkey, 1600, -1000);
@@ -77,7 +79,7 @@ let Level= {
                 Screen.bgColor="rgb(35,5,5)";
                 Component.worldWall(2000,1000,300);
                 Component.particleSpray(TYPE.ember,player,2000,-1000,10,1.5,5);
-                Component.shader(background="rgb(1,1,7)", globalAlpha=0.9);
+                Component.shader(background="rgb(1,1,7)", globalAlpha=0.8);
                 break;
             case 5:
                 Level.createMainMonster(TYPE.golem,Screen.perX(50), -400).addAction(1,100,function(){Camera.vibrate(10);});
@@ -102,14 +104,14 @@ let Level= {
                 Camera.extension=0.5
                 let chainList =[];
                 for(let i=0; i<10; i++){
-                    let block=new Block(200*i+300, -1000,50,100,`rgb(${200-i*20},${200-i*10},${200-i*20})`);
+                    let block=new Block(200*i+300, -1000,50,50,`rgb(${200-i*20},${200-i*10},${200-i*20})`);
                     block.canRemoved=false;
                     chainList.push(block);
                     //block.inv_mass=1;
                 }
                 chainList[0].inv_mass=0;
                 chainList[0].canMove=false;
-                Component.chain(chainList,100,10,3)
+                Component.chain(chainList,100,3,10)
 
                 //chainList=[new Monster(TYPE.crazyMushroom,500,-1000),new Block(600,-1000,150,150),new Block(600,-1000,200,200),new Block(600,-1000,150,150),new Block(700,-1000,100,100)]
                 //chainList[0].inv_mass=0.000001
@@ -119,8 +121,9 @@ let Level= {
                 break;
             case 9:
                 Component.worldWall(2000,1000,300);
-                Screen.bgColor="white"
-                Component.shader(background="rgb(5,5,15)", globalAlpha=0.8);
+                Screen.bgColor="gray";
+                new TileMap(10, -60)
+                //Component.shader(background="rgb(5,5,15)", globalAlpha=0.8);
                 break;
             case 10:
                 Component.worldWall(2000,1000,300);

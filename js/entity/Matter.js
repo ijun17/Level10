@@ -7,7 +7,7 @@ const MATTERS=[
         },
         setup:function(e){
             e.power=500;e.brightness=1;
-            e.addAction(1,10000,function (){if(Game.time%15==0){new Particle(TYPE.ember,e.x,e.y);new Particle(TYPE.smoke,e.x,e.y);}});
+            e.addAction(1,10000,function (){if(Time.time%15==0){new Particle(TYPE.ember,e.x,e.y);new Particle(TYPE.smoke,e.x,e.y);}});
         },
         effect:function(e,v){
             --this.life;
@@ -162,7 +162,7 @@ class Matter extends Entity {
     typenum;
     power;
     effect=function(e){};
-    constructor(typenum, x, y, vx = 0, vy = 0,channelLevel=Game.PHYSICS_CHANNEL) {
+    constructor(typenum, x, y, vx = 0, vy = 0,channelLevel=World.PHYSICS_CHANNEL) {
         super(x, y,channelLevel);
         this.vx = vx;
         this.vy = vy;

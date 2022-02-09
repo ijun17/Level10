@@ -7,7 +7,7 @@ class EntityManager{
         this.entitys=[];
         this.entityInteraction=ei;
     }
-    push(e){this.entitys[this.entitys.length]=e;if(!(e instanceof Entity))console.log("non entity pushed")}
+    push(e){this.entitys[this.entitys.length]=e;}
     get(i){return this.entitys[i];}
     clear(){this.entitys=[];}
     length(){return this.entitys.length;}
