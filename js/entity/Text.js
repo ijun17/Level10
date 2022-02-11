@@ -19,24 +19,23 @@ class Text extends Entity{
         this.canRemoved=false;
     }
     update(){
-        this.draw();
+        super.update();
         if(this.life>0)this.life--;
         else if(this.life==0) this.canRemoved=true;
-        this.move();
     }
-    draw(){
-        ctx.textBaseline = this.textBaseline;
-        ctx.textAlign = this.textAlign;
-        ctx.font = this.font;
-        const textX=(this.camera ? Camera.getX(this.x) : this.x);
-        const textY=(this.camera ? Camera.getY(this.y) : this.y);
+    draw(r){
+        r.ctx.textBaseline = this.textBaseline;
+        r.ctx.textAlign = this.textAlign;
+        r.ctx.font = this.font;
+        const textX=(this.camera ? EntityRenderer.Camera.getX(this.x) : this.x);
+        const textY=(this.camera ? EntityRenderer.Camera.getY(this.y) : this.y);
         if (this.strokeColor != null) {
-            ctx.strokeStyle = this.strokeColor;
-            ctx.strokeText(this.text, textX, textY);
+            r.ctx.strokeStyle = this.strokeColor;
+            r.ctx.strokeText(this.text, textX, textY);
         }
         if (this.fillColor != null) {
-            ctx.fillStyle = this.fillColor;
-            ctx.fillText(this.text, textX, textY);
+            r.ctx.fillStyle = this.fillColor;
+            r.ctx.fillText(this.text, textX, textY);
         }
     }
 }

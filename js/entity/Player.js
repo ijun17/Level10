@@ -39,8 +39,8 @@ class Player extends Actor{
                 return false;
             }else if(this.totalDamage > 0){
                 this.damageTick=10;
-                Camera.vibrate((this.totalDamage<10000 ? this.totalDamage*0.02 : 200)+5);
-                //Camera.vibrate((this.totalDamage<10000 ? this.totalDamage*0.02 : 200)+5); 적당한 타격감
+                EntityRenderer.Camera.vibrate((this.totalDamage<10000 ? this.totalDamage*0.02 : 200)+5);
+                //EntityRenderer.Camera.vibrate((this.totalDamage<10000 ? this.totalDamage*0.02 : 200)+5); 적당한 타격감
                 return true;
             }
         }

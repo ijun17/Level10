@@ -127,9 +127,15 @@ const MONSTERS = [{
         function(e){
             if(!e.canTarget())return 70;
             let block=new Block(e.target.x-50+(e.target.w>>1),-3000,100,300,"rgba(255, 229, 0,0.5)");//"rgba(255, 229, 0,0.5)"
-            block.collisionHandler=function(en){if(en===e)return false;if(en instanceof Matter)en.life=0;en.giveDamage(3000);return true;}
+            block.oncollision=function(event){
+                if(event.other===e)return false;
+                if(event.other instanceof Matter)event.other.life=0;
+                event.other.giveDamage(3000);
+                return true;
+            }
             block.brightness=5;
-            block.vy=-20;block.ga=-1;
+            block.vy=-20;
+            block.ga=-1;
             return 1000;
         },
         function(e){
@@ -138,7 +144,7 @@ const MONSTERS = [{
                     let block=new Block(e.x+j*10,e.y+i*10,50,50,"rgba(255, 72, 0,0.5)");
                     block.giveForce=function(){};
                     block.giveDamage=function(){};
-                    block.collisionHandler=function(en){if(en===e)return false;en.giveDamage(1000);return true;}
+                    block.addEventListener("collision", function(event){if(event.other===e)return false;event.other.giveDamage(1000);return true;})
                     block.brightness=1;
                     block.canRemoved=false;
                     block.addAction(1000,1000,function(){block.throw();});
@@ -208,51 +214,45 @@ class Monster extends Actor {
                 this.addSkill(200,type.skillList[i]);
             }
         }
-        //
+        //damage
         this.totalDamageHandler=function(){
             if(this.damageTick>0){
                 this.damageTick--;
                 return false;
             }else if(this.totalDamage > 0){
                 this.damageTick=5;
-                Camera.vibrate((this.totalDamage<10000 ? this.totalDamage*0.001 : 10)+5);
+                EntityRenderer.Camera.vibrate((this.totalDamage<10000 ? this.totalDamage*0.001 : 10)+5);
                 return true;
             }
         }
+        //event
+        this.addEventListener("collision", function(e){
+            if(e.other.canRemoved&&this.attackFilter(e.other)){
+                if(this.target==null)this.target=e.other;
+                e.other.giveDamage((1 - Math.random()*2)*this.power*0.1+this.power);
+                this.attackTick = this.animation.fps*this.animation.MAX_X[1];
+                const knockback=(e.other.getX() > this.getX()?1:-1)*((this.power+1000)>>9)+this.vx;
+                e.other.giveForce((e.other instanceof Actor?-e.other.vx:0)+knockback,0.2-e.other.ga);
+            }
+            return true;
+        }.bind(this))
+        this.addEventListener("remove", function(e){
+            let par;
+            for(let i=this.w/10; i>=0; i--){
+                for(let j=this.h/10; j>=0; j--){
+                    par = new Particle(1, this.x + i * 10, this.y + j * 10);
+                    par.ga = 0;
+                    par.vx *= 2;
+                    par.vy *= 2;
+                }
+            }
+            EntityRenderer.Camera.vibrate(50);
+        })
     }
 
     update() {
         super.update();
         if(this.attackTick>0)this.attackTick--;
-    }
-
-    collisionHandler(e,ct=[0,0]) {
-        super.collisionHandler(e,ct);
-        //공격
-        if(e.canRemoved&&this.attackFilter(e)){
-            if(this.target==null)this.target=e;
-            e.giveDamage((1 - Math.random()*2)*this.power*0.1+this.power);
-            this.attackTick = this.animation.fps*this.animation.MAX_X[1];
-            if (e.getX() > this.getX()) {
-                e.giveForce((e instanceof Actor?-e.vx:0)+((this.power+1000)>>9)+this.vx,0.2-e.ga);
-            } else {
-                e.giveForce((e instanceof Actor?-e.vx:0)-((this.power+1000)>>9)+this.vx,0.2-e.ga);
-            }
-        }
-        return true;
-    }
-
-    removeHandler() {
-        for(let i=this.w/10; i>=0; i--){
-            for(let j=this.h/10; j>=0; j--){
-                let e = new Particle(1, this.x + i * 10, this.y + j * 10);
-                e.ga = 0;
-                e.vx *= 2;
-                e.vy *= 2;
-            }
-        }
-        Camera.vibrate(50);
-        return true;
     }
 
     castSkill(num){

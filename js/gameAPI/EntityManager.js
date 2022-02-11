@@ -20,7 +20,7 @@ class EntityManager{
         let entity;
         for(let i=entitys.length-1; i>=0;i--){
             entity=entitys[i];
-            if (entity.canRemoved && (entity.life < 1 || (entity.y>this.LIMIT_Y&&entity.canFallDie)) && entity.removeHandler()) {
+            if (entity.canRemoved && (entity.life < 1 || (entity.y>this.LIMIT_Y&&entity.canFallDie)) && entity.onremove({do:true})) {
                 entitys.splice(i, 1);
             }else {
                 entity.limitVector(this.MAX_V);
@@ -58,9 +58,11 @@ class EntityManager{
         let overlap=normalAndOverlap[1];
 
         // normal  normal[0]+normal[1]*2   right:1 left:-1 top:2 bottom:-2
-        let collisionHandling = a.collisionHandler(b, normal);
-        if(!(b.collisionHandler(a,[-normal[0],-normal[1]])&&collisionHandling))return; //ignore phsics collision
-        if(a.overlap&&b.overlap)return; //ignore phsics collision
+        let eventA={other:b, vector:normal};
+        let eventB={other:a, vector:[-normal[0],-normal[1]]}
+        a.oncollision(eventA);
+        b.oncollision(eventB);
+        if(eventA.do===false||eventB.do===false||a.overlap&&b.overlap)return; //ignore phsics collision
         if(a.inv_mass===0 && b.inv_mass===0){
             //special collision 
             let changeE=a;

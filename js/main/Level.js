@@ -22,30 +22,21 @@ let Level= {
         //animation
         let clearText = new Text(Screen.perX(50),Screen.perY(0), "CLEAR", Screen.perX(20), "yellow", null,300,false);
         clearText.vy=-Screen.perY(100)/300;
-        clearText.removeHandler=function(){Screen.selectScreen();return true;};
+        clearText.addEventListener("remove", function(){Screen.setScreen("select");return true;})
     },
 
     createMainMonster:function(typenum,x,y){
         let m=new Monster(typenum,x,y);
         m.isRight=false;
-        m.removeHandler=function(){
+        m.addEventListener("remove",function(){
             Level.clearLevel(typenum+1);
-            for(let i=this.w/10; i>=0; i--){
-                for(let j=this.h/10; j>=0; j--){
-                    let e = new Particle(1, this.x + i * 10, this.y + j * 10);
-                    e.ga = 0;
-                    e.vx *= 4;
-                    e.vy *= 4;
-                }
-            }
             let entitys=World.channel[World.PHYSICS_CHANNEL].entitys;
             for(let i=entitys.length; i>=0; i--){
                 if(entitys[i] instanceof Monster)entitys[i].life=0;
                 else if(entitys[i] instanceof Player)entitys[i].canRemoved=false;
             }
-            Camera.vibrate(50);
             return true;
-        }
+        })
         Component.bossMonsterStatusView(m,59,1)
         return m;
     },
@@ -59,14 +50,14 @@ let Level= {
                 Screen.bgColor="dimgray";
                 Level.createMainMonster(TYPE.crazyMushroom, 1000, -1000);
                 Component.worldWall(1000,1000,300);
-                Component.shader("black",0.4);
+                EntityRenderer.makeShader("black",0.4);
                 break;
             case 2: 
+                Screen.bgColor="#cde5e4";
                 Level.createMainMonster(TYPE.crazyMonkey, 1600, -1000);
                 Component.worldWall(2000,1000,300);
                 Component.particleSpray(TYPE.snow,player,2000,-1000,10,1.5,5)
-                Component.shader(background="rgb(10, 18, 33)", globalAlpha=0.5);
-                Screen.bgColor="#cde5e4";
+                EntityRenderer.makeShader("rgb(10, 18, 33)",0.5);
                 break;
             case 3: 
                 Level.createMainMonster(TYPE.hellFly, 3000, -1000);
@@ -79,29 +70,27 @@ let Level= {
                 Screen.bgColor="rgb(35,5,5)";
                 Component.worldWall(2000,1000,300);
                 Component.particleSpray(TYPE.ember,player,2000,-1000,10,1.5,5);
-                Component.shader(background="rgb(1,1,7)", globalAlpha=0.8);
+                EntityRenderer.makeShader("rgb(1,1,7)",0.8);
                 break;
             case 5:
-                Level.createMainMonster(TYPE.golem,Screen.perX(50), -400).addAction(1,100,function(){Camera.vibrate(10);});
+                Level.createMainMonster(TYPE.golem,Screen.perX(50), -400).addAction(1,100,function(){EntityRenderer.Camera.vibrate(10);});
                 Screen.bgColor="#657d87";
                 Component.worldWall(2000,1000,300);
-                Component.shader(Screen.bgColor,0.3);
+                EntityRenderer.makeShader(Screen.bgColor,0.3);
                 break;
             case 6:
                 Level.createMainMonster(TYPE.goldDragon,Screen.perX(50), -400);
                 Screen.bgColor="rgb(5,5,35)";
                 Component.worldWall(3000,2000,300);
-                Component.shader();
+                EntityRenderer.makeShader("rgb(1,1,7)",0.8);
                 break;
             case 7:
                 Component.worldWall(2000,1000,300);
                 Level.createMainMonster(TYPE.warrior,Screen.perX(50), -400);
                 Screen.bgColor="rgb(100,100,100)";
-                //Component.shader();
                 break;
             case 8:
                 player.flyMode();
-                Camera.extension=0.5
                 let chainList =[];
                 for(let i=0; i<10; i++){
                     let block=new Block(200*i+300, -1000,50,50,`rgb(${200-i*20},${200-i*10},${200-i*20})`);
@@ -121,14 +110,11 @@ let Level= {
                 break;
             case 9:
                 Component.worldWall(2000,1000,300);
-                Screen.bgColor="gray";
-                new TileMap(10, -60)
-                //Component.shader(background="rgb(5,5,15)", globalAlpha=0.8);
                 break;
             case 10:
                 Component.worldWall(2000,1000,300);
                 Screen.bgColor="rgb(5,5,35)"
-                Component.shader(background="rgb(5,5,15)", globalAlpha=0.9);
+                EntityRenderer.makeShader("rgb(5,5,15)",0.9)
                 break;
             default:
                 break;

@@ -9,6 +9,11 @@ class Trigger extends Entity{
         this.ga=0;
         this.canRemoved = true;
         this.draw=Trigger.getDraw();
+        this.addEventListener("collision", function(e){if(e.other.canMove==false)return false;
+            this.code(e.other);
+            this.life=0;
+            this.code=function(){};
+        }.bind(this))
     }
 
     update() {
@@ -16,20 +21,11 @@ class Trigger extends Entity{
         this.life--;
     }
     static getDraw(){
-        return function(){
-            ctx.fillStyle = "rgba(65, 105, 225,0.1)";
-            ctx.fillRect(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h));
+        return function(r){
+            r.fillRect("rgba(65, 105, 225,0.1)", this)
         }
     }
 
     giveDamage(){}
     giveForce(){}
-
-    collisionHandler(e){
-        if(e.canMove==false)return false;
-        this.code(e);
-        this.life=0;
-        this.code=function(){};
-        return false;
-    }
 }

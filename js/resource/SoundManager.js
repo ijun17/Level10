@@ -10,7 +10,7 @@ let SoundManager={
             sound.volume=(temp>1?1:temp);
             sound.currentTime=0;
         }
-        //sound.play();
+        sound.play();
     },
     resetVolume:function(){
         for(let a in this){

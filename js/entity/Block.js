@@ -5,11 +5,11 @@ const MAPBLOCKS=[
 },
 {
     name:"wall",
-    setup:function(e){e.draw=function(){ctx.fillStyle = "#303030";Camera.fillRect(this.x, this.y, this.w, this.h);};}
+    setup:function(e){e.draw=function(r){r.fillRect("#303030",this);};}
 },
 {
     name:"grass",
-    setup:function(e){e.draw=function(){ctx.fillStyle="#2B650D";Camera.fillRect(this.x,this.y,this.w,15);ctx.fillStyle="#382113";Camera.fillRect(this.x,this.y+15,this.w,this.h-15);}}
+    setup:function(e){e.draw=function(r){r.fillRect("#382113",this);r.fillRect("#2B650D",{x:this.x,y:this.y,w:this.w,h:15})}}
 }
 ]
 
@@ -25,30 +25,17 @@ class Block extends Entity{
         this.life=w*h*10;
         this.COR=1;
         this.inv_mass=20/(w*h);
-        // let temp= this;
-        // this.addEventListener("collision", function(e,ct){
-        //     if(ct[0]!==0&&ct[0]*temp.vx>0||ct[1]!==0&&ct[1]*temp.vy>0){
-        //         e.giveDamage(Math.floor((temp.w * temp.h) * temp.getVectorLength()*0.02));
-        //     }
-        //     return true;
-        // })
+        this.addEventListener("collision",function(e){
+            if(e.vector[0]!==0&&e.vector[0]*this.vx>0||e.vector[1]!==0&&e.vector[1]*this.vy>0){
+                e.other.giveDamage(Math.floor((this.w * this.h) * this.getVectorLength()*0.02));
+            }
+        }.bind(this));
+        this.addEventListener("remove",function(e){SoundManager.play(SoundManager.blockCrashing, this.w*this.h*0.0001);})
     }
 
-    draw(){
-        ctx.fillStyle = this.color;
-        Camera.fillRect(this.x,this.y,this.w,this.h);
-    }
-
-    collisionHandler(e,ct=[0,0]){
-        if(ct[0]!==0&&ct[0]*this.vx>0||ct[1]!==0&&ct[1]*this.vy>0){
-            e.giveDamage(Math.floor((this.w * this.h) * this.getVectorLength()*0.02));
-        }
-        return true;
-    }
-    removeHandler(){
-        let temp = this.w*this.h*0.0001;
-        SoundManager.play(SoundManager.blockCrashing, temp);
-        return true;
+    draw(r){
+        r.fillRect(this.color,this);
+        r.drawLight(this)
     }
     setMapBlock(type=0){
         this.ga=0;
@@ -58,7 +45,7 @@ class Block extends Entity{
         this.canAct=false;
         this.canMove=false;
         MAPBLOCKS[type].setup(this);
-        this.update=function(){this.draw()};
+        //this.update=this.draw;
         this.giveDamage=function(){}
         this.giveForce=function() {}
         this.addAction=function() {}

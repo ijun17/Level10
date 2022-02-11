@@ -3,7 +3,7 @@ const MATTERS=[
         name:"fire",
         drawOption:function(e){
             e.animation=new Animation(ImageManager.fire, 10,10,[3],function(){return 0})
-            e.draw=function(){this.drawRotate(function(){e.animation.draw(-Camera.getS(e.w>>1), -Camera.getS(e.h>>1), Camera.getS(e.w), Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
+            e.draw=function(r){r.drawAnimation(this.animation, this, {rotate:this.getRadian()}); r.drawLight(this);}
         },
         setup:function(e){
             e.power=500;e.brightness=1;
@@ -26,7 +26,7 @@ const MATTERS=[
         name:"electricity",
         drawOption:function(e){
             e.animation=new Animation(ImageManager.electricity, 10,10,[3],function(){return 0})
-            e.draw=function(){this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h))}
+            e.draw=function(r){r.drawAnimation(this.animation, this); r.drawLight(this)}
         },
         setup:function(e){e.power=50;e.brightness=1;e.ga=0;e.inv_mass=1;e.lightningPoint=0;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
@@ -48,9 +48,7 @@ const MATTERS=[
     },
     {
         name:"ice",
-        drawOption:function(e){
-            e.draw=function(){this.drawRotate(function(){ctx.drawImage(ImageManager.ice,-Camera.getS(e.w>>1),-Camera.getS(e.h>>1),Camera.getS(e.w),Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
-        },
+        drawOption:function(e){e.draw=function(r){r.drawImage(ImageManager.ice, this, {rotate:this.getRadian()});}},
         setup: function (e) { e.power = 110; },
         effect: function (e, v) {
             --this.life;
@@ -65,7 +63,7 @@ const MATTERS=[
                 v.giveForce(e.vx/e.inv_mass,e.vy/e.inv_mass);
                 if(v instanceof Actor&&v.isMoving===true){
                     v.isMoving=false;
-                    v.addAction(1,100,function(){ctx.fillStyle="rgba(92,150,212,0.5)";Camera.fillRect(v.x,v.y,v.w,v.h);});
+                    v.addAction(1,100,function(){EntityRenderer.fillRect("rgba(92,150,212,0.5)",v)});
                     v.addAction(101,101,function(){v.isMoving=true;});
                 }
             }
@@ -74,17 +72,13 @@ const MATTERS=[
     },
     {
         name:"arrow",
-        drawOption:function(e){
-            e.draw=function(){this.drawRotate(function(){ctx.drawImage(ImageManager.arrow,-Camera.getS(e.w>>1),-Camera.getS(e.h>>1),Camera.getS(e.w),Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
-        },
+        drawOption:function(e){e.draw=function(r){r.drawImage(ImageManager.arrow, this, {rotate:this.getRadian()});}},
         setup:function(e){e.power=100;e.inv_mass=2},
         effect:function(e,v){--this.life;v.giveDamage(Math.floor(e.getVectorLength()*e.power));v.giveForce(e.vx/e.inv_mass,(e.vy)/e.inv_mass);return true;}
     },
     {
         name:"energy",
-        drawOption:function(e){
-            e.draw=function(){Camera.drawImage(ImageManager.energy,this.x,this.y,this.w,this.h)}
-        },
+        drawOption:function(e){e.draw=function(r){r.drawImage(ImageManager.energy, this);r.drawLight(this)}},
         setup:function(e){e.power=1000;e.brightness=2;e.inv_mass=0.5;e.ga=-0.01;e.friction=0;},
         effect:function(e,v){
             --this.life;
@@ -106,9 +100,7 @@ const MATTERS=[
     },
     {
         name:"wind",
-        drawOption:function(e){
-            e.draw=function(){this.drawRotate(function(){ctx.drawImage(ImageManager.wind,-Camera.getS(e.w>>1),-Camera.getS(e.h>>1),Camera.getS(e.w),Camera.getS(e.h))},Math.atan2(this.vx, this.vy));}
-        },
+        drawOption:function(e){e.draw=function(r){r.drawImage(ImageManager.wind, this, {rotate:this.getRadian()});}},
         setup:function(e){e.power=0;e.w=(e.vx*e.vx+e.vy*e.vy)*0.1+30;e.h=e.w;e.ga=0;e.inv_mass=0.1;e.addAction(0,99999999,function(){--e.life;})},
         effect:function(e,v){
             v.giveForce(e.vx-v.vx,e.vy-v.vy+1);
@@ -119,13 +111,11 @@ const MATTERS=[
     },
     {
         name:"explosion",
-        drawOption:function(e){
-            e.draw=function(){Camera.drawImage(ImageManager.explosion,this.x,this.y,this.w,this.h)}
-        },
+        drawOption:function(e){e.draw=function(r){r.drawImage(ImageManager.explosion, this);r.drawLight(this)}},
         setup:function(e){
             e.power=1000;e.brightness=3;e.w=100;e.h=100;e.ga=0;e.life=50;e.inv_mass=0;e.addAction(0,99999999,function(){--e.life;})
             SoundManager.play(SoundManager.explosion,0.2);
-            Camera.vibrate(5);
+            EntityRenderer.Camera.vibrate(5);
         },
         effect:function(e,v){
             v.giveDamage(e.power);
@@ -137,11 +127,11 @@ const MATTERS=[
         name: "lightning",
         drawOption:function(e){
             e.animation=new Animation(ImageManager.lightning, 100,400,[3],function(){return 0})
-            e.draw=function(){this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h))}
+            e.draw=function(r){r.drawAnimation(this.animation, this);r.drawLight(this)}
         },
         setup:function(e){
             e.power=1000;e.brightness=10;e.w=300;e.h=1200;e.inv_mass=0;e.life=50;e.move=function(){};
-            e.addAction(0,99999999,function(){--e.life;Camera.vibrate(5);});
+            e.addAction(0,99999999,function(){--e.life;EntityRenderer.Camera.vibrate(5);});
             SoundManager.play(SoundManager.explosion,1);
             SoundManager.play(SoundManager.blockCrashing,1);
         },
@@ -176,21 +166,9 @@ class Matter extends Entity {
         type.setup(this);
         this.effect=type.effect;
         type.drawOption(this);
+        this.addEventListener("collision",function(e){this.effect(this,e.other)})
     }
+    getRadian(){return Math.atan2(this.vx, this.vy)}
 
-    drawRotate(code, r){
-        ctx.save();
-        ctx.translate(Camera.getX(this.getX()), Camera.getY(this.getY()));
-        ctx.rotate(r);
-        code();
-        ctx.restore();
-    }
-
-    giveDamage(){
-        return;
-    }
-
-    collisionHandler(e) {
-        return this.effect(this,e);
-    }
+    giveDamage(){return;}
 }

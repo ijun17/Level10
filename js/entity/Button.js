@@ -27,27 +27,27 @@ class Button extends Entity {
         this.canRemoved=false;
     }
 
-    draw() {
-        let x=Math.floor(this.x);let y=Math.floor(this.y);
+    draw(r) {
+        let x=Math.floor(this.x), y=Math.floor(this.y);
         if (this.boxFill !== null) {
-            ctx.fillStyle = this.boxFill;
-            ctx.fillRect(x, y, this.w, this.h);
+            r.ctx.fillStyle = this.boxFill;
+            r.ctx.fillRect(x, y, this.w, this.h);
         }
         if (this.boxLine !== null) {
-            ctx.strokeStyle = this.boxLine;
-            ctx.strokeRect(x, y, this.w, this.h);
+            r.ctx.strokeStyle = this.boxLine;
+            r.ctx.strokeRect(x, y, this.w, this.h);
         }
         if (this.text !== null) {
-            ctx.font = `bold ${this.px}px Arial`;//"bold " + this.px + "px Arial";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
+            r.ctx.font = `bold ${this.px}px Arial`;//"bold " + this.px + "px Arial";
+            r.ctx.textBaseline = "middle";
+            r.ctx.textAlign = "center";
             if (this.textFill !== null) {
-                ctx.fillStyle = this.textFill;
-                ctx.fillText(this.text, x + this.textX, y + this.textY);
+                r.ctx.fillStyle = this.textFill;
+                r.ctx.fillText(this.text, x + this.textX, y + this.textY);
             }
             if (this.textLine !== null) {
-                ctx.strokeStyle = this.textLine;
-                ctx.strokeText(this.text, x + this.textX, y + this.textY);
+                r.ctx.strokeStyle = this.textLine;
+                r.ctx.strokeText(this.text, x + this.textX, y + this.textY);
             }
         }
     }
@@ -60,11 +60,6 @@ class Button extends Entity {
         this.px=px;
         this.textFill=textFill;
         this.textLine=textLine;
-    }
-
-    collisionHandler(e,ct) {
-        if (ct==="c") this.code(e,ct);//c=click
-        return true;
     }
 
     setStatic(){this.COR=0; this.inv_mass=0; this.ga=0; this.canMove=false;this.canInteract=true;}

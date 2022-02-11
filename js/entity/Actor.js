@@ -33,6 +33,7 @@ class Actor extends Entity{
 
     constructor(x,y,channelLevel=World.PHYSICS_CHANNEL){
         super(x,y,channelLevel=World.PHYSICS_CHANNEL)
+        this.addEventListener("collision", function(e){if(e.vector[1]===-1) this.canJump = true;})
     }
 
     update() {
@@ -54,13 +55,14 @@ class Actor extends Entity{
             this.castSkillHandler();
         }
     }
-    draw() {
-        this.animation.draw(Camera.getX(this.x), Camera.getY(this.y), Camera.getS(this.w), Camera.getS(this.h),this.isRight);
-        ctx.textBaseline = "middle";
-        ctx.textAlign = "center";
-        ctx.font = "bold 15px Arial";
-        ctx.fillStyle = "black";
-        Camera.fillText(this.getNameTag(), this.getX(), this.y - 20);
+    draw(r) {
+        r.drawAnimation(this.animation, this, {reverseX:!this.isRight});
+        r.ctx.textBaseline = "middle";
+        r.ctx.textAlign = "center";
+        r.ctx.font = "bold 15px Arial";
+        r.ctx.fillStyle = "black";
+        r.fillText(this.getNameTag(), {x:this.getX(),y:this.y-20, w:0, h:0})
+        r.drawLight(this);
     }
     move(){
         super.move();
@@ -87,10 +89,6 @@ class Actor extends Entity{
             this.canJump = false;
             this.vy = this.jumpSpeed;
         }
-    }
-    collisionHandler(e,ct){
-        if (ct[1]===-1) this.canJump = true;
-        return true;
     }
 
     giveDamage(d) {

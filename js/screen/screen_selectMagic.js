@@ -23,10 +23,9 @@ Screen.addScreen("selectMagic", function() {
 
     //TEST WORLD
     new Block(canvas.width*5/9, 2*canvas.height/3, canvas.width-canvas.width/2, 2*canvas.height/3).setMapBlock(TYPE.wall);
-    Game.p=new Player(Screen.perX(63),0,10);
-    Game.p.removeHandler=function(){this.life=100000;this.x=Screen.perX(70);this.y=0;this.vx=0;this.vy=0;return false;}
-    Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
-    Camera.cameraOn=false;
+    let player=new Player(Screen.perX(63),0,10);
+    player.addEventListener("remove", function(){this.life=100000;this.x=Screen.perX(70);this.y=0;this.vx=0;this.vy=0;return false;})
+    Input.addMoveKey(player, Input.KEY_MOVE[0]);
     
     let monster = new Monster(0,Screen.perX(87), 0,false);
     monster.life = 0;

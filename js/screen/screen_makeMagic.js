@@ -65,12 +65,10 @@ Screen.addScreen("makeMagic", function(){
     
     //TEST MAP
     Component.worldWall(1000,500,200);
-    Game.p=new Player(Screen.perX(70),0,10);
-    Game.p.removeHandler=function(){this.life=100000;this.x=Screen.perX(70);this.y=0;this.vx=0;this.vy=0;return false;}
-    Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
-    Camera.makeMovingCamera(Game.p,0,0,10);
-    Camera.extension=1000/canvas.width;
-    function makeTester(){let p=new Player(500, -100,10);p.removeHandler=function(){makeTester();return true;};}
+    let player=new Player(Screen.perX(70),0,10);
+    player.addEventListener("remove", function(){this.life=100000;this.x=Screen.perX(70);this.y=0;this.vx=0;this.vy=0;return false;})
+    Input.addMoveKey(player, Input.KEY_MOVE[0]);
+    EntityRenderer.Camera.makeTargetCamera(player);
+    function makeTester(){let p=new Player(500, -100,10);p.addEventListener("remove", function(){makeTester();return true;});}
     makeTester();
-    Input.addMoveKey(Game.p, Input.KEY_MOVE[0]);
 })

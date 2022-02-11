@@ -16,7 +16,6 @@ class Particle extends Entity{
         this.w=10;
         this.h=10;
         this.life=50;
-        this.canAct=false;
         this.img=ImageManager[this.type.name];
         this.type.setStatus(this);
         this.vx=(1-Math.random()*2)*this.speed;
@@ -27,7 +26,7 @@ class Particle extends Entity{
         super.update();
         this.life--;
     }
-    draw(){
-        Camera.drawImage(this.img, this.x,this.y,this.w,this.h);
+    draw(r){
+        r.drawImage(this.img, this);
     }
 }

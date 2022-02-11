@@ -38,7 +38,8 @@ class Animation {
             for(let j=0;j*h<image.height; j++)this.imageStartPointY[j]=Math.floor(j*h);
         }
     }
-    draw(x,y,w,h,isNotInverse=true){
+
+    drawByRenderer(actx,x,y,w,h){
         //calculate imageX
         if(this.time--<=0){
             this.time=this.fps;
@@ -51,14 +52,6 @@ class Animation {
             this.imageX=0;
             this.imageY = tempY;
         }
-        //draw 
-        if(isNotInverse)ctx.drawImage(this.image, this.imageStartPointX[this.imageX], this.imageStartPointY[this.imageY], this.imageW,this.imageH,x,y,w,h);
-        else {
-            ctx.save();
-            ctx.translate(x, y);
-			ctx.scale(-1, 1);
-            ctx.drawImage(this.image, this.imageStartPointX[this.imageX], this.imageStartPointY[this.imageY],  this.imageW,this.imageH,-w,0,w,h);
-            ctx.restore();
-        }
+        actx.drawImage(this.image, this.imageStartPointX[this.imageX], this.imageStartPointY[this.imageY], this.imageW,this.imageH,x,y,w,h);
     }
 }

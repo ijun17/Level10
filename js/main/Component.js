@@ -2,6 +2,23 @@
 재사용 component
 */
 
+class ComponentCore{
+    entitys=[]
+    constructor(){}
+    push(e){
+        this.entitys.push(e)
+        e.id=this;
+        //e.addEventListener("collision",function(){})
+        
+    }
+    move(x,y){
+        for(let i=this.entitys.length-1; i>=0; i--){
+            this.entitys[i].x+=x;
+            this.entitys[i].y+=y;
+        }
+    }
+}   
+
 let Component={
     backButton:function(code){
         let backButton = new Button(0, 0, Screen.perX(6), Screen.perX(6));
@@ -317,61 +334,6 @@ let Component={
     //     }
     // },
 
-    shader: function (background="rgb(1,1,7)", globalAlpha=0.8) {
-        function getBrightness(e){
-            if(e.brightness==undefined)return 0;
-            else return e.brightness;
-        }
-        let lightImg=document.createElement('canvas');
-        lightCTX=lightImg.getContext('2d');
-        lightImg.width=100;
-        lightImg.height=100;
-        lightCTX.fillStyle="#FAFFAF";
-        lightCTX.beginPath();
-        lightCTX.arc(50, 50, 50, 0, Math.PI * 2, true);
-        lightCTX.fill();
-        lightCTX.closePath();
-        let sm = new Entity(0,0,World.PARTICLE_CHANNEL);
-        sm.canvas=document.createElement('canvas');
-        sm.canvas.width=canvas.width;
-        sm.canvas.height=canvas.height;
-        sm.ctx=sm.canvas.getContext('2d');
-        sm.fillLight=function(e,r){
-            this.ctx.drawImage(lightImg, Camera.getX(e.getX()-r*0.5), Camera.getY(e.getY()-r*0.5), Camera.getS(r), Camera.getS(r));
-        }
-        sm.update = function () {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle="#FAFFAF";//자연광  rgb(250, 255, 175)
-            this.ctx.globalCompositeOperation = "source-over";
-            let entitys = World.channel[World.PHYSICS_CHANNEL].entitys;
-            let e;
-            let brightness;
-            let sumBrightness=0;
-            for (let i = entitys.length - 1; i > -1; i--) {
-                e = entitys[i];
-                brightness=getBrightness(e);
-                if(brightness>0){
-                    sumBrightness+=brightness;
-                    this.ctx.globalAlpha = 0.1;
-                    this.fillLight(e,400*brightness);
-                    this.ctx.globalAlpha = 0.2;
-                    this.fillLight(e,120*brightness);
-                    this.ctx.globalAlpha = 0.3;
-                    this.fillLight(e,40*brightness);
-                }
-            }
-            this.ctx.globalCompositeOperation = "xor";
-            if(sumBrightness<1){
-                this.ctx.globalAlpha = globalAlpha;
-            }else{
-                this.ctx.globalAlpha = globalAlpha-0.1;
-            }
-            this.ctx.fillStyle=background;
-            this.ctx.fillRect(0,0,this.canvas.width, this.canvas.height);
-            ctx.drawImage(this.canvas,0,0);
-        }
-        return sm;
-    },
     chain:function(list,chainDistance, power1,power2){
         let chain = new Entity(0,0,World.PHYSICS_CHANNEL);
         chain.canInteract=false;

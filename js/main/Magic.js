@@ -202,10 +202,12 @@ const vvmagic={
 test_unit_magic:`
 let magicFactor = [100,100]; //[cooltime, magic point]
 function getEnergy(e){
-    let test = new Entity(0,10000,Game.PHYSICS_CHANNEL);
+    let test = new Entity(0,10000);
     e.limitVector(80);
-    test.life=0;e.collisionHandler(test,[Math.sign(e.vx),Math.sign(e.vy)]);
-    return Math.abs(test.life);}
+    test.life=0;
+    e.oncollision({other:test,vector:[Math.sign(e.vx),Math.sign(e.vy)]});
+    return Math.abs(test.life);
+}
 function addMF(mf) {magicFactor[0] = Math.floor(Math.sqrt(magicFactor[0]**2 + mf[0]**2));magicFactor[1] += Math.floor(Math.abs(mf[1]));}
 const vvtest={
     test_create:function(typenum=vvmagic.BLOCK,vx=0,vy=0,w=30,h=30){
