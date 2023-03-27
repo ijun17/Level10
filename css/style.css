@@ -1,0 +1,91 @@
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html, body{
+    /* 모바일 웹 브라우저 당겨서 새로고침 막기 */
+    overscroll-behavior: contain;
+}
+
+#screenbox{
+    width:auto;
+    height:600;
+    display: flex;
+    justify-content: center;
+}
+
+.startButton{
+    background-color:unset;
+    font-size : 80px;
+    font-weight: bold;
+    border: solid black 4px;
+}
+.startButton:hover{border: solid white 4px;}
+
+.backButton{
+    background-color:unset;
+    line-height: 60%;
+    color:black;
+    font-size : 80px;
+    font-weight: bold;
+    border: none;
+}
+.backButton:hover{color:white;}
+
+.levelButton{
+    background-color:unset;
+    font-size : 40px;
+    font-weight: bold;
+    border: solid black 1px;
+}
+.levelButton:hover{border: solid white 3px;}
+
+.selectMagicSceneButton{
+    background-color:unset;
+    font-size : 28px;
+    font-weight: bold;
+    border: solid black 2px;
+}
+.selectMagicSceneButton:hover{border: solid white 3px;}
+
+.pvpButton{
+    background-color:unset;
+    font-size : 28px;
+    font-weight: bold;
+    border: solid purple 2px;
+}
+.pvpButton:hover{border: solid white 3px;}
+
+.scroll{
+    overflow: scroll;
+    background-color: rgba(0,0,0,0.1);
+}
+
+.magicButton{
+    background-color: rgba(119, 138, 202,0.8);
+    border: solid black 2px;
+    font-size : 20px;
+    line-height: 200%;
+    font-weight: bold;
+    overflow: hidden;
+}
+.magicButton:hover{border: solid white 2px;}
+
+.selectMagicComponent{
+    background-color: rgba(0,0,0,0.1);
+    font-size : 20px;
+    font-weight: bold;
+    text-align: center;
+    display : flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.selectMagicButton{
+    margin:0 auto;
+    border: solid rgba(0,0,0,0.2) 4px;
+}
+.selectMagicButton:hover{border: solid white 2px;}

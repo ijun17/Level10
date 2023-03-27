@@ -1,0 +1,21 @@
+{
+    "name": "LEVEL10",
+    "short_name": "LEVEL10",
+    "description": "game",
+    "icons": [
+        {
+            "src": "resource/icons/icon-32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "resource/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "display": "fullscreen",
+    "orientation": "landscape",
+    "theme_color": "#152541",
+    "background_color": "#152541"
+}
