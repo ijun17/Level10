@@ -12,6 +12,6 @@ class Block extends GameUnit{
         this.color=color;
     }
     draw(r){
-        r.fillRect(this.color,this.body);
+        r.strokeRect(this.color,this.body);
     }
 }

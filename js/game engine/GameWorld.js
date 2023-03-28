@@ -11,45 +11,45 @@ class GameWorld{
     physics;
     constructor(layerCount=1){
         this.environment=new GameWorldEnvironment();
-        for(let i=0; i<layerCount; i++)this.layer[i]=new WorldLayer();
+        this.physics=new GameWorldPhysics();
+        for(let i=0; i<layerCount; i++)this.layer[i]=new GameWorldLayer();
     }
     reset(){for(let i=0, l=this.layer.length; i<l; i++)this.layer[i].reset();this.environment.reset();}
-    update(){for(let i=0, l=this.layer.length; i<l; i++)this.layer[i].update(this.environment);}
+    update(){for(let i=0, l=this.layer.length; i<l; i++)this.layer[i].update(this.physics, this.environment);}
     add(unit){this.layer[unit.getLayer()].add(unit);}
 }
 
-class WorldLayer{
+class GameWorldLayer{
     gameUnitList=[];
     enableEnvironment=true;
     enableInteraction=true;
     enableClick=false;
     MAX_V=80;
     constructor(){}
-    update(environment){
+    update(physics, environment){
         let renderer = Game.screen.renderer;
         let gameUnitList=this.gameUnitList;//important
         //1.interlaction
-        if(this.enableInteraction)this.interact();
+        if(this.enableInteraction)this.interact(physics);
         //2. move and draw and die
         let unit;
         for(let i=gameUnitList.length-1; i>=0;i--){
             unit=gameUnitList[i];
             if (!this.garbageCollect(unit, i)) {
                 //unit.limitVector(this.MAX_V);
-                
                 unit.draw(renderer);
-                unit.update();
                 unit.updateBody();
+                unit.update();
                 if(this.enableEnvironment)environment.applyEnvironment(unit)
             }
         }
     }
-    interact(){
+    interact(physics){
         let gameUnitList=this.gameUnitList;//important
         let unit1;
         for(let i=gameUnitList.length-1; i>0;i--){
             unit1=gameUnitList[i];
-            if(unit1.canInteract)for(let j=i-1; j>=0; j--)unit1.interact(gameUnitList[j]);
+            if(unit1.canInteract)for(let j=i-1; j>=0; j--)physics.checkCollision(unit1,gameUnitList[j]);//unit1.interact(gameUnitList[j]);//
         }
     }
     garbageCollect(e, i){
@@ -73,31 +73,29 @@ class GameWorldEnvironment{
         this.gravity[this.gravity.length]={pos:pos, size:size, acc:acc}
         //pos,size: 중력을 끼칠 범위 / acc: 중력가속도
     }
-    addDrag(pos,size,vel,dragPower){
+    addDrag(pos,size,vel,density){
         this.drag[this.drag.length]={pos:pos, size:size, vel:vel, density:density}
         //pos,size: 유체 저항을 끼칠 범위 / vel: 유체의 속도 / density: 유체의 밀도
     }
     applyEnvironment(unit){
-        this.applyGravity(unit)
-        this.applyDrag(unit)
-    }
-    applyGravity(unit){
         if(unit.physics){
-            for(let i=this.gravity.length-1; i>=0; i--){
-                if(unit.body.isCollision(this.gravity[i])){
-                    unit.physics.setGravity(this.gravity[i].acc)
-                    return;
-                }
+            this.applyGravity(unit.body, unit.physics)
+            this.applyDrag(unit.body, unit.physics)
+        }
+    }
+    applyGravity(body, physics) {
+        for (let i = this.gravity.length - 1; i >= 0; i--) {
+            if (body.isCollision(this.gravity[i])) {
+                physics.setGravity(this.gravity[i].acc)
+                return;
             }
         }
     }
-    applyDrag(unit){
-        if(unit.physics){
-            for(let i=this.drag.length-1; i>=0; i--){
-                if(unit.body.isCollision(this.drag[i])){
-                    unit.physics.applyWorldDrag(unit.body.getRelativeVel(this.drag[i]), this.drag[i].density)
-                    return;
-                }
+    applyDrag(body, physics) {
+        for (let i = this.drag.length - 1; i >= 0; i--) {
+            if (body.isCollision(this.drag[i])) {
+                physics.applyWorldDrag(body.getRelativeVel(this.drag[i]), this.drag[i].density)
+                return;
             }
         }
     }
@@ -111,64 +109,60 @@ class GameWorldPhysics{
         //if(!unit1.canInteract||!unit2.canInteract)return;
         const body1=unit1.body;
         const body2=unit2.body;
-        const physics1=unit1.physics;
-        const physics2=unit2.physics;
-        if(!body1.canCollision||!body2.canCollision)return;
-        if (this.isCollision(body1,body2)) {
-            let collInfo = this.getCollsionInfo(body1,body2);
-            let do1 = unit1.eventManager.oncollision({do:true,other:unit2,collisionNormal:collInfo.normal});
-            let do2 = unit2.eventManager.oncollision({do:true,other:unit1,collisionNormal:calvec(collInfo.normal,'*',[-1,-1])});
-            if(physics1&&physics2 && !(body1.overlap&&body2.overlap) && do1 && do2){
-                //unit1.physics.applyCollision(unit2.physics, this.getRelativeVel(body1,body2), collInfo.normal)
-                //let fixPosRatio = unit1.physics.getMassRatio(unit2.physics);
-                //body1.addPos(calvec(collInfo.normal,'*',-fixPosRatio[0]*collInfo.depth))
-                //body2.addPos(calvec(collInfo.normal,'*',fixPosRatio[1]*collInfo.depth))
-                this.fixCollisionPos();
-                this.fixCollisionVel();
-            }
-            return;
+        const physics1 = unit1.physics;
+        const physics2 = unit2.physics;
+        if (!body1.canCollision || !body2.canCollision || !this.isCollision(body1, body2)) return;
+        let collInfo = this.getCollsionInfo(body1, body2);
+        const COLL_AXIS=collInfo.collAxis;
+        const COLL_DIR=collInfo.dir;
+        const COLL_DEPTH=collInfo.depth;
+        let normal1=[0,0];normal1[COLL_AXIS]=COLL_DIR;
+        let normal2=[0,0];normal2[COLL_AXIS]=-COLL_DIR;
+        let do1 = unit1.eventManager.oncollision({ do: true, other: unit2, collisionNormal: normal1 });
+        let do2 = unit2.eventManager.oncollision({ do: true, other: unit1, collisionNormal: normal2 });
+        if (physics1 && physics2 && !(body1.overlap && body2.overlap) && do1 && do2) {
+            //EXEPTION HANDLING
+            if (physics1.inv_mass === 0 && physics2.inv_mass === 0) return;
+            const INV_SUM_INV_MASS = 1 / (physics1.inv_mass + physics2.inv_mass);
+            //RESOLVE POSITION
+            let fixPosRatio = COLL_DIR*INV_SUM_INV_MASS*COLL_DEPTH;
+            let deltaPos=[0,0];
+            deltaPos[COLL_AXIS]=-fixPosRatio*physics1.inv_mass;
+            body1.addPos(deltaPos);
+            deltaPos[COLL_AXIS]=fixPosRatio*physics2.inv_mass;
+            body2.addPos(deltaPos)
+            //RESOLVE VELOCITY
+            let deltaVel=this.getRelativeVel(body1,body2);
+            if (COLL_DIR * deltaVel[COLL_AXIS] > 0) return;
+            deltaVel[COLL_AXIS]*=(1+Math.max(physics1.RESTITUTION_COEF, physics2.RESTITUTION_COEF))*INV_SUM_INV_MASS;//충격량
+            deltaVel[1-COLL_AXIS]*=Math.min(physics1.FRICTION_COEF,physics2.FRICTION_COEF);//마찰력
+            physics1.addForce(deltaVel);
+            deltaVel[0]=-deltaVel[0];deltaVel[1]=-deltaVel[1];
+            physics2.addForce(deltaVel);
         }
+        return;
     }
-    applyCollision(physics1, physics2, rel_vel, collisionNormal){
-        let imperse=physics1.getImperse(physics2, rel_vel, collisionNormal);
-        if(imperse===null)return;
-        physics1.addForce(imperse);
-        physics2.addForce(calvec(imperse,'*',[-1,-1]))
-        let friction=physics1.getFriction(physics2, rel_vel, collisionNormal);
-        //console.log(friction)
-        physics1.applyResistance(friction, 1);
-        physics2.applyResistance(friction, -1);
-    }
+
     isCollision(body1, body2){
         const distance=this.getRelativePos(body1,body2);
-        if(distance[0]+body2.size[0]<0||distance[0]-body1.size[0]>0)return false;
-        if(distance[1]+body2.size[1]<0||distance[1]-body1.size[1]>0)return false;
+        if(distance[0]+body2.size[0]<=0||distance[0]-body1.size[0]>=0)return false;
+        if(distance[1]+body2.size[1]<=0||distance[1]-body1.size[1]>=0)return false;
         return true;
-    }
-    fixCollisionPos(body1, body2, ){
-
-    }
-    fixCollisionVel(body1, body2, ){
-
+        return (distance[0]+body2.size[0]>0&&distance[0]-body1.size[0]<0)||(distance[1]+body2.size[1]>0&&distance[1]-body1.size[1]<0)
     }
     getRelativePos(body1, body2){return [body2.pos[0]-body1.pos[0], body2.pos[1]-body1.pos[1]]}
     getRelativeVel(body1, body2){return [body2.vel[0]-body1.vel[0], body2.vel[1]-body1.vel[1]]}
     getCollsionInfo(body1, body2){
         const distance=this.getRelativePos(body1,body2);
-        const depths=[Math.abs(distance[0]-body1.size[0]),
-                    Math.abs(distance[0]+body2.size[0]),
-                    Math.abs(distance[1]-body1.size[1]),
-                    Math.abs(distance[1]+body2.size[1])];
+        const depths=[Math.abs(distance[0]-body1.size[0]),Math.abs(distance[0]+body2.size[0]),Math.abs(distance[1]-body1.size[1]),Math.abs(distance[1]+body2.size[1])];
         let minIndex=depths[0]>depths[1] ? 1 : 0;
         if(depths[minIndex]>depths[2])minIndex=2;
         if(depths[minIndex]>depths[3])minIndex=3;
-        let normal;
         switch(minIndex){
-            case 0: normal=[1,0];break; //RIGHT
-            case 1: normal=[-1,0];break; //LEFT
-            case 2: normal=[0,1];break; //TOP
-            case 3: normal=[0,-1];break; //BOTTOM
+            case 0: return {collAxis:0,dir:1,depth:depths[minIndex]} //RIGHT
+            case 1: return {collAxis:0,dir:-1,depth:depths[minIndex]} //LEFT
+            case 2: return {collAxis:1,dir:1,depth:depths[minIndex]} //TOP
+            case 3: return {collAxis:1,dir:-1,depth:depths[minIndex]} //BOTTOM
         }
-        return {depth:depths[minIndex], normal:normal};
     }
 }

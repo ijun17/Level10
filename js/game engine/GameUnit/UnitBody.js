@@ -20,8 +20,8 @@ class UnitBody{
     
     addPos(dp){if(this.fixedPos)return;this.pos[0]+=dp[0];this.pos[1]+=dp[1]}
     addVel(dv){if(this.fixedPos||this.fixedVel)return;this.vel[0]+=dv[0];this.vel[1]+=dv[1]}
-    setPos(pos){if(this.fixedPos)return;calvec(this.pos,'=',pos)}
-    setVel(vel){if(this.fixedPos||this.fixedVel)return;calvec(this.vel,'=',vel)}
+    setPos(pos){if(this.fixedPos)return;this.pos[0]=pos[0];this.pos[1]=pos[1]}
+    setVel(vel){if(this.fixedPos||this.fixedVel)return;this.vel[0]+=vel[0];this.vel[1]+=vel[1]}
     setSize(size){calvec(this.size,'=',size);}
     getRelativePos(other){return [other.pos[0]-this.pos[0], other.pos[1]-this.pos[1]]}
     getRelativeVel(other){return [other.vel[0]-this.vel[0], other.vel[1]-this.vel[1]]}
@@ -62,11 +62,7 @@ class UnitBody{
             fixPosRatio = unit1.physics.getMassRatio(unit2.physics);
             if(fixPosRatio<0)return;
         }
-        // this.pos[0]-=normal[0]*fixPosRatio*depth;
-        // this.pos[1]-=normal[1]*fixPosRatio*depth;
-        // other.pos[0]+=normal[0]*(1-fixPosRatio)*depth;
-        // other.pos[1]+=normal[1]*(1-fixPosRatio)*depth;
-
+        //console.log(fixPosRatio,depth);
         this.addPos(calvec(normal,'*',-fixPosRatio*depth))
         other.addPos(calvec(normal,'*',(1-fixPosRatio)*depth))
     }

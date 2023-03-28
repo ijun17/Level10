@@ -37,7 +37,6 @@ class UnitPhysics {
         this.addForce(imperse);
         other.addForce(calvec(imperse,'*',[-1,-1]))
         let friction=this.getFriction(other, rel_vel, collisionNormal);
-        //console.log(friction)
         this.applyResistance(friction, 1);
         other.applyResistance(friction, -1);
     }
@@ -45,13 +44,13 @@ class UnitPhysics {
         if(this.inv_mass===0&&other.inv_mass===0)return null;
         let velAlongNormal=collisionNormal[0]*rel_vel[0]+collisionNormal[1]*rel_vel[1];
         if(velAlongNormal>0)return null;//collsion normal =/= vector direction
-        const MASS_RATIO=this.inv_mass+other.inv_mass;
-        const COR=1+Math.max(this.RESTITUTION_COEF,other.RESTITUTION_COEF)//(this.RESTITUTION_COEF<other.RESTITUTION_COEF ? this.RESTITUTION_COEF : other.RESTITUTION_COEF);
-        const COLLISION_COEF=COR/MASS_RATIO;
+        const COR=1+Math.max(this.RESTITUTION_COEF,other.RESTITUTION_COEF)
+        const COLLISION_COEF=COR/(this.inv_mass+other.inv_mass);
         return calvec(collisionNormal,'*',velAlongNormal*COLLISION_COEF);
+        //return calvec(rel_vel,'*',COLLISION_COEF);
     }
     getFriction(other, rel_vel, collisionNormal){
-        const FRICTION_COEF=Math.max(this.FRICTION_COEF,other.FRICTION_COEF)//(this.FRICTION_COEF<other.FRICTION_COEF?this.FRICTION_COEF:other.FRICTION_COEF);
+        const FRICTION_COEF=Math.max(this.FRICTION_COEF,other.FRICTION_COEF)
         const FRICTION_VEL=(collisionNormal[0]===0 ? [rel_vel[0]*FRICTION_COEF,0] : [0,rel_vel[1]*FRICTION_COEF])
         return FRICTION_VEL;
     }
