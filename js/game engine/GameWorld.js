@@ -85,7 +85,7 @@ class GameWorldEnvironment{
     }
     applyGravity(body, physics) {
         for (let i = this.gravity.length - 1; i >= 0; i--) {
-            if (body.isCollision(this.gravity[i])) {
+            if (this.isCollision(this.gravity[i],body)) {
                 physics.setGravity(this.gravity[i].acc)
                 return;
             }
@@ -93,11 +93,17 @@ class GameWorldEnvironment{
     }
     applyDrag(body, physics) {
         for (let i = this.drag.length - 1; i >= 0; i--) {
-            if (body.isCollision(this.drag[i])) {
-                physics.applyWorldDrag(body.getRelativeVel(this.drag[i]), this.drag[i].density)
+            if (this.isCollision(this.drag[i],body)) {
+                physics.applyDrag(body.getRelativeVel(this.drag[i]), this.drag[i].density)
                 return;
             }
         }
+    }
+    isCollision(body1, body2){
+        const distance=[body2.pos[0]-body1.pos[0], body2.pos[1]-body1.pos[1]]
+        if(distance[0]+body2.size[0]<=0||distance[0]-body1.size[0]>=0)return false;
+        if(distance[1]+body2.size[1]<=0||distance[1]-body1.size[1]>=0)return false;
+        return true;
     }
 }
 
@@ -132,7 +138,7 @@ class GameWorldPhysics{
             deltaPos[COLL_AXIS]=fixPosRatio*physics2.inv_mass;
             body2.addPos(deltaPos)
             //RESOLVE VELOCITY
-            let deltaVel=this.getRelativeVel(body1,body2);
+            let deltaVel=[body2.vel[0]-body1.vel[0], body2.vel[1]-body1.vel[1]];
             if (COLL_DIR * deltaVel[COLL_AXIS] > 0) return;
             deltaVel[COLL_AXIS]*=(1+Math.max(physics1.RESTITUTION_COEF, physics2.RESTITUTION_COEF))*INV_SUM_INV_MASS;//충격량
             deltaVel[1-COLL_AXIS]*=Math.min(physics1.FRICTION_COEF,physics2.FRICTION_COEF);//마찰력
@@ -148,7 +154,6 @@ class GameWorldPhysics{
         if(distance[0]+body2.size[0]<=0||distance[0]-body1.size[0]>=0)return false;
         if(distance[1]+body2.size[1]<=0||distance[1]-body1.size[1]>=0)return false;
         return true;
-        return (distance[0]+body2.size[0]>0&&distance[0]-body1.size[0]<0)||(distance[1]+body2.size[1]>0&&distance[1]-body1.size[1]<0)
     }
     getRelativePos(body1, body2){return [body2.pos[0]-body1.pos[0], body2.pos[1]-body1.pos[1]]}
     getRelativeVel(body1, body2){return [body2.vel[0]-body1.vel[0], body2.vel[1]-body1.vel[1]]}

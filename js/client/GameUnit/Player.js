@@ -1,7 +1,7 @@
 class Player extends Actor{
     animation
     constructor(pos, level=1){
-        super(pos, [30,60], 1, 4, 5, 10000*level, 100);
+        super(pos, [30,60], 0, 4, 5, 10000*level, 100);
 
         this.body.overlap=true;
 
