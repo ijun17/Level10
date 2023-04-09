@@ -11,6 +11,8 @@ class MapBlock extends GameUnit{
         this.physics.inv_mass=0;
 
         this.color=color;
+
+        this.body.limitPos=function(){}
     }
     draw(r){
         r.fillRect(this.color,this.body);

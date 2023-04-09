@@ -2,6 +2,7 @@ class GameUnit{
     state;
     worldLayer=0;
     canInteract=true;
+    canDraw=true;
     body;
     physics;
     eventManager;
@@ -17,6 +18,8 @@ class GameUnit{
     draw(r){};
     addEventListener(eventName,code){this.eventManager.addEventListener(eventName, code.bind(this));}
 
+    getState(){return this.state;}
+    setState(num){this.state=num;}
     setLayer(num){this.worldLayer=num;return this;}
     getLayer(){return this.worldLayer}
 }

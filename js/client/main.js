@@ -39,20 +39,24 @@ const TYPE={
     //monster
     crazyMushroom:0,crazyMonkey:1,hellFly:2,wyvern:3,golem:4,goldDragon:5,warrior:6,
     //MapBlock
-    wall:1,grass:2
+    wall:1,grass:2,
+    //damage
+    damageNormal:0,damageFire:1,damageIce:2,damageElectricity:3,
 }
 
-const PHYSICS_LAYER=0, PARTICLE_LAYER=1, UI_LAYER=2;
+const PHYSICS_LAYER=0, PARTICLE_LAYER=1;
 SCREEN.setSize(1200,600);
 TIME.changeFrameRate(100);
+WORLD.layer[PARTICLE_LAYER].enableInteraction=false;
 
 USER_INPUT.setParameter("player", undefined)
 USER_INPUT.setParameter("moveKey", [39,37,38,40])//right left up down
-USER_INPUT.setParameter("skillKey", [39,37,38,40])
+USER_INPUT.setParameter("skillKey", [81,87,69,82])//qwer
 USER_INPUT.addEventListener("keydown", function(e,para){if(para.player instanceof Player)para.player.onkeydown(e.keyCode, para.moveKey, para.skillKey)})
 USER_INPUT.addEventListener("keyup",function(e,para){if(para.player instanceof Player)para.player.onkeyup(e.keyCode, para.moveKey)})
 
 MagicManager.loadMagic();
+Level.loadLevel();
 
 
 

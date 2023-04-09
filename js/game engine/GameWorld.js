@@ -16,7 +16,7 @@ class GameWorld{
     }
     reset(){for(let i=0, l=this.layer.length; i<l; i++)this.layer[i].reset();this.environment.reset();}
     update(){for(let i=0, l=this.layer.length; i<l; i++)this.layer[i].update(this.physics, this.environment);}
-    add(unit){this.layer[unit.getLayer()].add(unit);}
+    add(unit){this.layer[unit.getLayer()].add(unit);return unit;}
 }
 
 class GameWorldLayer{
@@ -24,7 +24,9 @@ class GameWorldLayer{
     enableEnvironment=true;
     enableInteraction=true;
     enableClick=false;
-    MAX_V=80;
+    limitPosFlag=false;
+    startLimitPos=[0,0];
+    endLimitPos=[0,0];
     constructor(){}
     update(physics, environment){
         let renderer = Game.screen.renderer;
@@ -36,8 +38,8 @@ class GameWorldLayer{
         for(let i=gameUnitList.length-1; i>=0;i--){
             unit=gameUnitList[i];
             if (!this.garbageCollect(unit, i)) {
-                //unit.limitVector(this.MAX_V);
-                unit.draw(renderer);
+                if(this.limitPosFlag)unit.body.limitPos(this.startLimitPos, this.endLimitPos);
+                if(unit.canDraw)unit.draw(renderer);
                 unit.updateBody();
                 unit.update();
                 if(this.enableEnvironment)environment.applyEnvironment(unit)
@@ -53,14 +55,19 @@ class GameWorldLayer{
         }
     }
     garbageCollect(e, i){
-        if (e.state===0) {
+        if (e.state===0&&e.eventManager.onremove({do:true})) {
             this.gameUnitList.splice(i, 1);
             return true;
         }
         return false;
     }
     add(e){this.gameUnitList[this.gameUnitList.length]=e;}
-    reset(){this.gameUnitList=[];}
+    reset(){this.gameUnitList=[];this.LimitPosFlag=false;}
+    setLimitPos(startPos, endPos){
+        this.limitPosFlag=true;
+        this.startLimitPos=startPos;
+        this.endLimitPos=endPos;
+    }
 }
 
 
@@ -148,17 +155,14 @@ class GameWorldPhysics{
         }
         return;
     }
-
     isCollision(body1, body2){
-        const distance=this.getRelativePos(body1,body2);
+        const distance=[body2.pos[0]-body1.pos[0], body2.pos[1]-body1.pos[1]];
         if(distance[0]+body2.size[0]<=0||distance[0]-body1.size[0]>=0)return false;
         if(distance[1]+body2.size[1]<=0||distance[1]-body1.size[1]>=0)return false;
         return true;
     }
-    getRelativePos(body1, body2){return [body2.pos[0]-body1.pos[0], body2.pos[1]-body1.pos[1]]}
-    getRelativeVel(body1, body2){return [body2.vel[0]-body1.vel[0], body2.vel[1]-body1.vel[1]]}
     getCollsionInfo(body1, body2){
-        const distance=this.getRelativePos(body1,body2);
+        const distance=[body2.pos[0]-body1.pos[0], body2.pos[1]-body1.pos[1]];
         const depths=[Math.abs(distance[0]-body1.size[0]),Math.abs(distance[0]+body2.size[0]),Math.abs(distance[1]-body1.size[1]),Math.abs(distance[1]+body2.size[1])];
         let minIndex=depths[0]>depths[1] ? 1 : 0;
         if(depths[minIndex]>depths[2])minIndex=2;

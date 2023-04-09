@@ -11,6 +11,7 @@ const ReusedModule={
         WORLD.add(new MapBlock([-WALL_SIZE,h],[w+WALL_SIZE*2,WALL_SIZE],"#303030"))
         WORLD.add(new MapBlock([-WALL_SIZE,-WALL_SIZE],[WALL_SIZE,h+WALL_SIZE*2],"#303030"))
         WORLD.add(new MapBlock([w,-WALL_SIZE],[WALL_SIZE,h+WALL_SIZE*2],"#303030"))
+        WORLD.layer[PHYSICS_LAYER].setLimitPos([0,0], [w,h]);
     },
     createScroll(pos,size){
         let scroll = ui.add("div",pos,size,"scroll");
@@ -40,17 +41,23 @@ const ReusedModule={
         component.innerText=name;
         for(let i=0; i<4; i++){
             let selectMagicBtn=document.createElement("button");
+            const MAGIC=MagicManager.magicList[skillNum[i]];
             selectMagicBtn.className="selectMagicButton";
             UI.setElementSize(selectMagicBtn, [COMPONENT_WIDTH-perX(2),perX(7)])
-            selectMagicBtn.innerText=MagicManager.magicList[skillNum[i]].name;
+            selectMagicBtn.innerText=`${MAGIC.name}\n\nMP: ${MAGIC.requiredMP} / cooltime: ${MAGIC.cooltime}`;
             let index=i;
             selectMagicBtn.onclick=function(){onclick(selectMagicBtn,index,skillNum)};
             component.append(selectMagicBtn);
-            
-
         }
         
-    }
-
+    },
+    createParticleSpray:function(type,pos,range,particleSize,particleVy,delaySec){
+        TIME.addSchedule(0,undefined,delaySec,function(){
+            let randomX = Math.random()*range;
+            let particle=WORLD.add(new Particle([randomX+pos[0],pos[1]],[particleSize,particleSize],type))
+            particle.life=400;
+            particle.body.addVel([0,-particleVy])
+        })
+    },
     
 }

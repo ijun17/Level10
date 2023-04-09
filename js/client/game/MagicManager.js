@@ -48,11 +48,11 @@ const MagicManager={
         function stopProcess(result){
             isSuccess=false;
             resultText=result;
-            console.log(resultText)
+            console.error(resultText)
         }
         
-        let variableList=["player","if","for","while","switch","else","front","create","setTrigger","giveForce","giveLife","invisible","move","addAction","getX","getY","getVX","getVY","FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"];
-        let testFunctionList=["giveForce","giveLife","invisible", "create","move","addAction","setTrigger"];
+        let variableList=["player","if","for","while","switch","else","front","create","setTrigger","giveForce","giveLife","invisible","move","addSchedule","getX","getY","getVX","getVY","FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"];
+        let testFunctionList=["giveForce","giveLife","invisible", "create","move","addSchedule","setTrigger"];
         let prohibitedWord=["new","function","let","var", "addMagicCost", "setPlayer"]
         let prim_testCode,prim_jsCode;
         //주석제거
@@ -70,22 +70,21 @@ const MagicManager={
         if(!isSuccess)return new MagicSkill();
         //기호 치환(@->let $->function)
         prim_jsCode=prim_jsCode.replace(/@/g, "let ");
-        prim_jsCode=prim_jsCode.replace(/\$/g, "function ");
+        prim_jsCode=prim_jsCode.replace(/\#/g, "function()");
         //testcode 치환
         prim_testCode=prim_jsCode.replace(/([A-Za-z_](\w|_)*)/g, function(a){if(testFunctionList.indexOf(a)>=0)return "test_"+a;else return a;})
 
         let jsCode=prim_jsCode;
         let testCode=prim_testCode
         let magic=function(){};
-        let magicCost;
-        return new MagicSkill(name,function(){},0,0,0);
+        let magicCost={coolTime:100,mp:100};
+        //return new MagicSkill(name,function(){},0,0,0);
         try {
             magic = eval("(function(player){"+MAGIC_DATA.unit_magic+jsCode+"})");
-            let testMagic=eval("(function(player){"+MAGIC_DATA.unit_magic+MAGIC_DATA.test_unit_magic+testCode+"return magicCost})");
-            magicInfo=testMagic(new Player(0,10000));
+            let testMagic=eval("(function(player){"+MAGIC_DATA.unit_magic+MAGIC_DATA.test_unit_magic+testCode+";return magicCost})");
+            magicInfo=testMagic(new Player([0,0],1));
         }catch(e){
             console.error(e+"\n\n"+testCode);
-            //console.log(testCode);
             return new MagicSkill(name,function(){},0,0,0);
         }
         //printResult(true, "cooltime: "+(magicInfo[0]/100)+"sec\nMP: "+magicInfo[1],true)
@@ -95,11 +94,97 @@ const MagicManager={
 
 
 const MAGIC_DATA={
+    unit_magic:`
+const FIRE=0,
+    ELECTRICITY=1,
+    ICE=2,
+    ARROW=3,
+    ENERGY=4,
+    WIND=5,
+    BLOCK=6,
+    TRIGGER=7
+
+const create=function(typenum=BLOCK,vx=0,vy=0,w=30,h=30){
+    let e;
+    let p=player;
+    switch(typenum){
+        case BLOCK : e=new Block([0,0],[w,h]); break;
+        case FIRE : e=new MatterFire([0,0],[vx,vy]); break;
+        case ICE : e=new MatterIce([0,0],[vx,vy]); break;
+        case ELECTRICITY : e=new MatterElectricity([0,0],[vx,vy]); break;
+        case ARROW : e=new MatterArrow([0,0],[vx,vy]); break;
+        case ENERGY : e=new MatterEnergy([0,0],[vx,vy]); break;
+        case WIND : e=new MatterWind([0,0],[vx,vy]); break;
+        default : e=new Block([0,0],[w,h]); break;
+    }
+    WORLD.add(e);
+    e.body.setPos([p.body.midX+front(e.body.size[0]*0.5+p.body.size[0]*0.5)-e.body.size[0]*0.5, p.body.midY-e.body.size[1]*0.5]);
+    return e;
+}
+const setTrigger=function(t,f){}
+const giveForce=function(e,ax,ay){e.physics.addForce([ax,ay])}
+const giveLife=function(e,d){e.lifeModule.addLife(d)}
+const invisible=function(e,time){e.canDraw=false;TIME.addTimer(time,function(){e.canDraw=true;});}
+const move=function(e,vx,vy){if(e instanceof Actor&&e!==player)return;e.body.addPos([vx,vy])}
+const addSchedule=function(startSec,endSec,intervalSec,f){TIME.addSchedule(startSec,endSec,intervalSec,f,function(){return player.getState()==0});}
+const getX=function(e){return e.body.midX-player.body.midX;}
+const getY=function(e){return e.body.midY-player.body.midY;}
+const getVX=function(e){return e.body.vel[0];}
+const getVY=function(e){return e.body.vel[1];}
+const front=function(d=1){return (player.moveModule.moveDirection[0] ? d : -d);}
+`,
+    //
+    test_unit_magic:`
+//let magicCost = {cooltime: 100, mp: 100}; //[cooltime, magic point]
+function getEnergy(e){
+    let testUnit = new Block([0,0],[0,0]);
+    testUnit.lifeModule.life=0;
+    e.eventManager.oncollision({ do: true, other: testUnit, collisionNormal: [1,0] });
+    return Math.abs(testUnit.lifeModule.life);
+}
+function addMagicCost(cooltime,mp) {
+    magicCost.cooltime = Math.floor(Math.sqrt(magicCost.cooltime**2 + cooltime**2));
+    magicCost.mp += Math.floor(Math.abs(mp));
+}
+        
+const test_create=function(typenum=BLOCK,vx=0,vy=0,w=30,h=30){
+    let e=create(typenum,vx,(vy==0?1:vy),w,h);
+    addMagicCost(50,getEnergy(e)*(w*h)/900+e.body.speed);return e;
+}
+const test_setTrigger=function(t,f){setTrigger(t,f);addMagicCost(100,t.w*t.h+getEnergy(t)+1);}
+const test_giveForce=function(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMagicCost(0, newE-oldE);}
+const test_giveLife=function(e,d){addMagicCost(0,d);giveLife(e,d);}
+const test_invisible=function(e,time){addMagicCost(time*2,(e instanceof Player?(time**2)/100:time));}
+const test_move=function(e,vx,vy){addMagicCost(0,(vx+vy)/10);}
+const test_addSchedule=function(startSec,endSec,intervalSec,f){
+    if(intervalSec<0.01)intervalSec=0.01;
+    let excuteCount=(endSec-startSec)/intervalSec;
+    if(excuteCount>100){
+        let oldM0 = magicCost.cooltime;
+        let oldM1 = magicCost.mp;
+        for(let i=0,j=excuteCount/10;i<j;i++)f();
+        let newM0 = magicCost.cooltime;
+        let newM1 = magicCost.mp;
+        addMagicCost(Math.sqrt((newM0**2-oldM0**2)*9), (newM1-oldM1)*9);
+    }else{
+        for(let i=0,j=excuteCount;i<j;i++)f();
+    }
+    addMagicCost(endSec*2,excuteCount);
+}
+`,
+    prohibitedWord:["new","function","let","var", "addMagicCost", "setPlayer"],
+    prohibitedSymbol:[],
+    predefinedKeyword:["player","if","for","while","switch","else"],
+    vvmagics:["front","create","setTrigger","giveForce","giveLife","invisible","move","addSchedule","getX","getY","getVX","getVY",
+        "FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"],
+    vvtests:["giveForce","giveLife","invisible", "create","move","addSchedule","setTrigger"],
+    symbol:{"@":"let ","#":"function(parameter)","$":"parameter"},
+//
     BASIC_MASIC:[
     {name:"파이어볼",code:`//전방에 파이어볼을 발사
-@e=create(FIRE,front(10),1);
-giveLife(e,10);
-move(e,front(30), 0);`,level:1},
+@e1=create(FIRE,front(20),2);
+giveLife(e1,10);
+move(e1,front(30), 0);`,level:1},
 
     {name:"벽", code:`//길쭉한 블럭을 생성
 @block = create(BLOCK,0,0,30,100);
@@ -133,11 +218,11 @@ move(player, front(400), 0);`,level:2},
     {name:"파이어토네이도",code:`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
 @i=0;
-addAction(player, 1,12,#{
+addSchedule(0,12/100,1/100,#{
     @fire = create(FIRE,0,0);
     move(fire,front(200-13*i-15), i*35);
     giveLife(fire,500)
-    addAction(fire,1,200,#{
+    addSchedule(0,2,1/100,#{
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
     });
     i++;
@@ -153,12 +238,9 @@ move(wind,front(-100),-20);
 giveForce(wind,0,-35);`,level:3},
 
     {name:"기관총",code:`//화살 발사
-@count=0;
-addAction(player,1,500,#{
-    if((count++)%10==0){
-        @a = create(ARROW, front(30), 1, 30,10)
-        giveLife(a, 10)
-    }
+addSchedule(0,5,1/10,#{
+    @a = create(ARROW, front(30), 3, 30,10)
+    giveLife(a, 10)
 })`, level:4},
 
     {name:"전격실드", code:`//전기 실드를 생성
@@ -182,7 +264,7 @@ setTrigger(t,#{
 });`,level:4},
 
     {name:"번개",code:`//번개는 전기들이 서로 일정 수 부딪히면 생성된다. 
-addAction(player,1,20,#{
+addSchedule(player,1,20,#{
     @a=create(ELECTRICITY, 0,0);
     move(a, front(300),0);
     giveLife(a,400)
@@ -206,7 +288,7 @@ addAction(player,1,20,#{
 
     {name:"폭발 비",code:`//불끼리 부딪히면 폭발한다.
 @count=0;
-addAction(player, 1,10,#{
+addSchedule(player, 1,10,#{
     @fire= create(FIRE, 0,-20)
     move(fire, front(count*70+150),300)
     giveLife(fire,50);
@@ -218,7 +300,7 @@ addAction(player, 1,10,#{
 
     {name:"연막",code:`//수증기는 불과 얼음이 부딪히면 생성된다.
 @i=0;
-addAction(player, 1, 10, #{
+addSchedule(player, 1, 10, #{
     move(create(FIRE,front(10),1),front(100*i), 0);
     move(create(ICE,front(10),1),front(100*i), 0);
     move(create(FIRE,front(10),1),front(100*i), 100);
@@ -230,15 +312,15 @@ addAction(player, 1, 10, #{
 @x=getX(player)+front(200);
 @plusX=front(1);
 @i=0;
-addAction(player, 1,12,#{
+addSchedule(player, 1,12,#{
     @fire = create(FIRE,0,0);
     move(fire,front(200-13*i-15), i*35);
     giveLife(fire,500)
-    addAction(fire,1,70,#{
+    addSchedule(fire,1,70,#{
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
         x+=plusX;
     });
-    addAction(fire,81,81,#{giveForce(fire,-getVX(fire)+plusX*20,-getVY(fire));})
+    addSchedule(fire,81,81,#{giveForce(fire,-getVX(fire)+plusX*20,-getVY(fire));})
     i++;
 });`,level:10},
 
@@ -249,7 +331,7 @@ setTrigger(t,#{
     @e=create(ENERGY, 0,0)
     giveLife(e,4000)
     move(e, front(200),0);
-    addAction(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
+    addSchedule(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
     for(@i=0;i<30;i++){
         move(create(ENERGY, 0,0), front(200), 0);
     }
@@ -261,84 +343,9 @@ setTrigger(t,#{
     @target=$
     @e=create(ICE, 0,0)
     giveLife(e,4000)
-    addAction(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
+    addSchedule(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
 })`,level:10}
-],
+]
 
 //
-unit_magic:`
-const FIRE=TYPE.fire
-    ELECTRICITY=TYPE.electricity
-    ICE=TYPE.ice
-    ARROW=TYPE.arrow
-    ENERGY=TYPE.energy
-    WIND=TYPE.wind
-    BLOCK=6
-    TRIGGER=7
-const create=function(typenum=this.BLOCK,vx=0,vy=0,w=30,h=30){
-    let e;
-    let p=player;
-    if(typenum<=this.WIND)e=new Matter(typenum,0,0,vx,vy);
-    else if(typenum===this.BLOCK)e=new Block(0,0,w,h);
-    else if(typenum===this.TRIGGER)e=new Trigger(0,0,w,h,100,function(e){});
-    e.vx=vx;e.vy=vy;e.x=p.midX+this.front(e.w/2+p.w/2)-e.w/2;e.y=p.midY-e.h/2;
-    return e;
-}
-const setTrigger=function(t,f){if(t instanceof Trigger)t.code=f;},
-const giveForce=function(e,ax,ay){e.vx+=ax;e.vy+=ay;},
-const giveLife=function(e,d){e.life+=d;},
-const invisible=function(e,time){e.canDraw=false;e.addAction(time,time,function(){e.canDraw=true;});},
-const move=function(e,vx,vy){if(e instanceof Actor&&e!==player)return;e.x+=vx;e.y-=vy;},
-const addAction=function(e,startTime,endTime,f){e.addAction(startTime,endTime,f);},
-const getX=function(e){return e.midX-player.midX;},
-const getY=function(e){return player.midY-e.midY;},
-const getVX=function(e){return e.vx;},
-const getVY=function(e){return e.vy;},
-const front=function(d=1){return (player.isRight ? d : -d);}
-`,
-//
-test_unit_magic:`
-let magicCost = {cooltime: 100, mp: 100}; //[cooltime, magic point]
-function getEnergy(e){
-    let test = new Entity(0,10000);
-    e.limitVector(80);
-    test.life=0;
-    e.oncollision({other:test,vector:[Math.sign(e.vx),Math.sign(e.vy)]});
-    return Math.abs(test.life);
-}
-function addMagicCost(cooltime,mp) {
-    magicCost.cooltime = Math.floor(Math.sqrt(magicCost.cooltime**2 + cooltime**2));
-    magicCost.mp += Math.floor(Math.abs(mp));
-}
-    
-const test_create=function(typenum=BLOCK,vx=0,vy=0,w=30,h=30){
-    let e=create(typenum,vx,(vy==0?1:vy),w,h);
-    addMagicCost(50,getEnergy(e)*(w*h)/900+e.getVectorLength());return e;
-}
-const test_setTrigger=function(t,f){setTrigger(t,f);addMagicCost(100,t.w*t.h+getEnergy(t)+1);}
-const test_giveForce=function(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMagicCost(0, newE-oldE);}
-const test_giveLife=function(e,d){addMagicCost(0,d);giveLife(e,d);}
-const test_invisible=function(e,time){addMagicCost(time*2,(e instanceof Player?(time**2)/100:time));}
-const test_move=function(e,vx,vy){addMagicCost(0,(vx+vy)/10);}
-const test_addAction=function(e,startTime,endTime,f){
-    if(endTime-startTime>100){
-        let oldM0 = magicCost[0];
-        let oldM1 = magicCost[1];
-        for(let i=0,j=(endTime-startTime)/10;i<j;i++)f();
-        let newM0 = magicCost[0];
-        let newM1 = magicCost[1];
-        addMagicCost(Math.sqrt((newM0**2-oldM0**2)*9), (newM1-oldM1)*9);
-    }else{
-        for(let i=0,j=(endTime-startTime);i<j;i++)f();
-    }
-    addMagicCost(endTime*2,(endTime-startTime));
-}
-`,
-prohibitedWord:["new","function","let","var", "addMagicCost", "setPlayer"],
-prohibitedSymbol:[],
-predefinedKeyword:["player","if","for","while","switch","else"],
-vvmagics:["front","create","setTrigger","giveForce","giveLife","invisible","move","addAction","getX","getY","getVX","getVY",
-    "FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"],
-vvtests:["giveForce","giveLife","invisible", "create","move","addAction","setTrigger"],
-symbol:{"@":"let ","#":"function(parameter)","$":"parameter"}
 }

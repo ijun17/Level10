@@ -27,7 +27,7 @@ class GameScreen{
     }
     reset(){
         this.ui.reset();
-        this.renderer.camera.reset();
+        this.renderer.reset();
     }
     setSize(w,h){
         this.screen.style.width=Math.floor(w)+"px";
@@ -75,6 +75,10 @@ class GameScreenRenderer{
         this.camera.setScreenPos([this.width*0.5, this.height*0.35]);
         
     };
+    reset(){
+        this.bgColor="#b2c3c8";
+        this.camera.reset();
+    }
     useCamera(enable){this.camera.enable=enable;}
     clear(){this.ctx.fillStyle=this.bgColor;this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);};
     drawImage(img,body,opt){this.draw((e)=>this.ctx.drawImage(img,e.x, e.y, e.w, e.h),body,opt);}
@@ -153,10 +157,13 @@ class GameScreenRendererCamera{
     }
     getRenderSize(size){
         //if(!this.enable)return size;
-        return [size[0]*this.zoom, size[1],this.zoom];
+        return [size[0]*this.zoom, size[1]*this.zoom];
     }
     setScreenPos(screenPos){
         calvec(this.screenPos,'=',screenPos);
+    }
+    vibrate(power){
+        this.move([power,power]);
     }
 }
 

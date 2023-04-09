@@ -14,7 +14,8 @@ Game.setScene("main",function(){
 
     //let level10Text = ui.add("button",[perX(30),perY(0)],[perX(40),perY(20)],"level10Text");
     //level10Text.innerText="LEVEL10";
-    WORLD.environment.addGravity([0,0], [1200,600], [0,-0.2]);
+    WORLD.environment.addGravity([0,0], [1200,600], [0,-0.01]);
+    ReusedModule.createParticleSpray(TYPE.snow, [0,600],perX(120),25,0,0.05)
 
     WORLD.add(new MapBlock([perX(5),perY(8)],[perX(15),perY(30)],"#303030"));
     WORLD.add(new MapBlock([perX(27),perY(-20)],[perX(15),perY(50)],"#303030"));

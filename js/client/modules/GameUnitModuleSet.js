@@ -8,20 +8,25 @@ class GameUnitMoveModule {
     doJump =false; //점프를 했는지
     jumpSpeed = 0; 
     footDirection = [0, -1]; //중력방향
-    constructor(moveType) {
+    constructor(moveType,moveSpeed=4,jumpSpeed=0) {
         this.moveType=moveType;
+        this.moveSpeed=moveSpeed;
+        this.jumpSpeed=jumpSpeed;
     }
     update(unit){
         if(!this.canMove)return;
-        if(this.moveType===0){
-            this.moveRun(unit.body);
-            if(this.doJump)this.jump(unit.body);
-
-        }else this.moveFly(unit.body);
+        if(this.moveType===0)this.moveRun(unit.body);
+        else this.moveFly(unit.body);
         this.calculateFootDirection(unit.physics.gravity);
     }
-    moveRun(body){if(this.footDirection[0]===0)this.moveX(body); else this.moveY(body);}
-    moveFly(body){this.moveX(body);this.moveY(body);}
+    moveRun(body){
+        if(this.footDirection[0]===0)this.moveX(body); 
+        else this.moveY(body);
+        if(this.doJump)this.jump(body);
+    }
+    moveFly(body){
+        this.moveX(body);
+        this.moveY(body);}
     moveX(body){
         if(this.moveFlag[0])
         if(this.moveDirection[0]&&body.vel[0]<this.moveSpeed)body.addVel([1,0])
@@ -75,7 +80,7 @@ class GameUnitSkillModule{
         this.mp=MAX_MP;
     }
     update(){
-        this.mp+=this.mpRecovery;
+        if(this.mp<this.MAX_MP)this.mp+=this.mpRecovery;
         for(let i=this.coolTime.length-1; i>=0; i--)this.coolTime[i]--;
     }
     addSkill(skill){
@@ -83,7 +88,7 @@ class GameUnitSkillModule{
         this.coolTime.push(0);
     }
     castSkill(caster, skillNum){
-        if(this.skillList[skillNum]&&this.coolTime[skillNum]<1&&this.mp>this.skillList[skillNum].getRequiredMP()){
+        if(skillNum<this.skillList.length&&this.coolTime[skillNum]<1&&this.mp>=this.skillList[skillNum].getRequiredMP()){
             this.mp-=this.skillList[skillNum].getRequiredMP();
             this.coolTime[skillNum]=this.skillList[skillNum].getCoolTime();
             this.skillList[skillNum].cast(caster);
@@ -91,33 +96,35 @@ class GameUnitSkillModule{
     }
 }
 
-class GameUnitStatusEffectModule{
-
-    constructor(){
-
-    }
-    update(){
-
-    }
-}
-
 class GameUnitLifeModule{
     life;
-    defense;
-    damageText;
+    defense=100;
     damageDelay=1;
-    constructor(life,defense=1,damageText=false){
+    damageDelayTick;
+    totalDamage=0;
+    constructor(life,defense=1,damageDelay=0){
         this.life=life;
         this.defense=defense;
+        this.damageDelay=damageDelay;
+        this.damageDelayTick=damageDelay;
     }
-    giveDamage(damage){
-        damage=Math.floor(damage)
-        if(damage>this.defense){
-            this.life-=damage;
-            if(this.damageText)this.createDamageText();
+    update(){
+        if(this.damageDelayTick>0)this.damageDelayTick--;
+        else if(this.totalDamage>this.defense){
+            this.ontotaldamage(this.totalDamage);
+            this.life-=this.totalDamage;
+            this.totalDamage=0;
+            this.damageDelayTick=this.damageDelay;
+            if(this.life<=0)this.ondie();
         }
-        if(damage<=0)this.unitDieHandler;
     }
-    createDamageText(){}
-    unitDieHandler(){}
+    giveDamage(damage,damageType=0){
+        if(damage>this.defense&&this.damageDelayTick==0&&this.ondamage(damage,damageType)){
+            this.totalDamage+=Math.floor(damage);
+        }
+    }
+    addLife(life){this.life+=life;}
+    ondie(){}
+    ondamage(damage,damageType){return true;}
+    ontotaldamage(){}
 }

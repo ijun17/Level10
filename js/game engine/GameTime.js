@@ -38,11 +38,13 @@ class GameTime{
         let endTick=(endSec===undefined ? undefined : this.tick+endSec*this.fps)
         let intervalTick=(intervalSec===undefined ? undefined : intervalSec*this.fps)
         this.scheduleList.push(new GameSchedule(startTick, endTick, intervalTick, code, stopCondition));
-
     }
     doSchedule(){
         const currentTick=this.tick;
         this.scheduleList.map(function(e,i,l){if(!e.checkSchedule(currentTick))l.remove(i);})
+    }
+    addTimer(endSec, code, stopCondition=function(){return false;}){
+        this.addSchedule(endSec,endSec,undefined,code,stopCondition);
     }
 }
 

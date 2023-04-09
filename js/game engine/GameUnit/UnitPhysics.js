@@ -6,7 +6,7 @@ class UnitPhysics {
 
     inv_mass=1;//질량분의1
     FRICTION_COEF=0.1; //마찰 계수 / 0~1이며 0이면 마찰력 없음 COF
-    DRAG_COEF=1; //항력 계수 / 0~1이며 0이면 저항력 없음 COD
+    DRAG_COEF=0.5; //항력 계수 / 0~1이며 0이면 저항력 없음 COD
     RESTITUTION_COEF=0; //반발 계수 / 0~1이며 0이면 완전 비탄성 충돌,1이면 완전 탄성 충돌 COR
 
     constructor(){}

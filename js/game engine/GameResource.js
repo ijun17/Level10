@@ -20,4 +20,5 @@ class GameResource{
             }
         } 
     }
+    getImage(name){return this.images[name];}
 }

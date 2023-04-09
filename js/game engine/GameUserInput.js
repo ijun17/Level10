@@ -7,10 +7,10 @@ class GameUserInput{
         this.screen=html_screen_element;
         this.addEvent(document,"keydown")
         this.addEvent(document,"keyup")
-        this.addEvent(this.screen, "click")
-        this.addEvent(this.screen, "touchstart")
-        this.addEvent(this.screen, "touchmove")
-        this.addEvent(this.screen, "touchend")
+        //this.addEvent(this.screen, "click")
+        //this.addEvent(this.screen, "touchstart")
+        //this.addEvent(this.screen, "touchmove")
+        //this.addEvent(this.screen, "touchend")
     }
 
     addEventListener(eventName, handler){

@@ -75,17 +75,77 @@ html, body{
 .magicButton:hover{border: solid white 2px;}
 
 .selectMagicComponent{
-    background-color: rgba(0,0,0,0.1);
+    background-color: #2C2C2C;
+    color : whitesmoke;
     font-size : 20px;
     font-weight: bold;
     text-align: center;
     display : flex;
     flex-direction: column;
     justify-content: space-evenly;
+    border-radius: 5px;
 }
 
 .selectMagicButton{
+    background-color: black;
+    color:whitesmoke;
     margin:0 auto;
     border: solid rgba(0,0,0,0.2) 4px;
+    border-radius: 5px;
 }
 .selectMagicButton:hover{border: solid white 2px;}
+
+.stageClearText{
+    vertical-align : top;
+    text-align : center;
+    font : bold 144px Arial;
+}
+
+.createMagicInput{
+    text-align: center;
+    background-color: #2C2C2C;
+    border-radius: 5px;
+}
+
+.createMagicResult{
+    text-align: center;
+    background:#2C2C2C;
+    flex:1;
+    border-radius: 5px;
+}
+
+.createMagicName {
+    width: 95%;
+    height: 40px;
+    margin: 1% 2%;
+    padding: 2%;
+    background-color: black;
+    resize: none;
+    color: whitesmoke;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.createMagicCode {
+    width: 95%;
+    height: 80%;
+    margin: 1% 2%;
+    padding: 2%;
+    background-color: black;
+    color: royalblue;
+    resize: none;
+    font-size: 18px;
+    border-radius: 5px;
+    font-family: system-ui;
+}
+
+.createMagicbutton {
+    position:absolute;
+    bottom:14px;
+    right:14px;
+    width: 60px;
+    height: 30px;
+    background-color: royalblue;
+    border-radius: 5px;
+    color: white;
+}

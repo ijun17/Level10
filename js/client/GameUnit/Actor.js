@@ -1,22 +1,36 @@
 class Actor extends GameUnit{
     moveModule;
     lifeModule;
-    animation;
-    skillList;
-    constructor(pos,size,moveMode,moveSpeed,jumpSpeed,life,defense){//move={moveMode, moveSpeed, jumpSpeed}, life={life,defense}
+    skillModule;
+    damageTextColor="orange";
+    constructor(pos,size,moveModule,lifeModule,skillModule){//move={moveMode, moveSpeed, jumpSpeed}, life={life,defense}
         super(new UnitBody(pos,size));
         this.physics=new UnitPhysics();
-        this.moveModule=new GameUnitMoveModule(moveMode); //walk mode
-        this.addEventListener("collision", function(e){this.moveModule.readyJump(e.collisionNormal)})
-        this.moveModule.moveSpeed=moveSpeed;
-        this.moveModule.jumpSpeed=jumpSpeed;
+        if(moveModule instanceof GameUnitMoveModule){
+            this.moveModule=moveModule;
+            this.addEventListener("collision", function(e){this.moveModule.readyJump(e.collisionNormal)})
+        }else console.error("is not GameUnitMoveModule");
 
-        this.lifeModule=new GameUnitLifeModule(life,defense);
-        this.lifeModule.unitDieHandler=function(){this.state=0;}.bind(this);
+        if(lifeModule instanceof GameUnitLifeModule){
+            this.lifeModule=lifeModule;
+            this.lifeModule.ondie=function(){this.state=0;}.bind(this);
+        }else console.error("is not GameUnitLifeModule");
+
+        if(skillModule instanceof GameUnitSkillModule)this.skillModule=skillModule;
+        else console.error("is not GameUnitSkillModule");
     }
     update(){
         this.moveModule.update(this);
-        this.animation.update();
+        this.lifeModule.update();
+        this.skillModule.update();
+    }
+    getNameTag=function(){return `HP:${this.lifeModule.life}`}
+    draw(r){
+        r.ctx.textBaseline = "middle";
+        r.ctx.textAlign = "center";
+        r.ctx.font = "bold 15px Arial";
+        r.ctx.fillStyle = "black";
+        r.fillText(this.getNameTag(), this.body)
     }
     onkeydown(keyCode, moveKey, skillKey){
         switch(keyCode){
@@ -24,6 +38,10 @@ class Actor extends GameUnit{
             case moveKey[1]:this.moveModule.keyDownHandler(1);break;
             case moveKey[2]:this.moveModule.keyDownHandler(2);break;
             case moveKey[3]:this.moveModule.keyDownHandler(3);break;
+            case skillKey[0]:this.skillModule.castSkill(this,0);break;
+            case skillKey[1]:this.skillModule.castSkill(this,1);break;
+            case skillKey[2]:this.skillModule.castSkill(this,2);break;
+            case skillKey[3]:this.skillModule.castSkill(this,3);break;
         }
     }
     onkeyup(keyCode, moveKey){
@@ -33,5 +51,11 @@ class Actor extends GameUnit{
             case moveKey[2]:this.moveModule.keyUpHandler(2);break;
             case moveKey[3]:this.moveModule.keyUpHandler(3);break;
         }
+    }
+    getNameTag(){return `HP:${this.lifeModule.life}`}
+    createDamageText(damage, color){
+        let text=new TextParticle([this.body.midX, this.body.pos[1]+this.body.size[1]-50], damage,40,color,"black",40)
+        text.body.setVel([0,1]);
+        WORLD.add(text);
     }
 }

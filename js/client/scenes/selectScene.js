@@ -5,11 +5,12 @@ Game.setScene("select",function(){
     ReusedModule.createbackButton("main");
 
     let levelBtn;
-    for(let i=1; i<=10; i++){
+    for(let i=1; i<=Level.playerLevel; i++){
         levelBtn=ui.add("button", [perX(42),perY(100)-perX(i*4)], [perX(16), perX(4)], "levelButton");
         levelBtn.innerText="LEVEL"+i;
         levelBtn.style.backgroundColor="rgba("+(255-(i+1)*25)+","+(255-(i+1)*25)+","+(255-(i+1)*20)+",0.5)";
-        levelBtn.onclick=()=>{Game.changeScene("gameStage")};
+        let level=i;
+        levelBtn.onclick=()=>{Game.changeScene("gameStage",level);};
     }
 
     //SELECT MAGIC BUTTON
