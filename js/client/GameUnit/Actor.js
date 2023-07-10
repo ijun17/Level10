@@ -14,6 +14,10 @@ class Actor extends GameUnit{
         if(lifeModule instanceof GameUnitLifeModule){
             this.lifeModule=lifeModule;
             this.lifeModule.ondie=function(){this.state=0;}.bind(this);
+            this.lifeModule.ontotaldamage=function(totalDamage){
+                this.createDamageText(totalDamage,this.damageTextColor);
+                SCREEN.renderer.camera.vibrate(20);
+            }.bind(this)
         }else console.error("is not GameUnitLifeModule");
 
         if(skillModule instanceof GameUnitSkillModule)this.skillModule=skillModule;
@@ -54,7 +58,7 @@ class Actor extends GameUnit{
     }
     getNameTag(){return `HP:${this.lifeModule.life}`}
     createDamageText(damage, color){
-        let text=new TextParticle([this.body.midX, this.body.pos[1]+this.body.size[1]-50], damage,40,color,"black",40)
+        let text=new TextUnit([this.body.midX, this.body.pos[1]+this.body.size[1]-50], damage,40,color,"black",40)
         text.body.setVel([0,1]);
         WORLD.add(text);
     }

@@ -41,7 +41,9 @@ const TYPE={
     //MapBlock
     wall:1,grass:2,
     //damage
-    damageNormal:0,damageFire:1,damageIce:2,damageElectricity:3,
+    damageNormal:0,damageFire:1,damageIce:2,damageElectricity:3,damageWind:4,
+    //statucEffect
+    iceEffect:0,
 }
 
 const PHYSICS_LAYER=0, PARTICLE_LAYER=1;
@@ -55,8 +57,9 @@ USER_INPUT.setParameter("skillKey", [81,87,69,82])//qwer
 USER_INPUT.addEventListener("keydown", function(e,para){if(para.player instanceof Player)para.player.onkeydown(e.keyCode, para.moveKey, para.skillKey)})
 USER_INPUT.addEventListener("keyup",function(e,para){if(para.player instanceof Player)para.player.onkeyup(e.keyCode, para.moveKey)})
 
-MagicManager.loadMagic();
 Level.loadLevel();
+MagicManager.loadMagic();
+
 
 
 

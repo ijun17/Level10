@@ -48,14 +48,21 @@ class GameWorldLayer{
     }
     interact(physics){
         let gameUnitList=this.gameUnitList;//important
-        let unit1;
+        let unit1,unit2;
         for(let i=gameUnitList.length-1; i>0;i--){
             unit1=gameUnitList[i];
-            if(unit1.canInteract)for(let j=i-1; j>=0; j--)physics.checkCollision(unit1,gameUnitList[j]);//unit1.interact(gameUnitList[j]);//
+            if(unit1.canInteract && unit1.getState()!==0){
+                for(let j=i-1; j>=0; j--){
+                    unit2=gameUnitList[j];
+                    if(unit2.canInteract && unit2.getState()!==0){
+                        physics.checkCollision(unit1,unit2);
+                    }
+                }
+            }
         }
     }
     garbageCollect(e, i){
-        if (e.state===0&&e.eventManager.onremove({do:true})) {
+        if (e.getState()===0&&e.eventManager.onremove({do:true})) {
             this.gameUnitList.splice(i, 1);
             return true;
         }
@@ -85,7 +92,7 @@ class GameWorldEnvironment{
         //pos,size: 유체 저항을 끼칠 범위 / vel: 유체의 속도 / density: 유체의 밀도
     }
     applyEnvironment(unit){
-        if(unit.physics){
+        if(unit.physics&&unit.physics.enableEnvironment){
             this.applyGravity(unit.body, unit.physics)
             this.applyDrag(unit.body, unit.physics)
         }
@@ -148,7 +155,7 @@ class GameWorldPhysics{
             let deltaVel=[body2.vel[0]-body1.vel[0], body2.vel[1]-body1.vel[1]];
             if (COLL_DIR * deltaVel[COLL_AXIS] > 0) return;
             deltaVel[COLL_AXIS]*=(1+Math.max(physics1.RESTITUTION_COEF, physics2.RESTITUTION_COEF))*INV_SUM_INV_MASS;//충격량
-            deltaVel[1-COLL_AXIS]*=Math.min(physics1.FRICTION_COEF,physics2.FRICTION_COEF);//마찰력
+            deltaVel[1-COLL_AXIS]*=Math.min(physics1.FRICTION_COEF,physics2.FRICTION_COEF)*INV_SUM_INV_MASS;//마찰력
             physics1.addForce(deltaVel);
             deltaVel[0]=-deltaVel[0];deltaVel[1]=-deltaVel[1];
             physics2.addForce(deltaVel);

@@ -34,9 +34,11 @@ const MagicManager={
         }
         MagicManager.saveSkillNum();
     },
-    addPrimitiveMagic:function(name="", code="", level=0){
-        Magic.primitiveCustomMagic.push({name:name, code:code, level:level});
-        Magic.magicList.push(new MagicSkill());
+    addCustomMagic:function(){
+        let magicName="My Magic"+(MagicManager.primitiveCustomMagic.length+1)
+        MagicManager.primitiveCustomMagic.push({name:magicName, code:"", level:1});
+        MagicManager.magicList.push(new MagicSkill(magicName,function(){},0,0,0));
+        //MagicManager.saveMagic();
     },
     createMagicSkill: function (primitiveMagic) {
         const name=primitiveMagic.name;
@@ -48,7 +50,7 @@ const MagicManager={
         function stopProcess(result){
             isSuccess=false;
             resultText=result;
-            console.error(resultText)
+            console.error(resultText);
         }
         
         let variableList=["player","if","for","while","switch","else","front","create","setTrigger","giveForce","giveLife","invisible","move","addSchedule","getX","getY","getVX","getVY","FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"];
@@ -56,7 +58,7 @@ const MagicManager={
         let prohibitedWord=["new","function","let","var", "addMagicCost", "setPlayer"]
         let prim_testCode,prim_jsCode;
         //주석제거
-        prim_jsCode=prim_code.replace(new RegExp("//.*\n","g"),"");
+        prim_jsCode=prim_code.replace(new RegExp("//.*\n*","g"),"");
         prim_jsCode=prim_jsCode.replace(new RegExp("/\\*(.*\n)*.*\\*/"),"");
         //변수 생성
         prim_jsCode.replace(/@([A-Za-z_](\w|_)*)/g, function(a,b){if(variableList.indexOf(b)==-1)variableList.push(b);else stopProcess("'"+b+"' is already created")})
@@ -83,9 +85,17 @@ const MagicManager={
             magic = eval("(function(player){"+MAGIC_DATA.unit_magic+jsCode+"})");
             let testMagic=eval("(function(player){"+MAGIC_DATA.unit_magic+MAGIC_DATA.test_unit_magic+testCode+";return magicCost})");
             magicInfo=testMagic(new Player([0,0],1));
+            if(isNaN(magicInfo.mp)||isNaN(magicInfo.coolTime)){
+                console.error(`error : createMagicSkill(${name})`)
+                let magicSkill = new MagicSkill(name,function(){},0,0,1);
+                magicSkill.error="error : MP or Cooltime is not Number";
+                return magicSkill;
+            }
         }catch(e){
             console.error(e+"\n\n"+testCode);
-            return new MagicSkill(name,function(){},0,0,0);
+            let magicSkill = new MagicSkill(name,function(){},0,0,1);
+            magicSkill.error=e;
+            return magicSkill;
         }
         //printResult(true, "cooltime: "+(magicInfo[0]/100)+"sec\nMP: "+magicInfo[1],true)
         return new MagicSkill(name,magic, magicCost.coolTime,magicCost.mp,level);
@@ -122,7 +132,7 @@ const create=function(typenum=BLOCK,vx=0,vy=0,w=30,h=30){
     return e;
 }
 const setTrigger=function(t,f){}
-const giveForce=function(e,ax,ay){e.physics.addForce([ax,ay])}
+const giveForce=function(e,ax,ay){e.body.addVel([ax,ay])}
 const giveLife=function(e,d){e.lifeModule.addLife(d)}
 const invisible=function(e,time){e.canDraw=false;TIME.addTimer(time,function(){e.canDraw=true;});}
 const move=function(e,vx,vy){if(e instanceof Actor&&e!==player)return;e.body.addPos([vx,vy])}
@@ -187,7 +197,7 @@ giveLife(e1,10);
 move(e1,front(30), 0);`,level:1},
 
     {name:"벽", code:`//길쭉한 블럭을 생성
-@block = create(BLOCK,0,0,30,100);
+@block = create(BLOCK,0,0,60,200);
 move(block,0,100);`,level:1},
 
     {name:"대쉬",code:`//플레이어가 빠른 속도로 앞으로 이동
@@ -213,7 +223,7 @@ giveLife(e2,1000);
 invisible(e2,1000);`,level:2},
 
     {name:"텔레포트",code:`//텔레포트
-move(player, front(400), 0);`,level:2},
+move(player, front(500), 0);`,level:2},
 
     {name:"파이어토네이도",code:`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
@@ -229,7 +239,7 @@ addSchedule(0,12/100,1/100,#{
 });`,level:3},
 
     {name:"투명",code:`//플레이어의 투명화
-invisible(player,300);`,level:3},
+invisible(player,3);`,level:3},
 
     {name:"활공",code:`//플레이어 아래에 바람 생성
 @wind=create(WIND,0,40);
@@ -256,95 +266,71 @@ for(@j=0;j<5;j++){
     giveLife(c,500);
 }`,level:4},
 
-    {name:"끌어당기기",code:`//닿은 물체를 끌어 당김
-@t = create(TRIGGER,front(10),0,20,100);
-giveLife(t,100);
-setTrigger(t,#{
-    giveForce($, front(-10), 4);
-});`,level:4},
-
     {name:"번개",code:`//번개는 전기들이 서로 일정 수 부딪히면 생성된다. 
-addSchedule(player,1,20,#{
-    @a=create(ELECTRICITY, 0,0);
-    move(a, front(300),0);
-    giveLife(a,400)
-        
-    @b=create(ELECTRICITY, 0,0);
-    move(b, front(300),0);
-    giveLife(b,400);
-        
-    @c=create(ELECTRICITY, 0,0);
-    move(c, front(300),0);
-    giveLife(c, 400)
-        
-    @d=create(ELECTRICITY, 0,0);
-    move(d, front(300),0);
-    giveLife(d,400)
-        
+for(@i=0; i<100; i++){
     @e=create(ELECTRICITY, 0,0);
     move(e, front(300),0);
     giveLife(e,400)
-})`,level:5},
+}`,level:5},
 
     {name:"폭발 비",code:`//불끼리 부딪히면 폭발한다.
-@count=0;
-addSchedule(player, 1,10,#{
-    @fire= create(FIRE, 0,-20)
-    move(fire, front(count*70+150),300)
-    giveLife(fire,50);
+for(@i=0; i<10; i++){
+    @fire=create(FIRE,0,-20);
+    move(fire,front(i*70+150),200+i*50);
+    giveLife(fire,30);
     @fire2= create(FIRE, 0,-20)
-    move(fire2, front(count*70+150),400)
-    giveLife(fire2,50);
-    count++;
-})`,level:5},
+    move(fire2, front(i*70+150),300+i*50);
+    giveLife(fire2,30);
+    @fire3= create(FIRE, 0,-20)
+    move(fire3, front(i*70+150),400+i*50);
+    giveLife(fire3,30);
+}`,level:5},
 
     {name:"연막",code:`//수증기는 불과 얼음이 부딪히면 생성된다.
-@i=0;
-addSchedule(player, 1, 10, #{
+for(@i=0; i<10; i++){
     move(create(FIRE,front(10),1),front(100*i), 0);
     move(create(ICE,front(10),1),front(100*i), 0);
     move(create(FIRE,front(10),1),front(100*i), 100);
     move(create(ICE,front(10),1),front(100*i), 100);
-    ++i;
-})`,level:5},
+}`,level:5},
 
     {name:"파이어토네이도V",code:`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
 @plusX=front(1);
 @i=0;
-addSchedule(player, 1,12,#{
+addSchedule(0,12/100,1/100,#{
     @fire = create(FIRE,0,0);
     move(fire,front(200-13*i-15), i*35);
     giveLife(fire,500)
-    addSchedule(fire,1,70,#{
+    addSchedule(0,70/100,1/100,#{
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
         x+=plusX;
     });
-    addSchedule(fire,81,81,#{giveForce(fire,-getVX(fire)+plusX*20,-getVY(fire));})
+    addSchedule(82/100,82/100,1/100,#{giveForce(fire,-getVX(fire)+plusX*20,-10);})
     i++;
 });`,level:10},
 
     {name:"유도미사일",code:`//유도미사일
-@t=create(TRIGGER, front(50),0,30,200)
-setTrigger(t,#{
-    @target=$
-    @e=create(ENERGY, 0,0)
-    giveLife(e,4000)
-    move(e, front(200),0);
-    addSchedule(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
-    for(@i=0;i<30;i++){
-        move(create(ENERGY, 0,0), front(200), 0);
-    }
-})`,level:10},
+// @t=create(TRIGGER, front(50),0,30,200)
+// setTrigger(t,#{
+//     @target=$
+//     @e=create(ENERGY, 0,0)
+//     giveLife(e,4000)
+//     move(e, front(200),0);
+//     addSchedule(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
+//     for(@i=0;i<30;i++){
+//         move(create(ENERGY, 0,0), front(200), 0);
+//     }
+// })`,level:10},
 
 {name:"유도얼음",code:`//유도얼음
-@t=create(TRIGGER, front(50),0,30,200)
-setTrigger(t,#{
-    @target=$
-    @e=create(ICE, 0,0)
-    giveLife(e,4000)
-    addSchedule(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
-})`,level:10}
+// @t=create(TRIGGER, front(50),0,30,200)
+// setTrigger(t,#{
+//     @target=$
+//     @e=create(ICE, 0,0)
+//     giveLife(e,4000)
+//     addSchedule(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
+// })`,level:10}
 ]
 
 //

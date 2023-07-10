@@ -23,7 +23,10 @@ html, body{
     font-weight: bold;
     border: solid black 4px;
 }
-.startButton:hover{border: solid white 4px;}
+.startButton:hover{
+    color:white;
+    border: solid white 4px;
+}
 
 .backButton{
     background-color:unset;
@@ -65,7 +68,6 @@ html, body{
 }
 
 .magicButton{
-    background-color: rgba(119, 138, 202,0.8);
     border: solid black 2px;
     font-size : 20px;
     line-height: 200%;
@@ -73,6 +75,18 @@ html, body{
     overflow: hidden;
 }
 .magicButton:hover{border: solid white 2px;}
+
+.basicMagic{
+    background-color: rgba(119, 138, 202,0.8);
+}
+
+.customMagic{
+    background-color: rgba(65, 105, 225,0.8);
+}
+
+.selectedMagic{
+    background-color: rgba(169, 190, 255, 0.8);
+}
 
 .selectMagicComponent{
     background-color: #2C2C2C;
@@ -101,13 +115,25 @@ html, body{
     font : bold 144px Arial;
 }
 
-.createMagicInput{
+.addCustomMagicButton{
+    background-color: rgba(65, 105, 225,0.6);
+    color:white;
+    font-size : 27px;
+    line-height: 200%;
+    font-weight: bold;
+    border-radius: 10px;
+    border: solid black 4px;
+}
+
+.addCustomMagicButton:hover{border: solid white 4px;}
+
+.magicInput{
     text-align: center;
     background-color: #2C2C2C;
     border-radius: 5px;
 }
 
-.createMagicResult{
+.magicInfo{
     text-align: center;
     background:#2C2C2C;
     flex:1;

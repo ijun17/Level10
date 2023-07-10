@@ -1,4 +1,4 @@
-class TextParticle extends GameUnit{
+class TextUnit extends GameUnit{
     text;
     font;
     strokeColor;

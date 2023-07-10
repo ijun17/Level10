@@ -4,6 +4,7 @@ class MagicSkill{
     requiredLevel;
     cooltime=0;
     isBasic;
+    error;
     code;
     constructor(name="", code=function(){}, cooltime=0, requiredMP=0, requiredLevel=0, isBasic=true){
         this.name=name;

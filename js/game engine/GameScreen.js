@@ -92,12 +92,16 @@ class GameScreenRenderer{
         let rs=this.camera.getRenderSize(body.size);
         if(opt!==undefined){
             this.ctx.save();
+            if (opt.cameraOn !== undefined && !opt.cameraOn){
+                rp=body.pos;
+                rs=body.size;
+            }
             this.ctx.translate(rp[0]+rs[0]*0.5, -rp[1]-rs[1]*0.5+this.canvas.height);
             if (opt.rotate !== undefined) this.ctx.rotate(opt.rotate);
             if (opt.reverseX !== undefined && opt.reverseX) this.ctx.scale(-1, 1);
             if (opt.reverseY !== undefined && opt.reverseY) this.ctx.scale(1, -1);
             f({x:-rs[0]*0.5, y:-rs[1]*0.5, w:rs[0], h:rs[1]});
-            if(opt!==undefined)this.ctx.restore();
+            this.ctx.restore();
         }else f({x:rp[0], y:-rp[1]-rs[1]+this.canvas.height, w:rs[0], h:rs[1]});
     }
     drawLight(e){
@@ -117,6 +121,7 @@ class GameScreenRendererCamera{
     followSpeed=0.1;//0~1
     target=[]
     inv_targetCount=0;
+    vibratePower=0;
     constructor(screenPos){
         this.setScreenPos(screenPos);
         this.reset();
@@ -150,6 +155,9 @@ class GameScreenRendererCamera{
         //this.move([(followX*this.inv_targetCount-this.pos[0])*this.followSpeed,(followY*this.inv_targetCount-this.pos[1])*this.followSpeed]);
         this.pos[0]+=(followX*this.inv_targetCount-this.pos[0])*this.followSpeed;
         this.pos[1]+=(followY*this.inv_targetCount-this.pos[1])*this.followSpeed;
+        let r = (Math.random()>0.5 ? 1 : -1)
+        this.move([this.vibratePower*r,this.vibratePower*r]);
+        this.vibratePower=0;
     }
     getRenderPos(pos){
         //if(!this.enable)return pos;
@@ -163,7 +171,7 @@ class GameScreenRendererCamera{
         calvec(this.screenPos,'=',screenPos);
     }
     vibrate(power){
-        this.move([power,power]);
+        if(this.vibratePower<power)this.vibratePower=power;
     }
 }
 
@@ -181,12 +189,16 @@ class GameScreenUI{
     };
     reset(){this.ui.innerHTML=""}
     getUI(){return this.ui;}
-    add(name, pos, size, className="", isAppend=true){
+    create(name, pos, size, className=""){
         let ele = document.createElement(name);
         ele.style.position="absolute"
         this.setElementPos(ele,pos);
         this.setElementSize(ele,size);
         ele.className=className;
+        return ele;
+    }
+    add(name, pos, size, className="", isAppend=true){
+        let ele = this.create(name, pos, size, className, isAppend);
         if(isAppend)this.ui.append(ele);
         return ele;
     }

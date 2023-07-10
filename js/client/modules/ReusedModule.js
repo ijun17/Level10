@@ -18,18 +18,32 @@ const ReusedModule={
         //scroll.style.overflow="scroll";
         return scroll;
     },
-    createMagicButtonList(pos, size, onclick=function(){}) {
+    createButtonSelector(){
+        return {ele:null};
+    },
+    createMagicButton(i, buttonSelector, onclick=function(){}){
+        const UI=SCREEN.ui;
+        let magicBtn = document.createElement("div");
+        magicBtn.className = "magicButton " + (i < MagicManager.primitiveBasicMagic.length ? "basicMagic" : "customMagic");
+        UI.setElementSize(magicBtn, [SCREEN.perX(20), SCREEN.perX(3)]);
+        magicBtn.innerText = MagicManager.magicList[i].name;
+        magicBtn.dataset.magicNum=i;
+        magicBtn.onclick = function () {
+            onclick(i);
+            if (buttonSelector.ele != null) buttonSelector.ele.classList.remove("selectedMagic");
+            buttonSelector.ele = magicBtn;
+            magicBtn.classList.add("selectedMagic");
+        };
+        return magicBtn;
+    },
+    createMagicButtonList(pos, size, buttonSelector, onclick=function(){}) {
         const UI=SCREEN.ui;
         let scroll = UI.add("button", pos, size, "scroll");
         for (let i = 0; i < MagicManager.magicList.length; i++) {
-            let magicBtn = document.createElement("div")
-            magicBtn.className = "magicButton";
-            UI.setElementSize(magicBtn,[SCREEN.perX(20),SCREEN.perX(3)]);
-            magicBtn.innerText=MagicManager.magicList[i].name;
-            let index=i;
-            magicBtn.onclick=function(){onclick(index);};
-            scroll.append(magicBtn);
+            if(MagicManager.magicList[i].requiredLevel>Level.playerLevel)continue;
+            scroll.append(ReusedModule.createMagicButton(i,buttonSelector, onclick));
         }
+        return scroll;
     },
     createSelectMagicComponent(pos, skillNum, name="", onclick=function(){}){
         const UI=SCREEN.ui;
@@ -58,6 +72,5 @@ const ReusedModule={
             particle.life=400;
             particle.body.addVel([0,-particleVy])
         })
-    },
-    
+    }
 }

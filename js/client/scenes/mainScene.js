@@ -11,9 +11,8 @@ Game.setScene("main",function(){
         TIME.addSchedule(1,1,undefined,()=>{Game.changeScene("select");})
         TIME.addSchedule(0,1,0.01,()=>SCREEN.renderer.camera.move([0,velY+(accY-=0.3)]))
     }
+    WORLD.add(new TextUnit([perX(50),perY(8)],"LEVEL"+Level.playerLevel,80,"#1b1b1b",null,10000));
 
-    //let level10Text = ui.add("button",[perX(30),perY(0)],[perX(40),perY(20)],"level10Text");
-    //level10Text.innerText="LEVEL10";
     WORLD.environment.addGravity([0,0], [1200,600], [0,-0.01]);
     ReusedModule.createParticleSpray(TYPE.snow, [0,600],perX(120),25,0,0.05)
 

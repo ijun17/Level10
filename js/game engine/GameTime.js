@@ -13,7 +13,7 @@ class GameTime{
     scheduleList;
     mainSchedule=function(){}
     constructor(){
-        this.scheduleList=new ArrayForSchedule(100);
+        this.scheduleList=new ArrayForSchedule(300);
     }
     changeFrameRate(fps){
         if(this.interval==null)this.fps=fps;
@@ -36,7 +36,7 @@ class GameTime{
     addSchedule(startSec, endSec, intervalSec, code, stopCondition=function(){return false;}) {
         let startTick=this.tick+startSec*this.fps;
         let endTick=(endSec===undefined ? undefined : this.tick+endSec*this.fps)
-        let intervalTick=(intervalSec===undefined ? undefined : intervalSec*this.fps)
+        let intervalTick=(intervalSec===undefined || intervalSec===0 ? undefined : intervalSec*this.fps)
         this.scheduleList.push(new GameSchedule(startTick, endTick, intervalTick, code, stopCondition));
     }
     doSchedule(){
@@ -72,12 +72,12 @@ class GameSchedule{
 }
 
 
-class ArrayForSchedule{
+class ArrayForSchedule{//집합
     array;
     startIndex=0;
     endIndex=0;
     count=0;
-    constructor(arraySize=100){
+    constructor(arraySize=300){
         this.array=new Array(arraySize);
     }
     reset(){
