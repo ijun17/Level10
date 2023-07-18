@@ -6,6 +6,7 @@ class MagicSkill{
     isBasic;
     error;
     code;
+    primitiveCode="";
     constructor(name="", code=function(){}, cooltime=0, requiredMP=0, requiredLevel=0, isBasic=true){
         this.name=name;
         this.code=code;
@@ -20,4 +21,6 @@ class MagicSkill{
     getRequiredMP(){return this.requiredMP}
     getCoolTime(){return this.cooltime}
     getRequiredLevel(){return this.requiredLevel}
+    getPrimitiveCode(){return this.primitiveCode;}
+    setPrimitiveCode(pCode){this.primitiveCode=pCode;}
 }

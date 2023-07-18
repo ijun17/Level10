@@ -2,7 +2,9 @@ class Actor extends GameUnit{
     moveModule;
     lifeModule;
     skillModule;
+    statusEffectModule;
     damageTextColor="orange";
+
     constructor(pos,size,moveModule,lifeModule,skillModule){//move={moveMode, moveSpeed, jumpSpeed}, life={life,defense}
         super(new UnitBody(pos,size));
         this.physics=new UnitPhysics();

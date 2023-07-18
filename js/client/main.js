@@ -54,8 +54,8 @@ WORLD.layer[PARTICLE_LAYER].enableInteraction=false;
 USER_INPUT.setParameter("player", undefined)
 USER_INPUT.setParameter("moveKey", [39,37,38,40])//right left up down
 USER_INPUT.setParameter("skillKey", [81,87,69,82])//qwer
-USER_INPUT.addEventListener("keydown", function(e,para){if(para.player instanceof Player)para.player.onkeydown(e.keyCode, para.moveKey, para.skillKey)})
-USER_INPUT.addEventListener("keyup",function(e,para){if(para.player instanceof Player)para.player.onkeyup(e.keyCode, para.moveKey)})
+USER_INPUT.addEventListener("keydown", function(e,para){if(para.player instanceof Actor)para.player.onkeydown(e.keyCode, para.moveKey, para.skillKey)})
+USER_INPUT.addEventListener("keyup",function(e,para){if(para.player instanceof Actor)para.player.onkeyup(e.keyCode, para.moveKey)})
 
 Level.loadLevel();
 MagicManager.loadMagic();

@@ -17,6 +17,7 @@ html, body{
     justify-content: center;
 }
 
+/* 메인 화면 */
 .startButton{
     background-color:unset;
     font-size : 80px;
@@ -28,6 +29,7 @@ html, body{
     border: solid white 4px;
 }
 
+/* 선택 화면 */
 .backButton{
     background-color:unset;
     line-height: 60%;
@@ -36,37 +38,46 @@ html, body{
     font-weight: bold;
     border: none;
 }
-.backButton:hover{color:white;}
-
+.backButton:hover{
+    color:white;
+}
 .levelButton{
     background-color:unset;
     font-size : 40px;
     font-weight: bold;
     border: solid black 1px;
 }
-.levelButton:hover{border: solid white 3px;}
-
+.levelButton:hover{
+    color:white;
+    border: solid white 3px;
+}
 .selectMagicSceneButton{
     background-color:unset;
     font-size : 28px;
     font-weight: bold;
     border: solid black 2px;
 }
-.selectMagicSceneButton:hover{border: solid white 3px;}
-
+.selectMagicSceneButton:hover{
+    color:white;
+    border: solid white 3px;
+}
 .pvpButton{
     background-color:unset;
     font-size : 28px;
     font-weight: bold;
     border: solid purple 2px;
 }
-.pvpButton:hover{border: solid white 3px;}
-
-.scroll{
-    overflow: scroll;
-    background-color: rgba(0,0,0,0.1);
+.pvpButton:hover{
+    border: solid white 3px;
 }
 
+/* 마법 관련 화면 */
+.scroll{
+    overflow-y: scroll;
+    overflow-x:visible;
+    background-color: rgba(0,0,0,0.1);
+    border: solid rgba(0,0,0,0.2) 2px;
+}
 .magicButton{
     border: solid black 2px;
     font-size : 20px;
@@ -74,8 +85,10 @@ html, body{
     font-weight: bold;
     overflow: hidden;
 }
-.magicButton:hover{border: solid white 2px;}
-
+.magicButton:hover{
+    color:white;
+    border: solid white 2px;
+}
 .basicMagic{
     background-color: rgba(119, 138, 202,0.8);
 }
@@ -85,13 +98,13 @@ html, body{
 }
 
 .selectedMagic{
-    background-color: rgba(169, 190, 255, 0.8);
+    background-color: rgba(63, 82, 141, 0.8);
 }
 
 .selectMagicComponent{
-    background-color: #2C2C2C;
+    background-color: rgba(0,0,0,0.5);
     color : whitesmoke;
-    font-size : 20px;
+    font-size : 24px;
     font-weight: bold;
     text-align: center;
     display : flex;
@@ -101,36 +114,23 @@ html, body{
 }
 
 .selectMagicButton{
-    background-color: black;
+    background-color: rgba(0,0,0,0.5);
     color:whitesmoke;
     margin:0 auto;
-    border: solid rgba(0,0,0,0.2) 4px;
+    border: none;
     border-radius: 5px;
+    font-size : 16px;
+    line-height: 30px;
 }
+
 .selectMagicButton:hover{border: solid white 2px;}
-
-.stageClearText{
-    vertical-align : top;
-    text-align : center;
-    font : bold 144px Arial;
-}
-
-.addCustomMagicButton{
-    background-color: rgba(65, 105, 225,0.6);
-    color:white;
-    font-size : 27px;
-    line-height: 200%;
-    font-weight: bold;
-    border-radius: 10px;
-    border: solid black 4px;
-}
-
-.addCustomMagicButton:hover{border: solid white 4px;}
 
 .magicInput{
     text-align: center;
     background-color: #2C2C2C;
+    background-color: rgba(0,0,0,0.5);
     border-radius: 5px;
+    padding-top: 5px;
 }
 
 .magicInfo{
@@ -144,25 +144,30 @@ html, body{
     width: 95%;
     height: 40px;
     margin: 1% 2%;
-    padding: 2%;
+    padding: 1.5%;
     background-color: black;
+    background-color: rgba(0,0,0,0.5);
     resize: none;
     color: whitesmoke;
+    border: none;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
 }
 
 .createMagicCode {
     width: 95%;
-    height: 80%;
-    margin: 1% 2%;
+    height: 83%;
+    margin: 0% 2%;
     padding: 2%;
-    background-color: black;
+    background-color: rgba(0,0,0,0.5);
     color: royalblue;
     resize: none;
     font-size: 18px;
+    border: none;
     border-radius: 5px;
-    font-family: system-ui;
+    font-family: consolas;
 }
 
 .createMagicbutton {
@@ -172,6 +177,109 @@ html, body{
     width: 60px;
     height: 30px;
     background-color: royalblue;
+    border: solid black 2px;
     border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
     color: white;
+}
+.createMagicbutton:hover{
+    border: solid white 2px;
+}
+
+.createMagicInfo{
+    font-size: 18px;
+    color: white;
+}
+
+.helpSceneButton {
+    color: white;
+    background-color:unset;
+    font-size : 36px;
+    font-weight: bold;
+    border: solid white 4px;
+}
+.helpSceneButton:hover{
+    background-color:rgba(255,255,255,0.5);
+}
+
+
+
+.helpMenuButton{
+    background-color:rgb(36, 36, 36);
+    color:white;
+    font-size : 28px;
+    font-weight: bold;
+    border: unset;
+}
+.helpMenuButton:hover{
+    background-color:rgba(255,255,255,0.5);
+    color:black;
+}
+
+.selectedHelpMenuButton{
+    background-color: rgb(60, 60, 60);
+}
+
+.helpBackground{
+    background-color: rgb(60, 60, 60);
+    color:white;
+    padding: 20px 40px;
+    font-size: 130%;
+    overflow-y: auto;
+}
+
+.helpBackground h1{
+    color:royalblue;
+}
+.helpBackground ul,ol{
+    margin: 0px 40px;
+}
+
+.helpBackground ul,ol{
+    margin: 0px 40px;
+}
+.helpBackground input{
+    width:20px;
+    height:20px;
+}
+
+.helpBackground>*{
+    margin:10px;
+}
+
+.stageClearText{
+    vertical-align : top;
+    text-align : center;
+    font : bold 252px Arial;
+    color:white;
+    text-shadow: gold 2px 0 30px;
+}
+
+.playerDieText{
+    display : flex;
+    justify-content : center;
+    align-items : center;
+    font : bold 150px Arial;
+    color:black;
+    text-shadow: brown 2px 0 30px;
+}
+
+.mobileMoveButton{
+    background-color: rgba(0,0,0,0.1);
+    color:white;
+    font-size : 70px;
+    font-weight: bold;
+    border: solid white 2px;
+    border-radius: 5px;
+
+}
+
+.mobileSkillButton{
+    background-color: rgba(0,0,0,0.1);
+    color:white;
+    font-size : 50px;
+    font-weight: bold;
+    border: solid white 2px;
+    border-radius: 5px;
 }

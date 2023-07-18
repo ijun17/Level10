@@ -18,7 +18,8 @@ const MagicManager={
             MagicManager.magicList.push(MagicManager.createMagicSkill(MagicManager.primitiveBasicMagic[i])); 
         }
         //load custom magic
-        MagicManager.primitiveCustomMagic = (localStorage.CUSTOM_MAGIC2 == null ? [] : JSON.parse(localStorage.CUSTOM_MAGIC2));
+        if(localStorage.CUSTOM_MAGIC2 == null)MagicManager.createEmptyCustomMagic();
+        else MagicManager.primitiveCustomMagic=JSON.parse(localStorage.CUSTOM_MAGIC2);
         for (let i = 0, j = MagicManager.primitiveCustomMagic.length; i < j; i++) {
             MagicManager.magicList.push(MagicManager.createMagicSkill(MagicManager.primitiveCustomMagic[i]));
         }
@@ -34,11 +35,14 @@ const MagicManager={
         }
         MagicManager.saveSkillNum();
     },
-    addCustomMagic:function(){
-        let magicName="My Magic"+(MagicManager.primitiveCustomMagic.length+1)
-        MagicManager.primitiveCustomMagic.push({name:magicName, code:"", level:1});
-        MagicManager.magicList.push(new MagicSkill(magicName,function(){},0,0,0));
-        //MagicManager.saveMagic();
+    isBasicMagic:function(index){
+        return index<MagicManager.primitiveBasicMagic.length;
+    },
+    createEmptyCustomMagic:function(){
+        let emptyMagics=[];
+        for(let i=1; i<11; i++)emptyMagics.push({name:"Empty Magic "+i, code:"//코드를 작성하세요", level:i});
+        MagicManager.primitiveCustomMagic=emptyMagics;
+        MagicManager.saveMagic();
     },
     createMagicSkill: function (primitiveMagic) {
         const name=primitiveMagic.name;
@@ -79,26 +83,21 @@ const MagicManager={
         let jsCode=prim_jsCode;
         let testCode=prim_testCode
         let magic=function(){};
-        let magicCost={coolTime:100,mp:100};
-        //return new MagicSkill(name,function(){},0,0,0);
+        let magicSkill;
         try {
             magic = eval("(function(player){"+MAGIC_DATA.unit_magic+jsCode+"})");
             let testMagic=eval("(function(player){"+MAGIC_DATA.unit_magic+MAGIC_DATA.test_unit_magic+testCode+";return magicCost})");
             magicInfo=testMagic(new Player([0,0],1));
-            if(isNaN(magicInfo.mp)||isNaN(magicInfo.coolTime)){
-                console.error(`error : createMagicSkill(${name})`)
-                let magicSkill = new MagicSkill(name,function(){},0,0,1);
+            if(isNaN(magicInfo.mp)||isNaN(magicInfo.cooltime)){
+                magicSkill = new MagicSkill(name,function(){},0,0,1);
                 magicSkill.error="error : MP or Cooltime is not Number";
-                return magicSkill;
-            }
+            }else magicSkill = new MagicSkill(name,magic,magicInfo.cooltime,magicInfo.mp,level);
         }catch(e){
-            console.error(e+"\n\n"+testCode);
-            let magicSkill = new MagicSkill(name,function(){},0,0,1);
+            magicSkill = new MagicSkill(name,function(){},0,0,1);
             magicSkill.error=e;
-            return magicSkill;
         }
-        //printResult(true, "cooltime: "+(magicInfo[0]/100)+"sec\nMP: "+magicInfo[1],true)
-        return new MagicSkill(name,magic, magicCost.coolTime,magicCost.mp,level);
+        magicSkill.setPrimitiveCode(prim_code);
+        return magicSkill;
     }
 }
 
@@ -145,7 +144,7 @@ const front=function(d=1){return (player.moveModule.moveDirection[0] ? d : -d);}
 `,
     //
     test_unit_magic:`
-//let magicCost = {cooltime: 100, mp: 100}; //[cooltime, magic point]
+let magicCost = {cooltime: 100, mp: 100}; //[cooltime, magic point]
 function getEnergy(e){
     let testUnit = new Block([0,0],[0,0]);
     testUnit.lifeModule.life=0;
@@ -201,7 +200,7 @@ move(e1,front(30), 0);`,level:1},
 move(block,0,100);`,level:1},
 
     {name:"대쉬",code:`//플레이어가 빠른 속도로 앞으로 이동
-giveForce(player,front(20),0);`,level:1},
+giveForce(player,front(30),0);`,level:1},
 
     {name:"힐",code:`//플레이어 hp를 2000회복
 giveLife(player,2000);`,level:1},
@@ -228,7 +227,7 @@ move(player, front(500), 0);`,level:2},
     {name:"파이어토네이도",code:`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
 @i=0;
-addSchedule(0,12/100,1/100,#{
+addSchedule(0,12/100,1/100,()=>{
     @fire = create(FIRE,0,0);
     move(fire,front(200-13*i-15), i*35);
     giveLife(fire,500)
@@ -250,7 +249,6 @@ giveForce(wind,0,-35);`,level:3},
     {name:"기관총",code:`//화살 발사
 addSchedule(0,5,1/10,#{
     @a = create(ARROW, front(30), 3, 30,10)
-    giveLife(a, 10)
 })`, level:4},
 
     {name:"전격실드", code:`//전기 실드를 생성

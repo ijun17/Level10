@@ -112,10 +112,10 @@ class MatterArrow extends Matter{
     }
     draw(r){r.drawImage(this.image,this.body,{rotate:Math.atan2(this.body.vel[0], this.body.vel[1])});}
     oncollision(event){
-        let relVel=this.body.getRelativeVel(event.other.body);
+        let relVel=event.other.body.getRelativeVel(this.body);
         let damage=(relVel[0]**2+relVel[1]**2)*10;
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage+damage,this.damageType);
-        //if(event.other.physics)event.other.physics.addForce(relVel);
+        event.other.physics.addForce([relVel[0]*0.5, relVel[1]*0.5]);
     }
 }
 

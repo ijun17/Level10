@@ -144,21 +144,25 @@ class GameUnitStatusEffectModule{
     statusEffectList=[0,0];
     constructor(){}
     
-    add(unit, type, time, power){
-        if(this.statusEffectList[type]>0)return;
+    set(unit, type, time, power=1){
+        if(this.statusEffectList[type]!=0)return;
+        this.statusEffectList[type]=power;
+        let effectF=()=>{};
+        let endF=()=>{};
         switch(type){
         case TYPE.iceEffect : 
-            TIME.addSchedule(0,time,undefined,function(){
+            effectF=()=>{
                 SCREEN.renderer.fillRect("rgba(92,150,212,0.5)",unit.body);
                 unit.moveModule.canMove=false;
-            },function(){});break;
+            }
+            endF=()=>{unit.moveModule.canMove=true;};
+        break;
         }
-        
+        TIME.addSchedule(0,time,undefined,effectF,()=>{return unit.getState()==0});
+        TIME.addSchedule(time,time,undefined,()=>{
+            endF();
+            this.statusEffectList[type]=0;
+        },()=>{return unit.getState()==0});
     }
     
 }
-
-/*
-상태이상을 스케줄에 넣을 경우 같은 상태이상이 중복되는 경우가 있음
-상태이상 모듈에서 스케쥴을 참조하면
-*/

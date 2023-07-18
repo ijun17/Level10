@@ -170,6 +170,7 @@ class MonsterMonkey extends Monster{
 
 class MonsterFly extends Monster{
     animation;
+    slaveList=[];
     constructor(pos,isMaster=true){
         super(pos,[30,30],300,new GameUnitMoveModule(1,10), new GameUnitLifeModule(100000,100,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("jump",function(m){
@@ -188,8 +189,10 @@ class MonsterFly extends Monster{
             for(let i=0; i<20; i++){
                 let m=WORLD.add(new MonsterFly(pos,false));
                 TIME.addSchedule(1,1,0,function(){m.activateAI()});
+                this.slaveList.push(m);
             }
         }
+        this.addEventListener("remove",()=>{for(let m of this.slaveList)m.setState(0)})
     }
     update(){
         super.update();

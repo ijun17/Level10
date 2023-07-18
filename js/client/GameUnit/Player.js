@@ -2,7 +2,7 @@ class Player extends Actor{
     animation;
     statusBarInfo;
     constructor(pos, level=Level.playerLevel){
-        super(pos, [30,60], new GameUnitMoveModule(0,4,5), new GameUnitLifeModule(10000*level,100,20), new GameUnitSkillModule(level*20000,level));
+        super(pos, [30,60], new GameUnitMoveModule(0,4,4), new GameUnitLifeModule(10000*level,100,20), new GameUnitSkillModule(level*20000,level));
         this.body.overlap=true;
         this.damageTextColor="red";
         for(let i=0; i<4;i++)this.skillModule.addSkill(MagicManager.magicList[MagicManager.skillNum[i]])

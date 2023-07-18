@@ -18,34 +18,22 @@ const Level= {
             this.saveLevel();
             isLevelUp = true;
         }
-        let stageClearText=SCREEN.ui.add("div",[SCREEN.perX(50),SCREEN.perY(100)],[0,0],"stageClearText");
+        let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"stageClearText");
         stageClearText.innerText="CLEAR";
-        //let clearTextY=SCREEN.perY(50);
-        //let clearText = SCREEN.ui.add("div",[SCREEN.perX(50), clearTextY],[0,0],"levelClearText");
-        //clearText.innerText="CLEAR";
-        //TIME.addSchedule(0,3,undefined,()=>{clearText.style.bottom=(clearTextY++)+"px"});
-        //TIME.addSchedule(3,3,undefined,()=>{Game.changeScene("select")});
+        let clearTextY=0;
+        TIME.addSchedule(0,4,undefined,function(){stageClearText.style.bottom=(clearTextY--)+"px"});
+        TIME.addSchedule(4,4,undefined,()=>{Game.changeScene("select")});
     },
 
     createMainMonster:function(level,MonsterClass,pos){
         let m=WORLD.add(new MonsterClass(pos));
         m.renderStatusBar([SCREEN.perX(59), SCREEN.perY(100)-SCREEN.perX(8.5)]);
-        m.addEventListener("remove",function(){
-            Level.clearLevel(level);
-            // let entitys=World.channel[World.PHYSICS_CHANNEL].entitys;
-            // for(let i=entitys.length; i>=0; i--){
-            //     if(entitys[i] instanceof Monster)entitys[i].life=0;
-            //     else if(entitys[i] instanceof Player)entitys[i].canRemoved=false;
-            // }
-            return true;
-        })
+        m.addEventListener("remove",function(){Level.clearLevel(level);return true;})
         TIME.addSchedule(1,1,0,function(){m.activateAI()});
-        //Component.bossMonsterStatusView(m,59,1)
         return m;
     },
 
     makeStage:function(level,player) {
-        //level에 따라 달라지는 변수
         SCREEN.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
         SCREEN.renderer.camera.zoom=1;
         switch (level) {
@@ -79,10 +67,6 @@ const Level= {
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
                 ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
                 Level.createMainMonster(level,MonsterSlime, [1500, 0]);
-            //     Level.createMainMonster(TYPE.hellFly, 3000, -1000);
-            //     for(let i=0; i<15; i++)new Monster(2, 200*i, -1000);
-            //     ReusedModule.worldWall(3000,2000,300);
-            //     ReusedModule.particleSpray(TYPE.snow,player,2000,-1000,10,1.5,5);
                 break;
             case 5:
                 ReusedModule.createGameMap(2000,1000);
@@ -112,7 +96,7 @@ const Level= {
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
                 ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
                 let m1 = Level.createMainMonster(level,MonsterWyvern, [1000, 0]);
-                let m2 = Level.createMainMonster(level,MonsterDragon, [2000, 0]);
+                let m2 = Level.createMainMonster(level,MonsterSlime, [2000, 0]);
                 m1.target=m2;
                 m2.target=m1;
                 player.setObserver();

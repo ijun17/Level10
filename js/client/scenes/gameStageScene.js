@@ -6,9 +6,15 @@ Game.setScene("gameStage",function(level){
 
     let player=WORLD.add(new Player([300,340]));
     player.renderStatusBar([perX(10),perY(100)-perX(10)])
+    player.addEventListener("remove", ()=>{
+        let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"playerDieText");
+        stageClearText.innerText="YOU DIE";
+        TIME.addSchedule(2,2,undefined,()=>{Game.changeScene("select")});
+    })
     SCREEN.renderer.camera.addTarget(player.body);
     USER_INPUT.setParameter("player",player);
     USER_INPUT.setParameter("moveKey",[39,37,38,40]);
 
     Level.makeStage(level,player)
+    if(localStorage.getItem("mobile")==='1')ReusedModule.createMobileButton(player);
 })
