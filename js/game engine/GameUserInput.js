@@ -11,7 +11,7 @@ class GameUserInput{
         //this.addEvent(this.screen, "touchstart")
         //this.addEvent(this.screen, "touchmove")
         //this.addEvent(this.screen, "touchend")
-        this.screen.addEventListener("touchstart",(e)=>{e.preventDefault()})
+        //this.screen.addEventListener("touchstart",(e)=>{e.preventDefault()})
         this.screen.addEventListener("touchmove",(e)=>{e.preventDefault()})
     }
 
