@@ -22,9 +22,9 @@ const ReusedModule={
     },
     createMagicButton(i, buttonSelector, onclick=function(){}){
         const UI=SCREEN.ui;
-        let magicBtn = document.createElement("div");
-        magicBtn.className = "magicButton " + (i < MagicManager.primitiveBasicMagic.length ? "basicMagic" : "customMagic");
-        UI.setElementSize(magicBtn, [SCREEN.perX(20), SCREEN.perX(3)]);
+        const perX=SCREEN.perX.bind(SCREEN);
+        const perY=SCREEN.perY.bind(SCREEN);
+        let magicBtn = UI.create("button",[0,0],[perX(20), perX(3)],"magicButton " + (MagicManager.isBasicMagic(i) ? "basicMagic" : "customMagic"));
         magicBtn.innerText = MagicManager.magicList[i].name;
         magicBtn.style.position="static"
         magicBtn.dataset.magicNum=i;
@@ -105,5 +105,34 @@ const ReusedModule={
             let btn = WORLD.add(new Button(SKILL_BUTTON_POS[i],BTN_SIZE,"white",SKILL_BUTTON_TEXT[i]))
             btn.ontouchstart=()=>{player.skillModule.castSkill(player, i);}
         }
+    },
+
+    createMobileButton2:function(player,size){
+        //move button
+        const UI=SCREEN.ui;
+        const perX=SCREEN.perX.bind(SCREEN);
+        const perY=SCREEN.perY.bind(SCREEN);
+        const BTN_W=perX(10);
+        const BTN_SIZE=[BTN_W,BTN_W];
+        const MOVE_RUN=(player.moveModule.moveType===0)
+        const MOVE_BUTTON_TEXT=(MOVE_RUN?['<','^','>']:['<','v','>','^']);
+        const MOVE_BUTTON_POS=(MOVE_RUN?[[perX(1),perX(1)],[perX(2)+BTN_W,perX(1)],[perX(3)+BTN_W*2,perX(1)]]: [[perX(1),perX(1)],[perX(2)+BTN_W,perX(1)],[perX(3)+BTN_W*2,perX(1)],[perX(2)+BTN_W,perX(2)+BTN_W]])
+        const MOVE_HANDLER_CODE=(MOVE_RUN?[1,2,0]:[1,3,0,2]);
+        for(let i=0; i<MOVE_BUTTON_TEXT.length; i++){
+            let btn = UI.add("button",MOVE_BUTTON_POS[i],BTN_SIZE,"mobileMoveButton");
+            btn.innerText=MOVE_BUTTON_TEXT[i];
+            btn.addEventListener("touchstart", ()=>{player.moveModule.keyDownHandler(MOVE_HANDLER_CODE[i]);console.log(MOVE_BUTTON_TEXT[i])}, {passive:true});
+            btn.addEventListener("touchend", ()=>{player.moveModule.keyUpHandler(MOVE_HANDLER_CODE[i])}, {passive:true});
+        }
+        
+        const SKILL_BUTTON_TEXT=['Q','W','E','R'];
+        const SKILL_BUTTON_POS=[[perX(96)-BTN_W*4,perX(1)],[perX(97)-BTN_W*3,perX(1)],[perX(98)-BTN_W*2,perX(1)],[perX(99)-BTN_W,perX(1)]]
+        for(let i=0; i<4; i++){
+            let btn = UI.add("button",SKILL_BUTTON_POS[i],BTN_SIZE,"mobileSkillButton");
+            btn.innerText=SKILL_BUTTON_TEXT[i];
+            //btn.onclick=()=>{ player.skillModule.castSkill(player, i);}
+            btn.addEventListener("touchstart", ()=>{ player.skillModule.castSkill(player, i);console.log(SKILL_BUTTON_TEXT[i])}, {passive:true});
+        }
+        
     }
 }

@@ -7,6 +7,10 @@
 
 html, body{
     /* 모바일 웹 브라우저 당겨서 새로고침 막기 */
+    position: fixed;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
     overscroll-behavior: contain;
 }
 

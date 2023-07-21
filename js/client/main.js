@@ -62,6 +62,7 @@ USER_INPUT.addEventListener("keydown", function(e,para){if(para.player instanceo
 USER_INPUT.addEventListener("keyup",function(e,para){if(para.player instanceof Actor)para.player.onkeyup(e.keyCode, para.moveKey)})
 USER_INPUT.addEventListener("touchstart",function(e,para){
     //e.preventDefault();
+     console.log(e.targetTouches)
     for(let i=0, l=e.touches.length; i<l; i++){
         for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
             if(btn instanceof Button && btn.isTouched(e.touches[i]))btn.ontouchstart(para);
@@ -70,6 +71,7 @@ USER_INPUT.addEventListener("touchstart",function(e,para){
 })
 USER_INPUT.addEventListener("touchmove",function(e,para){
     //e.preventDefault();
+    // console.log(e.targetTouches)
     for(let i=0, l=e.touches.length; i<l; i++){
         for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
             if(btn instanceof Button && btn.isTouched(e.touches[i]))btn.ontouchmove(para);
