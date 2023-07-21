@@ -24,7 +24,7 @@ class Button extends GameUnit{
     isTouched(touch){
         let b=this.body;
         let distX=touch.clientX - b.pos[0];
-        let distY=600-touch.clientY - b.pos[1];
+        let distY=SCREEN.perY(100)-touch.clientY - b.pos[1];
         return (0 < distX && distX < b.size[0] && 0 < distY && distY< b.size[1]);
     }
 }
