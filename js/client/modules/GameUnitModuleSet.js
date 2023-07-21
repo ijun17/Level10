@@ -28,19 +28,21 @@ class GameUnitMoveModule {
         this.moveX(body);
         this.moveY(body);}
     moveX(body){
-        if(this.moveFlag[0])
-        if(this.moveDirection[0]&&body.vel[0]<this.moveSpeed)body.addVel([1,0])
-        else if(!this.moveDirection[0]&&body.vel[0]>-this.moveSpeed)body.addVel([-1,0])
+        if(this.moveFlag[0]){
+            if(this.moveDirection[0]&&body.vel[0]<this.moveSpeed)body.addVel([1,0])
+            else if(!this.moveDirection[0]&&body.vel[0]>-this.moveSpeed)body.addVel([-1,0])
+        }
     }
     moveY(body){
-        if(this.moveFlag[1])
-        if(this.moveDirection[1]&&body.vel[1]<this.moveSpeed)body.addVel([0,1])
-        else if(!this.moveDirection[1]&&body.vel[1]>-this.moveSpeed)body.addVel([0,-1])
+        if(this.moveFlag[1]){
+            if(this.moveDirection[1]&&body.vel[1]<this.moveSpeed)body.addVel([0,1])
+            else if(!this.moveDirection[1]&&body.vel[1]>-this.moveSpeed)body.addVel([0,-1])
+        }
     }
     jump(body){
         if (this.canMove&&this.canJump) {
-            this.doJump = false;
             this.canJump = false;
+            this.doJump = false;
             body.addVel(calvec(this.footDirection,'*',-this.jumpSpeed))
         }
     }
@@ -50,7 +52,7 @@ class GameUnitMoveModule {
     calculateFootDirection(gravity){
         if(gravity[1]!==0)this.footDirection=[0,Math.sign(gravity[1])]
         else if(gravity[0]!==0)this.footDirection=[Math.sign(gravity[0]),0]
-        else this.footDirection=[0,-1]
+        //else this.footDirection=[0,-1]
     }
 
     keyDownHandler(moveKey){//0:right   1:left   2:up   3:down
@@ -63,8 +65,10 @@ class GameUnitMoveModule {
     }
     keyUpHandler(moveKey){
         switch(moveKey){
-            case 0: case 1: this.moveFlag[0]=false; break;
-            case 2: case 3: this.moveFlag[1]=false; break;
+            case 0: if(this.moveDirection[0]===true)this.moveFlag[0]=false; break;
+            case 1: if(this.moveDirection[0]===false)this.moveFlag[0]=false; break;
+            case 2: if(this.moveDirection[1]===true)this.moveFlag[1]=false; break;
+            case 3: if(this.moveDirection[1]===false)this.moveFlag[1]=false; break;
         }
     }
 }

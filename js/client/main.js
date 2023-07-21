@@ -3,7 +3,6 @@ const SCREEN=Game.screen;
 const TIME=Game.time;
 const USER_INPUT=Game.userInput;
 const IMAGES=Game.resource.images;
-const SOUNDS=Game
 /*
 GAME SETTING
 */
@@ -46,16 +45,45 @@ const TYPE={
     iceEffect:0,
 }
 
-const PHYSICS_LAYER=0, PARTICLE_LAYER=1;
+const PHYSICS_LAYER=0, PARTICLE_LAYER=1, BUTTON_LAYER=2;
 SCREEN.setSize(1200,600);
 TIME.changeFrameRate(100);
 WORLD.layer[PARTICLE_LAYER].enableInteraction=false;
 
+USER_INPUT.addEvent(document,"keydown")
+USER_INPUT.addEvent(document,"keyup")
+USER_INPUT.addEvent(SCREEN.screen,"touchstart",{passive:false})
+USER_INPUT.addEvent(SCREEN.screen,"touchmove",{passive:false})
+USER_INPUT.addEvent(SCREEN.screen,"touchend")
 USER_INPUT.setParameter("player", undefined)
 USER_INPUT.setParameter("moveKey", [39,37,38,40])//right left up down
 USER_INPUT.setParameter("skillKey", [81,87,69,82])//qwer
 USER_INPUT.addEventListener("keydown", function(e,para){if(para.player instanceof Actor)para.player.onkeydown(e.keyCode, para.moveKey, para.skillKey)})
 USER_INPUT.addEventListener("keyup",function(e,para){if(para.player instanceof Actor)para.player.onkeyup(e.keyCode, para.moveKey)})
+USER_INPUT.addEventListener("touchstart",function(e,para){
+    //e.preventDefault();
+    for(let i=0, l=e.touches.length; i<l; i++){
+        for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
+            if(btn instanceof Button && btn.isTouched(e.touches[i]))btn.ontouchstart(para);
+        }
+    }
+})
+USER_INPUT.addEventListener("touchmove",function(e,para){
+    //e.preventDefault();
+    for(let i=0, l=e.touches.length; i<l; i++){
+        for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
+            if(btn instanceof Button && btn.isTouched(e.touches[i]))btn.ontouchmove(para);
+        }
+    }
+})
+USER_INPUT.addEventListener("touchend",function(e,para){
+    if(e.touches.length==0){
+        for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
+            if(btn instanceof Button)btn.ontouchend(para);
+        }
+    }
+})
+
 
 Level.loadLevel();
 MagicManager.loadMagic();

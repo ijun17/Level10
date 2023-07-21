@@ -21,10 +21,10 @@ Game.setScene("manageMagic",function(){
     let magicInput = ui.add("div",[perX(30),perY(2)],[perX(40),perY(96)],"magicInput");
     magicInput.innerHTML=`
     <div style="display:inline-block;position:relative;width:100%;">
-        <textarea class="createMagicName" spellcheck="false" maxlength="20"></textarea>
+        <textarea class="createMagicName" placeholder="이름을 입력하세요" spellcheck="false" maxlength="20" readonly></textarea>
         <button class="createMagicbutton">EDIT</button>
     </div>
-    <textarea class="createMagicCode" spellcheck="false"></textarea>
+    <textarea class="createMagicCode" placeholder="코드를 입력하세요" spellcheck="false" readonly></textarea>
     <div class="createMagicInfo"></div>
     `
 

@@ -83,6 +83,7 @@ button{
 
 /* 마법 관련 화면 */
 .scroll{
+    position:static;
     overflow-y: scroll;
     overflow-x:visible;
     background-color: rgba(0,0,0,0.1);

@@ -271,7 +271,7 @@ class MonsterGolem extends Monster{
         },501));
         this.skillModule.addSkill(new MagicSkill("front",function(e){
             if(!e.canTarget())return;
-            let b=e.body, vel=e.getTargetDirX()*2;
+            let b=e.body, vel=e.getTargetDirX()*10;
             e.antiMatterFlag=true;
             TIME.addSchedule(0.5, 1, 0, function(){b.vel[0]+=vel;});
             TIME.addSchedule(1, 1, 0, function(){e.antiMatterFlag=false;});

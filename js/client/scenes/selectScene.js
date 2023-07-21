@@ -14,17 +14,17 @@ Game.setScene("select",function(){
     }
 
     //SELECT MAGIC BUTTON
-    let selectMagicBtn = ui.add("button",[perX(83),perY(100)-perX(5)], [perX(16),perX(4)],"selectMagicSceneButton");
-    selectMagicBtn.innerText="My Magic";
-    selectMagicBtn.onclick=()=>{Game.changeScene("manageMagic")};
-    //MAKE MAGIC BUTTON
-    // let makeMagicBtn = ui.add("button",[perX(83),perY(100)-perX(10)], [perX(16),perX(4)],"selectMagicSceneButton");
-    // makeMagicBtn.innerText="Create Magic";
-    // makeMagicBtn.onclick=()=>{Game.changeScene("createMagic")};
+    let manageMagicSceneBtn = ui.add("button",[perX(83),perY(100)-perX(5)], [perX(16),perX(4)],"selectMagicSceneButton");
+    manageMagicSceneBtn.innerText="My Magic";
+    manageMagicSceneBtn.onclick=()=>{Game.changeScene("manageMagic")};
+    //TEST BUTTON
+    let textSceneBtn = ui.add("button",[perX(83),perY(100)-perX(10)], [perX(16),perX(4)],"selectMagicSceneButton");
+    textSceneBtn.innerText="TEST";
+    textSceneBtn.onclick=()=>{Game.changeScene("test")};
     //HELP BUTTON
-    let helpBtn = ui.add("button",[perX(1),perX(1)], [perX(4),perX(4)],"helpSceneButton");
-    helpBtn.innerText="?";
-    helpBtn.onclick=()=>{Game.changeScene("help")};
+    let helpSceneBtn = ui.add("button",[perX(1),perX(1)], [perX(4),perX(4)],"helpSceneButton");
+    helpSceneBtn.innerText="?";
+    helpSceneBtn.onclick=()=>{Game.changeScene("help")};
     
     //let pvpBtn = ui.add("button",[SCREEN.perX(83),SCREEN.perX(11)], [SCREEN.perX(16),SCREEN.perX(4)],"pvpButton");
     //pvpBtn.innerText="PVP";

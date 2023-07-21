@@ -40,7 +40,7 @@ const MagicManager={
     },
     createEmptyCustomMagic:function(){
         let emptyMagics=[];
-        for(let i=1; i<11; i++)emptyMagics.push({name:"Empty Magic "+i, code:"//코드를 작성하세요", level:i});
+        for(let i=1; i<11; i++)emptyMagics.push({name:"Empty Magic "+i, code:"", level:i});
         MagicManager.primitiveCustomMagic=emptyMagics;
         MagicManager.saveMagic();
     },
@@ -248,7 +248,8 @@ giveForce(wind,0,-35);`,level:3},
 
     {name:"기관총",code:`//화살 발사
 addSchedule(0,5,1/10,#{
-    @a = create(ARROW, front(30), 3, 30,10)
+    @a = create(ARROW, front(30), 3)
+    move(a,front(20),0)
 })`, level:4},
 
     {name:"전격실드", code:`//전기 실드를 생성

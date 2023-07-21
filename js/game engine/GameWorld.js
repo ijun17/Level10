@@ -40,8 +40,9 @@ class GameWorldLayer{
             if (!this.garbageCollect(unit, i)) {
                 if(this.limitPosFlag)unit.body.limitPos(this.startLimitPos, this.endLimitPos);
                 if(unit.canDraw)unit.draw(renderer);
-                unit.updateBody();
                 unit.update();
+                unit.updateBody();
+                
                 if(this.enableEnvironment)environment.applyEnvironment(unit)
             }
         }

@@ -4,15 +4,12 @@ class GameUserInput{
     enableSet={}
     handlerSet={}
     constructor(html_screen_element){
-        this.screen=html_screen_element;
-        this.addEvent(document,"keydown")
-        this.addEvent(document,"keyup")
-        //this.addEvent(this.screen, "click")
-        //this.addEvent(this.screen, "touchstart")
-        //this.addEvent(this.screen, "touchmove")
-        //this.addEvent(this.screen, "touchend")
-        //this.screen.addEventListener("touchstart",(e)=>{e.preventDefault()})
-        this.screen.addEventListener("touchmove",(e)=>{e.preventDefault()})
+        // this.screen=html_screen_element;
+        // this.addEvent(document,"keydown")
+        // this.addEvent(document,"keyup")
+        // this.addEvent(screen,"touchstart")
+        // this.addEvent(screen,"touchmove")
+        // this.addEvent(screen,"touchend")
     }
 
     addEventListener(eventName, handler){
@@ -20,12 +17,12 @@ class GameUserInput{
         this.handlerSet[eventName].push(handler);
     }
 
-    addEvent(htmlElement, eventName){
+    addEvent(htmlElement, eventName, opt=false){
         if(this.handlerSet[eventName]===undefined){
             this.handlerSet[eventName]=[];
             this.enableSet[eventName]=[true];
             let eventListener = this.createEventConnecter(this.handlerSet[eventName],this.enableSet[eventName],this.parameterSet)
-            htmlElement.addEventListener(eventName, eventListener);
+            htmlElement.addEventListener(eventName, eventListener, opt);
         }
     }
     createEventConnecter(handlerSet, enableSet, parameterSet){

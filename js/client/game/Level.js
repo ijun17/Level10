@@ -96,7 +96,7 @@ const Level= {
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
                 ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
                 let m1 = Level.createMainMonster(level,MonsterWyvern, [1000, 0]);
-                let m2 = Level.createMainMonster(level,MonsterSlime, [2000, 0]);
+                let m2 = Level.createMainMonster(level,MonsterDragon, [2000, 0]);
                 m1.target=m2;
                 m2.target=m1;
                 player.setObserver();

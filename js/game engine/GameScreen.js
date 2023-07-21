@@ -79,7 +79,7 @@ class GameScreenRenderer{
         this.bgColor="#b2c3c8";
         this.camera.reset();
     }
-    useCamera(enable){this.camera.enable=enable;}
+    //useCamera(enable){this.camera.enable=enable;}
     clear(){this.ctx.fillStyle=this.bgColor;this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);};
     drawImage(img,body,opt){this.draw((e)=>this.ctx.drawImage(img,e.x, e.y, e.w, e.h),body,opt);}
     fillRect(color,body,opt){this.ctx.fillStyle=color;this.draw((e)=>this.ctx.fillRect(e.x, e.y, e.w, e.h),body,opt);}

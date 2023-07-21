@@ -99,7 +99,7 @@ class MatterElectricity extends Matter{
     oncollision(event){
         let other=event.other;
         if(other.lifeModule)other.lifeModule.giveDamage(this.damage,this.damageType);
-        other.body.setVel([other.body.vel[0]*0.5,other.body.vel[1]*0.5]);
+        other.body.setVel([other.body.vel[0]*0.1,other.body.vel[1]*0.1]);
         return false;
     }
 }
