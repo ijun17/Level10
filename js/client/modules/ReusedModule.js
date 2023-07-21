@@ -104,6 +104,7 @@ const ReusedModule={
         for(let i=0; i<4; i++){
             let btn = WORLD.add(new Button(SKILL_BUTTON_POS[i],BTN_SIZE,"white",SKILL_BUTTON_TEXT[i]))
             btn.ontouchstart=()=>{player.skillModule.castSkill(player, i);}
+            btn.update=()=>{btn.color=player.skillModule.canCast(i) ? "royalblue" : "white"}
         }
     },
 

@@ -117,6 +117,7 @@ class Monster extends Actor{
 
         let fillHPBody = {pos:SBI.strokeHPBody.pos, size:[perX(38) * (this.lifeModule.life / this.lifeModule.MAX_LIFE), perX(3)]}
 
+        r.ctx.lineWidth = 3;
         r.fillRect("rgba(0,0,0,0.2)",SBI.backgroundBody,DRAW_OPTION);
         r.strokeRect("white",SBI.strokeHPBody,DRAW_OPTION);
         r.fillRect("DarkSlateBlue",fillHPBody,DRAW_OPTION);

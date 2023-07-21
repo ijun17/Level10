@@ -93,13 +93,16 @@ class GameUnitSkillModule{
         this.coolTime.push(0);
     }
     castSkill(caster, skillNum){
-        if(skillNum<this.skillList.length&&this.coolTime[skillNum]<1&&this.mp>=this.skillList[skillNum].getRequiredMP()){
+        if(this.canCast(skillNum)){
             this.mp-=this.skillList[skillNum].getRequiredMP();
             this.coolTime[skillNum]=this.skillList[skillNum].getCoolTime();
             this.skillList[skillNum].cast(caster);
             return true;
         }
         return false;
+    }
+    canCast(skillNum){
+        return skillNum<this.skillList.length&&this.coolTime[skillNum]<1&&this.mp>=this.skillList[skillNum].getRequiredMP();
     }
     getSkillCount(){return this.skillList.length;}
 }

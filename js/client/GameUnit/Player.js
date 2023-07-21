@@ -59,7 +59,8 @@ class Player extends Actor{
 
         let fillHPBody = {pos:SBI.strokeHPBody.pos, size:[perX(18) * (this.lifeModule.life / this.lifeModule.MAX_LIFE), perX(2)]}
         let fillMPBody = {pos:SBI.strokeMPBody.pos, size:[perX(18) * (this.skillModule.mp / this.skillModule.MAX_MP), perX(2)]}
-
+        
+        r.ctx.lineWidth = 2;
         r.fillRect("rgba(0,0,0,0.2)",SBI.backgroundBody,DRAW_OPTION);
         r.strokeRect("white",SBI.strokeHPBody,DRAW_OPTION);
         r.strokeRect("white",SBI.strokeMPBody,DRAW_OPTION);

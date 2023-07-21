@@ -26,6 +26,7 @@ class TextUnit extends GameUnit{
         r.ctx.textAlign = this.textAlign;
         r.ctx.font = this.font;
         if (this.strokeColor != null) {
+            r.ctx.lineWidth = 2;
             r.ctx.strokeStyle = this.strokeColor;
             r.strokeText(this.text, this.body);
         }
