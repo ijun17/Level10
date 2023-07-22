@@ -1,5 +1,6 @@
 const Level= {
     playerLevel:1,
+    monsters:[MonsterMushroom, MonsterMonkey, MonsterFly, MonsterSlime, MonsterGolem,MonsterWyvern,MonsterDragon],
     loadLevel:function() {
         this.playerLevel = localStorage.playerLevel;
         if (this.playerLevel === undefined) {
@@ -42,7 +43,7 @@ const Level= {
                 ReusedModule.createGameMap(1000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
-                ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
+                ReusedModule.createParticleSpray(TYPE.snow, player.body.pos,2200,10,0,0.05)
                 Level.createMainMonster(level,MonsterMushroom, [800, 0]);
                 //EntityRenderer.makeShader("black",0.4);
                 break;
@@ -51,14 +52,14 @@ const Level= {
                 ReusedModule.createGameMap(2000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
-                ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
+                ReusedModule.createParticleSpray(TYPE.snow, player.body.pos,2200,10,0,0.05)
                 Level.createMainMonster(level,MonsterMonkey, [500, 0]);
                 break;
             case 3:
                 ReusedModule.createGameMap(2000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
-                ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
+                ReusedModule.createParticleSpray(TYPE.snow, player.body.pos,2200,10,0,0.05)
                 Level.createMainMonster(level,MonsterFly, [2000, 1000]);
                 break;
             case 4: 
@@ -94,7 +95,7 @@ const Level= {
                 ReusedModule.createGameMap(4000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
-                ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
+                ReusedModule.createParticleSpray(TYPE.snow, player.body.pos,2200,10,0,0.05)
                 let m1 = Level.createMainMonster(level,MonsterWyvern, [1000, 0]);
                 let m2 = Level.createMainMonster(level,MonsterDragon, [2000, 0]);
                 m1.target=m2;

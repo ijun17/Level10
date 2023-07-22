@@ -24,6 +24,8 @@ class Actor extends GameUnit{
 
         if(skillModule instanceof GameUnitSkillModule)this.skillModule=skillModule;
         else console.error("is not GameUnitSkillModule");
+
+        this.statusEffectModule=new GameUnitStatusEffectModule();
     }
     update(){
         this.moveModule.update(this);

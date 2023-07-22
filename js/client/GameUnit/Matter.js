@@ -68,6 +68,7 @@ class MatterIce extends Matter{
     oncollision(event){
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
         if(event.other.physics)event.other.physics.addForce([this.body.vel[0]*0.1,this.body.vel[1]*0.1]);
+        if(event.other.statusEffectModule)event.other.statusEffectModule.set(event.other,TYPE.iceEffect,1,1)
     }
 }
 

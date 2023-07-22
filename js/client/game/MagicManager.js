@@ -66,14 +66,14 @@ const MagicManager={
         prim_jsCode=prim_jsCode.replace(new RegExp("/\\*(.*\n)*.*\\*/"),"");
         //변수 생성
         prim_jsCode.replace(/@([A-Za-z_](\w|_)*)/g, function(a,b){if(variableList.indexOf(b)==-1)variableList.push(b);else stopProcess("'"+b+"' is already created")})
-        if(!isSuccess)return new MagicSkill();
+        if(!isSuccess)return new MagicSkill(name,function(){},0,0,1);
         //미생성 변수 탐색
         prim_jsCode.replace(/([A-Za-z_](\w|_)*)/g, function(a,b){if(variableList.indexOf(b)==-1)stopProcess("'"+b+"' is not created")})
-        if(!isSuccess)return new MagicSkill();
+        if(!isSuccess)return new MagicSkill(name,function(){},0,0,1);
         //금지 단어 탐색
         prim_jsCode.replace(/\.|\[|\]/g, function(a){stopProcess("'"+a+"' is prohibited")});
         prim_jsCode.replace(/([A-Za-z_](\w|_)*)/g, function(a){if(prohibitedWord.indexOf(a)>=0)stopProcess("'"+a+"' is prohibited")})
-        if(!isSuccess)return new MagicSkill();
+        if(!isSuccess)return new MagicSkill(name,function(){},0,0,1);
         //기호 치환(@->let $->function)
         prim_jsCode=prim_jsCode.replace(/@/g, "let ");
         prim_jsCode=prim_jsCode.replace(/\#/g, "function()");
@@ -178,7 +178,7 @@ const test_addSchedule=function(startSec,endSec,intervalSec,f){
     }else{
         for(let i=0,j=excuteCount;i<j;i++)f();
     }
-    addMagicCost(endSec*2,excuteCount);
+    addMagicCost(endSec*200,excuteCount);
 }
 `,
     prohibitedWord:["new","function","let","var", "addMagicCost", "setPlayer"],

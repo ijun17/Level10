@@ -74,8 +74,8 @@ const ReusedModule={
     },
     createParticleSpray:function(type,pos,range,particleSize,particleVy,delaySec){
         TIME.addSchedule(0,undefined,delaySec,function(){
-            let randomX = Math.random()*range;
-            let particle=WORLD.add(new Particle([randomX+pos[0],pos[1]],[particleSize,particleSize],type))
+            let randomX = (Math.random()-0.5)*range;
+            let particle=WORLD.add(new Particle([randomX+pos[0],pos[1]+1000],[particleSize,particleSize],type))
             particle.life=400;
             particle.body.addVel([0,-particleVy])
         })

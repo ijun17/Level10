@@ -1,4 +1,4 @@
-Game.setScene("test",function(level){
+Game.setScene("test",function(){
     const ui=SCREEN.ui;
     const perX=SCREEN.perX.bind(SCREEN);
     const perY=SCREEN.perY.bind(SCREEN);
