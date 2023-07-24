@@ -13,8 +13,8 @@ Game.setScene("main",function(){
     }
     WORLD.add(new TextUnit([perX(50),perY(8)],"LEVEL"+Level.playerLevel,80,"#1b1b1b",null,10000));
 
-    WORLD.environment.addGravity([0,0], [1200,600], [0,-0.01]);
-    ReusedModule.createParticleSpray(TYPE.snow, [0,600],perX(120),25,0,0.05)
+    WORLD.environment.addGravity([-1000,-1000], [3000,3000], [0,-0.01]);
+    ReusedModule.createParticleSpray(TYPE.snow, [600,-400],perX(120),25,0,0.05)
 
     WORLD.add(new MapBlock([perX(5),perY(8)],[perX(15),perY(30)],"#303030"));
     WORLD.add(new MapBlock([perX(27),perY(-20)],[perX(15),perY(50)],"#303030"));
