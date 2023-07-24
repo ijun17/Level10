@@ -97,6 +97,7 @@ const ReusedModule={
             btn.ontouchstart=()=>{player.moveModule.keyDownHandler(MOVE_HANDLER_CODE[i]);}
             btn.ontouchmove=()=>{player.moveModule.keyDownHandler(MOVE_HANDLER_CODE[i])}
             btn.ontouchend=()=>{player.moveModule.keyUpHandler(MOVE_HANDLER_CODE[i])}
+            player.addEventListener("remove",()=>{btn.setState(0);return true})
         }
         
         const SKILL_BUTTON_TEXT=['Q','W','E','R'];
@@ -105,6 +106,7 @@ const ReusedModule={
             let btn = WORLD.add(new Button(SKILL_BUTTON_POS[i],BTN_SIZE,"white",SKILL_BUTTON_TEXT[i]))
             btn.ontouchstart=()=>{player.skillModule.castSkill(player, i);}
             btn.update=()=>{btn.color=player.skillModule.canCast(i) ? "royalblue" : "white"}
+            player.addEventListener("remove",()=>{btn.setState(0);return true})
         }
     },
 

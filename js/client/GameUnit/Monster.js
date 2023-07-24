@@ -379,7 +379,7 @@ class MonsterDragon extends Monster{
     animation;
     phase=1;
     constructor(pos){
-        super(pos,[300,300],1000,new GameUnitMoveModule(1,3), new GameUnitLifeModule(5000000,100,5), new GameUnitSkillModule(0));
+        super(pos,[300,300],1000,new GameUnitMoveModule(1,3), new GameUnitLifeModule(10000000,100,5), new GameUnitSkillModule(0));
 
         this.skillModule.addSkill(new MagicSkill("THUNDER",(m)=>{
             let dir=m.front()
@@ -447,12 +447,12 @@ class MonsterDragon extends Monster{
     update(){
         super.update();
         this.animation.update();
-        if(this.lifeModule.life<this.lifeModule.MAX_LIFE*0.5 && this.phase==1){ //PHASE 2
+        if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*0.5){ //PHASE 2
             this.phase=2;
             this.skillModule.addSkill(new MagicSkill("GODENEL",(m)=>{
                 let elecs=[];
                 for(let i=0; i<100; i++){
-                    let color=`rgba(255,255,${(200-i*3>0 ? 200-i*3 : 0)},0.7)`
+                    let color=`rgba(${(200-i*3>0 ? 200-i*3 : 0)},${(255-i*3>0 ? 255-i*3 : 0)},255,0.3)`
                     let elec=WORLD.add(new Block([m.body.midX+i,m.body.midY+i],[50,50],color));
                     elec.lifeModule.life=100000;
                     elec.id=252362436;
@@ -472,22 +472,22 @@ class MonsterDragon extends Monster{
                         if(o.lifeModule)o.lifeModule.giveDamage(1000,TYPE.damageElectricity);
     
                         o.body.setVel([(m.body.midX-o.body.midX),(m.body.midY-o.body.midY)]);
-                        return true;
+                        return !(e.other instanceof Actor)
                     }
                 }
                 m.canInteract=false;
                 m.moveModule.moveSpeed=30;
-                TIME.addSchedule(0,2,0,function(){
+                TIME.addSchedule(0,4,0,function(){
                     let b=m.body;
                     for(let i=elecs.length-1; i>=0; i--)
                         elecs[i].body.addVel([(b.midX-elecs[i].body.midX), (b.midY-elecs[i].body.midY)]);
                 })
-                TIME.addSchedule(2.1,2.1,0,function(){
-                    for(let i=elecs.length-1; i>=0; i--)elecs[i].setState(0);
+                TIME.addSchedule(4.1,4.1,0,function(){
+                    for(let elec of elecs)elec.setState(0);
                     m.moveModule.moveSpeed=3;
                     m.canInteract=true;
                 });
-            },1300))
+            },1400))
         }
     }
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   

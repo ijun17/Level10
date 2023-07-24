@@ -34,7 +34,7 @@ Game.setScene("monsterVS",function(){
     }
 
     const VS_BTN_SIZE=[perX(15),perX(15)]
-    let vsBtn=ui.add("button",[perX(50)-VS_BTN_SIZE[0]/2, perY(50)-perX(3)-VS_BTN_SIZE[1]/2],VS_BTN_SIZE,"vsButton");
+    let vsBtn=ui.add("button",[perX(50)-VS_BTN_SIZE[0]/2, perY(50)-VS_BTN_SIZE[1]/2],VS_BTN_SIZE,"vsButton");
     vsBtn.innerText="VS";
 
     vsBtn.onclick=fightStart;
@@ -56,10 +56,11 @@ Game.setScene("monsterVS",function(){
         scorll1.style.display="none"
         scorll2.style.display="none"
         vsBtn.style.display="none"
-
+        SCREEN.renderer.camera.addTarget(m1.body);
     }
     function fightEnd(){
         if(m1.getState()===0 && m2.getState()===0)return;
+        SCREEN.renderer.camera.resetTarget();
         TIME.addSchedule(1,1,undefined,()=>{
             m1.setState(0);
             m2.setState(0);
@@ -74,17 +75,17 @@ Game.setScene("monsterVS",function(){
 
 
 
-    let player=WORLD.add(new Player([2000,500]));
-    SCREEN.renderer.camera.addTarget(player.body);
-    USER_INPUT.setParameter("player",player);
-    USER_INPUT.setParameter("moveKey",[39,37,38,40]);
-    player.setObserver();
-    if(localStorage.getItem("mobile")==='1')ReusedModule.createMobileButton(player);
+    // let player=WORLD.add(new Player([2000,500]));
+    // SCREEN.renderer.camera.addTarget(player.body);
+    // USER_INPUT.setParameter("player",player);
+    // USER_INPUT.setParameter("moveKey",[39,37,38,40]);
+    // player.setObserver();
+    // if(localStorage.getItem("mobile")==='1')ReusedModule.createMobileButton(player);
 
     ReusedModule.createGameMap(4000, 1000);
     WORLD.environment.addGravity([-20000, -20000], [40000, 40000], [0, -0.2]);
     WORLD.environment.addDrag([-20000, -20000], [40000, 40000], [0, 0], 0.02);
-    ReusedModule.createParticleSpray(TYPE.snow, player.body.pos, 2200, 10, 0, 0.05);
+    ReusedModule.createParticleSpray(TYPE.snow, SCREEN.renderer.camera.pos, 2200, 10, 0, 0.05);
 
     
     SCREEN.renderer.camera.zoom = 0.5;

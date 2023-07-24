@@ -18,6 +18,7 @@ class MagicSkill{
     }
     cast(caster){
         this.code(caster);
+        SCREEN.renderer.camera.vibrate(10);
     }
     getRequiredMP(){return this.requiredMP}
     getCoolTime(){return this.cooltime}

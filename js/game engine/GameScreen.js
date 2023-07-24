@@ -128,9 +128,7 @@ class GameScreenRendererCamera{
     }
     reset(){
         this.zoom=1;
-        this.isFollow=false;
-        this.followSpeed=0.1;
-        this.target=[];
+        this.resetTarget();
         calvec(this.pos,'=',this.screenPos);
     }
     update(){
@@ -141,6 +139,11 @@ class GameScreenRendererCamera{
         this.target.push(target);
         this.inv_targetCount=1/this.target.length;
     }
+    resetTarget(){
+        this.isFollow=false;
+        this.followSpeed=0.1;
+        this.target=[];
+    }
     move(xy){
         this.pos[0]+=xy[0];
         this.pos[1]+=xy[1];
@@ -149,8 +152,8 @@ class GameScreenRendererCamera{
         let followX=0;
         let followY=0;
         for(let i=this.target.length-1; i>=0; i--){
-            followX+=this.target[i].pos[0];
-            followY+=this.target[i].pos[1];
+            followX+=this.target[i].midX;
+            followY+=this.target[i].midY;
         }
         //this.move([(followX*this.inv_targetCount-this.pos[0])*this.followSpeed,(followY*this.inv_targetCount-this.pos[1])*this.followSpeed]);
         this.pos[0]+=(followX*this.inv_targetCount-this.pos[0])*this.followSpeed;
