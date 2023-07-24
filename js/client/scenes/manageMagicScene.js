@@ -9,10 +9,10 @@ Game.setScene("manageMagic",function(){
         const IS_BASIC=MagicManager.isBasicMagic(num);
         createMagicName.value=MAGIC.name;
         createMagicCode.value=MAGIC.getPrimitiveCode();
-        createMagicInfo.innerText=`MP: ${MAGIC.requiredMP} / cooltime: ${MAGIC.cooltime}`;
         createMagicName.readOnly =IS_BASIC
         createMagicCode.readOnly =IS_BASIC
         createMagicbutton.style.display=IS_BASIC ? "none" : "block"
+        printCreateMagicInfo(MAGIC);
     })
     ReusedModule.createSelectMagicComponent([perX(71),perY(100)-perX(36)],MagicManager.skillNum,"선택된 스킬(Q,W,E,R)",buttonSelector)
 
@@ -25,13 +25,23 @@ Game.setScene("manageMagic",function(){
         <button class="createMagicbutton">EDIT</button>
     </div>
     <textarea class="createMagicCode" placeholder="코드를 입력하세요" spellcheck="false" readonly></textarea>
-    <div class="createMagicInfo"></div>
+    <div class="createMagicInfo" style="font-weight:bold"></div>
     `
 
     let createMagicbutton = magicInput.querySelector(".createMagicbutton")
     let createMagicName = magicInput.querySelector(".createMagicName")
     let createMagicCode = magicInput.querySelector(".createMagicCode")
     let createMagicInfo = magicInput.querySelector(".createMagicInfo")
+    function printCreateMagicInfo(magic){
+        if(magic.errorMessageList.length===0){
+            createMagicInfo.innerText=`MP: ${magic.requiredMP} / cooltime: ${magic.cooltime/100}`;
+            createMagicInfo.style.color="white"
+        }else{
+            createMagicInfo.innerText="ERROR";
+            createMagicInfo.style.color="brown"
+        }
+        
+    }
 
 
     
@@ -46,8 +56,6 @@ Game.setScene("manageMagic",function(){
         let createdMagic = MagicManager.createMagicSkill(primitiveCustomMagic);
         MagicManager.magicList[magicNum]=createdMagic;
         buttonSelector.ele.innerText=createMagicName.value;
-        let isSuccess = (createdMagic.error===undefined)
-        let resultColor=(isSuccess ? "goldenrod" : "red");
-        let resultText=(isSuccess ? "CREATE SUCCESSFULLY": createdMagic.error)
+        printCreateMagicInfo(createdMagic);
     }
 })

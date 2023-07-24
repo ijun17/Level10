@@ -423,8 +423,8 @@ class MonsterDragon extends Monster{
                         if(e.other.damageType!==TYPE.damageElectricity)e.other.setState(0);
                         return false;
                     }
-                    e.other.body.setVel([(x-e.other.body.pos[0]),(y-e.other.body.pos[1])]);
-                    return true;
+                    e.other.body.setVel([(x-e.other.body.midX),(y-e.other.body.midY)]);
+                    return !(e.other instanceof Actor)
                 }
             }
             TIME.addSchedule(0,2,0,function(){
@@ -487,7 +487,7 @@ class MonsterDragon extends Monster{
                     m.moveModule.moveSpeed=3;
                     m.canInteract=true;
                 });
-            },1000))
+            },1300))
         }
     }
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   

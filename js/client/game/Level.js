@@ -65,21 +65,21 @@ const Level= {
                 ReusedModule.createGameMap(2000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
-                ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
+                ReusedModule.createParticleSpray(TYPE.snow, player.body.pos,2200,10,0,0.05)
                 Level.createMainMonster(level,[1500, 0]);
                 break;
             case 4:
                 ReusedModule.createGameMap(2000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
-                ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
+                ReusedModule.createParticleSpray(TYPE.snow, player.body.pos,2200,10,0,0.05)
                 Level.createMainMonster(level,[500, 0]);
                 break;
             case 5:
                 ReusedModule.createGameMap(4000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
-                ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
+                ReusedModule.createParticleSpray(TYPE.snow, player.body.pos,2200,10,0,0.05)
                 Level.createMainMonster(level,[2000, 0]);
                 break;
             case 6:
@@ -87,7 +87,7 @@ const Level= {
                 ReusedModule.createGameMap(4000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
-                ReusedModule.createParticleSpray(TYPE.snow, [0,1000],2200,10,0,0.05)
+                ReusedModule.createParticleSpray(TYPE.snow, player.body.pos,2200,10,0,0.05)
                 Level.createMainMonster(level,[2000, 0]);
                 break;
             default:

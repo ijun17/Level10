@@ -15,8 +15,6 @@ Game.setScene("monsterVS",function(){
         let monsterBtn2=ui.create("button",[0,0],[perX(18),perX(4)],"levelButton");
         monsterBtn1.style.position="static"
         monsterBtn2.style.position="static"
-        monsterBtn1.style.backgroundColor="rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)";
-        monsterBtn2.style.backgroundColor="rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)";
         monsterBtn1.innerText="LEVEL"+i;
         monsterBtn2.innerText="LEVEL"+i;
         monsterBtn1.onclick=()=>{
@@ -80,6 +78,7 @@ Game.setScene("monsterVS",function(){
     SCREEN.renderer.camera.addTarget(player.body);
     USER_INPUT.setParameter("player",player);
     USER_INPUT.setParameter("moveKey",[39,37,38,40]);
+    player.setObserver();
     if(localStorage.getItem("mobile")==='1')ReusedModule.createMobileButton(player);
 
     ReusedModule.createGameMap(4000, 1000);
@@ -87,7 +86,7 @@ Game.setScene("monsterVS",function(){
     WORLD.environment.addDrag([-20000, -20000], [40000, 40000], [0, 0], 0.02);
     ReusedModule.createParticleSpray(TYPE.snow, player.body.pos, 2200, 10, 0, 0.05);
 
-    player.setObserver();
+    
     SCREEN.renderer.camera.zoom = 0.5;
 
     //TIME.addSchedule(0,undefined,1,()=>{console.log(player.moveModule.footDirection)});

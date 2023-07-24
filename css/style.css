@@ -54,11 +54,12 @@ button{
     color:white;
 }
 .levelButton{
-    background-color:unset;
+    background-color:rgba(255,255,255,0.5);
     color:black;
     font-size : 40px;
     font-weight: bold;
     border: solid black 1px;
+    overflow: hidden;
 }
 .levelButton:hover{
     color:white;
@@ -87,6 +88,7 @@ button{
 
 /* 마법 관련 화면 */
 .scroll{
+    text-align: center;
     overflow-y: scroll;
     overflow-x:visible;
     background-color: rgba(0,0,0,0.1);

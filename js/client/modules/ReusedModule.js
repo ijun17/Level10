@@ -38,7 +38,7 @@ const ReusedModule={
     },
     createMagicButtonList(pos, size, buttonSelector, onclick=function(){}) {
         const UI=SCREEN.ui;
-        let scroll = UI.add("button", pos, size, "scroll");
+        let scroll = ReusedModule.createScroll(pos,size);
         for (let i = 0; i < MagicManager.magicList.length; i++) {
             if(MagicManager.magicList[i].requiredLevel>Level.playerLevel)continue;
             scroll.append(ReusedModule.createMagicButton(i,buttonSelector, onclick));
@@ -59,13 +59,13 @@ const ReusedModule={
             const MAGIC=MagicManager.magicList[skillNum[i]];
             selectMagicBtn.className="selectMagicButton";
             UI.setElementSize(selectMagicBtn, [COMPONENT_WIDTH-perX(2),perX(7)])
-            selectMagicBtn.innerText=`(${KEY_SET[i]}) ${MAGIC.name}\nMP: ${MAGIC.requiredMP} / cooltime: ${MAGIC.cooltime}`;
+            selectMagicBtn.innerText=`(${KEY_SET[i]}) ${MAGIC.name}\nMP: ${MAGIC.requiredMP} / cooltime: ${MAGIC.cooltime/100}`;
             selectMagicBtn.onclick=()=>{
                 if(buttonSelector.ele===null)return;
                 let magicNum=Number(buttonSelector.ele.dataset.magicNum);
                 const MAGIC=MagicManager.magicList[magicNum];
                 skillNum[i]=magicNum;
-                selectMagicBtn.innerText=`(${KEY_SET[i]}) ${MAGIC.name}\nMP: ${MAGIC.requiredMP} / cooltime: ${MAGIC.cooltime}`;
+                selectMagicBtn.innerText=`(${KEY_SET[i]}) ${MAGIC.name}\nMP: ${MAGIC.requiredMP} / cooltime: ${MAGIC.cooltime/100}`;
                 MagicManager.saveSkillNum();
             }
             component.append(selectMagicBtn);

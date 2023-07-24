@@ -49,54 +49,50 @@ const MagicManager={
         const prim_code=primitiveMagic.code;
         const level=primitiveMagic.level;
 
-        let isSuccess=true;
-        let resultText="";
-        function stopProcess(result){
-            isSuccess=false;
-            resultText=result;
-            console.error(resultText);
-        }
+        let errorMessageList=[];
+        function addErrorMessage(error){errorMessageList.push(error);}
         
-        let variableList=["player","if","for","while","switch","else","front","create","setTrigger","giveForce","giveLife","invisible","move","addSchedule","getX","getY","getVX","getVY","FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"];
+        let keywordList=["player","if","for","while","switch","else","front","create","setTrigger","giveForce","giveLife","invisible","move","addSchedule","getX","getY","getVX","getVY","FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"];
         let testFunctionList=["giveForce","giveLife","invisible", "create","move","addSchedule","setTrigger"];
-        let prohibitedWord=["new","function","let","var", "addMagicCost", "setPlayer"]
+        let prohibitedWord=["new","function","return","let","var", "addMagicCost", "setPlayer"]
         let prim_testCode,prim_jsCode;
         //주석제거
         prim_jsCode=prim_code.replace(new RegExp("//.*\n*","g"),"");
         prim_jsCode=prim_jsCode.replace(new RegExp("/\\*(.*\n)*.*\\*/"),"");
         //변수 생성
-        prim_jsCode.replace(/@([A-Za-z_](\w|_)*)/g, function(a,b){if(variableList.indexOf(b)==-1)variableList.push(b);else stopProcess("'"+b+"' is already created")})
-        if(!isSuccess)return new MagicSkill(name,function(){},0,0,1);
-        //미생성 변수 탐색
-        prim_jsCode.replace(/([A-Za-z_](\w|_)*)/g, function(a,b){if(variableList.indexOf(b)==-1)stopProcess("'"+b+"' is not created")})
-        if(!isSuccess)return new MagicSkill(name,function(){},0,0,1);
+        prim_jsCode.replace(/@([A-Za-z_](\w|_)*)/g, (a,b)=>{if(keywordList.indexOf(b)==-1)keywordList.push(b);})
+        //키워드 탐색
+        prim_jsCode.replace(/([A-Za-z_](\w|_)*)/g, (a,b)=>{if(keywordList.indexOf(b)==-1)addErrorMessage("'"+b+"' is undefined")})
         //금지 단어 탐색
-        prim_jsCode.replace(/\.|\[|\]/g, function(a){stopProcess("'"+a+"' is prohibited")});
-        prim_jsCode.replace(/([A-Za-z_](\w|_)*)/g, function(a){if(prohibitedWord.indexOf(a)>=0)stopProcess("'"+a+"' is prohibited")})
-        if(!isSuccess)return new MagicSkill(name,function(){},0,0,1);
+        prim_jsCode.replace(/\.|\[|\]/g, function(a){addErrorMessage("'"+a+"' is prohibited")});
+        prim_jsCode.replace(/([A-Za-z_](\w|_)*)/g, (a)=>{if(prohibitedWord.indexOf(a)>=0)addErrorMessage("'"+a+"' is prohibited")})
         //기호 치환(@->let $->function)
         prim_jsCode=prim_jsCode.replace(/@/g, "let ");
         prim_jsCode=prim_jsCode.replace(/\#/g, "function()");
         //testcode 치환
-        prim_testCode=prim_jsCode.replace(/([A-Za-z_](\w|_)*)/g, function(a){if(testFunctionList.indexOf(a)>=0)return "test_"+a;else return a;})
+        prim_testCode=prim_jsCode.replace(/([A-Za-z_](\w|_)*)/g, (a)=>{if(testFunctionList.indexOf(a)>=0)return "test_"+a;else return a;})
 
         let jsCode=prim_jsCode;
         let testCode=prim_testCode
-        let magic=function(){};
-        let magicSkill;
+        let magic;
+        let magicInfo;
         try {
             magic = eval("(function(player){"+MAGIC_DATA.unit_magic+jsCode+"})");
             let testMagic=eval("(function(player){"+MAGIC_DATA.unit_magic+MAGIC_DATA.test_unit_magic+testCode+";return magicCost})");
             magicInfo=testMagic(new Player([0,0],1));
-            if(isNaN(magicInfo.mp)||isNaN(magicInfo.cooltime)){
-                magicSkill = new MagicSkill(name,function(){},0,0,1);
-                magicSkill.error="error : MP or Cooltime is not Number";
-            }else magicSkill = new MagicSkill(name,magic,magicInfo.cooltime,magicInfo.mp,level);
+            if(isNaN(magicInfo.mp)||isNaN(magicInfo.cooltime))addErrorMessage("error : MP or Cooltime is not Number")
         }catch(e){
-            magicSkill = new MagicSkill(name,function(){},0,0,1);
-            magicSkill.error=e;
+            addErrorMessage(e.message);
         }
-        magicSkill.setPrimitiveCode(prim_code);
+        let magicSkill;
+        if(errorMessageList.length>0){
+            magic=()=>{}
+            magicInfo={cooltime:0, mp:0};
+            console.log(errorMessageList)
+        }
+        magicSkill=new MagicSkill(name,magic,magicInfo.cooltime,magicInfo.mp,level,false);
+        magicSkill.setErrorMessageList(errorMessageList);
+        magicSkill.setPrimitiveCode(prim_code)
         return magicSkill;
     }
 }
@@ -222,7 +218,7 @@ addSchedule(0,12/100,1/100,()=>{
     @fire = create(FIRE,0,0);
     move(fire,front(200-13*i-15), i*35);
     giveLife(fire,500)
-    addSchedule(0,2,1/100,#{
+    addSchedule(0,2,1/100,()=>{
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
     });
     i++;

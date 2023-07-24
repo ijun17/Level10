@@ -5,6 +5,7 @@ class MagicSkill{
     cooltime=0;
     isBasic;
     error;
+    errorMessageList=[];
     code;
     primitiveCode="";
     constructor(name="", code=function(){}, cooltime=0, requiredMP=0, requiredLevel=0, isBasic=true){
@@ -23,4 +24,5 @@ class MagicSkill{
     getRequiredLevel(){return this.requiredLevel}
     getPrimitiveCode(){return this.primitiveCode;}
     setPrimitiveCode(pCode){this.primitiveCode=pCode;}
+    setErrorMessageList(e){this.errorMessageList=e;}
 }

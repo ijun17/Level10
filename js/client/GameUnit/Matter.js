@@ -124,6 +124,7 @@ class MatterEnergy extends Matter{
     constructor(pos,vel){
         super(pos,[30,30],vel,500,TYPE.damageNormal);
         this.image=Game.resource.getImage("matter_energy")
+        this.physics.inv_mass=0.1;
     }
     draw(r){r.drawImage(this.image,this.body);}
     oncollision(event){
@@ -166,10 +167,7 @@ class MatterExplosion extends Matter{
         this.physics.setGravity([0,0]);
         this.physics.inv_mass=0;
         SCREEN.renderer.camera.vibrate(30);
-        this.lifeModule.ondamage=function(d,dt){
-            if(dt==TYPE.damageFire)return false;
-            return true;
-        }
+        this.lifeModule.ondamage=function(d,dt){return false;}
     }
     draw(r){r.drawImage(this.image,this.body);}
     oncollision(event){
