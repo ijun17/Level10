@@ -6,30 +6,77 @@ Game.setScene("monsterVS",function(){
 
     let bst1=ReusedModule.createButtonSelector();
     let bst2=ReusedModule.createButtonSelector();
-    let scorll1=ReusedModule.createScroll([perX(6),perX(1)],[perX(20),perY(100)-perX(2)]);
-    let scorll2=ReusedModule.createScroll([perX(79),perX(1)],[perX(20),perY(100)-perX(2)]);
+    let scorll1=ReusedModule.createScroll([perX(1),perX(1)],[perX(20),perY(100)-perX(7)]);
+    let scorll2=ReusedModule.createScroll([perX(79),perX(1)],[perX(20),perY(100)-perX(7)]);
 
 
     for(let i=0,l=Level.monsters.length; i<l; i++){
-        let monsterBtn1=ui.create("button",[0,0],[18,3],"levelButton");
-        let monsterBtn2=ui.create("button",[0,0],[18,3],"levelButton");
-        monsterBtn1.innerText="LEVEL"+(i+1);
-        monsterBtn2.innerText="LEVEL"+(i+1);
-        monsterBtn1.onclick=()=>{bst1.ele=monsterBtn1;}
-        monsterBtn2.onclick=()=>{bst2.ele=monsterBtn2;}
+        let monsterBtn1=ui.create("button",[0,0],[perX(18),perX(4)],"levelButton");
+        let monsterBtn2=ui.create("button",[0,0],[perX(18),perX(4)],"levelButton");
+        monsterBtn1.style.position="static"
+        monsterBtn2.style.position="static"
+        monsterBtn1.style.backgroundColor="rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)";
+        monsterBtn2.style.backgroundColor="rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)";
+        monsterBtn1.innerText="LEVEL"+i;
+        monsterBtn2.innerText="LEVEL"+i;
+        monsterBtn1.onclick=()=>{
+            if (bst1.ele != null) bst1.ele.classList.remove("selectedMagic");
+            bst1.ele=monsterBtn1;
+            bst1.level=i;
+            bst1.ele.classList.add("selectedMagic");
+        }
+        monsterBtn2.onclick=()=>{
+            if (bst2.ele != null) bst2.ele.classList.remove("selectedMagic");
+            bst2.ele=monsterBtn2;
+            bst2.level=i;
+            bst2.ele.classList.add("selectedMagic");
+        }
+        scorll1.append(monsterBtn1);
+        scorll2.append(monsterBtn2);
+    }
+
+    const VS_BTN_SIZE=[perX(15),perX(15)]
+    let vsBtn=ui.add("button",[perX(50)-VS_BTN_SIZE[0]/2, perY(50)-perX(3)-VS_BTN_SIZE[1]/2],VS_BTN_SIZE,"vsButton");
+    vsBtn.innerText="VS";
+
+    vsBtn.onclick=fightStart;
+    let m1,m2;
+    function fightStart(){
+        if(bst1.ele==null || bst2.ele==null)return;
+        m1 = WORLD.add(new Level.monsters[bst1.level]([1000,0]))
+        m2 = WORLD.add(new Level.monsters[bst2.level]([2000,0]))
+        m1.setTarget(m2);
+        m2.setTarget(m1);
+        TIME.addSchedule(1,1,0,function(){
+            m1.activateAI()
+            m2.activateAI()
+        });
+        m1.addEventListener("remove",fightEnd);
+        m2.addEventListener("remove",fightEnd);
+        m1.renderStatusBar("LEVEL"+bst1.level,[perX(6),perY(100)-perX(8.5)],()=>{return m1.getState()==0})
+        m2.renderStatusBar("LEVEL"+bst2.level,[perX(59), perY(100)-perX(8.5)],()=>{return m2.getState()==0});
+        scorll1.style.display="none"
+        scorll2.style.display="none"
+        vsBtn.style.display="none"
+
+    }
+    function fightEnd(){
+        if(m1.getState()===0 && m2.getState()===0)return;
+        TIME.addSchedule(1,1,undefined,()=>{
+            m1.setState(0);
+            m2.setState(0);
+        })
+        TIME.addSchedule(1.5,1.5,undefined,()=>{
+            scorll1.style.display="block"
+            scorll2.style.display="block"
+            vsBtn.style.display="block"
+        })
+        
     }
 
 
 
-
-
     let player=WORLD.add(new Player([2000,500]));
-    player.renderStatusBar([perX(10),perY(100)-perX(10)])
-    player.addEventListener("remove", ()=>{
-        let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"playerDieText");
-        stageClearText.innerText="YOU DIE";
-        TIME.addSchedule(2,2,undefined,()=>{Game.changeScene("select")});
-    })
     SCREEN.renderer.camera.addTarget(player.body);
     USER_INPUT.setParameter("player",player);
     USER_INPUT.setParameter("moveKey",[39,37,38,40]);
@@ -40,13 +87,6 @@ Game.setScene("monsterVS",function(){
     WORLD.environment.addDrag([-20000, -20000], [40000, 40000], [0, 0], 0.02);
     ReusedModule.createParticleSpray(TYPE.snow, player.body.pos, 2200, 10, 0, 0.05);
 
-
-
-
-    let m1 = Level.createMainMonster(level, MonsterWyvern, [1000, 0]);
-    let m2 = Level.createMainMonster(level, MonsterDragon, [2000, 0]);
-    m1.target = m2;
-    m2.target = m1;
     player.setObserver();
     SCREEN.renderer.camera.zoom = 0.5;
 

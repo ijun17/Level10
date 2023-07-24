@@ -14,7 +14,7 @@ const ReusedModule={
         WORLD.layer[PHYSICS_LAYER].setLimitPos([0,0], [w,h]);
     },
     createScroll(pos,size){
-        let scroll = ui.add("div",pos,size,"scroll");
+        let scroll = SCREEN.ui.add("div",pos,size,"scroll");
         return scroll;
     },
     createButtonSelector(){

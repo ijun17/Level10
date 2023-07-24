@@ -44,7 +44,7 @@ class MatterFire extends Matter{
     oncollision(event){
         let other=event.other;
         if(other.lifeModule){other.lifeModule.giveDamage(this.damage,this.damageType);}
-        if(other.physics)other.physics.addForce([this.body.vel[0]*0.1,this.body.vel[1]*0.1]);
+        //if(other.physics)other.physics.addForce([this.body.vel[0]*0.1,this.body.vel[1]*0.1]);
     }
 }
 
@@ -67,7 +67,6 @@ class MatterIce extends Matter{
     draw(r){r.drawImage(this.image,this.body,{rotate:Math.atan2(this.body.vel[0], this.body.vel[1])});}
     oncollision(event){
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
-        if(event.other.physics)event.other.physics.addForce([this.body.vel[0]*0.1,this.body.vel[1]*0.1]);
         if(event.other.statusEffectModule)event.other.statusEffectModule.set(event.other,TYPE.iceEffect,1,1)
     }
 }
@@ -110,13 +109,13 @@ class MatterArrow extends Matter{
     constructor(pos,vel){
         super(pos,[30,30],vel,500,TYPE.damageNormal);
         this.image=Game.resource.getImage("matter_arrow")
+        this.physics.inv_mass*=0.5;
     }
     draw(r){r.drawImage(this.image,this.body,{rotate:Math.atan2(this.body.vel[0], this.body.vel[1])});}
     oncollision(event){
         let relVel=event.other.body.getRelativeVel(this.body);
         let damage=(relVel[0]**2+relVel[1]**2)*10;
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage+damage,this.damageType);
-        event.other.physics.addForce([relVel[0]*0.5, relVel[1]*0.5]);
     }
 }
 
@@ -129,7 +128,7 @@ class MatterEnergy extends Matter{
     draw(r){r.drawImage(this.image,this.body);}
     oncollision(event){
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
-        if(event.other.physics)event.other.physics.addForce([0,0]);
+        //if(event.other.physics)event.other.physics.addForce([0,0]);
     }
 }
 

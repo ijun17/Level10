@@ -40,7 +40,7 @@ const MagicManager={
     },
     createEmptyCustomMagic:function(){
         let emptyMagics=[];
-        for(let i=1; i<11; i++)emptyMagics.push({name:"Empty Magic "+i, code:"", level:i});
+        for(let i=0; i<10; i++)emptyMagics.push({name:"Empty Magic "+(i+1), code:"", level:i});
         MagicManager.primitiveCustomMagic=emptyMagics;
         MagicManager.saveMagic();
     },
@@ -163,7 +163,7 @@ const test_create=function(typenum=BLOCK,vx=0,vy=0,w=30,h=30){
 const test_setTrigger=function(t,f){setTrigger(t,f);addMagicCost(100,t.w*t.h+getEnergy(t)+1);}
 const test_giveForce=function(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMagicCost(0, newE-oldE);}
 const test_giveLife=function(e,d){addMagicCost(0,d);giveLife(e,d);}
-const test_invisible=function(e,time){addMagicCost(time*2,(e instanceof Player?(time**2)/100:time));}
+const test_invisible=function(e,time){addMagicCost(time*200,(e instanceof Player?(time**2):time));}
 const test_move=function(e,vx,vy){addMagicCost(0,(vx+vy)/10);}
 const test_addSchedule=function(startSec,endSec,intervalSec,f){
     if(intervalSec<0.01)intervalSec=0.01;
@@ -193,36 +193,27 @@ const test_addSchedule=function(startSec,endSec,intervalSec,f){
     {name:"파이어볼",code:`//전방에 파이어볼을 발사
 @e1=create(FIRE,front(20),2);
 giveLife(e1,10);
-move(e1,front(30), 0);`,level:1},
+move(e1,front(30), 0);`,level:0},
 
     {name:"벽", code:`//길쭉한 블럭을 생성
 @block = create(BLOCK,0,0,60,200);
-move(block,0,100);`,level:1},
+move(block,0,100);`,level:0},
 
     {name:"대쉬",code:`//플레이어가 빠른 속도로 앞으로 이동
-giveForce(player,front(30),0);`,level:1},
+giveForce(player,front(30),0);`,level:0},
 
     {name:"힐",code:`//플레이어 hp를 2000회복
-giveLife(player,2000);`,level:1},
+giveLife(player,2000);`,level:0},
     
     {name:"얼음비", code:`//많은 얼음을 소환
 for(@i=0;i<10;i++){
     @ice = create(ICE, 0,-20)
     move(ice, front(i*40+100),300+i*40)
     giveLife(ice,100);
-}`,level:2},
-
-    {name:"얼음지뢰",code:`//얼음 지뢰 생성
-@e = create(ICE,0,0);
-giveLife(e,1000);
-invisible(e,1000);
-@e2 = create(ICE,0,0);
-move(e2,front(31), 0);
-giveLife(e2,1000);
-invisible(e2,1000);`,level:2},
+}`,level:1},
 
     {name:"텔레포트",code:`//텔레포트
-move(player, front(500), 0);`,level:2},
+move(player, front(500), 0);`,level:1},
 
     {name:"파이어토네이도",code:`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
@@ -235,22 +226,22 @@ addSchedule(0,12/100,1/100,()=>{
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
     });
     i++;
-});`,level:3},
+});`,level:2},
 
     {name:"투명",code:`//플레이어의 투명화
-invisible(player,3);`,level:3},
+invisible(player,3);`,level:2},
 
     {name:"활공",code:`//플레이어 아래에 바람 생성
 @wind=create(WIND,0,40);
 giveLife(wind,200);
 move(wind,front(-100),-20);
-giveForce(wind,0,-35);`,level:3},
+giveForce(wind,0,-35);`,level:2},
 
     {name:"기관총",code:`//화살 발사
 addSchedule(0,5,1/10,#{
     @a = create(ARROW, front(30), 3)
     move(a,front(20),0)
-})`, level:4},
+})`, level:3},
 
     {name:"전격실드", code:`//전기 실드를 생성
 for(@j=0;j<5;j++){
@@ -263,14 +254,14 @@ for(@j=0;j<5;j++){
     @c=create(ELECTRICITY,0,0);
     move(c,front(-80),60-j*20);
     giveLife(c,500);
-}`,level:4},
+}`,level:3},
 
     {name:"번개",code:`//번개는 전기들이 서로 일정 수 부딪히면 생성된다. 
 for(@i=0; i<100; i++){
     @e=create(ELECTRICITY, 0,0);
     move(e, front(300),0);
     giveLife(e,400)
-}`,level:5},
+}`,level:4},
 
     {name:"폭발 비",code:`//불끼리 부딪히면 폭발한다.
 for(@i=0; i<10; i++){
@@ -283,7 +274,7 @@ for(@i=0; i<10; i++){
     @fire3= create(FIRE, 0,-20)
     move(fire3, front(i*70+150),400+i*50);
     giveLife(fire3,30);
-}`,level:5},
+}`,level:4},
 
     {name:"연막",code:`//수증기는 불과 얼음이 부딪히면 생성된다.
 for(@i=0; i<10; i++){
@@ -291,7 +282,7 @@ for(@i=0; i<10; i++){
     move(create(ICE,front(10),1),front(100*i), 0);
     move(create(FIRE,front(10),1),front(100*i), 100);
     move(create(ICE,front(10),1),front(100*i), 100);
-}`,level:5},
+}`,level:4},
 
     {name:"파이어토네이도V",code:`//불꽃 토네이도 생성
 @x=getX(player)+front(200);

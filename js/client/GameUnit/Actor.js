@@ -4,6 +4,7 @@ class Actor extends GameUnit{
     skillModule;
     statusEffectModule;
     damageTextColor="orange";
+    damageVibrate=0;
 
     constructor(pos,size,moveModule,lifeModule,skillModule){//move={moveMode, moveSpeed, jumpSpeed}, life={life,defense}
         super(new UnitBody(pos,size));
@@ -18,7 +19,7 @@ class Actor extends GameUnit{
             this.lifeModule.ondie=function(){this.state=0;}.bind(this);
             this.lifeModule.ontotaldamage=function(totalDamage){
                 this.createDamageText(totalDamage,this.damageTextColor);
-                SCREEN.renderer.camera.vibrate(20);
+                SCREEN.renderer.camera.vibrate(this.damageVibrate);
             }.bind(this)
         }else console.error("is not GameUnitLifeModule");
 

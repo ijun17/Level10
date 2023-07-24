@@ -141,17 +141,19 @@ class GameWorldPhysics{
         let normal2=[0,0];normal2[COLL_AXIS]=-COLL_DIR;
         let do1 = unit1.eventManager.oncollision({ do: true, other: unit2, collisionNormal: normal1 });
         let do2 = unit2.eventManager.oncollision({ do: true, other: unit1, collisionNormal: normal2 });
-        if (physics1 && physics2 && !(body1.overlap && body2.overlap) && do1 && do2) {
+        if (physics1 && physics2  && do1 && do2) {
             //EXEPTION HANDLING
             if (physics1.inv_mass === 0 && physics2.inv_mass === 0) return;
             const INV_SUM_INV_MASS = 1 / (physics1.inv_mass + physics2.inv_mass);
             //RESOLVE POSITION
-            let fixPosRatio = COLL_DIR*INV_SUM_INV_MASS*COLL_DEPTH;
-            let deltaPos=[0,0];
-            deltaPos[COLL_AXIS]=-fixPosRatio*physics1.inv_mass;
-            body1.addPos(deltaPos);
-            deltaPos[COLL_AXIS]=fixPosRatio*physics2.inv_mass;
-            body2.addPos(deltaPos)
+            if(!(body1.overlap && body2.overlap)){
+                let fixPosRatio = COLL_DIR*INV_SUM_INV_MASS*COLL_DEPTH;
+                let deltaPos=[0,0];
+                deltaPos[COLL_AXIS]=-fixPosRatio*physics1.inv_mass;
+                body1.addPos(deltaPos);
+                deltaPos[COLL_AXIS]=fixPosRatio*physics2.inv_mass;
+                body2.addPos(deltaPos)
+            }
             //RESOLVE VELOCITY
             let deltaVel=[body2.vel[0]-body1.vel[0], body2.vel[1]-body1.vel[1]];
             if (COLL_DIR * deltaVel[COLL_AXIS] > 0) return;
