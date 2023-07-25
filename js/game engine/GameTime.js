@@ -15,7 +15,7 @@ class GameTime{
     constructor(){
         this.scheduleList=new ArrayForSchedule(300);
     }
-    changeFrameRate(fps){
+    setFrameRate(fps){
         if(this.interval==null)this.fps=fps;
         else console.error("Cannot change the frame rate because the game has already started.")
     }

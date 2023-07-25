@@ -17,6 +17,7 @@ class GameWorld{
     reset(){for(let i=0, l=this.layer.length; i<l; i++)this.layer[i].reset();this.environment.reset();}
     update(){for(let i=0, l=this.layer.length; i<l; i++)this.layer[i].update(this.physics, this.environment);}
     add(unit){this.layer[unit.getLayer()].add(unit);return unit;}
+    getLayer(i){return this.layer[i]}
 }
 
 class GameWorldLayer{

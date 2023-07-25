@@ -72,13 +72,30 @@ const ReusedModule={
         }
         
     },
-    createParticleSpray:function(type,pos,range,particleSize,particleVy,delaySec){
-        TIME.addSchedule(0,undefined,delaySec,function(){
-            let randomX = (Math.random()-0.5)*range;
-            let particle=WORLD.add(new Particle([randomX+pos[0],pos[1]+1000],[particleSize,particleSize],type))
-            particle.life=400;
-            particle.body.addVel([0,-particleVy])
-        })
+    createParticleSpray:function(type,size,count,vy){
+        const CAMERA=SCREEN.renderer.camera;
+        const POS=CAMERA.pos;
+        const SCREEN_POS=CAMERA.screenPos
+        const SCREEN_RATE=[CAMERA.screenPos[0]/SCREEN.perX(100),CAMERA.screenPos[1]/SCREEN.perY(100)]
+        const RANGE_X=SCREEN.perX(100)/CAMERA.zoom;
+        const RANGE_Y=SCREEN.perY(100)/CAMERA.zoom;
+        for(let i=0; i<count; i++){
+            let randomX = (Math.random()-SCREEN_RATE[0])*RANGE_X+POS[0];
+            let randomY = (Math.random()-SCREEN_RATE[1])*RANGE_Y+POS[1];
+            let particle=WORLD.add(new Particle([randomX,randomY],[size,size],type))
+            particle.physics=undefined
+            particle.body.addVel([0,vy])
+            particle.update=()=>{
+                let pos=particle.body.pos;
+                if(pos[0]<(-SCREEN_RATE[0])*RANGE_X+POS[0])pos[0]+=RANGE_X;
+                else if(pos[0]>(1-SCREEN_RATE[0])*RANGE_X+POS[0])pos[0]-=RANGE_X;
+                if(pos[1]<(-SCREEN_RATE[1])*RANGE_Y+POS[1])pos[1]+=RANGE_Y;
+                else if(pos[1]>(1-SCREEN_RATE[1])*RANGE_Y+POS[1])pos[1]-=RANGE_Y;
+            }
+        }
+    },
+    snowWeather:function(count=50){
+        ReusedModule.createParticleSpray(TYPE.snow,15,count,-1.5)
     },
 
     createMobileButton:function(player,size){

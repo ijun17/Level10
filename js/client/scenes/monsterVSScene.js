@@ -57,6 +57,7 @@ Game.setScene("monsterVS",function(){
         scorll2.style.display="none"
         vsBtn.style.display="none"
         SCREEN.renderer.camera.addTarget(m1.body);
+        SCREEN.renderer.camera.addTarget(m2.body);
     }
     function fightEnd(){
         if(m1.getState()===0 && m2.getState()===0)return;
@@ -73,22 +74,9 @@ Game.setScene("monsterVS",function(){
         
     }
 
-
-
-    // let player=WORLD.add(new Player([2000,500]));
-    // SCREEN.renderer.camera.addTarget(player.body);
-    // USER_INPUT.setParameter("player",player);
-    // USER_INPUT.setParameter("moveKey",[39,37,38,40]);
-    // player.setObserver();
-    // if(localStorage.getItem("mobile")==='1')ReusedModule.createMobileButton(player);
-
     ReusedModule.createGameMap(4000, 1000);
     WORLD.environment.addGravity([-20000, -20000], [40000, 40000], [0, -0.2]);
     WORLD.environment.addDrag([-20000, -20000], [40000, 40000], [0, 0], 0.02);
-    ReusedModule.createParticleSpray(TYPE.snow, SCREEN.renderer.camera.pos, 2200, 10, 0, 0.05);
-
-    
     SCREEN.renderer.camera.zoom = 0.5;
-
-    //TIME.addSchedule(0,undefined,1,()=>{console.log(player.moveModule.footDirection)});
+    ReusedModule.snowWeather(100)
 })

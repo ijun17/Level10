@@ -45,10 +45,13 @@ const TYPE={
     iceEffect:0,
 }
 
+Object.freeze(TYPE)
+
 const PHYSICS_LAYER=0, PARTICLE_LAYER=1, BUTTON_LAYER=2;
 SCREEN.setSize(1200,600);
-TIME.changeFrameRate(100);
-WORLD.layer[PARTICLE_LAYER].enableInteraction=false;
+TIME.setFrameRate(100);
+WORLD.getLayer(PARTICLE_LAYER).enableInteraction=false;
+WORLD.getLayer(BUTTON_LAYER).enableInteraction=false;
 
 USER_INPUT.addEvent(document,"keydown")
 USER_INPUT.addEvent(document,"keyup")

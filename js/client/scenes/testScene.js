@@ -20,5 +20,7 @@ Game.setScene("test",function(){
     WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
     WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
 
+    ReusedModule.snowWeather()
+
     //TIME.addSchedule(0,undefined,1,()=>{console.log(player.moveModule.footDirection)});
 })
