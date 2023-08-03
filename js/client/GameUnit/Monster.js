@@ -157,12 +157,37 @@ class MonsterMonkey extends Monster{
     constructor(pos){
         super(pos,[120,200],1000,new GameUnitMoveModule(0,8,4), new GameUnitLifeModule(200000,100,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),7])},500))
+        this.skillModule.addSkill(new MagicSkill("ice",function(m){
+            TIME.addSchedule(0,5,0.5,()=>{
+                for(let i=0; i<20; i++){
+                    let dir=[Math.cos(Math.PI/10*i), Math.sin(Math.PI/10*i)]
+                    let ice = m.createMatter(MatterIce,[m.front(dir[0]), dir[1]],dir)
+                    ice.physics.setGravity(dir,true);
+                    ice.damage=1000;
+                }
+                
+
+            },()=>{return m.getState()==0})
+        },500))
+        // this.skillModule.addSkill(new MagicSkill("jump",function(m){
+        //     for(let i=0; i<5; i++){
+        //         let ice1 = m.createMatter(MatterIce,[-i*2,i+1],[0,-40])
+        //         ice1.body.setSize([100,100])
+        //         ice1.physics.inv_mass=0.01;
+        //         let ice2 = m.createMatter(MatterIce,[i*2,i+1],[0,-40])
+        //         ice2.body.setSize([100,100])
+        //         ice2.physics.inv_mass=0.01;
+        //     }   
+        // },1000))
+        
 
         this.animation=new UnitAnimation(IMAGES.monster_monkey,120,200,[3, 3],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
         this.physics.inv_mass=0.5;
 
+        this.lifeModule.ondamage=(d,dt)=>{return dt!=TYPE.damageIce;}
+        this.statusEffectModule.oneffect=(type)=>{return TYPE.iceEffect!=type}
     }
     update(){
         super.update();
@@ -407,6 +432,7 @@ class MonsterDragon extends Monster{
             let elecs=[];
             for(let i=0; i<100; i++){
                 let color=`rgba(255,255,${(200-i*3>0 ? 200-i*3 : 0)},0.7)`
+                //let color=`rgba(${(200-i*3>0 ? 200-i*3 : 0)},${(255-i*3>0 ? 255-i*3 : 0)},255,0.3)`
                 let elec=WORLD.add(new Block([x+i,y+i],[50,50],color));
                 elec.lifeModule.life=100000;
                 elec.id=252362436;

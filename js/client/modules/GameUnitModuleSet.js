@@ -152,7 +152,7 @@ class GameUnitStatusEffectModule{
     constructor(){}
     
     set(unit, type, time, power=1){
-        if(this.statusEffectList[type]!=0)return;
+        if(this.statusEffectList[type]>0 || !this.oneffect(type,power))return;
         this.statusEffectList[type]=power;
         let effectF=()=>{};
         let endF=()=>{};
@@ -166,10 +166,10 @@ class GameUnitStatusEffectModule{
         break;
         }
         TIME.addSchedule(0,time,undefined,effectF,()=>{return unit.getState()==0});
-        TIME.addSchedule(time,time,undefined,()=>{
+        TIME.addTimer(time,()=>{
             endF();
             this.statusEffectList[type]=0;
         },()=>{return unit.getState()==0});
     }
-    
+    oneffect(){return true}
 }

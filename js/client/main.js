@@ -66,21 +66,30 @@ USER_INPUT.addEventListener("keyup",function(e,para){if(para.player instanceof A
 USER_INPUT.addEventListener("touchstart",function(e,para){
     for(let i=0, l=e.touches.length; i<l; i++){
         for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
-            if(btn instanceof Button && btn.isTouched(e.touches[i]))btn.ontouchstart(para);
+            if(btn instanceof Button && btn.isTouched(e.touches[i])){
+                e.preventDefault();
+                btn.ontouchstart(para);
+            }
         }
     }
 })
 USER_INPUT.addEventListener("touchmove",function(e,para){
     for(let i=0, l=e.touches.length; i<l; i++){
         for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
-            if(btn instanceof Button && btn.isTouched(e.touches[i]))btn.ontouchmove(para);
+            if(btn instanceof Button && btn.isTouched(e.touches[i])){
+                e.preventDefault();
+                btn.ontouchmove(para);
+            }
         }
     }
 })
 USER_INPUT.addEventListener("touchend",function(e,para){
     if(e.touches.length==0){
         for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
-            if(btn instanceof Button)btn.ontouchend(para);
+            if(btn instanceof Button){
+                e.preventDefault();
+                btn.ontouchend(para);
+            }
         }
     }
 })

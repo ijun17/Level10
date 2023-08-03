@@ -11,10 +11,10 @@ class Button extends GameUnit{
         this.textBody={pos:[this.body.midX,this.body.midY-this.body.size[1]], size:this.body.size};
     }
     draw(r){
-        r.ctx.lineWidth = 3;
+        r.ctx.lineWidth = 5;
         r.strokeRect(this.color,this.body,{cameraOn:false});
         r.ctx.fillStyle=this.color;
-        r.ctx.font = '48px arial';
+        r.ctx.font = 'bold 48px arial';
         r.ctx.textBaseline = "middle";
         r.ctx.textAlign = "center";
         r.fillText(this.text,this.textBody,{cameraOn:false});
