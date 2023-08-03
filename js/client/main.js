@@ -87,7 +87,6 @@ USER_INPUT.addEventListener("touchend",function(e,para){
     if(e.touches.length==0){
         for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
             if(btn instanceof Button){
-                e.preventDefault();
                 btn.ontouchend(para);
             }
         }

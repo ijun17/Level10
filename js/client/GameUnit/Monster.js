@@ -158,17 +158,19 @@ class MonsterMonkey extends Monster{
         super(pos,[120,200],1000,new GameUnitMoveModule(0,8,4), new GameUnitLifeModule(200000,100,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),7])},500))
         this.skillModule.addSkill(new MagicSkill("ice",function(m){
-            TIME.addSchedule(0,5,0.5,()=>{
-                for(let i=0; i<20; i++){
+            let i=0;
+            TIME.addSchedule(0,5,0.01,()=>{
+                //for(let i=0; i<20; i++){
                     let dir=[Math.cos(Math.PI/10*i), Math.sin(Math.PI/10*i)]
                     let ice = m.createMatter(MatterIce,[m.front(dir[0]), dir[1]],dir)
                     ice.physics.setGravity(dir,true);
                     ice.damage=1000;
-                }
+                    i++;
+                //}
                 
 
             },()=>{return m.getState()==0})
-        },500))
+        },1500))
         // this.skillModule.addSkill(new MagicSkill("jump",function(m){
         //     for(let i=0; i<5; i++){
         //         let ice1 = m.createMatter(MatterIce,[-i*2,i+1],[0,-40])
