@@ -317,7 +317,7 @@ class MonsterGolem extends Monster{
         },888));
 
         this.addEventListener("collision", function(e){if(this.antiMatterFlag && e.other instanceof Matter)e.other.setState(0);})
-
+        this.lifeModule.ondamage=(d,dt)=>{return dt!=TYPE.damageEnergy;}
         this.animation=new UnitAnimation(IMAGES.monster_golem,128,128,[4, 2],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=32;
         this.body.overlap=false;
@@ -360,7 +360,7 @@ class MonsterWyvern extends Monster{
             let dir=m.front(10);
             let pos=m.body.pos
             for(let i=0; i<200; i++){
-                let color=`rgba(255,${(170-i>0 ? 170-i*2 : 0)},0,0.6)`
+                let color=`rgba(255,${(170-i>0 ? 170-i*2 : 0)},0,0.4)`
                 let fire=WORLD.add(new Block([pos[0]+i,pos[1]+i],[50,50],color));
                 fire.lifeModule.life=100000;
                 fire.id=128743612;

@@ -140,7 +140,7 @@ const front=function(d=1){return (player.moveModule.moveDirection[0] ? d : -d);}
 `,
     //
     test_unit_magic:`
-let magicCost = {cooltime: 100, mp: 100}; //[cooltime, magic point]
+let magicCost = {cooltime: 50, mp: 50}; //[cooltime, magic point]
 function getEnergy(e){
     let testUnit = new Block([0,0],[0,0]);
     testUnit.lifeModule.life=0;
@@ -148,7 +148,7 @@ function getEnergy(e){
     return Math.abs(testUnit.lifeModule.life);
 }
 function addMagicCost(cooltime,mp) {
-    magicCost.cooltime = Math.floor(Math.sqrt(magicCost.cooltime**2 + cooltime**2));
+    magicCost.cooltime = Math.floor(Math.sqrt(Math.sqrt(magicCost.cooltime**4 + cooltime**4)));
     magicCost.mp += Math.floor(Math.abs(mp));
 }
         
@@ -157,9 +157,15 @@ const test_create=function(typenum=BLOCK,vx=0,vy=0,w=30,h=30){
     addMagicCost(50,getEnergy(e)*(w*h)/900+e.body.speed);return e;
 }
 const test_setTrigger=function(t,f){setTrigger(t,f);addMagicCost(100,t.w*t.h+getEnergy(t)+1);}
-const test_giveForce=function(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMagicCost(0, newE-oldE);}
+//const test_giveForce=function(e,ax,ay){let oldE = getEnergy(e);giveForce(e,ax,ay);let newE=getEnergy(e);addMagicCost(0, newE-oldE);}
+const test_giveForce=function(e,ax,ay){
+    ax=ax>100 ? 100 : ax;
+    ay=ay>100 ? 100 : ay;
+    giveForce(e,ax,ay);
+    addMagicCost(0, Math.sqrt(ax**2+ay**2)/200);
+}
 const test_giveLife=function(e,d){addMagicCost(0,d);giveLife(e,d);}
-const test_invisible=function(e,time){addMagicCost(time*200,(e instanceof Player?(time**2):time));}
+const test_invisible=function(e,time){addMagicCost(time*200,time*200);}
 const test_move=function(e,vx,vy){addMagicCost(0,(vx+vy)/10);}
 const test_addSchedule=function(startSec,endSec,intervalSec,f){
     if(intervalSec<0.01)intervalSec=0.01;
@@ -167,10 +173,10 @@ const test_addSchedule=function(startSec,endSec,intervalSec,f){
     if(excuteCount>100){
         let oldM0 = magicCost.cooltime;
         let oldM1 = magicCost.mp;
-        for(let i=0,j=excuteCount/10;i<j;i++)f();
+        for(let i=0,j=Math.floor(excuteCount/10);i<j;i++)f();
         let newM0 = magicCost.cooltime;
         let newM1 = magicCost.mp;
-        addMagicCost(Math.sqrt((newM0**2-oldM0**2)*9), (newM1-oldM1)*9);
+        addMagicCost(Math.sqrt((newM0**2-oldM0**2)*10), (newM1-oldM1)*10);
     }else{
         for(let i=0,j=excuteCount;i<j;i++)f();
     }
@@ -209,20 +215,23 @@ for(@i=0;i<10;i++){
 }`,level:1},
 
     {name:"텔레포트",code:`//텔레포트
-move(player, front(500), 0);`,level:1},
+move(player, front(600), 0);`,level:1},
 
     {name:"파이어토네이도",code:`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
-@i=0;
-addSchedule(0,12/100,1/100,()=>{
+@plusX=front(10);
+addSchedule(0,70/100,1/100,#{x+=plusX;});
+for(@i=0; i<12; i++){
     @fire = create(FIRE,0,0);
     move(fire,front(200-13*i-15), i*35);
     giveLife(fire,500)
-    addSchedule(0,2,1/100,()=>{
+    addSchedule(0,70/100,1/100,#{
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
     });
-    i++;
-});`,level:2},
+    addSchedule(71/100,71/100,1/100,#{
+        giveForce(fire,-getVX(fire)+plusX*20,-10);
+    })
+}`,level:2},
 
     {name:"투명",code:`//플레이어의 투명화
 invisible(player,3);`,level:2},
@@ -282,19 +291,19 @@ for(@i=0; i<10; i++){
 
     {name:"파이어토네이도V",code:`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
-@plusX=front(1);
-@i=0;
-addSchedule(0,12/100,1/100,#{
+@plusX=front(10);
+addSchedule(0,70/100,1/100,#{x+=plusX;});
+for(@i=0; i<12; i++){
     @fire = create(FIRE,0,0);
     move(fire,front(200-13*i-15), i*35);
     giveLife(fire,500)
     addSchedule(0,70/100,1/100,#{
         giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
-        x+=plusX;
     });
-    addSchedule(82/100,82/100,1/100,#{giveForce(fire,-getVX(fire)+plusX*20,-10);})
-    i++;
-});`,level:10},
+    addSchedule(71/100,71/100,1/100,#{
+        giveForce(fire,-getVX(fire)+plusX*20,-10);
+    })
+}`,level:10},
 
     {name:"유도미사일",code:`//유도미사일
 // @t=create(TRIGGER, front(50),0,30,200)

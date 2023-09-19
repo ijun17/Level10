@@ -166,7 +166,7 @@ class GameUnitStatusEffectModule{
         break;
         }
         TIME.addSchedule(0,time,undefined,effectF,()=>{return unit.getState()==0});
-        TIME.addTimer(time,()=>{
+        TIME.addTimer(time+0.01,()=>{
             endF();
             this.statusEffectList[type]=0;
         },()=>{return unit.getState()==0});

@@ -40,7 +40,7 @@ const TYPE={
     //MapBlock
     wall:1,grass:2,
     //damage
-    damageNormal:0,damageFire:1,damageIce:2,damageElectricity:3,damageWind:4,
+    damageNormal:0,damageFire:1,damageIce:2,damageElectricity:3,damageWind:4,damageEnergy:5,
     //statucEffect
     iceEffect:0,
 }

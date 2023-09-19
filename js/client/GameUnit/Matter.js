@@ -107,14 +107,14 @@ class MatterElectricity extends Matter{
 class MatterArrow extends Matter{
     image;
     constructor(pos,vel){
-        super(pos,[30,30],vel,500,TYPE.damageNormal);
+        super(pos,[30,30],vel,500,TYPE.damageEnergy);
         this.image=Game.resource.getImage("matter_arrow")
         this.physics.inv_mass*=0.5;
     }
     draw(r){r.drawImage(this.image,this.body,{rotate:Math.atan2(this.body.vel[0], this.body.vel[1])});}
     oncollision(event){
         let relVel=event.other.body.getRelativeVel(this.body);
-        let damage=(relVel[0]**2+relVel[1]**2)*10;
+        let damage=(relVel[0]**2+relVel[1]**2)*2;
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage+damage,this.damageType);
     }
 }
@@ -122,9 +122,9 @@ class MatterArrow extends Matter{
 class MatterEnergy extends Matter{
     image;
     constructor(pos,vel){
-        super(pos,[30,30],vel,500,TYPE.damageNormal);
+        super(pos,[30,30],vel,500,TYPE.damageEnergy);
         this.image=Game.resource.getImage("matter_energy")
-        this.physics.inv_mass=0.1;
+        this.physics.setGravity([0,0],true);
     }
     draw(r){r.drawImage(this.image,this.body);}
     oncollision(event){

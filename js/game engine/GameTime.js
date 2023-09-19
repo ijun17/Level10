@@ -7,6 +7,7 @@ class GameTime
 
 
 class GameTime{
+    isStop=false;
     tick=0; //system clock
     fps=100;
     interval=null;
@@ -22,10 +23,19 @@ class GameTime{
     start(mainSchedule){
         this.mainSchedule=mainSchedule;
         const intervalNum=Math.floor(1000/this.fps);
-        this.interval=setInterval(function(){this.mainSchedule();this.doSchedule();this.tick++;}.bind(this), intervalNum);
+        this.interval=setInterval(()=>{
+            if(this.isStop)return;
+            this.mainSchedule();
+            this.doSchedule();
+            this.tick++;
+        }, intervalNum);
     }
     get(){return this.tick}
-    reset(){this.tick=0; this.scheduleList.reset()}
+    reset(){
+        this.tick=0;
+        this.isStop=false; 
+        this.scheduleList.reset()
+    }
     /**
      * @param {number} startSec 
      * @param {number} endSec :number or undefined
@@ -45,6 +55,9 @@ class GameTime{
     }
     addTimer(endSec, code, stopCondition=function(){return false;}){
         this.addSchedule(endSec,endSec,undefined,code,stopCondition);
+    }
+    stop(){
+        this.isStop=true;
     }
 }
 

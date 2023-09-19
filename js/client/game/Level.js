@@ -76,10 +76,11 @@ const Level= {
                 Level.createMainMonster(level,[500, 0]);
                 break;
             case 5:
+                SCREEN.renderer.bgColor="rgb(100, 90, 90)"
                 ReusedModule.createGameMap(4000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
-                ReusedModule.snowWeather()
+                ReusedModule.fireWeader()
                 Level.createMainMonster(level,[2000, 0]);
                 break;
             case 6:

@@ -97,6 +97,10 @@ const ReusedModule={
     snowWeather:function(count=50){
         ReusedModule.createParticleSpray(TYPE.snow,15,count,-1.5)
     },
+    fireWeader:function(){
+        ReusedModule.createParticleSpray(TYPE.ash,15,30,-1.5)
+        ReusedModule.createParticleSpray(TYPE.ember,15,30,-1.5)
+    },
 
     createMobileButton:function(player,size){
         //move button
