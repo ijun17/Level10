@@ -341,7 +341,7 @@ class MonsterWyvern extends Monster{
             if(!m.canTarget())return;
             let fire=m.createMatterToTarget(MatterFire,[1.2,0],10);
             fire.lifeModule.life=500;
-            fire.physics.setGravity([0,-0.1],true);
+            fire.physics.setGravity([0,0],true);
             fire.physics.setCOD(0)
             fire.damage=1000;
             fire.body.setSize([60,60]);
@@ -357,7 +357,7 @@ class MonsterWyvern extends Monster{
         this.skillModule.addSkill(new MagicSkill("FIRETORNADO",function(m){
             let fires=[];
             let x=m.body.midX+m.front(200);
-            let dir=m.front(10);
+            let speed=m.front(13);
             let pos=m.body.pos
             for(let i=0; i<200; i++){
                 let color=`rgba(255,${(170-i>0 ? 170-i*2 : 0)},0,0.4)`
@@ -381,7 +381,7 @@ class MonsterWyvern extends Monster{
             }
             TIME.addSchedule(0,3,0,function(){
                 for(let i=fires.length-1; i>=0; i--)fires[i].body.vel[0]+=(x-fires[i].body.midX);
-                x+=dir;
+                x+=speed;
             })
             TIME.addSchedule(3.5,3.5,0,function(){for(let i=fires.length-1; i>=0; i--)fires[i].setState(0);});
         },1000))
@@ -414,11 +414,16 @@ class MonsterDragon extends Monster{
             let y=m.body.midY;
             for(let i=0; i<5; i++){
                 TIME.addSchedule(i*0.5+1,i*0.5+1,0,()=>{
-                    let elec=WORLD.add(new MatterElectricity([x+dir*i*400,y],[0,0]));
-                    elec.lifeModule.addLife(1000);
-                    elec.electricPoint=100000;
-                    let ltn=WORLD.add(new MatterElectricity(elec.body.pos,[0,0]));
+                    let ltn = WORLD.add(new MatterLightning([x+dir*i*400-150,y],[0,0]));
                     ltn.damage=10000;
+                    ltn.addEventListener("collision", (e)=>{
+                        const skills=e.other.skillModule
+                        if(skills){
+                            for(let i=0; i<skills.coolTime.length; i++)
+                                if(skills.coolTime[i]<100)skills.coolTime[i]=100
+                        }
+                        return true;
+                    })
                 },()=>{return m.getState(0)==0})
             }
         },1000))
@@ -466,7 +471,7 @@ class MonsterDragon extends Monster{
         this.animation=new UnitAnimation(IMAGES.monster_golden_dragon,80,80,[4, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
-        this.physics.inv_mass=0.1;
+        this.physics.inv_mass=0.01;
         this.ai_move_cycle=0.5;
         this.lifeModule.ondamage=function(d, dt){
             return dt!=TYPE.damageElectricity;
@@ -477,7 +482,7 @@ class MonsterDragon extends Monster{
         this.animation.update();
         if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*0.5){ //PHASE 2
             this.phase=2;
-            this.skillModule.addSkill(new MagicSkill("GODENEL",(m)=>{
+            this.skillModule.addSkill(new MagicSkill("BLUE",(m)=>{
                 let elecs=[];
                 for(let i=0; i<100; i++){
                     let color=`rgba(${(200-i*3>0 ? 200-i*3 : 0)},${(255-i*3>0 ? 255-i*3 : 0)},255,0.3)`
