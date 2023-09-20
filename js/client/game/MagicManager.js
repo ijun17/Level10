@@ -262,10 +262,9 @@ for(@j=0;j<5;j++){
 }`,level:3},
 
     {name:"번개",code:`//번개는 전기들이 서로 일정 수 부딪히면 생성된다. 
-for(@i=0; i<100; i++){
+for(@i=0; i<200; i++){
     @e=create(ELECTRICITY, 0,0);
     move(e, front(300),0);
-    giveLife(e,400)
 }`,level:4},
 
     {name:"폭발 비",code:`//불끼리 부딪히면 폭발한다.

@@ -101,6 +101,9 @@ const ReusedModule={
         ReusedModule.createParticleSpray(TYPE.ash,15,30,-1.5)
         ReusedModule.createParticleSpray(TYPE.ember,15,30,-1.5)
     },
+    fireflyWeather:function(count=50){
+        ReusedModule.createParticleSpray(TYPE.firefly,15,count,-0.5)
+    },
 
     createMobileButton:function(player,size){
         //move button

@@ -110,7 +110,7 @@ class GameUnitSkillModule{
 class GameUnitLifeModule{
     MAX_LIFE;
     life;
-    defense=100;
+    defense=50;
     damageDelay=1;
     damageDelayTick;
     totalDamage=0;

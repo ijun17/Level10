@@ -112,8 +112,10 @@ class MatterElectricity extends Matter{
                     this.setState(0);
                 }
                 return false;
+            }else{
+                this.electricPoint=0;
+                return true;
             }
-            return true;
         }
     }
     update(){
@@ -124,7 +126,7 @@ class MatterElectricity extends Matter{
     oncollision(event){
         let other=event.other;
         if(other.lifeModule)other.lifeModule.giveDamage(this.damage,this.damageType);
-        other.body.setVel([other.body.vel[0]*0.1,other.body.vel[1]*0.1]);
+        other.body.setVel([0,0])
         return false;
     }
 }
@@ -211,11 +213,7 @@ class MatterLightning extends Matter{
         this.body.fixedPos=true;
         this.physics.fixedGravity=true;
         this.physics.setGravity([0,0]);
-        this.physics.inv_mass=0;
-        this.lifeModule.ondamage=(d,dt)=>{
-            if(dt==TYPE.damageElectricity)return false;
-            return true;
-        }
+        this.lifeModule.ondamage=(d,dt)=>{return false}
     }
     update(){
         super.update();
@@ -226,11 +224,10 @@ class MatterLightning extends Matter{
         if(this.getState()==0)return false;
         if(event.other instanceof MatterElectricity){
             event.other.setState(0);
-            this.damage+=event.other.damage;
-            this.life++;
+            //this.damage+=event.other.damage*0.1;
+            //this.life++;
         }
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
-        if(event.other.physics)event.other.physics.addForce([0,0]);
-        return true;
+        return false;
     }
 }

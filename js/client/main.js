@@ -27,12 +27,13 @@ Game.resource.loadImage([
     "resource/entity/particle/particle_ember.png",
     "resource/entity/particle/particle_magic_effect.png",
     "resource/entity/particle/particle_smoke.png",
-    "resource/entity/particle/particle_snow.png"
+    "resource/entity/particle/particle_snow.png",
+    "resource/entity/particle/particle_firefly.png"
 ]);
 
 const TYPE={
     //particle
-    ember:0,smoke:1,cloud:2,snow:3,ash:4,magicEffect:5,
+    ember:0,smoke:1,cloud:2,snow:3,ash:4,magicEffect:5,firefly:6,
     //matter
     fire:0,electricity:1,ice:2,arrow:3,energy:4,wind:5,explosion:6,lightning:7,
     //monster

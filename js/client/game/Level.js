@@ -73,7 +73,7 @@ const Level= {
                 ReusedModule.createGameMap(2000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
-                ReusedModule.snowWeather()
+                ReusedModule.fireflyWeather()
                 Level.createMainMonster(level,[500, 0]);
                 break;
             case 5:
