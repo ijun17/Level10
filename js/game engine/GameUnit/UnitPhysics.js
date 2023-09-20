@@ -21,7 +21,7 @@ class UnitPhysics {
 
     addForce(force){if(this.fixedForce)return;this.force[0]+=force[0];this.force[1]+=force[1];}
     setForce(force){if(this.fixedForce)return;this.force[0]=force[0];this.force[1]=force[1];}
-    setGravity(ga,fix=false){if(this.fixedGravity)return;this.gravity[0]=ga[0];this.gravity[1]=ga[1];this.fixedGravity=fix;}
+    setGravity(ga,fix=false){if(!fix && this.fixedGravity)return;this.gravity[0]=ga[0];this.gravity[1]=ga[1];this.fixedGravity=fix;}
 
     setCOF(COF){this.FRICTION_COEF=COF;}
     setCOD(COD){this.DRAG_COEF=COD;}

@@ -270,15 +270,13 @@ for(@i=0; i<100; i++){
 
     {name:"폭발 비",code:`//불끼리 부딪히면 폭발한다.
 for(@i=0; i<10; i++){
-    @fire=create(FIRE,0,-20);
-    move(fire,front(i*70+150),200+i*50);
-    giveLife(fire,30);
-    @fire2= create(FIRE, 0,-20)
-    move(fire2, front(i*70+150),300+i*50);
-    giveLife(fire2,30);
-    @fire3= create(FIRE, 0,-20)
-    move(fire3, front(i*70+150),400+i*50);
-    giveLife(fire3,30);
+    for(@j=0; j<3; j++){
+        @fire=create(FIRE,0,-20);
+        @x=front(i*70+150);
+        @y=200+i*50+j*100;
+        move(fire,x,y);
+        giveLife(fire,30);
+    }
 }`,level:4},
 
     {name:"연막",code:`//수증기는 불과 얼음이 부딪히면 생성된다.

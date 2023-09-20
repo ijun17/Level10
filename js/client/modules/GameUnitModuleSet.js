@@ -142,6 +142,7 @@ class GameUnitLifeModule{
         else return false;
     }
     addLife(life){this.life+=life;}
+    setLife(life){this.life=life;}
     ondie(){}
     ondamage(damage,damageType){return true;}
     ontotaldamage(){}

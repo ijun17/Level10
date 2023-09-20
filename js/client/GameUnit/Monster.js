@@ -251,7 +251,7 @@ class MonsterSlime extends Monster{
             let vy = tb.midY-b.midY;
             let power = 30/Math.sqrt(vx**2+vy**2);
             b.setVel([vx*power, vy*power+1]);
-        },1300))
+        },1000))
         this.physics.inv_mass=0.0001;
         let slaveSize=45;
         for(let i=0; i<10; i++)for(let j=0; j<10; j++){
@@ -295,6 +295,7 @@ class MonsterSlime extends Monster{
 
 class MonsterGolem extends Monster{
     animation;
+    phase=1;
     antiMatterFlag=false;
     constructor(pos){
         super(pos,[200,200],4000,new GameUnitMoveModule(0,1,2), new GameUnitLifeModule(5000000,100,5), new GameUnitSkillModule(0));
@@ -329,6 +330,26 @@ class MonsterGolem extends Monster{
     update(){
         super.update();
         this.animation.update();
+        if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*0.5){ //PHASE 2
+            this.phase=2;
+            this.skillModule.addSkill(new MagicSkill("TURRET",(m)=>{
+                let pos=[m.body.midX, m.body.midY+300];
+                let effect1 = WORLD.add(new Particle([pos[0]-150, pos[1]-150], [300, 300], TYPE.magicEffect));
+                effect1.life=500;
+                let effect2 = WORLD.add(new Particle([pos[0]-200, pos[1]-200], [400, 400], TYPE.magicEffect));
+                effect2.life=500;
+
+                TIME.addSchedule(1,5,0.1,()=>{
+                    if(!m.canTarget())return;
+                    let ene = WORLD.add(new MatterEnergy([pos[0]-25, pos[1]-25],[0,0]))
+                    ene.body.setSize([70,70])
+                    ene.damage=1111
+                    let ga=ene.body.getUnitVector(m.target.body.midPos)
+                    ene.body.setVel([ga[0]*10, ga[1]*10])
+                    ene.physics.setGravity(ga,true);
+                })
+            },1300))
+        }
     }
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   
 }
@@ -345,7 +366,7 @@ class MonsterWyvern extends Monster{
             fire.physics.setCOD(0)
             fire.damage=1000;
             fire.body.setSize([60,60]);
-            fire.addEventListener("collision", function(e){WORLD.add(new MatterFire(this.body.pos,[0,0]))});
+            fire.addEventListener("collision", (e)=>{fire.explode()});
         },111))
         this.skillModule.addSkill(new MagicSkill("EXPLS",function(m){
             for(let i=0; i<10; i++){

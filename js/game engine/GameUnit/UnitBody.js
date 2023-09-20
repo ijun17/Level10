@@ -42,4 +42,10 @@ class UnitBody{
         if(this.pos[1]<startPos[1])this.pos[1]=startPos[1]
         else if(this.pos[1]+this.size[1]>endPos[1])this.pos[1]=endPos[1]-this.size[1];
     }
+    getUnitVector(target_pos){
+        let uvx=target_pos[0]-this.midX
+        let uvy=target_pos[1]-this.midY
+        let length=Math.sqrt(uvx**2+uvy**2)
+        return [uvx/length, uvy/length]
+    }
 }
