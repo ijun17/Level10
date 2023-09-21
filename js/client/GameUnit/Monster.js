@@ -310,7 +310,7 @@ class MonsterGolem extends Monster{
         },501));
         this.skillModule.addSkill(new MagicSkill("front",function(e){
             if(!e.canTarget())return;
-            let b=e.body, vel=e.getTargetDirX()*10;
+            let b=e.body, vel=e.getTargetDirX()*5;
             e.antiMatterFlag=true;
             TIME.addSchedule(0.5, 1, 0, function(){b.vel[0]+=vel;});
             TIME.addSchedule(1, 1, 0, function(){e.antiMatterFlag=false;});
@@ -459,7 +459,7 @@ class MonsterDragon extends Monster{
             let vel=[(tb.midX-x)/speed, (tb.midY-y)/speed];
             let elecs=[];
             for(let i=0; i<100; i++){
-                let color=`rgba(255,255,${(200-i*3>0 ? 200-i*3 : 0)},0.7)`
+                let color=`rgba(255,255,${(200-i*3>0 ? 200-i*3 : 0)},0.4)`
                 //let color=`rgba(${(200-i*3>0 ? 200-i*3 : 0)},${(255-i*3>0 ? 255-i*3 : 0)},255,0.3)`
                 let elec=WORLD.add(new Block([x+i,y+i],[50,50],color));
                 elec.lifeModule.life=100000;

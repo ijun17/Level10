@@ -33,14 +33,14 @@ class Actor extends GameUnit{
         this.lifeModule.update();
         this.skillModule.update();
     }
-    getNameTag=function(){return `HP:${this.lifeModule.life}`}
-    draw(r){
-        r.ctx.textBaseline = "middle";
-        r.ctx.textAlign = "center";
-        r.ctx.font = "bold 15px Arial";
-        r.ctx.fillStyle = "black";
-        r.fillText(this.getNameTag(), this.body)
-    }
+    // getNameTag=function(){return `HP:${this.lifeModule.life}`}
+    // draw(r){
+    //     r.ctx.textBaseline = "middle";
+    //     r.ctx.textAlign = "center";
+    //     r.ctx.font = "bold 15px Arial";
+    //     r.ctx.fillStyle = "black";
+    //     r.fillText(this.getNameTag(), this.body)
+    // }
     onkeydown(keyCode, moveKey, skillKey){
         switch(keyCode){
             case moveKey[0]:this.moveModule.keyDownHandler(0);break;

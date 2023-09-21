@@ -18,7 +18,7 @@ Game.setScene("test",function(){
 
     ReusedModule.createGameMap(2000,1000);
     WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
-    WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.02);
+    WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
 
     ReusedModule.snowWeather()
 

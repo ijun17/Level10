@@ -243,9 +243,11 @@ move(wind,front(-100),-20);
 giveForce(wind,0,-35);`,level:2},
 
     {name:"기관총",code:`//화살 발사
-addSchedule(0,5,1/10,#{
-    @a = create(ARROW, front(30), 3)
-    move(a,front(20),0)
+addSchedule(0,5,1/20,#{
+    for(@i=0; i<2; i++){
+        @a = create(ARROW, front(60), 3)
+        move(a,front(20),i*35)
+    }
 })`, level:3},
 
     {name:"전격실드", code:`//전기 실드를 생성

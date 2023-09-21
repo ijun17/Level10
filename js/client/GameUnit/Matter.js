@@ -105,17 +105,8 @@ class MatterElectricity extends Matter{
         this.physics.fixedGravity=true;
         this.physics.setGravity([0,0]);
         this.lifeModule.ondamage=(d,dt)=>{
-            if(this.getState()===0)return false;
-            if(dt == TYPE.damageElectricity){
-                if(this.electricPoint++>10000){
-                    WORLD.add(new MatterLightning([this.body.midX-150,this.body.midY]));
-                    this.setState(0);
-                }
-                return false;
-            }else{
-                this.electricPoint=0;
-                return true;
-            }
+            if(dt == TYPE.damageElectricity)return false
+            return true
         }
     }
     update(){
@@ -126,6 +117,14 @@ class MatterElectricity extends Matter{
     oncollision(event){
         let other=event.other;
         if(other.lifeModule)other.lifeModule.giveDamage(this.damage,this.damageType);
+        if(other instanceof MatterElectricity){
+            if(this.electricPoint>=other.electricPoint)this.electricPoint++;
+            else this.electricPoint=0;
+            if(this.electricPoint>10000 && this.getState()!=0){
+                WORLD.add(new MatterLightning([this.body.midX-150,this.body.midY]));
+                this.setState(0);
+            }
+        }else this.electricPoint=0;
         other.body.setVel([0,0])
         return false;
     }
@@ -137,6 +136,7 @@ class MatterArrow extends Matter{
         super(pos,[30,30],vel,500,TYPE.damageEnergy);
         this.image=Game.resource.getImage("matter_arrow")
         this.physics.inv_mass*=0.5;
+        this.physics.setCOR(0.3)
     }
     draw(r){r.drawImage(this.image,this.body,{rotate:Math.atan2(this.body.vel[0], this.body.vel[1])});}
     oncollision(event){
@@ -208,8 +208,9 @@ class MatterWind extends Matter{
 class MatterLightning extends Matter{
     animation;
     constructor(pos){
-        super(pos,[300,1200],[0,0],1000,TYPE.damageElectricity);
+        super(pos,[300,1200],[0,0],10000,TYPE.damageElectricity);
         this.animation=new UnitAnimation(Game.resource.getImage("matter_lightning"), 100,400,[3],function(){return 0})
+        this.animation.fps=16;
         this.body.fixedPos=true;
         this.physics.fixedGravity=true;
         this.physics.setGravity([0,0]);
@@ -224,8 +225,8 @@ class MatterLightning extends Matter{
         if(this.getState()==0)return false;
         if(event.other instanceof MatterElectricity){
             event.other.setState(0);
-            //this.damage+=event.other.damage*0.1;
-            //this.life++;
+            this.damage+=event.other.damage;
+            this.life++;
         }
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
         return false;

@@ -76,7 +76,7 @@ const ReusedModule={
         const CAMERA=SCREEN.renderer.camera;
         const POS=CAMERA.pos;
         const SCREEN_POS=CAMERA.screenPos
-        const SCREEN_RATE=[CAMERA.screenPos[0]/SCREEN.perX(100),CAMERA.screenPos[1]/SCREEN.perY(100)]
+        const SCREEN_RATE=[SCREEN_POS[0]/SCREEN.perX(100),SCREEN_POS[1]/SCREEN.perY(100)]
         const RANGE_X=SCREEN.perX(100)/CAMERA.zoom;
         const RANGE_Y=SCREEN.perY(100)/CAMERA.zoom;
         for(let i=0; i<count; i++){
@@ -102,7 +102,10 @@ const ReusedModule={
         ReusedModule.createParticleSpray(TYPE.ember,15,30,-1.5)
     },
     fireflyWeather:function(count=50){
-        ReusedModule.createParticleSpray(TYPE.firefly,15,count,-0.5)
+        ReusedModule.createParticleSpray(TYPE.firefly,15,count,1)
+    },
+    sparkWeather:function(count=40){
+        ReusedModule.createParticleSpray(TYPE.spark,20,count,10)
     },
 
     createMobileButton:function(player,size){
