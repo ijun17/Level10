@@ -137,8 +137,9 @@ class MonsterMushroom extends Monster{
     animation
     constructor(pos){
         super(pos,[180,180],500,new GameUnitMoveModule(0,3,3), new GameUnitLifeModule(100000,100,5), new GameUnitSkillModule(0));
-        this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),7])},500))
+        this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),8])},500))
 
+        this.physics.setCOR(0.6)
         this.animation=new UnitAnimation(IMAGES.monster_mushroom,60,60,[3, 3],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
@@ -202,6 +203,7 @@ class MonsterFly extends Monster{
     animation;
     isMaster;
     slaveList=[];
+    MAX_SLAVE_COUNT=20;
     constructor(pos,isMaster=true){
         super(pos,[30,30],150,new GameUnitMoveModule(1,10), new GameUnitLifeModule(100000,100,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("jump",function(m){
@@ -220,7 +222,7 @@ class MonsterFly extends Monster{
         this.animation=new UnitAnimation(IMAGES.monster_hellfly,30,30,[1, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.isMaster=isMaster;
         if(isMaster){
-            for(let i=0; i<20; i++){
+            for(let i=0; i<this.MAX_SLAVE_COUNT; i++){
                 let m=WORLD.add(new MonsterFly(pos,false));
                 TIME.addSchedule(1,1,0,function(){m.activateAI()});
                 this.slaveList.push(m);
@@ -275,7 +277,6 @@ class MonsterSlime extends Monster{
             } 
             TIME.addSchedule(2,2,undefined,function(){
                 for(let slave of this.slaveList){
-                    //slave.eventManager.oncollision=function(e){return false}
                     slave.setState(0)
                 }
             }.bind(this))
@@ -428,26 +429,38 @@ class MonsterDragon extends Monster{
     phase=1;
     constructor(pos){
         super(pos,[300,300],1000,new GameUnitMoveModule(1,3), new GameUnitLifeModule(10000000,100,5), new GameUnitSkillModule(0));
-
+        // this.skillModule.addSkill(new MagicSkill("WIND",(m)=>{
+        //     let dir=m.front(200)
+        //     let x=m.body.midX+dir;
+        //     let y=m.body.midY;
+        //     let i=0;
+        //     TIME.addSchedule(0, 2, 0.1, () => {
+        //         let wind = WORLD.add(new MatterWind([x + dir * i-150, y-300], [0,7]));
+        //         wind.body.setSize([300,300])
+        //         wind.body.fixedVel=true
+        //         //wind.damage = 1000;
+        //         wind.lifeModule.setLife(1000)
+        //         i++;
+        //     },()=>{return m.getState(0)==0})
+        // },700))
         this.skillModule.addSkill(new MagicSkill("THUNDER",(m)=>{
-            let dir=m.front()
-            let x=m.body.midX+dir*300;
+            let dir=m.front(350)
+            let x=m.body.midX+dir;
             let y=m.body.midY;
-            for(let i=0; i<5; i++){
-                TIME.addSchedule(i*0.5+1,i*0.5+1,0,()=>{
-                    let ltn = WORLD.add(new MatterLightning([x+dir*i*400-150,y],[0,0]));
-                    ltn.damage=10000;
-                    ltn.addEventListener("collision", (e)=>{
-                        const skills=e.other.skillModule
-                        if(skills){
-                            for(let i=0; i<skills.coolTime.length; i++)
-                                if(skills.coolTime[i]<100)skills.coolTime[i]=100
-                        }
-                        return true;
-                    })
-                },()=>{return m.getState(0)==0})
-            }
-        },1000))
+            let i=0;
+            TIME.addSchedule(0.5, 4, 0.5, () => {
+                let ltn = WORLD.add(new MatterLightning([x + dir * i - 150, y]));
+                ltn.damage = 10000;
+                ltn.addEventListener("collision", (e) => {
+                    if (e.other.skillModule) {
+                        const CT=e.other.skillModule.coolTime
+                        for (let i = 0; i < CT.length; i++) if (CT[i] < 100) CT[i] = 100
+                    }
+                    return true;
+                })
+                i++;
+            },()=>{return m.getState(0)==0})
+        },800))
 
         this.skillModule.addSkill(new MagicSkill("VIM",(m)=>{
             if(!m.canTarget())return;
@@ -460,7 +473,6 @@ class MonsterDragon extends Monster{
             let elecs=[];
             for(let i=0; i<100; i++){
                 let color=`rgba(255,255,${(200-i*3>0 ? 200-i*3 : 0)},0.4)`
-                //let color=`rgba(${(200-i*3>0 ? 200-i*3 : 0)},${(255-i*3>0 ? 255-i*3 : 0)},255,0.3)`
                 let elec=WORLD.add(new Block([x+i,y+i],[50,50],color));
                 elec.lifeModule.life=100000;
                 elec.id=252362436;

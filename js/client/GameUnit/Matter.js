@@ -57,10 +57,11 @@ class MatterFire extends Matter{
         this.body.addPos([-BEFORE_SIZE-5, -BEFORE_SIZE-5])
         this.body.setSize([BEFORE_SIZE*3+10,BEFORE_SIZE*3+10])
         this.body.setVel([0,0])
+        this.body.fixedPos=true;
         this.damage=3000
         this.image=Game.resource.getImage("matter_explosion");
         this.physics.setGravity([0,0],true);
-        this.physics.inv_mass=0;
+        //this.physics.inv_mass=0;
         SCREEN.renderer.camera.vibrate(40);
         this.lifeModule.setLife(50)
         this.lifeModule.ondamage=function(d,dt){return false;}

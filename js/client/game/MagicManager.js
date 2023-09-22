@@ -202,7 +202,7 @@ move(e1,front(30), 0);`,level:0},
 move(block,0,100);`,level:0},
 
     {name:"대쉬",code:`//플레이어가 빠른 속도로 앞으로 이동
-giveForce(player,front(30),0);`,level:0},
+giveForce(player,front(30),1);`,level:0},
 
     {name:"힐",code:`//플레이어 hp를 2000회복
 giveLife(player,2000);`,level:0},
