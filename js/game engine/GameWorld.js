@@ -30,9 +30,9 @@ class GameWorldLayer{
     endLimitPos=[0,0];
     constructor(){}
     update(physics, environment){
-        let renderer = Game.screen.renderer;
-        let gameUnitList=this.gameUnitList;//important
-        //1.interlaction
+        const renderer = Game.screen.renderer;
+        const gameUnitList=this.gameUnitList;//important
+        //1.interaction
         if(this.enableInteraction)this.interact(physics);
         //2. move and draw and die
         let unit;
@@ -49,7 +49,7 @@ class GameWorldLayer{
         }
     }
     interact(physics){
-        let gameUnitList=this.gameUnitList;//important
+        const gameUnitList=this.gameUnitList;//important
         let unit1,unit2;
         for(let i=gameUnitList.length-1; i>0;i--){
             unit1=gameUnitList[i];

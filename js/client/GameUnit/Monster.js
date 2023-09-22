@@ -156,20 +156,27 @@ class MonsterMushroom extends Monster{
 class MonsterMonkey extends Monster{
     animation
     constructor(pos){
-        super(pos,[120,200],1000,new GameUnitMoveModule(0,8,4), new GameUnitLifeModule(200000,100,5), new GameUnitSkillModule(0));
-        this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),7])},500))
+        super(pos,[120,200],1000,new GameUnitMoveModule(0,20,4), new GameUnitLifeModule(200000,100,5), new GameUnitSkillModule(0));
+        this.skillModule.addSkill(new MagicSkill("jump",function(m){
+            m.canDraw=false;
+            m.moveModule.moveType=1
+            TIME.addSchedule(0,5,0.05,()=>{
+                const cloud = WORLD.add(new Particle([m.body.midX-150,m.body.midY-150], [300,300], TYPE.cloud));
+                cloud.life=50
+            },()=>{return m.getState()==0})
+            TIME.addTimer(5,()=>{
+                m.canDraw=true
+                m.moveModule.moveType=0
+            },()=>{return m.getState()==0})
+        },1000))
         this.skillModule.addSkill(new MagicSkill("ice",function(m){
             let i=0;
             TIME.addSchedule(0,5,0.01,()=>{
-                //for(let i=0; i<20; i++){
-                    let dir=[Math.cos(Math.PI/10*i), Math.sin(Math.PI/10*i)]
-                    let ice = m.createMatter(MatterIce,[m.front(dir[0]), dir[1]],dir)
-                    ice.physics.setGravity(dir,true);
-                    ice.damage=1000;
-                    i++;
-                //}
-                
-
+                let dir=[Math.cos(Math.PI/10*i), Math.sin(Math.PI/10*i)]
+                let ice = m.createMatter(MatterIce,[m.front(dir[0]), dir[1]],dir)
+                ice.physics.setGravity(dir,true);
+                ice.damage=1000;
+                i++;
             },()=>{return m.getState()==0})
         },1500))
         // this.skillModule.addSkill(new MagicSkill("jump",function(m){
@@ -183,11 +190,11 @@ class MonsterMonkey extends Monster{
         //     }   
         // },1000))
         
-
-        this.animation=new UnitAnimation(IMAGES.monster_monkey,120,200,[3, 3],function(){return (this.attackTick>0?1:0)}.bind(this));
+        this.ai_move_cycle=0.1
+        this.animation=new UnitAnimation(IMAGES.monster_monkey,120,200,[1, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
-        this.physics.inv_mass=0.5;
+        this.physics.inv_mass=0.1;
 
         this.lifeModule.ondamage=(d,dt)=>{return dt!=TYPE.damageIce;}
         this.statusEffectModule.oneffect=(type)=>{return TYPE.iceEffect!=type}

@@ -24,7 +24,7 @@ class Particle extends GameUnit{
 
 const PARTICLE_TYPE=[{name:"particle_ember",setStatus:(e)=>{e.randomSpeed=1;}},
     {name:"particle_smoke",setStatus:(e)=>{e.randomSpeed=0.5;}},
-    {name:"particle_cloud",setStatus:(e)=>{e.randomSpeed=1;e.physics.fixedGravity=true;e.body.size=[200,200];e.life=300}},
+    {name:"particle_cloud",setStatus:(e)=>{e.randomSpeed=1;e.physics.fixedGravity=true;e.life=300}},
     {name:"particle_snow",setStatus:(e)=>{e.randomSpeed=1;e.physics.ga=0;e.physics.setCOD(0.5);}},
     {name:"particle_ash",setStatus:(e)=>{e.randomSpeed=1;e.physics.ga=-0.01}},
     {name:"particle_magic_effect",setStatus:(e)=>{e.randomSpeed=0;e.physics.fixedGravity=true;}},

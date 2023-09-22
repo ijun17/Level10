@@ -10,7 +10,7 @@ class Matter extends GameUnit{
         this.physics.inv_mass=1;
         this.damage=damage;
         this.damageType=damageType;
-        this.addEventListener("collision", this.oncollision)
+        this.addEventListener("collision", (event)=>this.oncollision(event))
         this.lifeModule=new GameUnitLifeModule(50,0,0);
         this.lifeModule.update=function(){if(this.life--<0)this.ondie();}
         this.lifeModule.giveDamage=function(d,dt){if(this.ondamage(d,dt))this.life--;}
@@ -58,10 +58,11 @@ class MatterFire extends Matter{
         this.body.setSize([BEFORE_SIZE*3+10,BEFORE_SIZE*3+10])
         this.body.setVel([0,0])
         this.body.fixedPos=true;
+        this.body.fixedVel=true;
         this.damage=3000
         this.image=Game.resource.getImage("matter_explosion");
         this.physics.setGravity([0,0],true);
-        //this.physics.inv_mass=0;
+        this.physics.fixedForce=true;
         SCREEN.renderer.camera.vibrate(40);
         this.lifeModule.setLife(50)
         this.lifeModule.ondamage=function(d,dt){return false;}
@@ -69,7 +70,7 @@ class MatterFire extends Matter{
         this.oncollision=(event)=>{
             const o=event.other
             if(o.lifeModule)o.lifeModule.giveDamage(this.damage,this.damageType);
-            if(o.physics)o.physics.addForce([(o.body.midX-this.body.midX)*0.01,(o.body.midY-this.body.midY)*0.01]);
+            if(o.physics && !o.physics.fixedForce)o.physics.addForce([(o.body.midX-this.body.midX)*0.01,(o.body.midY-this.body.midY)*0.01])
         }
     }
 }
@@ -93,7 +94,7 @@ class MatterIce extends Matter{
     draw(r){r.drawImage(this.image,this.body,{rotate:Math.atan2(this.body.vel[0], this.body.vel[1])});}
     oncollision(event){
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
-        if(event.other.statusEffectModule)event.other.statusEffectModule.set(event.other,TYPE.iceEffect,1,1)
+        if(event.other.statusEffectModule)event.other.statusEffectModule.set(event.other,TYPE.iceEffect,3,1)
     }
 }
 
@@ -188,24 +189,6 @@ class MatterWind extends Matter{
     }
 }
 
-
-// class MatterExplosion extends Matter{
-//     image;
-//     constructor(pos){
-//         super(pos,[100,100],[0,0],3000,TYPE.damageFire);
-//         this.image=Game.resource.getImage("matter_explosion");
-//         this.physics.setGravity([0,0],true);
-//         this.physics.inv_mass=0;
-//         SCREEN.renderer.camera.vibrate(30);
-//         this.lifeModule.ondamage=function(d,dt){return false;}
-//     }
-//     draw(r){r.drawImage(this.image,this.body);}
-//     oncollision(event){
-//         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
-//         if(event.other.physics)event.other.physics.addForce([(event.other.body.midX-this.body.midX)*0.01,(event.other.body.midY-this.body.midY)*0.01]);
-//     }
-// }
-
 class MatterLightning extends Matter{
     animation;
     constructor(pos){
@@ -219,7 +202,7 @@ class MatterLightning extends Matter{
     }
     update(){
         super.update();
-        SCREEN.renderer.camera.vibrate(20);
+        SCREEN.renderer.camera.vibrate(10);
     }
     draw(r){r.drawAnimation(this.animation,this.body);}
     oncollision(event){
