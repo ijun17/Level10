@@ -136,7 +136,7 @@ class Monster extends Actor{
 class MonsterMushroom extends Monster{
     animation
     constructor(pos){
-        super(pos,[180,180],500,new GameUnitMoveModule(0,3,3), new GameUnitLifeModule(100000,100,5), new GameUnitSkillModule(0));
+        super(pos,[180,180],500,new GameUnitMoveModule(0,3,3), new GameUnitLifeModule(100000,50,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),8])},500))
 
         this.physics.setCOR(0.6)
@@ -156,7 +156,7 @@ class MonsterMushroom extends Monster{
 class MonsterMonkey extends Monster{
     animation
     constructor(pos){
-        super(pos,[120,200],1000,new GameUnitMoveModule(0,20,4), new GameUnitLifeModule(200000,100,5), new GameUnitSkillModule(0));
+        super(pos,[120,200],1000,new GameUnitMoveModule(0,20,4), new GameUnitLifeModule(200000,50,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("jump",function(m){
             m.canDraw=false;
             m.moveModule.moveType=1
@@ -210,32 +210,52 @@ class MonsterFly extends Monster{
     animation;
     isMaster;
     slaveList=[];
-    MAX_SLAVE_COUNT=20;
+    MAX_SLAVE_COUNT=66;
     constructor(pos,isMaster=true){
-        super(pos,[30,30],150,new GameUnitMoveModule(1,10), new GameUnitLifeModule(100000,100,5), new GameUnitSkillModule(0));
+        super(pos,[25,25],66,new GameUnitMoveModule(1,8), new GameUnitLifeModule(100000,100,5), new GameUnitSkillModule(0));
+        if(isMaster)this.skillModule.addSkill(new MagicSkill("SLAVE",(m)=>{
+            for(let i=m.slaveList.length; i<m.MAX_SLAVE_COUNT; i++){
+                let slave=WORLD.add(new MonsterFly(pos,false));
+                slave.setTarget(m.target);
+                slave.activateAI();
+                slave.addEventListener("remove",()=>{
+                    for(let i=0; i<m.slaveList.length; i++){
+                        if(slave===m.slaveList[i]){
+                            m.slaveList.splice(i,1);
+                            break
+                        }
+                    }
+                    return true
+                })
+                m.slaveList.push(slave);
+            }
+        },20000))
         this.skillModule.addSkill(new MagicSkill("jump",function(m){
             m.moveModule.moveSpeed=30;
-            m.power=500;
+            m.power=666;
             TIME.addSchedule(0.5,0.5,0,function(){
-                m.moveModule.moveSpeed=10;
-                m.power=150;
+                m.moveModule.moveSpeed=8;
+                m.power=66;
             },function(){return m.getState()==0;})
         },700))
         this.body.overlap=true;
         this.physics.inv_mass=0.5;
         this.ai_move_cycle=0.04;
-        this.physics.setCOR(0.3);
+        this.physics.setCOR(0);
         this.physics.setCOF(0);
         this.animation=new UnitAnimation(IMAGES.monster_hellfly,30,30,[1, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.isMaster=isMaster;
-        if(isMaster){
-            for(let i=0; i<this.MAX_SLAVE_COUNT; i++){
-                let m=WORLD.add(new MonsterFly(pos,false));
-                TIME.addSchedule(1,1,0,function(){m.activateAI()});
-                this.slaveList.push(m);
+
+        this.addEventListener("remove",()=>{
+            for(let m of this.slaveList)m.setState(0)
+        })
+        this.lifeModule.ondamage=(d,dt)=>{
+            if(this.slaveList.length>0){
+                this.slaveList[0].lifeModule.giveDamage(d,dt)
+                return false
             }
+            return true
         }
-        this.addEventListener("remove",()=>{for(let m of this.slaveList)m.setState(0)})
     }
     update(){
         super.update();
@@ -251,7 +271,7 @@ class MonsterFly extends Monster{
 class MonsterSlime extends Monster{
     slaveList=[];
     constructor(pos){
-        super(pos,[160,160],1000,new GameUnitMoveModule(0,3,4), new GameUnitLifeModule(1000000,100,5), new GameUnitSkillModule(0));
+        super(pos,[160,160],1000,new GameUnitMoveModule(0,3,4), new GameUnitLifeModule(1000000,50,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),10])},500))
         this.skillModule.addSkill(new MagicSkill("dash",function(m){
             if(!m.canTarget())return;

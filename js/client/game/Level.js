@@ -55,7 +55,7 @@ const Level= {
                 Level.createMainMonster(level,[1500, 0]);
                 break;
             case 2:
-                ReusedModule.createGameMap(2000,1000);
+                ReusedModule.createGameMap(3000,3000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
                 ReusedModule.snowWeather()
