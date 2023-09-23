@@ -234,7 +234,7 @@ class MonsterFly extends Monster{
             m.moveModule.moveSpeed=30;
             m.power=666;
             TIME.addSchedule(0.5,0.5,0,function(){
-                m.moveModule.moveSpeed=8;
+                m.moveModule.moveSpeed=10;
                 m.power=66;
             },function(){return m.getState()==0;})
         },700))
@@ -361,21 +361,29 @@ class MonsterGolem extends Monster{
         if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*0.5){ //PHASE 2
             this.phase=2;
             this.skillModule.addSkill(new MagicSkill("TURRET",(m)=>{
-                let pos=[m.body.midX, m.body.midY+300];
-                let effect1 = WORLD.add(new Particle([pos[0]-150, pos[1]-150], [300, 300], TYPE.magicEffect));
-                effect1.life=500;
-                let effect2 = WORLD.add(new Particle([pos[0]-200, pos[1]-200], [400, 400], TYPE.magicEffect));
-                effect2.life=500;
+                //if(!m.canTarget())return;
+                const mx=m.body.midX, my=m.body.midY
+                let pos=[[mx, my+400], [mx-400, my+300], [mx+400, my+300]];
+                for(let i=0; i<pos.length; i++){
+                    let effect1 = WORLD.add(new Particle([pos[i][0]-150, pos[i][1]-150], [300, 300], TYPE.magicEffect));
+                    effect1.life=500;
+                    let effect2 = WORLD.add(new Particle([pos[i][0]-200, pos[i][1]-200], [400, 400], TYPE.magicEffect));
+                    effect2.life=500;
+                }
 
                 TIME.addSchedule(1,5,0.1,()=>{
                     if(!m.canTarget())return;
-                    let ene = WORLD.add(new MatterEnergy([pos[0]-25, pos[1]-25],[0,0]))
-                    ene.body.setSize([70,70])
-                    ene.damage=1111
-                    let ga=ene.body.getUnitVector(m.target.body.midPos)
-                    ene.body.setVel([ga[0]*10, ga[1]*10])
-                    ene.physics.setGravity(ga,true);
+                    for(let i=0; i<pos.length; i++){
+                        let ene = WORLD.add(new MatterEnergy([pos[i][0] - 25, pos[i][1] - 25], [0, 0]))
+                        ene.body.setSize([70, 70])
+                        ene.damage = 2000
+                        ene.physics.setCOR(0)
+                        let ga = ene.body.getUnitVector(m.target.body.midPos)
+                        ene.body.setVel([ga[0] * 10, ga[1] * 10])
+                        ene.physics.setGravity([ga[0]*2, ga[1]*2], true);
+                    }
                 })
+                
             },1300))
         }
     }

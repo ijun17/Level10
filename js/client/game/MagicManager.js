@@ -192,12 +192,12 @@ const test_addSchedule=function(startSec,endSec,intervalSec,f){
     symbol:{"@":"let ","#":"function(parameter)","$":"parameter"},
 //
     BASIC_MASIC:[
-    {name:"파이어볼",code:`//전방에 파이어볼을 발사
+    {name:"파이어볼",code:`//불 생성
 @e1=create(FIRE,front(20),2);
 giveLife(e1,10);
 move(e1,front(30), 0);`,level:0},
 
-    {name:"벽", code:`//길쭉한 블럭을 생성
+    {name:"벽", code:`//블럭을 생성
 @block = create(BLOCK,0,0,60,200);
 move(block,0,100);`,level:0},
 
@@ -207,7 +207,7 @@ giveForce(player,front(30),1);`,level:0},
     {name:"힐",code:`//플레이어 hp를 2000회복
 giveLife(player,2000);`,level:0},
     
-    {name:"얼음비", code:`//많은 얼음을 소환
+    {name:"얼음비", code:`//얼음을 소환
 for(@i=0;i<10;i++){
     @ice = create(ICE, 0,-20)
     move(ice, front(i*40+100),300+i*40)
@@ -236,11 +236,11 @@ for(@i=0; i<12; i++){
     {name:"투명",code:`//플레이어의 투명화
 invisible(player,3);`,level:2},
 
-    {name:"활공",code:`//플레이어 아래에 바람 생성
+    {name:"활공",code:`//바람 생성
 @wind=create(WIND,0,40);
-giveLife(wind,200);
-move(wind,front(-100),-20);
-giveForce(wind,0,-35);`,level:2},
+giveLife(wind,500);
+move(wind,front(-100),-50);
+giveForce(wind,0,-30);`,level:2},
 
     {name:"기관총",code:`//화살 발사
 addSchedule(0,5,1/20,#{
@@ -263,7 +263,7 @@ for(@j=0;j<5;j++){
     giveLife(c,500);
 }`,level:3},
 
-    {name:"번개",code:`//번개는 전기들이 서로 일정 수 부딪히면 생성된다. 
+    {name:"번개",code:`//전기들이 일정 수 부딪히면 번개가 생성된다. 
 for(@i=0; i<200; i++){
     @e=create(ELECTRICITY, 0,0);
     move(e, front(300),0);
