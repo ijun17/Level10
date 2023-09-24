@@ -29,6 +29,7 @@ const Game={
         Game.world.reset();
         Game.screen.reset();
         Game.time.reset();
+        Game.userInput.reset();
         //Input.resetKeyInput();
         //Screen.bgColor="#b2c3c8";
         //{어두운 배경: #2B2B2B, 붉은빛하늘: #A89A9A,맑은하늘:rgb(121, 155, 206), 녹색하늘색:#94a9ad, 겨울하늘:#b2c3c8}

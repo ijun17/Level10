@@ -54,7 +54,7 @@ const HELP_MENU=[
 <br>
 <p>아래는 마법을 제어할 수 있는 함수와 변수 입니다.</p>
 <ul>
-    <li>create(type,vx,vy,width,height) : type에 해당하는 물질을 생성<br> (type = FIRE, ELECTRICITY, ICE, ARROW, ENERGY, WIND, BLOCK, TRIGGER)</li>
+    <li>create(type,vx,vy,width,height) : type에 해당하는 물질을 생성<br> (type = FIRE, ELECTRICITY, ICE, ARROW, ENERGY, WIND, BLOCK)</li>
     <li>move(target,x,y) : 대상의 위치를 변경 </li>
     <li>giveForce(target,vx,vy) : 대상의 속도를 변경 </li>
     <li>giveLife(target,life) : 대상에게 라이프를 줌</li>

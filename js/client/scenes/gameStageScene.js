@@ -12,9 +12,8 @@ Game.setScene("gameStage",function(level){
         TIME.addSchedule(2,2,undefined,()=>{Game.changeScene("select")});
     })
     SCREEN.renderer.camera.addTarget(player.body);
-    USER_INPUT.setParameter("player",player);
-    USER_INPUT.setParameter("moveKey",[39,37,38,40]);
-
-    Level.makeStage(level,player)
+    
+    ReusedModule.userInputKeySet(player)
     if(localStorage.getItem("mobile")==='1')ReusedModule.createMobileButton(player);
+    Level.makeStage(level,player)
 })

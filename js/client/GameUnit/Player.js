@@ -6,7 +6,7 @@ class Player extends Actor{
         this.body.overlap=true;
         this.damageTextColor="red";
         this.damageVibrate=30;
-        for(let i=0; i<4;i++)this.skillModule.addSkill(MagicManager.magicList[MagicManager.skillNum[i]])
+        for(let magic of MagicManager.getSelectedMagic())this.skillModule.addSkill(magic)
 
         this.animation = new UnitAnimation(IMAGES.player,30,60,[1,1],function(){
             if(this.moveModule.moveFlag[0])return 1;

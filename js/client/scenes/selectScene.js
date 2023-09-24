@@ -29,7 +29,8 @@ Game.setScene("select",function(){
     helpSceneBtn.innerText="?";
     helpSceneBtn.onclick=()=>{Game.changeScene("help")};
     
-    //let pvpBtn = ui.add("button",[SCREEN.perX(83),SCREEN.perX(11)], [SCREEN.perX(16),SCREEN.perX(4)],"pvpButton");
-    //pvpBtn.innerText="PVP";
+    let pvpBtn = ui.add("button",[perX(83),perX(1)], [perX(16),perX(4)],"pvpButton");
+    pvpBtn.innerText="PVP";
+    pvpBtn.onclick=()=>{Game.changeScene("pvp")};
 
 })

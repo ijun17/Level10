@@ -60,40 +60,6 @@ USER_INPUT.addEvent(document,"keyup")
 USER_INPUT.addEvent(SCREEN.screen,"touchstart",{passive:false})
 USER_INPUT.addEvent(SCREEN.screen,"touchmove",{passive:false})
 USER_INPUT.addEvent(SCREEN.screen,"touchend")
-USER_INPUT.setParameter("player", undefined)
-USER_INPUT.setParameter("moveKey", [39,37,38,40])//right left up down
-USER_INPUT.setParameter("skillKey", [81,87,69,82])//qwer
-USER_INPUT.addEventListener("keydown", function(e,para){if(para.player instanceof Actor)para.player.onkeydown(e.keyCode, para.moveKey, para.skillKey)})
-USER_INPUT.addEventListener("keyup",function(e,para){if(para.player instanceof Actor)para.player.onkeyup(e.keyCode, para.moveKey)})
-USER_INPUT.addEventListener("touchstart",function(e,para){
-    for(let i=0, l=e.touches.length; i<l; i++){
-        for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
-            if(btn instanceof Button && btn.isTouched(e.touches[i])){
-                e.preventDefault();
-                btn.ontouchstart(para);
-            }
-        }
-    }
-})
-USER_INPUT.addEventListener("touchmove",function(e,para){
-    for(let i=0, l=e.touches.length; i<l; i++){
-        for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
-            if(btn instanceof Button && btn.isTouched(e.touches[i])){
-                e.preventDefault();
-                btn.ontouchmove(para);
-            }
-        }
-    }
-})
-USER_INPUT.addEventListener("touchend",function(e,para){
-    if(e.touches.length==0){
-        for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
-            if(btn instanceof Button){
-                btn.ontouchend(para);
-            }
-        }
-    }
-})
 
 
 Level.loadLevel();
@@ -106,3 +72,4 @@ MagicManager.loadMagic();
 START GAME
 */
 Game.startGame()
+

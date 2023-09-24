@@ -4,14 +4,7 @@ class GameUserInput{
     enableSet={}
     handlerSet={}
     constructor(html_screen_element){
-        // this.screen=html_screen_element;
-        // this.addEvent(document,"keydown")
-        // this.addEvent(document,"keyup")
-        // this.addEvent(screen,"touchstart")
-        // this.addEvent(screen,"touchmove")
-        // this.addEvent(screen,"touchend")
     }
-
     addEventListener(eventName, handler){
         if(this.handlerSet[eventName]===undefined)console.error("no "+eventName+" event")
         this.handlerSet[eventName].push(handler);
@@ -37,5 +30,13 @@ class GameUserInput{
 
     setParameter(key, value){
         this.parameterSet[key]=value;
+    }
+    reset(){
+        for(let o in this.parameterSet){
+            this.parameterSet[o]=undefined
+        }
+        for(let o in this.handlerSet){
+            this.handlerSet[o].splice(0, this.handlerSet[o].length);
+        }
     }
 }

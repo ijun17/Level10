@@ -7,7 +7,7 @@ Game.setScene("manageMagic",function(){
     ReusedModule.createMagicButtonList([perX(7),perX(1)], [perX(22), perY(100)-perX(2)], buttonSelector,(num)=>{
         const MAGIC=MagicManager.magicList[num];
         const IS_BASIC=MagicManager.isBasicMagic(num);
-        createMagicName.value=MAGIC.name;
+        createMagicName.value=MAGIC.getName();
         createMagicCode.value=MAGIC.getPrimitiveCode();
         createMagicName.readOnly =IS_BASIC
         createMagicCode.readOnly =IS_BASIC
@@ -47,15 +47,8 @@ Game.setScene("manageMagic",function(){
     
     createMagicbutton.onclick = function(){
         if(buttonSelector.ele===null)return;
-        let magicNum=Number(buttonSelector.ele.dataset.magicNum)
-        if(MagicManager.isBasicMagic(magicNum))return;
-        let primitiveCustomMagic=MagicManager.primitiveCustomMagic[magicNum-MagicManager.primitiveBasicMagic.length];
-        primitiveCustomMagic.name=createMagicName.value;
-        primitiveCustomMagic.code=createMagicCode.value;
-        MagicManager.saveMagic();
-        let createdMagic = MagicManager.createMagicSkill(primitiveCustomMagic);
-        MagicManager.magicList[magicNum]=createdMagic;
+        const MAGIC_NUM=Number(buttonSelector.ele.dataset.magicNum)
         buttonSelector.ele.innerText=createMagicName.value;
-        printCreateMagicInfo(createdMagic);
+        printCreateMagicInfo(MagicManager.setMagicSkill(MAGIC_NUM, createMagicName.value, createMagicCode.value));
     }
 })

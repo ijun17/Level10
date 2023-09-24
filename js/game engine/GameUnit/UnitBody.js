@@ -29,7 +29,7 @@ class UnitBody{
     get midX(){return this.pos[0]+(this.size[0]>>1)}
     get midY(){return this.pos[1]+(this.size[1]>>1)}
     get midPos(){return [this.midX, this.midY]}
-    get speed(){return Math.sqrt(this.vel[0]*this.vel[0]+this.vel[1]*this.vel[1]);}
+    get speed(){return Math.hypot(this.vel[0], this.vel[1])}
     limitVec(vec,lim) {
         if (vec[0] > lim) vec[0] = lim;
         else if (vec[0] < -lim) vec[0] = -lim;
@@ -45,7 +45,7 @@ class UnitBody{
     getUnitVector(target_pos){
         let uvx=target_pos[0]-this.midX
         let uvy=target_pos[1]-this.midY
-        let length=Math.sqrt(uvx**2+uvy**2)
+        let length=Math.hypot(uvx,uvy)
         return [uvx/length, uvy/length]
     }
 }

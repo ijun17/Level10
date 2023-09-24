@@ -66,7 +66,7 @@ class Monster extends Actor{
         let matter_y = b.midY+((b.size[1]>>1)+15)*dir[1]*this.getTargetDirY()-15;
         let matter_vx = tb.midX-matter_x;
         let matter_vy = tb.midY-matter_y;
-        let vector_length = Math.sqrt(matter_vx**2+matter_vy**2);
+        let vector_length = Math.hypot(matter_vx, matter_vy);
         return  WORLD.add(new MatterClass([matter_x, matter_y], [matter_vx*power/vector_length, matter_vy*power/vector_length]));
     }
     createMatter(MatterClass,dir,vel){
@@ -403,7 +403,7 @@ class MonsterWyvern extends Monster{
             fire.damage=1000;
             fire.body.setSize([60,60]);
             fire.addEventListener("collision", (e)=>{fire.explode()});
-        },111))
+        },80))
         this.skillModule.addSkill(new MagicSkill("EXPLS",function(m){
             for(let i=0; i<10; i++){
                 (m.createMatter(MatterFire,[2+i*0.4, 2+i*0.1],[0,-30])).life=100;
@@ -413,7 +413,7 @@ class MonsterWyvern extends Monster{
         },500))
         this.skillModule.addSkill(new MagicSkill("FIRETORNADO",function(m){
             let fires=[];
-            let x=m.body.midX+m.front(200);
+            let x=m.body.midX;
             let speed=m.front(13);
             let pos=m.body.pos
             for(let i=0; i<200; i++){
@@ -499,11 +499,10 @@ class MonsterDragon extends Monster{
 
         this.skillModule.addSkill(new MagicSkill("VIM",(m)=>{
             if(!m.canTarget())return;
-            let dir=m.front()
-            let x=m.body.midX+dir*300;
+            let x=m.body.midX;
             let y=m.body.midY;
             let tb=m.target.body;
-            let speed=Math.sqrt((tb.midX-x)**2+(tb.midY-y)**2)/10;
+            let speed=Math.hypot(tb.midX-x,tb.midY-y)*0.1;
             let vel=[(tb.midX-x)/speed, (tb.midY-y)/speed];
             let elecs=[];
             for(let i=0; i<100; i++){

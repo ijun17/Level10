@@ -12,8 +12,7 @@ Game.setScene("test",function(){
         TIME.addSchedule(2,2,undefined,()=>{Game.changeScene("select")});
     })
     SCREEN.renderer.camera.addTarget(player.body);
-    USER_INPUT.setParameter("player",player);
-    USER_INPUT.setParameter("moveKey",[39,37,38,40]);
+    ReusedModule.userInputKeySet(player)
     if(localStorage.getItem("mobile")==='1')ReusedModule.createMobileButton(player);
 
     ReusedModule.createGameMap(2000,1000);
