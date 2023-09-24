@@ -89,13 +89,16 @@ Game.setScene("pvp-loading",function(para){
     const multi=para.multi
     multi.resetEvent()
     ReusedModule.createbackButton("select", () => { multi.reset() });
-    const loader = ui.add("div", [perX(50) - perX(2), perY(50) - perX(2)], [perX(4), perX(4)], "loader")
+    //const loader = ui.add("div", [perX(50) - perX(2), perY(50) - perX(2)], [perX(4), perX(4)], "loader")
     multi.ondatachannelclose = () => {
         alert("연결이 끊어졌습니다.")
         Game.changeScene("pvp")
     }
     
-    multi.send(JSON.stringify({ type: "magic", magic: MagicManager.getSelectedPrimitiveMagic() }))
+    let message = JSON.stringify({ type: "magic", magic: MagicManager.getSelectedPrimitiveMagic() })
+    TIME.addSchedule(0,undefined,1,()=>{multi.send(message)})
+    
+
 
     multi.ondatachannelmessage = (m) => {
         console.log("peer : ", m);
@@ -111,6 +114,11 @@ Game.setScene("pvp-loading",function(para){
         }
     }
 })
+
+
+
+
+
 
 
 
@@ -137,15 +145,16 @@ Game.setScene("pvp-game", function(para){
     P[ME].addEventListener("remove",()=>{
         let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"playerDieText");
         stageClearText.innerText="YOU LOSE";
-        TIME.addSchedule(2,2,undefined,()=>{Game.changeScene("pvp")});
+        TIME.addSchedule(2,2,undefined,()=>{Game.changeScene("pvp");multi.reset()});
     })
     P[OTHER].addEventListener("remove",()=>{
         let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"stageClearText");
         stageClearText.innerText="YOU WIN";
         let clearTextY=0;
         TIME.addSchedule(0,4,undefined,function(){stageClearText.style.bottom=(clearTextY--)+"px"});
-        TIME.addSchedule(4,4,undefined,()=>{Game.changeScene("pvp")});
+        TIME.addSchedule(4,4,undefined,()=>{Game.changeScene("pvp");multi.reset()});
     })
+    P[ME].renderStatusBar([perX(10),perY(100)-perX(10)])
     P[OTHER].skillModule.skillList = para.magicList
     SCREEN.renderer.camera.addTarget(P[ME].body);
 
@@ -201,8 +210,36 @@ Game.setScene("pvp-game", function(para){
         }
     })
 
+    if(localStorage.getItem("mobile")==='1'){
+        const BTN_W=perX(10);
+        const BTN_SIZE=[BTN_W,BTN_W];
+        const MOVE_RUN=(P[ME].moveModule.moveType===0)
+        const MOVE_BUTTON_TEXT=(MOVE_RUN?['<','^','>']:['<','v','>','^']);
+        const MOVE_BUTTON_POS=(MOVE_RUN?[[perX(1),perX(1)],[perX(2)+BTN_W,perX(1)],[perX(3)+BTN_W*2,perX(1)]]: [[perX(1),perX(1)],[perX(2)+BTN_W,perX(1)],[perX(3)+BTN_W*2,perX(1)],[perX(2)+BTN_W,perX(2)+BTN_W]])
+        const MOVE_HANDLER_CODE=(MOVE_RUN?[1,2,0]:[1,3,0,2]);
+        for(let i=0; i<MOVE_BUTTON_TEXT.length; i++){
+            let btn = WORLD.add(new Button(MOVE_BUTTON_POS[i],BTN_SIZE,"white",MOVE_BUTTON_TEXT[i]))
+            btn.ontouchstart=()=>{meInput[MOVE_HANDLER_CODE[i]]='1'}
+            btn.ontouchmove=()=>{meInput[MOVE_HANDLER_CODE[i]]='1'}
+            btn.ontouchend=()=>{meInput[MOVE_HANDLER_CODE[i]]='2'}
+            P[ME].addEventListener("remove",()=>{btn.setState(0);return true})
+        }
+        
+        const SKILL_BUTTON_TEXT=['Q','W','E','R'];
+        const SKILL_BUTTON_POS=[[perX(96)-BTN_W*4,perX(1)],[perX(97)-BTN_W*3,perX(1)],[perX(98)-BTN_W*2,perX(1)],[perX(99)-BTN_W,perX(1)]]
+        for(let i=0; i<4; i++){
+            let btn = WORLD.add(new Button(SKILL_BUTTON_POS[i],BTN_SIZE,"white",SKILL_BUTTON_TEXT[i]))
+            btn.ontouchstart=()=>{meInput[4+i]='1'}
+            btn.update=()=>{btn.color=P[ME].skillModule.canCast(i) ? "royalblue" : "white"}
+            P[ME].addEventListener("remove",()=>{btn.setState(0);return true})
+        }
+        ReusedModule.userInputTouchSet()
+    }
+
+    
+
     function isValidMessage(m){
-        return true;//m.length==11 && m[8]=='k' && m[9]=='j' && m[10]=='g';
+        return m.length==8;
     }
     multi.ondatachannelmessage = (m) => {
         if(!isValidMessage(m))return;

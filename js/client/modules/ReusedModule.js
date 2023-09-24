@@ -135,6 +135,14 @@ const ReusedModule={
             btn.update=()=>{btn.color=player.skillModule.canCast(i) ? "royalblue" : "white"}
             player.addEventListener("remove",()=>{btn.setState(0);return true})
         }
+        
+        ReusedModule.userInputTouchSet()
+    },
+    userInputKeySet: function (player, moveKey=[39, 37, 38, 40], skillKey=[81, 87, 69, 82]) {
+        USER_INPUT.addEventListener("keydown", (e, para)=>{ if (player instanceof Actor) player.onkeydown(e.keyCode, moveKey, skillKey) })
+        USER_INPUT.addEventListener("keyup", (e, para)=>{ if (player instanceof Actor) player.onkeyup(e.keyCode, moveKey) })
+    },
+    userInputTouchSet: function(){
         USER_INPUT.addEventListener("touchstart",function(e,para){
             for(let i=0, l=e.touches.length; i<l; i++){
                 for(let btn of WORLD.layer[BUTTON_LAYER].gameUnitList){
@@ -164,9 +172,5 @@ const ReusedModule={
                 }
             }
         })
-    },
-    userInputKeySet: function (player, moveKey=[39, 37, 38, 40], skillKey=[81, 87, 69, 82]) {
-        USER_INPUT.addEventListener("keydown", (e, para)=>{ if (player instanceof Actor) player.onkeydown(e.keyCode, moveKey, skillKey) })
-        USER_INPUT.addEventListener("keyup", (e, para)=>{ if (player instanceof Actor) player.onkeyup(e.keyCode, moveKey) })
     }
 }

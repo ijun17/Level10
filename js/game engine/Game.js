@@ -42,6 +42,7 @@ const Game={
     changeScene(sceneName, para=undefined){
         if(this.scenes[sceneName]===undefined){console.error(`"${sceneName}" scene is undefined`);return;}
         Game.resetGame();
+        console.log("Game.changeScene : "+sceneName)
         Game.scenes[sceneName](para)
     }
 }
