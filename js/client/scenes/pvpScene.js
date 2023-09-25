@@ -95,8 +95,8 @@ Game.setScene("pvp-loading",function(para){
     }
     
     let message = JSON.stringify({ type: "magic", magic: MagicManager.getSelectedPrimitiveMagic() })
-    MULTI.send(message)
-    //TIME.addSchedule(0,undefined,1,()=>{MULTI.send(message)})
+    //MULTI.send(message)
+    TIME.addSchedule(0,undefined,1,()=>{MULTI.send(message)})
 
     MULTI.ondatachannelmessage = (m) => {
         console.log("peer : ", m);

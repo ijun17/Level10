@@ -30,7 +30,7 @@ Game.setScene("select",function(){
     helpSceneBtn.onclick=()=>{Game.changeScene("help")};
     
     let pvpBtn = ui.add("button",[perX(83),perX(1)], [perX(16),perX(4)],"pvpButton");
-    pvpBtn.innerText="PVP 1.1";
+    pvpBtn.innerText="PVP 1.2";
     pvpBtn.onclick=()=>{Game.changeScene("pvp")};
 
 })
