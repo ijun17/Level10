@@ -1,9 +1,12 @@
+const MULTI = new SimpleWebRTC("wss://port-0-webrtc-test-eg4e2alkj86xoo.sel4.cloudtype.app/", "stun:stun.l.google.com:19302")
+
+
 Game.setScene("pvp",function(){
     const ui=SCREEN.ui;
     const perX=SCREEN.perX.bind(SCREEN);
     const perY=SCREEN.perY.bind(SCREEN);
-    ReusedModule.createbackButton("select", ()=>{multi.reset()});
-
+    ReusedModule.createbackButton("select", ()=>{MULTI.reset()});
+    MULTI.reset()
     const roomFormSize=[perX(45),perX(30)];
 
     const roomForm = ui.add("div",[perX(50)-roomFormSize[0]*0.5,perY(50)-roomFormSize[1]*0.5],roomFormSize,"room-form")
@@ -21,12 +24,7 @@ Game.setScene("pvp",function(){
                 <input class="enter-room-input" placeholder="방 아이디">
                 <p>방 아이디를 입력하세요</p>
             </div>
-        </div>`
-
-
-    const multi = new SimpleWebRTC("wss://port-0-webrtc-test-eg4e2alkj86xoo.sel4.cloudtype.app/", "stun:stun.l.google.com:19302")
-
-    
+        </div>`    
 
     const createRoomButton = document.querySelector(".create-room-button")
     const enterRoomButton = document.querySelector(".enter-room-button")
@@ -36,32 +34,34 @@ Game.setScene("pvp",function(){
     const enterRoomInput = document.querySelector(".enter-room-input")
 
     enterRoomButton.onclick = () => {
-        multi.resetEvent()
-        multi.disconnectToSignalingServer();
+        MULTI.resetEvent()
+        MULTI.disconnectToSignalingServer();
         createRoomButton.classList.remove("room-button-click");
         enterRoomButton.classList.add("room-button-click");
         createRoomInputContainer.style.display = "none";
         enterRoomInputContainer.style.display = "block";
         enterRoomInput.value = "";
-        multi.onroomenterfail = () => {alert("연결을 실패했습니다.1")}
-        multi.onwebsocketclose = () => {alert("연결을 실패했습니다.2")}
-        multi.ondatachannelopen = () => { Game.changeScene("pvp-loading",{multi:multi, isHost:false}) }
     }
 
     enterRoomInput.onkeyup = (event) => { 
-        if (event.key === 'Enter') multi.enterRoom(Number(enterRoomInput.value))
+        if (event.key === 'Enter') {
+            MULTI.enterRoom(Number(enterRoomInput.value))
+            enterRoomInputContainer.style.display = "none";
+            MULTI.onroomenterfail = () => {alert("연결을 실패했습니다.(1)");Game.changeScene("pvp")}
+            MULTI.onwebsocketclose = () => {alert("연결을 실패했습니다.(2)");Game.changeScene("pvp")}
+            MULTI.ondatachannelopen = () => { Game.changeScene("pvp-loading",{isHost:false}) }
+        }
     }
 
-
     createRoomButton.onclick = () => {
-        multi.resetEvent()
-        multi.createRoom();
-        multi.onwebsocketclose = () => {alert("서버와의 연결이 끊어졌습니다.3")}
-        multi.onroomcreated = (id) => {
+        MULTI.resetEvent()
+        MULTI.createRoom();
+        MULTI.onwebsocketclose = () => {alert("연결이 끊어졌습니다.(3)")}
+        MULTI.onroomcreated = (id) => {
             if (id == -1) alert("방이 꽉찼습니다.")
             else createRoomInput.value = id;
         }
-        multi.ondatachannelopen = () => { Game.changeScene("pvp-loading",{multi:multi, isHost:true}) }
+        MULTI.ondatachannelopen = () => { Game.changeScene("pvp-loading",{isHost:true}) }
 
         createRoomButton.classList.add("room-button-click");
         enterRoomButton.classList.remove("room-button-click");
@@ -86,21 +86,19 @@ Game.setScene("pvp-loading",function(para){
     const ui=SCREEN.ui;
     const perX=SCREEN.perX.bind(SCREEN);
     const perY = SCREEN.perY.bind(SCREEN);
-    const multi=para.multi
-    multi.resetEvent()
-    ReusedModule.createbackButton("select", () => { multi.reset() });
-    //const loader = ui.add("div", [perX(50) - perX(2), perY(50) - perX(2)], [perX(4), perX(4)], "loader")
-    multi.ondatachannelclose = () => {
-        alert("연결이 끊어졌습니다.")
+    MULTI.resetEvent()
+    ReusedModule.createbackButton("select", () => { MULTI.reset() });
+    const loader = ui.add("div", [perX(50) - perX(2), perY(50) - perX(2)], [perX(4), perX(4)], "loader")
+    MULTI.ondatachannelclose = () => {
+        alert("연결이 끊어졌습니다.(4)")
         Game.changeScene("pvp")
     }
     
     let message = JSON.stringify({ type: "magic", magic: MagicManager.getSelectedPrimitiveMagic() })
-    TIME.addSchedule(0,undefined,1,()=>{multi.send(message)})
-    
+    MULTI.send(message)
+    //TIME.addSchedule(0,undefined,1,()=>{MULTI.send(message)})
 
-
-    multi.ondatachannelmessage = (m) => {
+    MULTI.ondatachannelmessage = (m) => {
         console.log("peer : ", m);
         const data = JSON.parse(m)
         if (data.type == "magic") {
@@ -110,7 +108,7 @@ Game.setScene("pvp-loading",function(para){
             for(let i=0; i<peerMagic.length; i++){
                 magicList.push(MagicManager.createMagicSkill(i, peerMagic[i]))
             }
-            Game.changeScene("pvp-game",{multi:multi, isHost:para.isHost, magicList: magicList})
+            Game.changeScene("pvp-game",{isHost:para.isHost, magicList: magicList})
         }
     }
 })
@@ -128,9 +126,8 @@ Game.setScene("pvp-game", function(para){
     const ui=SCREEN.ui;
     const perX=SCREEN.perX.bind(SCREEN);
     const perY = SCREEN.perY.bind(SCREEN);
-    const multi=para.multi
-    multi.resetEvent()
-    ReusedModule.createbackButton("select", () => { multi.reset() });
+    MULTI.resetEvent()
+    ReusedModule.createbackButton("select", () => { MULTI.reset() });
 
     ReusedModule.createGameMap(2000,1000)
     WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
@@ -145,14 +142,14 @@ Game.setScene("pvp-game", function(para){
     P[ME].addEventListener("remove",()=>{
         let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"playerDieText");
         stageClearText.innerText="YOU LOSE";
-        TIME.addSchedule(2,2,undefined,()=>{Game.changeScene("pvp");multi.reset()});
+        TIME.addSchedule(2,2,undefined,()=>{Game.changeScene("pvp");MULTI.reset()});
     })
     P[OTHER].addEventListener("remove",()=>{
         let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"stageClearText");
         stageClearText.innerText="YOU WIN";
         let clearTextY=0;
         TIME.addSchedule(0,4,undefined,function(){stageClearText.style.bottom=(clearTextY--)+"px"});
-        TIME.addSchedule(4,4,undefined,()=>{Game.changeScene("pvp");multi.reset()});
+        TIME.addSchedule(4,4,undefined,()=>{Game.changeScene("pvp");MULTI.reset()});
     })
     P[ME].renderStatusBar([perX(10),perY(100)-perX(10)])
     P[OTHER].skillModule.skillList = para.magicList
@@ -176,7 +173,7 @@ Game.setScene("pvp-game", function(para){
         }
         //입력처리
         isSync=false
-        multi.send(message)
+        MULTI.send(message)
     }
 
     TIME.addSchedule(0,undefined,SYNC_TICK*0.01, ()=>{
@@ -241,14 +238,14 @@ Game.setScene("pvp-game", function(para){
     function isValidMessage(m){
         return m.length==8;
     }
-    multi.ondatachannelmessage = (m) => {
+    MULTI.ondatachannelmessage = (m) => {
         if(!isValidMessage(m))return;
         for(let i=0; i<8; i++)input[OTHER][i]=m[i]
         isSync=true;
         TIME.isStop=false;
     }
 
-    multi.ondatachannelclose = () => {
+    MULTI.ondatachannelclose = () => {
         alert("연결이 끊어졌습니다.")
         Game.changeScene("pvp")
     }
