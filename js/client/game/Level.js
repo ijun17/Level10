@@ -2,23 +2,17 @@ const Level= {
     playerLevel:0,
     monsters:[MonsterMushroom, MonsterMonkey, MonsterFly, MonsterSlime, MonsterGolem,MonsterWyvern,MonsterDragon],
     loadLevel:function() {
-        this.playerLevel = localStorage.playerLevel;
-        if (this.playerLevel === undefined) {
-            this.playerLevel = 0;
-            this.saveLevel();
-        }else this.playerLevel = Number(this.playerLevel);
+        if (localStorage.playerLevel === undefined) this.saveLevel(0);
+        else this.saveLevel(Number(localStorage.playerLevel));
     },
-    saveLevel:function() {
-        localStorage.playerLevel = this.playerLevel;
-    },
-
-    clearLevel:function(stageLevel) {
-        let isLevelUp = false;
-        if (this.playerLevel < stageLevel + 1) {
-            this.playerLevel = stageLevel + 1;
-            this.saveLevel();
-            isLevelUp = true;
+    saveLevel:function(level) {
+        if(level>=0 && level<=10){
+            this.playerLevel = level
+            localStorage.playerLevel = this.playerLevel;
         }
+    },
+    clearLevel:function(stageLevel) {
+        if (this.playerLevel < stageLevel + 1) this.saveLevel(stageLevel + 1);
         let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"stageClearText");
         stageClearText.innerText="CLEAR";
         let clearTextY=0;

@@ -5,7 +5,7 @@ Game.setScene("select",function(){
     ReusedModule.createbackButton("main");
 
     let levelBtn;
-    for(let i=0; i<Level.playerLevel+1; i++){
+    for(let i=0; i<=Level.playerLevel; i++){
         levelBtn=ui.add("button", [perX(42),perY(100)-perX(i*4+5)], [perX(16), perX(4)], "levelButton");
         levelBtn.innerText="LEVEL"+i;
         levelBtn.style.backgroundColor="rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)";
@@ -17,11 +17,11 @@ Game.setScene("select",function(){
     manageMagicSceneBtn.innerText="MY MAGIC";
     manageMagicSceneBtn.onclick=()=>{Game.changeScene("manageMagic")};
     //TEST BUTTON
-    let textSceneBtn = ui.add("button",[perX(83),perY(100)-perX(10)], [perX(16),perX(4)],"selectMagicSceneButton");
-    textSceneBtn.innerText="TEST";
-    textSceneBtn.onclick=()=>{Game.changeScene("test")};
+    // let textSceneBtn = ui.add("button",[perX(83),perY(100)-perX(10)], [perX(16),perX(4)],"selectMagicSceneButton");
+    // textSceneBtn.innerText="TEST";
+    // textSceneBtn.onclick=()=>{Game.changeScene("test")};
     //TEST BUTTON
-    let monsterVSBtn = ui.add("button",[perX(83),perY(100)-perX(15)], [perX(16),perX(4)],"selectMagicSceneButton");
+    let monsterVSBtn = ui.add("button",[perX(83),perY(100)-perX(10)], [perX(16),perX(4)],"selectMagicSceneButton");
     monsterVSBtn.innerText="Monster VS";
     monsterVSBtn.onclick=()=>{Game.changeScene("monsterVS")};
     //HELP BUTTON
@@ -30,7 +30,7 @@ Game.setScene("select",function(){
     helpSceneBtn.onclick=()=>{Game.changeScene("help")};
     
     let pvpBtn = ui.add("button",[perX(83),perX(1)], [perX(16),perX(4)],"pvpButton");
-    pvpBtn.innerText="PVP 1.2";
+    pvpBtn.innerText="PVP 2.0";
     pvpBtn.onclick=()=>{Game.changeScene("pvp")};
 
 })

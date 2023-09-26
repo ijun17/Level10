@@ -7,33 +7,30 @@ class GameTime
 
 
 class GameTime{
-    isStop=false;
     tick=0; //system clock
     fps=100;
     interval=null;
     scheduleList;
-    mainSchedule=function(){}
-    constructor(){
+    mainSchedule
+    constructor(mainSchedule=()=>{}){
+        this.mainSchedule=mainSchedule;
         this.scheduleList=new ArrayForSchedule(300);
     }
     setFrameRate(fps){
-        if(this.interval==null)this.fps=fps;
-        else console.error("Cannot change the frame rate because the game has already started.")
+        this.stop()
+        this.fps=fps;
+        this.start()
     }
-    start(mainSchedule){
-        this.mainSchedule=mainSchedule;
-        const intervalNum=Math.floor(1000/this.fps);
-        this.interval=setInterval(()=>{
-            if(this.isStop)return;
-            this.mainSchedule();
-            this.doSchedule();
-            this.tick++;
-        }, intervalNum);
+    start() {
+        if (this.isStop()) {
+            const intervalNum = Math.floor(1000 / this.fps);
+            this.interval = setInterval(this.doSchedule.bind(this), intervalNum);
+        }
     }
     get(){return this.tick}
     reset(){
         this.tick=0;
-        this.isStop=false; 
+        this.start()
         this.scheduleList.reset()
     }
     /**
@@ -50,14 +47,23 @@ class GameTime{
         this.scheduleList.push(new GameSchedule(startTick, endTick, intervalTick, code, stopCondition));
     }
     doSchedule(){
+        //메인 스케줄
+        this.mainSchedule()
+        //사용자 스케줄
         const currentTick=this.tick;
         this.scheduleList.map(function(e,i,l){if(!e.checkSchedule(currentTick))l.remove(i);})
+        this.tick++;
     }
     addTimer(endSec, code, stopCondition=function(){return false;}){
         this.addSchedule(endSec,endSec,undefined,code,stopCondition);
     }
+    isStop(){
+        return this.interval == null
+    }
     stop(){
-        this.isStop=true;
+        if(this.isStop())return
+        clearInterval(this.interval);
+        this.interval=null
     }
 }
 

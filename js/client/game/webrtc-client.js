@@ -117,7 +117,6 @@ class SimpleWebRTC{
         this.disconnectToSignalingServer()
     }
     resetEvent(){
-        console.log("SimpleWebRTC : resetEvent")
         this.onroomcreated=()=>{};
         this.ondatachannelopen=()=>{};
         this.ondatachannelclose=()=>{};

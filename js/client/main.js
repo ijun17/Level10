@@ -73,4 +73,4 @@ START GAME
 */
 Game.startGame()
 
-Game.changeScene("pvp")
+//Game.changeScene("pvp")
