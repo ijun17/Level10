@@ -94,18 +94,18 @@ const ReusedModule={
             }
         }
     },
-    snowWeather:function(count=50){
-        ReusedModule.createParticleSpray(TYPE.snow,15,count,-1.5)
+    snowWeather:function(count=50, vy=-1.5){
+        ReusedModule.createParticleSpray(TYPE.snow,15,count,vy)
     },
-    fireWeader:function(){
-        ReusedModule.createParticleSpray(TYPE.ash,15,30,-1.5)
-        ReusedModule.createParticleSpray(TYPE.ember,15,30,-1.5)
+    fireWeader:function(count=60,vy=-1.5){
+        ReusedModule.createParticleSpray(TYPE.ash,15,count/2,vy)
+        ReusedModule.createParticleSpray(TYPE.ember,15,count/2,vy)
     },
-    fireflyWeather:function(count=50){
-        ReusedModule.createParticleSpray(TYPE.firefly,15,count,1)
+    fireflyWeather:function(count=50,vy=1){
+        ReusedModule.createParticleSpray(TYPE.firefly,15,count,vy)
     },
-    sparkWeather:function(count=40){
-        ReusedModule.createParticleSpray(TYPE.spark,20,count,10)
+    sparkWeather:function(count=40,vy=10){
+        ReusedModule.createParticleSpray(TYPE.spark,20,count,vy)
     },
 
     createMobileButton:function(player,size){

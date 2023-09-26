@@ -54,11 +54,18 @@ Game.setScene("pvp",function(){
     }
 
     createRoomButton.onclick = () => {
+        if(createRoomButton.classList.contains("room-button-click"))return
         MULTI.resetEvent()
         MULTI.createRoom();
-        MULTI.onwebsocketclose = () => {alert("연결이 끊어졌습니다.(3)")}
+        MULTI.onwebsocketclose = () => {
+            alert("연결이 끊어졌습니다.(3)"); 
+            Game.changeScene("pvp")
+        }
         MULTI.onroomcreated = (id) => {
-            if (id == -1) alert("방이 꽉찼습니다.")
+            if (id == -1) {
+                alert("방이 꽉찼습니다.")
+                Game.changeScene("pvp")
+            }
             else createRoomInput.value = id;
         }
         MULTI.ondatachannelopen = () => { Game.changeScene("pvp-loading",{isHost:true}) }
@@ -99,30 +106,32 @@ Game.setScene("pvp-loading",function(para){
     let otherComplete=false;
     
     let message = JSON.stringify({ type: "magic", magic: MagicManager.getSelectedPrimitiveMagic() })
-    TIME.addSchedule(0,undefined,1,()=>{MULTI.send(message)})
+    TIME.addSchedule(0,undefined,0.5,()=>{MULTI.send(message)})
     TIME.addSchedule(0,undefined,0.01,()=>{
         if(magicLoaded&&otherComplete)Game.changeScene("pvp-game",{isHost:para.isHost, magicList: magicList})
     })
     
     MULTI.ondatachannelmessage = (m) => {
         if(m[0]!="{")return
-        console.log("peer : ", m);
         const data = JSON.parse(m)
+        console.log("message type : ", data.type);
         if (data.type == "magic" && !magicLoaded) {
             const peerMagic = data.magic
             for(let i=0; i<peerMagic.length; i++){
                 magicList.push(MagicManager.createMagicSkill(i, peerMagic[i]))
             }
-            console.log("상대 마법 로딩 완료", peerMagic)
+            console.log("상대 마법 로딩 완료", peerMagic.length)
             magicLoaded=true
             MULTI.send(JSON.stringify({type:"complete"}))
-            //TIME.addSchedule(0,undefined,0.5,()=>{MULTI.send(JSON.stringify({type:"complete"}))})
-
+            TIME.addSchedule(0,undefined,0.5,()=>{MULTI.send(JSON.stringify({type:"complete"}))})
         }
         if (data.type == "complete"){
             otherComplete=true
         }
     }
+    SCREEN.renderer.camera.zoom=0.9;
+    ReusedModule.fireflyWeather(50,20)
+    SCREEN.renderer.bgColor="rgb(108, 141, 150)"
 })
 
 
@@ -154,14 +163,14 @@ Game.setScene("pvp-game", function(para){
     P[ME].addEventListener("remove",()=>{
         let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"playerDieText");
         stageClearText.innerText="YOU LOSE";
-        TIME.addSchedule(2,2,undefined,()=>{Game.changeScene("pvp");MULTI.reset();MULTI_TIME.stop()});
+        TIME.addSchedule(2,2,undefined,()=>{MULTI.reset();MULTI_TIME.stop();Game.changeScene("pvp");});
     })
     P[OTHER].addEventListener("remove",()=>{
         let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"stageClearText");
         stageClearText.innerText="YOU WIN";
         let clearTextY=0;
         TIME.addSchedule(0,4,undefined,function(){stageClearText.style.bottom=(clearTextY--)+"px"});
-        TIME.addSchedule(4,4,undefined,()=>{Game.changeScene("pvp");MULTI.reset();MULTI_TIME.stop()});
+        TIME.addSchedule(4,4,undefined,()=>{MULTI.reset();MULTI_TIME.stop();Game.changeScene("pvp");});
     })
     P[ME].renderStatusBar([perX(10),perY(100)-perX(10)])
     P[OTHER].skillModule.skillList = para.magicList
@@ -169,7 +178,7 @@ Game.setScene("pvp-game", function(para){
 
 
     const SYNC_TICK = 5; //n 틱마다 서로 동기화 메시지를 보냄
-    let syncCode=0; //싱크 코드와 TIME.tick은 6
+    let syncCode=0; //싱크 코드와 TIME.tick은 대칭이어야함
     let messageQueue=new Array(10)
     let isSync = true;
     let input = [['0','0','0','0','0','0','0','0'],['0','0','0','0','0','0','0','0']] //모든 입력은 SYNC_TICK이후 적용됨
@@ -185,7 +194,7 @@ Game.setScene("pvp-game", function(para){
             message+=meInput[i]
             meInput[i]='0'
         }
-        //sync_code와 TIME.tick은 대칭적이어야함 반드시
+        //sync_code와 TIME.tick은 대칭 깨지면
         if((TIME.get()-1)%50!=syncCode*5)console.log("씨발ehdrlghk",TIME.get(), syncCode)
         //다음 입력 처리
         syncCode=(syncCode+1)%10
@@ -220,6 +229,8 @@ Game.setScene("pvp-game", function(para){
 
     MULTI.ondatachannelclose = () => {
         alert("연결이 끊어졌습니다.")
+        MULTI.reset();
+        MULTI_TIME.stop()
         Game.changeScene("pvp")
     }
 })
