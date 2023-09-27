@@ -74,3 +74,37 @@ START GAME
 Game.startGame()
 
 //Game.changeScene("pvp")
+
+if(localStorage.getItem("log-viewer")==='1'){
+    const box = document.getElementById("screenbox")
+    const log_viewer=document.createElement("div")
+    box.appendChild(log_viewer)
+    log_viewer.style.cssText=`
+        width:1200px; 
+        height:600px; 
+        max-height:600px;
+        background-color:#222; 
+        font-size:20px;
+        position:absolute; 
+        top:600px; 
+        color:white;
+        overflow-y:auto;
+        padding:20px;`
+    
+    
+    var originalConsoleLog = console.log;
+    var originalConsoleError = console.log;
+
+    function addLog(arg){
+        let messages = (Array.from(arg));
+        let trace="";
+        try { throw new Error('Trace capture');} 
+        catch (error) { if(localStorage.getItem("log-viewer-trace")==='1')trace=error.stack+"\n"}
+        log_viewer.innerText+=trace+messages.join(' ')+"\n\n"
+        log_viewer.scrollTop = log_viewer.scrollHeight;
+        return messages
+    }
+    console.log = function () {originalConsoleLog.apply(console, addLog(arguments));};
+    console.error = function () {originalConsoleError.apply(console, addLog(arguments));};
+    console.log("log-viewer on")
+}

@@ -6,13 +6,22 @@ Game.setScene("help",function(){
     let buttonSelector = ReusedModule.createButtonSelector();
     let menuBtnSize=[perX(16),perX(4)];
     let bg=ui.add("div",[menuBtnSize[0],0],[perX(100)-menuBtnSize[0],perY(100)-perX(6)],"helpBackground");
+
+    function check(labelQuery, name){
+        const label = bg.querySelector(labelQuery)
+        const input = label.querySelector("input");
+        input.checked = (localStorage.getItem(name)==='1');
+        label.addEventListener("click",function(){
+            localStorage.setItem(name,(input.checked ? '1' : '0'));
+        })
+    }
     
     for(let i=0; i<HELP_MENU.length; i++){
         let menuButton = ui.add("button",[perX(0),perY(100)-perX(6)-menuBtnSize[1]*(i+1)],menuBtnSize,"helpMenuButton");
         menuButton.innerText=HELP_MENU[i][0]
         menuButton.onclick=()=>{
             bg.innerHTML = HELP_MENU[i][1];
-            HELP_MENU[i][2](bg);
+            HELP_MENU[i][2](bg, check);
             if (buttonSelector.ele != null) buttonSelector.ele.classList.remove("selectedHelpMenuButton");
             buttonSelector.ele = menuButton;
             menuButton.classList.add("selectedHelpMenuButton");
@@ -37,14 +46,7 @@ const HELP_MENU=[
     <input type="checkbox">
     <span class="slider round">모바일 버튼을 사용하려면 체크하세요</span>
 </label>
-`,(ele)=>{
-    const label = ele.querySelector(".switch");
-    const input = label.querySelector("input");
-    input.checked = (localStorage.getItem("mobile")==='1');
-    label.addEventListener("click",function(){
-        localStorage.setItem("mobile",(input.checked ? '1' : '0'));
-    })
-}],
+`,(ele,check)=>{check(".switch", "mobile")}],
 
 ["마법 제작",`
 <h1>마법 제작</h1>
@@ -73,5 +75,19 @@ const HELP_MENU=[
     <li>함수 선언 - \${함수정의}</li>
     <li>금지 기호 - 점(.), 대괄호([])를 사용할 수 없습니다.</li>
 </ul>
-`,(ele)=>{}]
+`,(ele)=>{}],
+["설정",`
+<h1>설정</h1>
+<label class="log-viewer-check">
+    <input type="checkbox">
+    <span class="slider round">로그 뷰어 사용</span>
+</label>
+<label class="log-viewer-trace-check">
+    <input type="checkbox">
+    <span class="slider round">로그 뷰어 로그 트레이스 사용</span>
+</label>
+`,(ele,check)=>{
+    check(".log-viewer-check", "log-viewer")
+    check(".log-viewer-trace-check", "log-viewer-trace")
+}]
 ]

@@ -17,9 +17,11 @@ class GameTime{
         this.scheduleList=new ArrayForSchedule(300);
     }
     setFrameRate(fps){
-        this.stop()
         this.fps=fps;
-        this.start()
+        if(!this.isStop()){
+            this.stop()
+            this.start()
+        }
     }
     start() {
         if (this.isStop()) {
