@@ -43,6 +43,7 @@ Game.setScene("monsterVS",function(){
         if(bst1.ele==null || bst2.ele==null)return;
         m1 = WORLD.add(new Level.monsters[bst1.level]([1000,0]))
         m2 = WORLD.add(new Level.monsters[bst2.level]([2000,0]))
+        m2.moveModule.moveDirection[0]=false;
         m1.setTarget(m2);
         m2.setTarget(m1);
         TIME.addSchedule(1,1,0,function(){

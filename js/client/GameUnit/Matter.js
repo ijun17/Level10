@@ -59,7 +59,7 @@ class MatterFire extends Matter{
         this.body.setVel([0,0])
         this.body.fixedPos=true;
         this.body.fixedVel=true;
-        this.damage=3000
+        this.damage*=6
         this.image=Game.resource.getImage("matter_explosion");
         this.physics.setGravity([0,0],true);
         this.physics.fixedForce=true;

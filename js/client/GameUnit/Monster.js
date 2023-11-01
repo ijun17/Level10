@@ -391,6 +391,7 @@ class MonsterGolem extends Monster{
 }
 
 class MonsterWyvern extends Monster{
+    phase=1
     animation
     constructor(pos){
         super(pos,[300,300],1000,new GameUnitMoveModule(1,3), new GameUnitLifeModule(5000000,100,5), new GameUnitSkillModule(0));
@@ -433,7 +434,7 @@ class MonsterWyvern extends Monster{
                     }
                     if(e.other.lifeModule)e.other.lifeModule.giveDamage(1000,TYPE.damageFire);
                     e.other.body.setVel([(x-e.other.body.pos[0])*1,0.5+e.other.body.vel[1]]);
-                    return true;
+                    return !(e.other instanceof Actor)
                 }
             }
             TIME.addSchedule(0,3,0,function(){
@@ -447,7 +448,7 @@ class MonsterWyvern extends Monster{
         this.animation.fps=16;
         this.body.overlap=true;
         this.physics.inv_mass=0.1;
-
+        this.physics.setGravity([0,0],true)
         this.lifeModule.ondamage=function(d, dt){
             return dt!=TYPE.damageFire;
         }
@@ -455,6 +456,22 @@ class MonsterWyvern extends Monster{
     update(){
         super.update();
         this.animation.update();
+        if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*0.5){ //PHASE 2
+            this.phase=2;
+            this.skillModule.addSkill(new MagicSkill("exp",function(m){
+                if(!m.canTarget())return
+                let pos = m.body.midPos
+                TIME.addSchedule(0,4,0.2,()=>{
+                    let uv=m.target.body.getUnitVector(pos)
+                    pos[0] -= uv[0]*300//+uv[1]*100;
+                    pos[1] -= uv[1]*300//+uv[0]*100;
+                    let fire = WORLD.add(new MatterFire(pos, [0,0]))
+                    fire.body.setSize([70,70])
+                    fire.damage = 1000
+                    fire.explode()
+                },()=>{return m.getState()==0})
+            },1333))
+        }
     }
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   
 }
@@ -539,6 +556,7 @@ class MonsterDragon extends Monster{
         this.animation.fps=16;
         this.body.overlap=true;
         this.physics.inv_mass=0.01;
+        this.physics.setGravity([0,0],true)
         this.ai_move_cycle=0.5;
         this.lifeModule.ondamage=function(d, dt){
             return dt!=TYPE.damageElectricity;
@@ -575,6 +593,7 @@ class MonsterDragon extends Monster{
                         return !(e.other instanceof Actor)
                     }
                 }
+                m.canDraw=false;
                 m.canInteract=false;
                 m.moveModule.moveSpeed=30;
                 TIME.addSchedule(0,4,0,function(){
@@ -585,6 +604,7 @@ class MonsterDragon extends Monster{
                 TIME.addSchedule(4.1,4.1,0,function(){
                     for(let elec of elecs)elec.setState(0);
                     m.moveModule.moveSpeed=3;
+                    m.canDraw=true;
                     m.canInteract=true;
                 });
             },1400))
