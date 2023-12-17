@@ -194,7 +194,7 @@ class MatterLightning extends Matter{
     constructor(pos){
         super(pos,[300,1200],[0,0],10000,TYPE.damageElectricity);
         this.animation=new UnitAnimation(Game.resource.getImage("matter_lightning"), 100,400,[3],function(){return 0})
-        this.animation.fps=16;
+        this.animation.fps=2;
         this.body.fixedPos=true;
         this.physics.fixedGravity=true;
         this.physics.setGravity([0,0]);
@@ -202,6 +202,7 @@ class MatterLightning extends Matter{
     }
     update(){
         super.update();
+        this.animation.update();
         SCREEN.renderer.camera.vibrate(10);
     }
     draw(r){r.drawAnimation(this.animation,this.body);}

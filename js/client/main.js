@@ -50,7 +50,7 @@ const TYPE={
 Object.freeze(TYPE)
 
 const PHYSICS_LAYER=0, PARTICLE_LAYER=1, BUTTON_LAYER=2;
-SCREEN.setSize(1200,600);
+SCREEN.setFitSize();
 TIME.setFrameRate(100);
 WORLD.getLayer(PARTICLE_LAYER).enableInteraction=false;
 WORLD.getLayer(BUTTON_LAYER).enableInteraction=false;

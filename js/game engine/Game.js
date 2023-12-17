@@ -12,7 +12,7 @@ const Game={
             return
         }
         Game.time=new GameTime(Game.updateGame);
-        Game.screen=new GameScreen(gameScreen_html, 1200, 600);
+        Game.screen=new GameScreen(gameScreen_html);
         Game.world=new GameWorld(3);
         Game.userInput=new GameUserInput();
         Game.resource=new GameResource();

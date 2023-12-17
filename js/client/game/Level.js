@@ -72,7 +72,7 @@ const Level= {
                 break;
             case 5:
                 SCREEN.renderer.bgColor="rgb(100, 90, 90)"
-                ReusedModule.createGameMap(4000,1000);
+                ReusedModule.createGameMap(4000,1500);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
                 ReusedModule.fireWeader()
@@ -80,7 +80,7 @@ const Level= {
                 break;
             case 6:
                 SCREEN.renderer.bgColor="rgb(104, 104, 99)"//"rgb(142, 142, 134)"//"rgb(216, 214, 190)"//
-                ReusedModule.createGameMap(4000,1000);
+                ReusedModule.createGameMap(4000,1500);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
                 ReusedModule.sparkWeather()

@@ -75,7 +75,7 @@ Game.setScene("monsterVS",function(){
         
     }
 
-    ReusedModule.createGameMap(4000, 1000);
+    ReusedModule.createGameMap(4000, 1500);
     WORLD.environment.addGravity([-20000, -20000], [40000, 40000], [0, -0.2]);
     WORLD.environment.addDrag([-20000, -20000], [40000, 40000], [0, 0], 0.02);
     SCREEN.renderer.camera.zoom = 0.5;

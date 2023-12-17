@@ -13,14 +13,13 @@ class GameScreen{
     widthDividedBy100;
     heightDividedBy100;
     isMobile=false;
-    constructor(htmlElement, width, height){
+    constructor(htmlElement){
         this.screen=htmlElement;
         this.screen.style.position="relative";
         this.renderer=new GameScreenRenderer();
         this.ui=new GameScreenUI();
         this.screen.append(this.renderer.getCanvas(), this.ui.getUI());
-        this.setSize(width, height);
-        this.checkMobile();
+        this.setSize(1200,600)
     }
     update(){
         this.renderer.update();
@@ -30,22 +29,21 @@ class GameScreen{
         this.renderer.reset();
     }
     setSize(w,h){
-        this.screen.style.width=Math.floor(w)+"px";
-        this.screen.style.height=Math.floor(h)+"px";
+        w = Math.floor(w)
+        h = Math.floor(h)
+        this.screen.style.width=w+"px";
+        this.screen.style.height=h+"px";
         this.widthDividedBy100=w/100;
         this.heightDividedBy100=h/100;
         this.renderer.setSize(w,h);
         this.ui.setSize(w,h);
+        console.log(`[Screen]change screen size: ${w}, ${h}`)
     };
     perX(percentile){return Math.ceil(this.widthDividedBy100*percentile);};
     perY(percentile){return Math.ceil(this.heightDividedBy100*percentile);};
-    checkMobile(){
-        let UserAgent = navigator.userAgent;
-        if (UserAgent.match(/iPhone|ipad|iPod|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i) != null || UserAgent.match(/LG|SAMSUNG|Samsung/) != null) {
-            this.isMobile=true;
-            const gsw=this.screen.width, sw=screen.width, sh=screen.height;
-            this.setSize(gsw,gsw*(sh<sw?sh/sw:sw/sh));
-        }
+    setFitSize(){
+        const sw=window.innerWidth, sh=window.innerHeight;
+        this.setSize(sw,sw*(sh<sw ? sh/sw : sw/sh));
     }
 }
 
@@ -189,6 +187,7 @@ class GameScreenUI{
     setSize(w,h){
         this.ui.style.width=Math.floor(w)+"px";
         this.ui.style.height=Math.floor(h)+"px";
+        this.ui.style.fontSize=Math.floor(w*16/1200)+"px"
     };
     reset(){this.ui.innerHTML=""}
     getUI(){return this.ui;}

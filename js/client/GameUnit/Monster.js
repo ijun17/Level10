@@ -440,6 +440,7 @@ class MonsterWyvern extends Monster{
             TIME.addSchedule(0,3,0,function(){
                 for(let i=fires.length-1; i>=0; i--)fires[i].body.vel[0]+=(x-fires[i].body.midX);
                 x+=speed;
+                SCREEN.renderer.camera.vibrate(10);
             })
             TIME.addSchedule(3.5,3.5,0,function(){for(let i=fires.length-1; i>=0; i--)fires[i].setState(0);});
         },1000))
