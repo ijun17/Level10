@@ -428,7 +428,7 @@ class MonsterWyvern extends Monster{
                 fire.eventManager.oncollision=(e)=>{
                     if(e.other==m)return false;
                     if(e.other.id==128743612)return true;
-                    if(e.other instanceof Matter){
+                    if(e.other instanceof Matter && e.other.damageType != TYPE.damageFire){
                         e.other.setState(0);
                         return;
                     }

@@ -25,6 +25,7 @@ const Level= {
         m.renderStatusBar("LEVEL"+level,[SCREEN.perX(59), SCREEN.perY(100)-SCREEN.perX(8.5)]);
         m.addEventListener("remove",function(){Level.clearLevel(level);return true;})
         TIME.addSchedule(1,1,0,function(){m.activateAI()});
+        m.moveModule.moveDirection[0]=false;
         return m;
     },
 

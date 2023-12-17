@@ -19,7 +19,6 @@ class GameScreen{
         this.renderer=new GameScreenRenderer();
         this.ui=new GameScreenUI();
         this.screen.append(this.renderer.getCanvas(), this.ui.getUI());
-        this.setSize(1200,600)
     }
     update(){
         this.renderer.update();
