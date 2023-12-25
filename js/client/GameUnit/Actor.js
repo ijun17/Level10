@@ -64,7 +64,7 @@ class Actor extends GameUnit{
     getNameTag(){return `HP:${this.lifeModule.life}`}
     createDamageText(damage, color){
         let text=new TextUnit([this.body.midX, this.body.pos[1]+this.body.size[1]-50], damage,40,color,"black",40)
-        text.body.setVel([0,1]);
+        text.body.setVel([0,3]);
         WORLD.add(text);
     }
 }

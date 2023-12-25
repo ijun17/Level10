@@ -80,7 +80,7 @@ const Level= {
                 Level.createMainMonster(level,[2000, 0]);
                 break;
             case 6:
-                SCREEN.renderer.bgColor="rgb(104, 104, 99)"//"rgb(142, 142, 134)"//"rgb(216, 214, 190)"//
+                SCREEN.renderer.bgColor="rgb(56, 56, 54)"//"rgb(104, 104, 99)"//"rgb(142, 142, 134)"//"rgb(216, 214, 190)"//
                 ReusedModule.createGameMap(4000,1500);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);

@@ -69,7 +69,7 @@ class GameScreenRenderer{
         this.height=Math.floor(h);
         this.canvas.width=this.width;
         this.canvas.height=this.height;
-        this.camera.setScreenPos([this.width*0.5, this.height*0.35]);
+        this.camera.setScreenPos([this.width*0.5, this.height*0.5]);
         
     };
     reset(){

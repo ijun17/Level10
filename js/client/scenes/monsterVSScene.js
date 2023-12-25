@@ -2,6 +2,7 @@ Game.setScene("monsterVS",function(){
     const ui=SCREEN.ui;
     const perX=SCREEN.perX.bind(SCREEN);
     const perY=SCREEN.perY.bind(SCREEN);
+    SCREEN.renderer.camera.setScreenPos([perX(50), perY(50)])
     ReusedModule.createbackButton("select");
 
     let bst1=ReusedModule.createButtonSelector();

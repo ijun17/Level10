@@ -179,7 +179,7 @@ class MatterWind extends Matter{
     }
     update(){
         super.update();
-        if(this.body.vel[0]==0&&this.body.vel[1]==0)this.setState(0);
+        if(this.body.speed<1)this.setState(0);
     }
     draw(r){r.drawImage(this.image,this.body,{rotate:Math.atan2(this.body.vel[0], this.body.vel[1])});}
     oncollision(event){
@@ -194,7 +194,7 @@ class MatterLightning extends Matter{
     constructor(pos){
         super(pos,[300,1200],[0,0],10000,TYPE.damageElectricity);
         this.animation=new UnitAnimation(Game.resource.getImage("matter_lightning"), 100,400,[3],function(){return 0})
-        this.animation.fps=2;
+        this.animation.fps=1;
         this.body.fixedPos=true;
         this.physics.fixedGravity=true;
         this.physics.setGravity([0,0]);
