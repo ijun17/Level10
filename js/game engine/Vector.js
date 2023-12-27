@@ -49,7 +49,7 @@ const limvec = function(v1, symbol, other){
 
 const vec={
     tovec(num){return [num,num]},
-    new(v){return [v[0], v[1]]},
+    copy(v){return [v[0], v[1]]},
     set(v1,v2){v1[0]=v2[0];v1[1]=v2[1];return v1;},
     add(v1,v2){v1[0]+=v2[0];v1[1]+=v2[1];return v1;},
     sub(v1,v2){v1[0]-=v2[0];v1[1]-=v2[1];return v1;},

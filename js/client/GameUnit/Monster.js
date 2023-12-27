@@ -133,6 +133,14 @@ class Monster extends Actor{
     }
 }
 
+
+
+
+
+
+
+
+
 class MonsterMushroom extends Monster{
     animation
     constructor(pos){
@@ -153,11 +161,18 @@ class MonsterMushroom extends Monster{
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   
 }
 
+
+
+
+
+
+
+
 class MonsterMonkey extends Monster{
     animation
     constructor(pos){
         super(pos,[120,200],1000,new GameUnitMoveModule(0,20,4), new GameUnitLifeModule(200000,50,5), new GameUnitSkillModule(0));
-        this.skillModule.addSkill(new MagicSkill("jump",function(m){
+        this.skillModule.addSkill(new MagicSkill("cloud",function(m){
             m.canDraw=false;
             m.moveModule.moveType=1
             TIME.addSchedule(0,5,0.05,()=>{
@@ -165,7 +180,7 @@ class MonsterMonkey extends Monster{
                 cloud.life=50
             },()=>{return m.getState()==0})
             TIME.addTimer(5,()=>{
-                m.canDraw=true
+                m.canDraw=true;
                 m.moveModule.moveType=0
             },()=>{return m.getState()==0})
         },1000))
@@ -195,6 +210,13 @@ class MonsterMonkey extends Monster{
     }
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   
 }
+
+
+
+
+
+
+
 
 class MonsterFly extends Monster{
     animation;
@@ -258,6 +280,13 @@ class MonsterFly extends Monster{
     }
 }
 
+
+
+
+
+
+
+
 class MonsterSlime extends Monster{
     slaveList=[];
     constructor(pos){
@@ -310,6 +339,13 @@ class MonsterSlime extends Monster{
     }
     draw(r){r.fillRect("maroon", this.body)}
 }
+
+
+
+
+
+
+
 
 class MonsterGolem extends Monster{
     animation;
@@ -379,6 +415,13 @@ class MonsterGolem extends Monster{
     }
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   
 }
+
+
+
+
+
+
+
 
 class MonsterWyvern extends Monster{
     phase=1
@@ -456,14 +499,14 @@ class MonsterWyvern extends Monster{
     update(){
         super.update();
         this.animation.update();
-        if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*0.5){ //PHASE 2
+        if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*2){ //PHASE 2
             this.phase=2;
             this.skillModule.addSkill(new MagicSkill("breath",function(m){
                 if(!m.canTarget())return;
                 let fires=[];
                 let speed = 55
                 for(let i=0; i<200; i++){
-                    let color=`rgba(255,${(255-i*1.5>0 ? 255-i*1.5 : 0)},0,0.2)`
+                    let color=`rgba(255,${(255-i*1.5>0 ? 255-i*1.5 : 0)},0,0.4)`
                     let fire=WORLD.add(new Block(m.body.midPos,[60,60],color));
                     fire.lifeModule.life=100000000;
                     fire.id=128743612;
@@ -483,7 +526,7 @@ class MonsterWyvern extends Monster{
                         if(e.other instanceof Matter && e.other.damageType == TYPE.damageFire){
                             return true;
                         }   
-                        if(e.other.lifeModule)e.other.lifeModule.giveDamage(9999,TYPE.damageFire);
+                        if(e.other.lifeModule)e.other.lifeModule.giveDamage(4444,TYPE.damageFire);
                         fire.body.setPos(m.body.midPos)
                         let dir = fire.body.getUnitVector(m.target.body.midPos)
                         fire.body.setVel([dir[0]*speed, dir[1]*speed])
@@ -505,6 +548,13 @@ class MonsterWyvern extends Monster{
     }
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   
 }
+
+
+
+
+
+
+
 
 class MonsterDragon extends Monster{
     animation;
@@ -633,6 +683,14 @@ class MonsterDragon extends Monster{
     }
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   
 }
+
+
+
+
+
+
+
+
 
 class MonsterEye extends Monster{
     slaveList=[];
