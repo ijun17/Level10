@@ -171,7 +171,7 @@ class MonsterMushroom extends Monster{
 class MonsterMonkey extends Monster{
     animation
     constructor(pos){
-        super(pos,[120,200],1000,new GameUnitMoveModule(0,20,4), new GameUnitLifeModule(200000,50,5), new GameUnitSkillModule(0));
+        super(pos,[120,200],1000,new GameUnitMoveModule(0,20,4), new GameUnitLifeModule(1000000,50,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("cloud",function(m){
             m.canDraw=false;
             m.moveModule.moveType=1
@@ -184,16 +184,27 @@ class MonsterMonkey extends Monster{
                 m.moveModule.moveType=0
             },()=>{return m.getState()==0})
         },1000))
+        this.skillModule.addSkill(new MagicSkill("iceshot", function (m) {
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    let ice = m.createMatter(MatterIce,[3+m.front(i*0.1),-j*0.1],[m.front(40),0])
+                    ice.damage=500;
+                    ice.body.setSize([30,30])
+                    ice.lifeModule.setLife(800)
+                    ice.physics.setCOR(0.9)
+                }
+            }
+        },500))
         this.skillModule.addSkill(new MagicSkill("ice",function(m){
             let i=0;
-            TIME.addSchedule(0,5,0.01,()=>{
+            TIME.addSchedule(0,4,0.01,()=>{
                 let dir=[Math.cos(Math.PI/10*i), Math.sin(Math.PI/10*i)]
                 let ice = m.createMatter(MatterIce,[m.front(dir[0]), dir[1]],dir)
                 ice.physics.setGravity(dir,true);
                 ice.damage=1000;
                 i++;
             },()=>{return m.getState()==0})
-        },1500))
+        },2000))
         
         this.ai_move_cycle=0.1
         this.animation=new UnitAnimation(IMAGES.monster_monkey,120,200,[1, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
@@ -242,10 +253,10 @@ class MonsterFly extends Monster{
                 m.slaveList.push(slave);
             }
         },20000))
-        this.skillModule.addSkill(new MagicSkill("jump",function(m){
+        this.skillModule.addSkill(new MagicSkill("speedup",function(m){
             m.moveModule.moveSpeed=30;
             m.power=666;
-            TIME.addSchedule(0.5,0.5,0,function(){
+            TIME.addSchedule(1,1,0,function(){
                 m.moveModule.moveSpeed=10;
                 m.power=66;
             },function(){return m.getState()==0;})
@@ -253,7 +264,7 @@ class MonsterFly extends Monster{
         this.body.overlap=true;
         this.physics.inv_mass=0.5;
         this.ai_move_cycle=0.04;
-        this.physics.setCOR(0);
+        this.physics.setCOR(0.1);
         this.physics.setCOF(0);
         this.animation=new UnitAnimation(IMAGES.monster_hellfly,30,30,[1, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.isMaster=isMaster;
@@ -289,8 +300,9 @@ class MonsterFly extends Monster{
 
 class MonsterSlime extends Monster{
     slaveList=[];
+    phase=1;
     constructor(pos){
-        super(pos,[160,160],1000,new GameUnitMoveModule(0,3,4), new GameUnitLifeModule(1000000,50,5), new GameUnitSkillModule(0));
+        super(pos,[160,160],1000,new GameUnitMoveModule(0,4,4), new GameUnitLifeModule(2000000,50,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),10])},500))
         this.skillModule.addSkill(new MagicSkill("dash",function(m){
             if(!m.canTarget())return;
@@ -301,6 +313,7 @@ class MonsterSlime extends Monster{
             b.setVel([vx*power, vy*power+1]);
         },1000))
         this.physics.inv_mass=0.0001;
+        this.physics.setCOR(0.8)
         let slaveSize=45;
         for(let i=0; i<10; i++)for(let j=0; j<10; j++){
             let block = WORLD.add(new Block([this.body.pos[0]+i,this.body.pos[1]+j],[slaveSize,slaveSize],`rgba(0,0,0,0.7)`))
@@ -310,7 +323,7 @@ class MonsterSlime extends Monster{
             block.physics.inv_mass=1;
             block.physics.setCOF(0);
             block.eventManager.oncollision=function(e){
-                if(this.canAttack(e.other))e.other.lifeModule.giveDamage(500);
+                if(this.canAttack(e.other))e.other.lifeModule.giveDamage(666);
                 return true;
             }.bind(this)
         }
@@ -318,7 +331,6 @@ class MonsterSlime extends Monster{
             let midX=this.body.midX;
             let midY=this.body.midY;
             for(let slave of this.slaveList){
-                slave.physics.setCOR(0.8)
                 slave.body.addVel([(midX-slave.body.midX),(midY-slave.body.midY)])
             } 
             TIME.addSchedule(2,2,undefined,function(){
@@ -336,6 +348,10 @@ class MonsterSlime extends Monster{
         for(let slave of this.slaveList){
             slave.body.addVel([(midX-slave.body.midX)*0.01,(midY-slave.body.midY)*0.01])
         } 
+        if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*0.5){ //PHASE 2
+            this.phase=2;
+            for(let slave of this.slaveList)slave.physics.setCOR(0.8);
+        }
     }
     draw(r){r.fillRect("maroon", this.body)}
 }
@@ -474,7 +490,7 @@ class MonsterWyvern extends Monster{
             TIME.addSchedule(0,3,0,function(){
                 for(let i=fires.length-1; i>=0; i--)fires[i].body.vel[0]+=(x-fires[i].body.midX);
                 x+=speed*dir;
-                speed+=0.1;
+                speed+=0.2;
 
                 SCREEN.renderer.camera.vibrate(10);
             },()=>{return m.getState()==0})
@@ -490,7 +506,7 @@ class MonsterWyvern extends Monster{
         this.animation=new UnitAnimation(IMAGES.monster_wyvern,80,80,[4, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
-        this.physics.inv_mass=0.1;
+        this.physics.inv_mass=0.01;
         this.physics.setGravity([0,0],true)
         this.lifeModule.ondamage=function(d, dt){
             return dt!=TYPE.damageFire;
@@ -499,7 +515,7 @@ class MonsterWyvern extends Monster{
     update(){
         super.update();
         this.animation.update();
-        if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*2){ //PHASE 2
+        if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*1.2){ //PHASE 2
             this.phase=2;
             this.skillModule.addSkill(new MagicSkill("breath",function(m){
                 if(!m.canTarget())return;
@@ -543,7 +559,7 @@ class MonsterWyvern extends Monster{
                 m.addEventListener("remove",()=>{
                     for(let i=fires.length-1; i>=0; i--)fires[i].setState(0);
                 })
-            },1500))
+            },1400))
         }
     }
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   
@@ -591,7 +607,7 @@ class MonsterDragon extends Monster{
             let vel=[dir[0]*speed, dir[1]*speed];
             let elecs=[];
             for(let i=0; i<100; i++){
-                let color=`rgba(255,255,${(200-i*3>0 ? 200-i*3 : 0)},0.4)`
+                let color=`rgba(255,255,${(230-i*3>0 ? 230-i*3 : 0)},0.4)`
                 let elec=WORLD.add(new Block([x+i,y+i],[50,50],color));
                 elec.lifeModule.life=100000;
                 elec.id=252362436;

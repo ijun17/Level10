@@ -42,6 +42,7 @@ const HELP_MENU=[
     <li>스킬 - Q, W, E, R</li>
 </ul>
 <br><br>
+<p>모바일의 경우 PWA를 사용할 수 있습니다.</p>
 <label class="switch">
     <input type="checkbox">
     <span class="slider round">모바일 버튼을 사용하려면 체크하세요</span>
@@ -76,18 +77,4 @@ const HELP_MENU=[
     <li>금지 기호 - 점(.), 대괄호([])를 사용할 수 없습니다.</li>
 </ul>
 `,(ele)=>{}],
-["설정",`
-<h1>설정</h1>
-<label class="log-viewer-check">
-    <input type="checkbox">
-    <span class="slider round">로그 뷰어 사용</span>
-</label>
-<label class="log-viewer-trace-check">
-    <input type="checkbox">
-    <span class="slider round">로그 뷰어 로그 트레이스 사용</span>
-</label>
-`,(ele,check)=>{
-    check(".log-viewer-check", "log-viewer")
-    check(".log-viewer-trace-check", "log-viewer-trace")
-}]
 ]

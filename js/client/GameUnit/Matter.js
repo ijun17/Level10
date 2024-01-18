@@ -66,6 +66,8 @@ class MatterFire extends Matter{
         SCREEN.renderer.camera.vibrate(40);
         this.lifeModule.setLife(50)
         this.lifeModule.ondamage=function(d,dt){return false;}
+        // let temp = this.body.pos
+        // this.draw=(r)=>{r.drawImage(this.image,{pos:[temp[0]+Math.random()*5, temp[1]+Math.random()*5], size:this.body.size});}
         this.draw=(r)=>{r.drawImage(this.image,this.body);}
         this.oncollision=(event)=>{
             const o=event.other

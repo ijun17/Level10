@@ -31,7 +31,6 @@ const Level= {
 
     makeStage:function(level,player) {
         SCREEN.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
-        SCREEN.renderer.camera.zoom=0.9;
         switch (level) {
             case 0: 
                 SCREEN.renderer.bgColor="dimgray";
@@ -87,13 +86,30 @@ const Level= {
                 ReusedModule.sparkWeather()
                 Level.createMainMonster(level,[2000, 0]);
                 break;
+            case 7:
+                SCREEN.renderer.bgColor="black"
+                ReusedModule.createGameMap(2000,2000);
+                WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.05]);
+                WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
+                ReusedModule.fireflyWeatherUp()
+                for(let i=0; i<200; i++){
+                    let b = new Block([i,1800],[60,60],`rgba(${i},${i},${i},0.5)`);
+                    WORLD.add(b);
+                    b.lifeModule.setLife(1000000);
+                    b.physics.setCOR(-1);
+                }
+                break;
             default:
                 ReusedModule.createGameMap(10000,10000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
 
                 let i=0;
-                TIME.addSchedule(0,1,0.1,function(){Level.createMainMonster(0,[800+(i++)*50, 0]);})
+                TIME.addSchedule(0,1,0.1,()=>{
+                    let m=WORLD.add(new this.monsters[0]([800+(++i)*50, 0]));
+                    TIME.addSchedule(1,1,0,function(){m.activateAI()});
+                    m.moveModule.moveDirection[0]=false;
+                })
                 //for(let i=0; i<10; i++)Level.createMainMonster(1,MonsterMushroom, 800+i*50, 0);
                 break;
         }

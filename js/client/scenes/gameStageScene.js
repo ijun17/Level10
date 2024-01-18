@@ -3,6 +3,7 @@ Game.setScene("gameStage",function(level){
     const perX=SCREEN.perX.bind(SCREEN);
     const perY=SCREEN.perY.bind(SCREEN);
     SCREEN.renderer.camera.setScreenPos([SCREEN.perX(50), SCREEN.perY(35)])
+    SCREEN.renderer.camera.zoom = 0.8;
     ReusedModule.createbackButton("select");
 
     let player=WORLD.add(new Player([300,340]));

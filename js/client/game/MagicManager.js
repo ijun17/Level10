@@ -35,10 +35,11 @@ const MagicManager={
             magicSkill.setRequiredLevel(BASIC_MAGIC[i].level)
             MagicManager.magicList.push(magicSkill); 
         }
+        const L=MagicManager.customMagic.length;
         //selected skill num
-        MagicManager.skillNum = localStorage.skillNum!=null ? JSON.parse(localStorage.skillNum) : [0,0,0,0];
+        MagicManager.skillNum = localStorage.skillNum!=null ? JSON.parse(localStorage.skillNum) : [L,L+1,L+2,L+3];
         //selected pvp skill num
-        MagicManager.pvp_skillNum = localStorage.pvp_skillNum!=null ? JSON.parse(localStorage.pvp_skillNum) : [[0,0,0,0],[0,0,0,0]];
+        MagicManager.pvp_skillNum = localStorage.pvp_skillNum!=null ? JSON.parse(localStorage.pvp_skillNum) : [[L,L+1,L+2,L+3],[L,L+1,L+2,L+3]];
         
         MagicManager.saveSkillNum();
     },

@@ -104,6 +104,9 @@ const ReusedModule={
     fireflyWeather:function(count=50,vy=1){
         ReusedModule.createParticleSpray(TYPE.firefly,15,count,vy)
     },
+    fireflyWeatherUp:function(count=50,vy=-1){
+        ReusedModule.createParticleSpray(TYPE.firefly,15,count,vy)
+    },
     sparkWeather:function(count=40,vy=10){
         ReusedModule.createParticleSpray(TYPE.spark,20,count,vy)
     },
