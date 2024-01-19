@@ -24,6 +24,7 @@ class GameScreen{
         this.renderer.update();
     }
     reset(){
+        this.setFitSize()
         this.ui.reset();
         this.renderer.reset();
     }
