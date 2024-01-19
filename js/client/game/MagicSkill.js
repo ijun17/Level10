@@ -144,7 +144,7 @@ const test_giveForce=function(e,ax,ay){
     giveForce(e,ax,ay);
     addMagicCost(0, Math.sqrt(ax**2+ay**2)/200);
 }
-const test_giveLife=function(e,d){addMagicCost(0,d);giveLife(e,d);}
+const test_giveLife=function(e,d){addMagicCost(0,d/4);giveLife(e,d);}
 const test_invisible=function(e,time){addMagicCost(time*200,time*200);}
 const test_move=function(e,vx,vy){addMagicCost(0,(vx+vy)/10);}
 const test_addSchedule=function(startSec,endSec,intervalSec,f){

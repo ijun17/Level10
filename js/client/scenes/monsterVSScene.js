@@ -9,7 +9,8 @@ Game.setScene("monsterVS",function(){
     let bst2=ReusedModule.createButtonSelector();
     let scorll1=ReusedModule.createScroll([perX(1),perX(1)],[perX(20),perY(100)-perX(7)]);
     let scorll2=ReusedModule.createScroll([perX(79),perX(1)],[perX(20),perY(100)-perX(7)]);
-    SCREEN.renderer.bgColor="rgb(141, 156, 160)"
+    // SCREEN.renderer.bgColor="rgb(141, 156, 160)"
+    SCREEN.renderer.bgColor="rgb(100, 90, 90)"
 
     for(let i=0,l=Level.monsters.length; i<l; i++){
         let monsterBtn1=ui.create("button",[0,0],[perX(18),perX(4)],"levelButton");
@@ -80,5 +81,6 @@ Game.setScene("monsterVS",function(){
     WORLD.environment.addGravity([-20000, -20000], [40000, 40000], [0, -0.2]);
     WORLD.environment.addDrag([-20000, -20000], [40000, 40000], [0, 0], 0.02);
     SCREEN.renderer.camera.zoom = 0.5;
-    ReusedModule.snowWeather(100)
+    // ReusedModule.snowWeather(100)
+    ReusedModule.fireWeader()
 })

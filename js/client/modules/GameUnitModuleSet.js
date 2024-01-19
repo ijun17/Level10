@@ -20,10 +20,8 @@ class GameUnitMoveModule {
         this.calculateFootDirection(unit.physics.gravity);
     }
     moveRun(body){
-        if(this.canJump){
-            if(this.footDirection[0]===0)this.moveX(body); 
-            else this.moveY(body);
-        }
+        if(this.footDirection[0]===0)this.moveX(body); 
+        else this.moveY(body);
         
         if(this.doJump)this.jump(body);
     }

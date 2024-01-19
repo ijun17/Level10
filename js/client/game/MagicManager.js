@@ -91,14 +91,22 @@ move(block,0,100);`,level:0},
     {name:"대쉬",code:`//플레이어가 빠른 속도로 앞으로 이동
 giveForce(player,front(30),1);`,level:0},
 
-    {name:"힐",code:`//플레이어 hp를 2000회복
-giveLife(player,2000);`,level:0},
+    {name:"힐",code:`//플레이어 hp를 10000회복
+giveLife(player,10000);`,level:0},
     
     {name:"얼음비", code:`//얼음을 소환
 for(@i=0;i<10;i++){
-    @ice = create(ICE, 0,-20)
-    move(ice, front(i*40+100),300+i*40)
-    giveLife(ice,100);
+    for(@j=0;j<3;j++){
+        @ice = create(ICE, 0,-40)
+        move(ice, front(i*40+100 +j*15),300+i*40+j*40)
+    }
+}`,level:1},
+    {name:"파이어볼2",code:`
+for(@i=0; i<2; i++){
+    for(@j=0; j<2; j++){
+        @fire = create(FIRE,front(30),3)
+        move(fire,front(31)*i,j*31)
+    }
 }`,level:1},
 
     {name:"텔레포트",code:`//텔레포트
@@ -106,18 +114,13 @@ move(player, front(600), 0);`,level:1},
 
     {name:"파이어토네이도",code:`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
-@plusX=front(10);
-addSchedule(0,70/100,1/100,#{x+=plusX;});
-for(@i=0; i<12; i++){
+@plusX=front(15);
+addSchedule(0,25/100,1/100,#{x+=plusX;});
+for(@i=0; i<13; i++){
     @fire = create(FIRE,0,0);
-    move(fire,front(200-13*i-15), i*35);
-    giveLife(fire,500)
-    addSchedule(0,70/100,1/100,#{
-        giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
-    });
-    addSchedule(71/100,71/100,1/100,#{
-        giveForce(fire,-getVX(fire)+plusX*20,-10);
-    })
+    move(fire,front(100-12*i-15), i*31);
+    addSchedule(0,25/100,1/100,#{  giveForce(fire,(x-getX(fire))/(i+11)*10,-getVY(fire));  });
+    addSchedule(26/100,26/100,1/100,#{  giveForce(fire,-getVX(fire)+plusX*3,-30);  })
 }`,level:2},
 
     {name:"투명",code:`//플레이어의 투명화
@@ -159,7 +162,7 @@ for(@i=0; i<200; i++){
     {name:"폭발 비",code:`//불끼리 부딪히면 폭발한다.
 for(@i=0; i<10; i++){
     for(@j=0; j<3; j++){
-        @fire=create(FIRE,0,-20);
+        @fire=create(FIRE,0,-29);
         @x=front(i*70+150);
         @y=200+i*50+j*100;
         move(fire,x,y);
@@ -191,25 +194,4 @@ for(@i=0; i<12; i++){
     })
 }`,level:10},
 
-    {name:"유도미사일",code:`//유도미사일
-// @t=create(TRIGGER, front(50),0,30,200)
-// setTrigger(t,#{
-//     @target=$
-//     @e=create(ENERGY, 0,0)
-//     giveLife(e,4000)
-//     move(e, front(200),0);
-//     addSchedule(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
-//     for(@i=0;i<30;i++){
-//         move(create(ENERGY, 0,0), front(200), 0);
-//     }
-// })`,level:10},
-
-{name:"유도얼음",code:`//유도얼음
-// @t=create(TRIGGER, front(50),0,30,200)
-// setTrigger(t,#{
-//     @target=$
-//     @e=create(ICE, 0,0)
-//     giveLife(e,4000)
-//     addSchedule(e, 0,2000, #{giveForce(e,-getVX(e)+(getX(target)-getX(e)),-getVY(e)+(getY(target)-getY(e)))})
-// })`,level:10}
 ]

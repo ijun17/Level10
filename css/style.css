@@ -53,6 +53,9 @@ button{
 .startButton:hover{
     color:white;
     border: solid white 4px;
+    
+    /* text-shadow: skyblue 2px 0 30px; */
+    box-shadow: skyblue 2px 0 30px;
 }
 
 /* 선택 화면 */

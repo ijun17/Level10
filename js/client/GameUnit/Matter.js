@@ -95,7 +95,10 @@ class MatterIce extends Matter{
     }
     draw(r){r.drawImage(this.image,this.body,{rotate:Math.atan2(this.body.vel[0], this.body.vel[1])});}
     oncollision(event){
-        if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
+        let relVel=event.other.body.getRelativeVel(this.body);
+        let damage=Math.hypot(relVel[0],relVel[1])
+        if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage+damage,this.damageType);
+        // if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
         if(event.other.statusEffectModule)event.other.statusEffectModule.set(event.other,TYPE.iceEffect,3,1)
     }
 }
@@ -152,18 +155,33 @@ class MatterArrow extends Matter{
 
 class MatterEnergy extends Matter{
     image;
+    isExploded=false;
     constructor(pos,vel){
-        super(pos,[30,30],vel,500,TYPE.damageEnergy);
+        super(pos,[50,50],vel,1000,TYPE.damageEnergy);
         this.image=Game.resource.getImage("matter_energy")
         this.physics.setGravity([0,0],true);
         this.physics.inv_mass=0.1
-        this.physics.setCOR(0.5)
-
+        this.physics.setCOR(-1)
+        this.physics.setCOF(0)
     }
     draw(r){r.drawImage(this.image,this.body);}
     oncollision(event){
+        if(!(event.other instanceof MatterEnergy) && !this.isExploded){
+            this.isExploded=true;
+            const BEFORE_SIZE=this.body.size[0]
+            this.body.addPos([-BEFORE_SIZE, -BEFORE_SIZE])
+            this.body.setSize([BEFORE_SIZE * 2, BEFORE_SIZE * 2])
+            this.body.setVel([0, 0])
+            this.body.fixedPos = true;
+            this.body.fixedVel = true;
+            this.damage *= 2
+            this.physics.fixedForce = true;
+            SCREEN.renderer.camera.vibrate(40);
+            this.lifeModule.setLife(50)
+            this.lifeModule.ondamage=function(d,dt){return false;}
+        }
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
-        SCREEN.renderer.camera.vibrate(5);
+        SCREEN.renderer.camera.vibrate(3);
     }
 }
 
