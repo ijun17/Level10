@@ -417,6 +417,7 @@ class MonsterGolem extends Monster{
                     for(let i=0; i<pos.length; i++){
                         let ene = WORLD.add(new MatterEnergy([pos[i][0] - 25, pos[i][1] - 25], [0, 0]))
                         ene.body.setSize([80, 80])
+                        ene.damage=3000
                         let ga = ene.body.getUnitVector(m.target.body.midPos)
                         ene.body.setVel([ga[0] * 10, ga[1] * 10])
                         ene.physics.setGravity([ga[0]*2, ga[1]*2], true);

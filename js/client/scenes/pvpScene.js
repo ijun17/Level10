@@ -1,5 +1,4 @@
-const MULTI = new SimpleWebRTC("wss://port-0-webrtc-test-eg4e2alkj86xoo.sel4.cloudtype.app/", "stun:stun.l.google.com:19302")
-
+const MULTI = new SimpleWebRTC("ws://"+localStorage.getItem("signaling"), "stun:stun.l.google.com:19302")
 
 Game.setScene("pvp",function(){
     const ui=SCREEN.ui;
@@ -8,6 +7,7 @@ Game.setScene("pvp",function(){
     SCREEN.renderer.camera.setScreenPos([SCREEN.perX(50), SCREEN.perY(35)])
     ReusedModule.createbackButton("select", ()=>{MULTI.reset()});
     MULTI.reset()
+    MULTI.signaling="ws://"+localStorage.getItem("signaling");
     const roomFormSize=[perX(45),perX(30)];
 
     const roomForm = ui.add("div",[perX(50)-roomFormSize[0]*0.5,perY(50)-roomFormSize[1]*0.5],roomFormSize,"room-form")
@@ -25,7 +25,8 @@ Game.setScene("pvp",function(){
                 <input class="enter-room-input" placeholder="방 아이디">
                 <p>방 아이디를 입력하세요</p>
             </div>
-        </div>`    
+        </div>
+        <div style="text-align:center;color:gray;">server: ${localStorage.getItem("signaling")}</div>`    
 
     const createRoomButton = document.querySelector(".create-room-button")
     const enterRoomButton = document.querySelector(".enter-room-button")

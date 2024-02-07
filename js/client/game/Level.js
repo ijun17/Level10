@@ -103,6 +103,14 @@ const Level= {
                     // b.physics.setCOF(0);
                 }
                 break;
+            case 8:
+                ReusedModule.createGameMap(2000,2000);
+                WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.25]);
+                WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
+                ReusedModule.fireflyWeatherUp()
+
+                
+                break;
             default:
                 SCREEN.renderer.camera.zoom = 0.5;
                 ReusedModule.createGameMap(10000,10000);

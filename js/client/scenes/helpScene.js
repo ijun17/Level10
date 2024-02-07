@@ -7,34 +7,48 @@ Game.setScene("help",function(){
     let menuBtnSize=[perX(16),perX(4)];
     let bg=ui.add("div",[menuBtnSize[0],0],[perX(100)-menuBtnSize[0],perY(100)-perX(6)],"helpBackground");
 
-    function check(labelQuery, name){
-        const label = bg.querySelector(labelQuery)
-        const input = label.querySelector("input");
-        input.checked = (localStorage.getItem(name)==='1');
-        label.addEventListener("click",function(){
-            localStorage.setItem(name,(input.checked ? '1' : '0'));
-        })
+    function input(){
+        const inputs = bg.querySelectorAll("input");
+        for(let input of inputs){
+            let name=input.name;
+            switch(input.type){
+                case "checkbox":
+                    input.checked = (localStorage.getItem(name)==='1');
+                    input.addEventListener("click",function(){
+                        localStorage.setItem(name,(input.checked ? '1' : '0'));
+                    })
+                    break;
+                case "text":
+                    input.value = (localStorage.getItem(name) === undefined ? "" : localStorage.getItem(name));
+                    input.addEventListener("input", function () {
+                        localStorage.setItem(name, input.value);
+                    })
+                    break;
+            }
+        }
     }
     
+    let menuButtons=[]
     for(let i=0; i<HELP_MENU.length; i++){
         let menuButton = ui.add("button",[perX(0),perY(100)-perX(6)-menuBtnSize[1]*(i+1)],menuBtnSize,"helpMenuButton");
+        menuButtons.push(menuButton);
         menuButton.innerText=HELP_MENU[i][0]
         menuButton.onclick=()=>{
             bg.innerHTML = HELP_MENU[i][1];
-            HELP_MENU[i][2](bg, check);
+            input();
             if (buttonSelector.ele != null) buttonSelector.ele.classList.remove("selectedHelpMenuButton");
             buttonSelector.ele = menuButton;
             menuButton.classList.add("selectedHelpMenuButton");
         }
     }
-
+    menuButtons[0].click();
 })
 
 const HELP_MENU=[
 ["game",`
 <h1>LEVEL10</h1>
 <p>이 게임은 마법을 만들어 몬스터를 물리치는 게임입니다.</p>
-`,(ele)=>{}],
+`],
 
 ["조작법",`<h1>조작법</h1>
 <ul>
@@ -44,10 +58,10 @@ const HELP_MENU=[
 <br><br>
 <p>모바일의 경우 PWA를 사용할 수 있습니다.</p>
 <label class="switch">
-    <input type="checkbox">
+    <input type="checkbox" name="mobile">
     <span class="slider round">모바일 버튼을 사용하려면 체크하세요</span>
 </label>
-`,(ele,check)=>{check(".switch", "mobile")}],
+`],
 
 ["마법 제작",`
 <h1>마법 제작</h1>
@@ -76,5 +90,11 @@ const HELP_MENU=[
     <li>함수 선언 - \${함수정의}</li>
     <li>금지 기호 - 점(.), 대괄호([])를 사용할 수 없습니다.</li>
 </ul>
-`,(ele)=>{}],
+`],
+
+["멀티 플레이",`
+<h1>멀티 플레이</h1>
+<p>상대방과 매칭을 위해 서버 아이피가 필요합니다</p>
+<input style="width:20vw;height:2vw;font-size:18px;" type="text" placeholder="0.0.0.0:0" name="signaling">
+`]
 ]

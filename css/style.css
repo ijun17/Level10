@@ -45,10 +45,11 @@ button{
 .startButton{
     background-color:unset;
     color:black;
+    color:white;
     /* font-size : 80px; */
     font-size : 5em;
     font-weight: bold;
-    border: solid black 4px;
+    border: solid white 4px;
 }
 .startButton:hover{
     color:white;
@@ -86,22 +87,34 @@ button{
 }
 .selectMagicSceneButton{
     background-color:unset;
-    color:black;
+    color:royalblue;
     /* font-size : 28px; */
     font-size : 1.3em;
     font-weight: bold;
-    border: solid black 2px;
+    border: solid royalblue 3px;
 }
 .selectMagicSceneButton:hover{
     color:white;
     border: solid white 3px;
+}
+.monsterVSSceneButton{
+    background-color:unset;
+    color:brown;
+    /* font-size : 28px; */
+    font-size : 1.3em;
+    font-weight: bold;
+    border: solid brown 3px;
+}
+.monsterVSSceneButton:hover{
+    border: solid white 3px;
+    color: white;
 }
 .pvpButton{
     background-color:unset;
     /* font-size : 28px; */
     font-size : 1.3em;
     font-weight: bold;
-    border: solid purple 2px;
+    border: solid purple 3px;
     color: purple;
 }
 .pvpButton:hover{
@@ -393,7 +406,7 @@ button{
 
 .room-input-container {
     width: 100%;
-    height: 80%;
+    height: 70%;
     display: flex;
     flex-direction: column;
     justify-content: center;
