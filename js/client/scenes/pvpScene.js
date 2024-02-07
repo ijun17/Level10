@@ -1,4 +1,4 @@
-const MULTI = new SimpleWebRTC("ws://"+localStorage.getItem("signaling"), "stun:stun.l.google.com:19302")
+const MULTI = new SimpleWebRTC("wss://"+localStorage.getItem("signaling"), "stun:stun.l.google.com:19302")
 
 Game.setScene("pvp",function(){
     const ui=SCREEN.ui;
