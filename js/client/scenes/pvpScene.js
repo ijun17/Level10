@@ -7,7 +7,7 @@ Game.setScene("pvp",function(){
     SCREEN.renderer.camera.setScreenPos([SCREEN.perX(50), SCREEN.perY(35)])
     ReusedModule.createbackButton("select", ()=>{MULTI.reset()});
     MULTI.reset()
-    MULTI.signaling="ws://"+localStorage.getItem("signaling");
+    MULTI.signaling="wss://"+localStorage.getItem("signaling");
     const roomFormSize=[perX(45),perX(30)];
 
     const roomForm = ui.add("div",[perX(50)-roomFormSize[0]*0.5,perY(50)-roomFormSize[1]*0.5],roomFormSize,"room-form")
