@@ -95,6 +95,7 @@ button{
 }
 .selectMagicSceneButton:hover{
     color:white;
+    background-color: #FFF4;
     border: solid white 3px;
 }
 .monsterVSSceneButton{
@@ -107,6 +108,7 @@ button{
 }
 .monsterVSSceneButton:hover{
     border: solid white 3px;
+    background-color: #FFF4;
     color: white;
 }
 .pvpButton{
@@ -119,6 +121,7 @@ button{
 }
 .pvpButton:hover{
     border: solid white 3px;
+    background-color: #FFF4;
     color: white;
 }
 
@@ -231,8 +234,8 @@ button{
 .createMagicbutton {
     display: none;
     position:absolute;
-    bottom:1%;
-    right:2%;
+    bottom:30%;
+    right:3%;
     width: 60px;
     height: 30px;
     background-color: royalblue;
@@ -389,8 +392,7 @@ button{
     color: #fff;
     font-size: 27px;
     background-color: #007bff;
-    border: 0;
-    padding: 20px 0;
+    border:none;
 }
 
 .create-room-button:hover,

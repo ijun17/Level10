@@ -351,6 +351,7 @@ class MonsterSlime extends Monster{
         if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*0.5){ //PHASE 2
             this.phase=2;
             for(let slave of this.slaveList)slave.physics.setCOR(0.8);
+            this.moveModule.moveType=1;
         }
     }
     draw(r){r.fillRect("maroon", this.body)}
@@ -366,7 +367,8 @@ class MonsterSlime extends Monster{
 class MonsterGolem extends Monster{
     animation;
     phase=1;
-    antiMatterFlag=false;
+    antiMatterFlag=false;//투사체삭제모드
+    invincible=false;//무적모드
     constructor(pos){
         super(pos,[200,200],4000,new GameUnitMoveModule(0,1,2), new GameUnitLifeModule(5000000,100,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("down",function(e){
@@ -388,7 +390,7 @@ class MonsterGolem extends Monster{
         },888));
 
         this.addEventListener("collision", function(e){if(this.antiMatterFlag && e.other instanceof Matter)e.other.setState(0);})
-        this.lifeModule.ondamage=(d,dt)=>{return dt!=TYPE.damageEnergy;}
+        this.lifeModule.ondamage=(d,dt)=>{return !this.invincible&&dt!=TYPE.damageEnergy;}
         this.animation=new UnitAnimation(IMAGES.monster_golem,128,128,[4, 2],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=32;
         this.body.overlap=false;
@@ -416,6 +418,7 @@ class MonsterGolem extends Monster{
                     if(!m.canTarget())return;
                     for(let i=0; i<pos.length; i++){
                         let ene = WORLD.add(new MatterEnergy([pos[i][0] - 25, pos[i][1] - 25], [0, 0]))
+                        ene.lifeModule.setLife(300)
                         ene.body.setSize([80, 80])
                         ene.damage=3000
                         let ga = ene.body.getUnitVector(m.target.body.midPos)
@@ -423,6 +426,9 @@ class MonsterGolem extends Monster{
                         ene.physics.setGravity([ga[0]*2, ga[1]*2], true);
                     }
                 })
+
+                this.invincible=true;
+                TIME.addTimer(5,()=>{this.invincible=false;})
                 
             },1300))
         }
@@ -481,7 +487,8 @@ class MonsterWyvern extends Monster{
                         return;
                     }
                     if(e.other.lifeModule)e.other.lifeModule.giveDamage(1000,TYPE.damageFire);
-                    e.other.body.setVel([(x-e.other.body.pos[0])*1,0.5+e.other.body.vel[1]]);
+                    e.other.body.setVel([(x-e.other.body.pos[0])*1,1]);
+                    // e.other.physics.setForce([(x-e.other.body.pos[0])*2,0.5]);
                     return !(e.other instanceof Actor)
                 }
             }
@@ -513,7 +520,7 @@ class MonsterWyvern extends Monster{
     update(){
         super.update();
         this.animation.update();
-        if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*1.2){ //PHASE 2
+        if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*1.1){ //PHASE 2
             this.phase=2;
             this.skillModule.addSkill(new MagicSkill("breath",function(m){
                 if(!m.canTarget())return;

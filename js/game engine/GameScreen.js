@@ -74,7 +74,7 @@ class GameScreenRenderer{
         
     };
     reset(){
-        this.bgColor="#b2c3c8";
+        this.bgColor="#222"//"#b2c3c8";
         this.camera.reset();
     }
     //useCamera(enable){this.camera.enable=enable;}

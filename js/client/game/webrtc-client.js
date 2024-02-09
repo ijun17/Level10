@@ -24,7 +24,7 @@ class SimpleWebRTC{
         }
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            //console.log(data);
+            console.log(data);
             switch(data.type){
                 case "hostid" : this.onroomcreated(data.id); break;
                 case "sdp"    : this.setRemote(data.sdp); break;
