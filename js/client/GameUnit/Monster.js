@@ -151,7 +151,7 @@ class MonsterMushroom extends Monster{
         this.animation=new UnitAnimation(IMAGES.monster_mushroom,60,60,[3, 3],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
-        this.physics.inv_mass=0.5;
+        this.physics.inv_mass=0.2;
 
     }
     update(){
@@ -183,18 +183,18 @@ class MonsterMonkey extends Monster{
                 m.canDraw=true;
                 m.moveModule.moveType=0
             },()=>{return m.getState()==0})
-        },1000))
+        },700))
         this.skillModule.addSkill(new MagicSkill("iceshot", function (m) {
             for (let i = 0; i < 10; i++) {
                 for (let j = 0; j < 10; j++) {
                     let ice = m.createMatter(MatterIce,[m.front(i*0.1),2-j*0.1],[0,-80])
                     ice.damage=500;
-                    ice.body.setSize([30,30])
-                    ice.lifeModule.setLife(500)
-                    ice.physics.setCOR(0.9)
+                    ice.body.setSize([40,40])
+                    ice.lifeModule.setLife(600)
+                    ice.physics.setCOR(1)
                 }
             }
-        },700))
+        },1500))
         this.skillModule.addSkill(new MagicSkill("ice",function(m){
             let i=0;
             TIME.addSchedule(0,4,0.01,()=>{
@@ -202,15 +202,16 @@ class MonsterMonkey extends Monster{
                 let ice = m.createMatter(MatterIce,[m.front(dir[0]), dir[1]],dir)
                 ice.physics.setGravity(dir,true);
                 ice.damage=1000;
+                ice.body.setSize([40,40])
                 i++;
             },()=>{return m.getState()==0})
-        },2000))
+        },2100))
         
         this.ai_move_cycle=0.1
         this.animation=new UnitAnimation(IMAGES.monster_monkey,120,200,[1, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
-        this.physics.inv_mass=0.3;
+        this.physics.inv_mass=0.05;
 
         this.lifeModule.ondamage=(d,dt)=>{return dt!=TYPE.damageIce;}
         this.statusEffectModule.oneffect=(type)=>{return TYPE.iceEffect!=type}
@@ -260,7 +261,7 @@ class MonsterFly extends Monster{
                 m.moveModule.moveSpeed=10;
                 m.power=66;
             },function(){return m.getState()==0;})
-        },700))
+        },800))
         this.body.overlap=true;
         this.physics.inv_mass=0.5;
         this.ai_move_cycle=0.04;
@@ -352,6 +353,7 @@ class MonsterSlime extends Monster{
             this.phase=2;
             for(let slave of this.slaveList)slave.physics.setCOR(0.8);
             this.moveModule.moveType=1;
+            this.moveModule.moveSpeed=10;
         }
     }
     draw(r){r.fillRect("maroon", this.body)}
@@ -370,7 +372,7 @@ class MonsterGolem extends Monster{
     antiMatterFlag=false;//투사체삭제모드
     invincible=false;//무적모드
     constructor(pos){
-        super(pos,[200,200],4000,new GameUnitMoveModule(0,1,2), new GameUnitLifeModule(5000000,100,5), new GameUnitSkillModule(0));
+        super(pos,[300,300],4000,new GameUnitMoveModule(0,1,2), new GameUnitLifeModule(5000000,100,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("down",function(e){
             if(!e.canTarget())return;
             let b=e.body, tb=e.target.body;
@@ -394,7 +396,7 @@ class MonsterGolem extends Monster{
         this.animation=new UnitAnimation(IMAGES.monster_golem,128,128,[4, 2],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=32;
         this.body.overlap=false;
-        this.physics.inv_mass=0.001;
+        this.physics.inv_mass=0.0001;
         this.physics.setGravity([0,-0.5]);
         this.physics.fixedGravity=true;
     }
@@ -405,6 +407,7 @@ class MonsterGolem extends Monster{
         if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*0.5){ //PHASE 2
             this.phase=2;
             this.skillModule.addSkill(new MagicSkill("TURRET",(m)=>{
+                const x=m.body.pos[0], y=m.body.pos[1];
                 const mx=m.body.midX, my=m.body.midY
                 let pos=[[mx, my+400], [mx-400, my+300], [mx+400, my+300]];
                 for(let i=0; i<pos.length; i++){
@@ -429,6 +432,10 @@ class MonsterGolem extends Monster{
 
                 this.invincible=true;
                 TIME.addTimer(5,()=>{this.invincible=false;})
+
+                TIME.addSchedule(0,5,undefined,()=>{
+                    this.body.setPos([x,y])
+                })
                 
             },1300))
         }
@@ -447,7 +454,7 @@ class MonsterWyvern extends Monster{
     phase=1
     animation
     constructor(pos){
-        super(pos,[300,300],1000,new GameUnitMoveModule(1,3), new GameUnitLifeModule(10000000,100,5), new GameUnitSkillModule(0));
+        super(pos,[400,400],1000,new GameUnitMoveModule(1,3), new GameUnitLifeModule(10000000,100,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("FIRE BALL",function(m){
             if(!m.canTarget())return;
             let fire=m.createMatterToTarget(MatterFire,[1.2,0],10);
@@ -511,7 +518,7 @@ class MonsterWyvern extends Monster{
         this.animation=new UnitAnimation(IMAGES.monster_wyvern,80,80,[4, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
-        this.physics.inv_mass=0.01;
+        this.physics.inv_mass=0.001;
         this.physics.setGravity([0,0],true)
         this.lifeModule.ondamage=function(d, dt){
             return dt!=TYPE.damageFire;
@@ -581,7 +588,7 @@ class MonsterDragon extends Monster{
     animation;
     phase=1;
     constructor(pos){
-        super(pos,[300,300],1000,new GameUnitMoveModule(1,3), new GameUnitLifeModule(10000000,100,5), new GameUnitSkillModule(0));
+        super(pos,[400,400],1000,new GameUnitMoveModule(1,3), new GameUnitLifeModule(10000000,100,5), new GameUnitSkillModule(0));
         
         this.skillModule.addSkill(new MagicSkill("THUNDER",(m)=>{
             let dir=m.front(60)
@@ -646,7 +653,7 @@ class MonsterDragon extends Monster{
         this.animation=new UnitAnimation(IMAGES.monster_golden_dragon,80,80,[4, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
-        this.physics.inv_mass=0.01;
+        this.physics.inv_mass=0.001;
         this.physics.setGravity([0,0],true)
         this.ai_move_cycle=0.5;
         this.lifeModule.ondamage=function(d, dt){

@@ -6,7 +6,7 @@ const ReusedModule={
         return 0;
     },
     createGameMap(w,h){
-        const WALL_SIZE=300;
+        const WALL_SIZE=400;
         WORLD.add(new MapBlock([-WALL_SIZE,-WALL_SIZE],[w+WALL_SIZE*2,WALL_SIZE],"#303030"))
         WORLD.add(new MapBlock([-WALL_SIZE,h],[w+WALL_SIZE*2,WALL_SIZE],"#303030"))
         WORLD.add(new MapBlock([-WALL_SIZE,-WALL_SIZE],[WALL_SIZE,h+WALL_SIZE*2],"#303030"))

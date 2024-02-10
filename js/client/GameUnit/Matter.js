@@ -59,7 +59,7 @@ class MatterFire extends Matter{
         this.body.setVel([0,0])
         this.body.fixedPos=true;
         this.body.fixedVel=true;
-        this.damage*=6
+        this.damage*=3
         this.image=Game.resource.getImage("matter_explosion");
         this.physics.setGravity([0,0],true);
         this.physics.fixedForce=true;
@@ -174,7 +174,7 @@ class MatterEnergy extends Matter{
             this.body.setVel([0, 0])
             this.body.fixedPos = true;
             this.body.fixedVel = true;
-            this.damage *= 2
+            // this.damage *= 2
             this.physics.fixedForce = true;
             SCREEN.renderer.camera.vibrate(40);
             this.lifeModule.setLife(50)

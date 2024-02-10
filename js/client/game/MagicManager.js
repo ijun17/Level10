@@ -93,6 +93,23 @@ giveForce(player,front(30),1);`,level:0},
 
     {name:"힐",code:`//플레이어 hp를 10000회복
 giveLife(player,10000);`,level:0},
+
+    {name:"파이어볼2",code:`//불과 불이 부딪히면 폭발한다
+for(@i=0; i<3; i++){
+    for(@j=0; j<3; j++){
+        @fire = create(FIRE,front(60),3)
+        move(fire,front(31)*i,j*31)
+    }
+}`,level:1},
+
+    {name:"텔레포트",code:`//텔레포트
+move(player, front(600), 0);`,level:1},
+
+    {name:"활공",code:`//바람 생성
+@wind=create(WIND,0,40);
+giveLife(wind,500);
+move(wind,front(-100),-50);
+giveForce(wind,0,-30);`,level:1},
     
     {name:"얼음비", code:`//얼음을 소환
 for(@i=0;i<10;i++){
@@ -100,17 +117,7 @@ for(@i=0;i<10;i++){
         @ice = create(ICE, 0,-40)
         move(ice, front(i*40+100 +j*15),300+i*40+j*40)
     }
-}`,level:1},
-    {name:"파이어볼2",code:`
-for(@i=0; i<2; i++){
-    for(@j=0; j<2; j++){
-        @fire = create(FIRE,front(30),3)
-        move(fire,front(31)*i,j*31)
-    }
-}`,level:1},
-
-    {name:"텔레포트",code:`//텔레포트
-move(player, front(600), 0);`,level:1},
+}`,level:2},
 
     {name:"파이어토네이도",code:`//불꽃 토네이도 생성
 @x=getX(player)+front(200);
@@ -125,12 +132,6 @@ for(@i=0; i<13; i++){
 
     {name:"투명",code:`//플레이어의 투명화
 invisible(player,3);`,level:2},
-
-    {name:"활공",code:`//바람 생성
-@wind=create(WIND,0,40);
-giveLife(wind,500);
-move(wind,front(-100),-50);
-giveForce(wind,0,-30);`,level:2},
 
     {name:"기관총",code:`//화살 발사
 addSchedule(0,5,1/20,#{

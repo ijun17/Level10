@@ -8,7 +8,7 @@ Game.setScene("select",function(){
     for(let i=0; i<=Level.playerLevel; i++){
         levelBtn=ui.add("button", [perX(42),perY(100)-perX(i*4+5)], [perX(16), perX(4)], "levelButton");
         levelBtn.innerText="LEVEL"+i;
-        levelBtn.style.backgroundColor="rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.5)";
+        levelBtn.style.backgroundColor="rgba("+(255-i*25)+","+(255-i*25)+","+(255-i*20)+",0.2)";
         levelBtn.onclick=()=>{Game.changeScene("gameStage",i);};
     }
 
