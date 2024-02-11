@@ -162,18 +162,20 @@ Game.setScene("pvp-game", function(para){
     P[1].moveModule.moveDirection[0]=false;
     const ME = (para.isHost ? 0 : 1) //나 인덱스
     const OTHER = (para.isHost ? 1 : 0) //상대 인덱스
-    P[ME].addEventListener("remove",()=>{
-        let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"playerDieText");
-        stageClearText.innerText="YOU LOSE";
-        TIME.addSchedule(2,2,undefined,()=>{MULTI.reset();MULTI_TIME.stop();Game.changeScene("pvp");});
-    })
-    P[OTHER].addEventListener("remove",()=>{
-        let stageClearText=SCREEN.ui.add("div",[0,0],[SCREEN.perX(100),SCREEN.perY(100)],"stageClearText");
-        stageClearText.innerText="YOU WIN";
-        let clearTextY=0;
-        TIME.addSchedule(0,4,undefined,function(){stageClearText.style.bottom=(clearTextY--)+"px"});
-        TIME.addSchedule(4,4,undefined,()=>{MULTI.reset();MULTI_TIME.stop();Game.changeScene("pvp");});
-    })
+    let isFinished=false;//게임 끝났는지
+    function finishGame(resultText, cssClass){
+        if(isFinished)return;
+        isFinished=true;
+        let stageClearText=SCREEN.ui.add("div",[perX(50),perY(50)],[0,0],cssClass);
+        stageClearText.innerText=resultText;
+        TIME.addSchedule(2,2,undefined,()=>{
+            MULTI.reset();
+            MULTI_TIME.stop();
+            Game.changeScene("pvp");
+        });
+    }
+    P[ME].addEventListener("remove",()=>{finishGame("YOU LOSE", "playerDieText")})
+    P[OTHER].addEventListener("remove",()=>{finishGame("YOU WIN", "stageClearText")})
     P[ME].renderStatusBar([perX(10),perY(100)-perX(10)])
     P[OTHER].skillModule.skillList = para.magicList
     SCREEN.renderer.camera.addTarget(P[ME].body);
@@ -181,33 +183,37 @@ Game.setScene("pvp-game", function(para){
 
     const SYNC_TICK = 5; //n 틱마다 서로 동기화 메시지를 보냄
     let syncCode=0; //싱크 코드와 TIME.tick은 대칭이어야함
+    let validCode=0;
     let messageQueue=new Array(10)
     let isSync = true;
     let input = [['0','0','0','0','0','0','0','0'],['0','0','0','0','0','0','0','0']] //모든 입력은 SYNC_TICK이후 적용됨
     let meInput = ['0','0','0','0','0','0','0','0'] 
+    function getValidCode(i){
+        const digits = P[i].lifeModule.life.toString().split('').map(Number);
+        return digits.reduce((sum, digit) => sum + digit, 0)%10;
+    }
     function solveInput(){ //상대와 나의 입력 정보를 게임에 반영
-        let message = ""
         for(let i=0; i<8; i++){
             for(let j=0; j<2; j++){
                 if(input[j][i]=='1')P[j].onkeydown(i,[0,1,2,3],[4,5,6,7])
                 else if(input[j][i]=='2')P[j].onkeyup(i,[0,1,2,3])
             }
             input[ME][i]=meInput[i]
-            message+=meInput[i]
             meInput[i]='0'
         }
         //sync_code와 TIME.tick은 대칭 깨지면
-        if((TIME.get()-1)%50!=syncCode*5)console.log("씨발ehdrlghk",TIME.get(), syncCode)
+        if((TIME.get()-1)%50!=syncCode*5)console.log("동기화 오류",TIME.get(), syncCode)
         //다음 입력 처리
         syncCode=(syncCode+1)%10
-        messageQueue[syncCode]=message+syncCode
+        validCode=getValidCode(ME)
+        messageQueue[syncCode]=input[ME].join('')+syncCode+getValidCode(OTHER);
         messageQueue[(syncCode+1)%10]=null //10(syncCode) 전에 걸 보낼 수 있으니까 지움
         isSync=false //입력처리를 다하면 다음 입력을 받기 위해
     }
-    //SYNC_TICK 틱마다 상대의 입력이 수신되었는지 확인하고 수신되지 않았으면 중지 FUcking robustic
+    //SYNC_TICK 틱마다 상대의 입력이 수신되었는지 확인하고 수신되지 않았으면 중지
     TIME.addSchedule(0.01,undefined,SYNC_TICK*0.01,()=>{if(isSync)solveInput()})
-    TIME.addSchedule(0,undefined,SYNC_TICK*0.01, ()=>{if(!isSync)TIME.stop()})
-    const MULTI_TIME = new GameTime(()=>{if(!isSync)MULTI.send("s"+syncCode)});
+    TIME.addSchedule(0,undefined,SYNC_TICK*0.01, ()=>{if(!isSync && !isFinished)TIME.stop()})
+    const MULTI_TIME = new GameTime(()=>{if(!isSync && !isFinished)MULTI.send("s"+syncCode)});
     MULTI_TIME.start()
 
     //사용자 물리적 입력
@@ -215,25 +221,27 @@ Game.setScene("pvp-game", function(para){
     if(localStorage.getItem("mobile")==='1')ReusedModule.multiMobileButton(P[ME],meInput)
 
     //데이터 채널 메시지 처리
-    function isSyncedInputMessage(m){return m.length==9 && m[8] == syncCode && !isSync}
-    function isSyncMessage(m){return m.length==2 && m[0]=='s'}
+    function isInputResponse(m){return m.length==10 && Number(m[8]) == syncCode && !isSync}
+    function isInputRequest(m){return m.length==2 && m[0]=='s'}
     MULTI.ondatachannelmessage = (m) => {
-        if(isSyncedInputMessage(m)){
+        if(isInputResponse(m)){
+            if(Number(m[9]) != validCode){
+                console.log("상대방과 연산 결과가 다릅니다")
+                finishGame("error 1", "playerDieText")
+                return 
+            }
             for(let i=0; i<8; i++)input[OTHER][i]=m[i]
             isSync=true;
             TIME.start();
-        }else if(isSyncMessage(m)){
+        }else if(isInputRequest(m)){
             let mes=messageQueue[Number(m[1])]
-            if(mes)MULTI.send(mes)
+            if(mes && !isFinished)MULTI.send(mes)
         }
         
     }
 
     MULTI.ondatachannelclose = () => {
-        alert("연결이 끊어졌습니다.")
-        MULTI.reset();
-        MULTI_TIME.stop()
-        Game.changeScene("pvp")
+        finishGame("disconnected", "playerDieText")
     }
 })
 
