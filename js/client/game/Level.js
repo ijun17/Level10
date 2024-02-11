@@ -1,6 +1,6 @@
 const Level= {
     playerLevel:0,
-    monsters:[MonsterMushroom, MonsterMonkey, MonsterFly, MonsterSlime, MonsterGolem,MonsterWyvern,MonsterDragon],
+    monsters:[MonsterMushroom, MonsterMonkey, MonsterFly, MonsterSlime, MonsterGolem,MonsterWyvern,MonsterShark,MonsterDragon],
     loadLevel:function() {
         if (localStorage.playerLevel === undefined) this.saveLevel(0);
         else this.saveLevel(Number(localStorage.playerLevel));
@@ -73,7 +73,7 @@ const Level= {
                 Level.createMainMonster(level,[500, 0]);
                 break;
             case 5:
-                SCREEN.renderer.bgColor="#493939"
+                SCREEN.renderer.bgColor="#23191a"
                 ReusedModule.createGameMap(4000,1500);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.25]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
@@ -81,29 +81,22 @@ const Level= {
                 Level.createMainMonster(level,[2000, 0]);
                 break;
             case 6:
+                SCREEN.renderer.bgColor="#17191c";
+                SCREEN.renderer.bgColor="#456";
+                ReusedModule.createGameMap(5000,2500);
+                WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.25]);
+                WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
+                ReusedModule.rainWeather()
+                Level.createMainMonster(level,[1500, 0]);
+                break;
+            case 7:
                 SCREEN.renderer.bgColor="rgb(56, 56, 54)"//"rgb(104, 104, 99)"//"rgb(142, 142, 134)"//"rgb(216, 214, 190)"//
-                SCREEN.renderer.bgColor="#191920"
+                SCREEN.renderer.bgColor="#101013"
                 ReusedModule.createGameMap(4000,1500);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.25]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
                 ReusedModule.sparkWeather()
                 Level.createMainMonster(level,[2000, 0]);
-                break;
-            case 7:
-                SCREEN.renderer.bgColor="black"
-                ReusedModule.createGameMap(2000,2000);
-                WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.25]);
-                WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
-                ReusedModule.fireflyWeatherUp()
-                // Level.createMainMonster(1,[1500, 0]);
-                for(let i=0; i<300; i++){
-                    let b = new Block([200+i,200+i],[70,70],`rgba(${i},${i+30},${i+50},0.3)`);
-                    WORLD.add(b);
-                    b.lifeModule.setLife(1000000);
-                    b.physics.setCOR(0);
-                    b.physics.inv_mass=2;
-                    // b.physics.setCOF(0);
-                }
                 break;
             case 8:
                 ReusedModule.createGameMap(2000,2000);

@@ -159,7 +159,9 @@ class GameWorldPhysics{
             let deltaVel=[body2.vel[0]-body1.vel[0], body2.vel[1]-body1.vel[1]];
             if (COLL_DIR * deltaVel[COLL_AXIS] > 0) return;
             deltaVel[COLL_AXIS]*=(1+Math.max(physics1.RESTITUTION_COEF, physics2.RESTITUTION_COEF))*INV_SUM_INV_MASS;//충격량
-            deltaVel[1-COLL_AXIS]*=Math.min(physics1.FRICTION_COEF,physics2.FRICTION_COEF)*INV_SUM_INV_MASS;//마찰력
+            // deltaVel[1-COLL_AXIS]*=Math.min(physics1.FRICTION_COEF,physics2.FRICTION_COEF)*INV_SUM_INV_MASS;//마찰력
+            deltaVel[1-COLL_AXIS]*=Math.min(1,physics1.FRICTION_COEF * physics2.FRICTION_COEF * Math.abs(deltaVel[COLL_AXIS]));//마찰력
+            
             physics1.addForce(deltaVel);
             deltaVel[0]=-deltaVel[0];deltaVel[1]=-deltaVel[1];
             physics2.addForce(deltaVel);

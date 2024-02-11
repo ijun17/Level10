@@ -16,11 +16,13 @@ Game.resource.loadImage([
     "resource/entity/matter/matter_wind.png",
     "resource/entity/matter/matter_explosion.png",
     "resource/entity/matter/matter_lightning.png",
+    "resource/entity/matter/matter_water.png",
     "resource/entity/monster/monster_mushroom.png",
     "resource/entity/monster/monster_monkey.png",
     "resource/entity/monster/monster_hellfly.png",
     "resource/entity/monster/monster_wyvern.png",
     "resource/entity/monster/monster_golem.png",
+    "resource/entity/monster/monster_shark.png",
     "resource/entity/monster/monster_golden_dragon.png",
     "resource/entity/particle/particle_ash.png",
     "resource/entity/particle/particle_cloud.png",
@@ -29,12 +31,13 @@ Game.resource.loadImage([
     "resource/entity/particle/particle_smoke.png",
     "resource/entity/particle/particle_snow.png",
     "resource/entity/particle/particle_firefly.png",
-    "resource/entity/particle/particle_spark.png"
+    "resource/entity/particle/particle_spark.png",
+    "resource/entity/particle/particle_rain.png"
 ]);
 
 const TYPE={
     //particle
-    ember:0,smoke:1,cloud:2,snow:3,ash:4,magicEffect:5,firefly:6,spark:7,
+    ember:0,smoke:1,cloud:2,snow:3,ash:4,magicEffect:5,firefly:6,spark:7,rain:8,
     //matter
     fire:0,electricity:1,ice:2,arrow:3,energy:4,wind:5,explosion:6,lightning:7,
     //monster

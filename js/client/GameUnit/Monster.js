@@ -144,7 +144,7 @@ class Monster extends Actor{
 class MonsterMushroom extends Monster{
     animation
     constructor(pos){
-        super(pos,[180,180],500,new GameUnitMoveModule(0,3,3), new GameUnitLifeModule(100000,50,5), new GameUnitSkillModule(0));
+        super(pos,[180,180],500,new GameUnitMoveModule(0,3,5), new GameUnitLifeModule(100000,50,5), new GameUnitSkillModule(0));
         this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),8])},500))
 
         this.physics.setCOR(0.6)
@@ -384,7 +384,7 @@ class MonsterGolem extends Monster{
         },501));
         this.skillModule.addSkill(new MagicSkill("front",function(e){
             if(!e.canTarget())return;
-            let b=e.body, vel=e.getTargetDirX()*6;
+            let b=e.body, vel=e.getTargetDirX()*2;
             e.antiMatterFlag=true;
             TIME.addSchedule(0.5, 1, 0, function(){b.vel[0]+=vel;});
             TIME.addSchedule(1, 1, 0, function(){e.antiMatterFlag=false;});
@@ -712,6 +712,118 @@ class MonsterDragon extends Monster{
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   
 }
 
+
+
+
+
+
+
+
+
+class MonsterShark extends Monster{
+    animation;
+    image;
+    slaveList=[];
+    MAX_SLAVE_COUNT=300;
+    phase=1;
+    electrocutedTime = 0;
+    constructor(pos){
+        super(pos,[400,200],1000,new GameUnitMoveModule(0,10,10), new GameUnitLifeModule(10000000,50,5), new GameUnitSkillModule(0));
+        this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),10])},500))
+
+        for(let i=0; i<this.MAX_SLAVE_COUNT; i++){
+            let b = WORLD.add(new Block([pos[0]+i,pos[1]+i],[90-i/10,90-i/10],`rgba(${i},${i+30},${i+50},0.3)`));
+            this.slaveList.push(b);
+            b.lifeModule.defense=1000000;
+            b.physics.inv_mass=0.1;
+            b.physics.setCOR(0.1);
+            b.physics.setCOF(0);
+            b.physics.setCOD(0);
+            b.body.overlap=true;
+            b.id=82374543
+            b.eventManager.oncollision=(e)=>{
+                if(e.other==this)return false;
+                if(e.other.id==82374543)return true;
+                if(e.other instanceof Matter && e.other.damageType == TYPE.damageFire)e.other.setState(0);
+                if(e.other.lifeModule && this.electrocutedTime<=0)e.other.lifeModule.giveDamage(1000,TYPE.damageNormal);
+                return true
+            }
+        }
+
+        this.lifeModule.ondamage=(d,dt)=>{
+            if(dt==TYPE.damageElectricity)this.electrocutedTime=300;
+            return true;
+        }
+
+        this.skillModule.addSkill(new MagicSkill("TORNADO",function(m){
+            let fires=m.slaveList;
+            let x=m.body.midX;
+            let speed=8
+            let dir = m.front();
+            
+            TIME.addSchedule(0,3,0,()=>{
+                if(m.electrocutedTime>0)return
+                for(let i=0; i<m.slaveList.length; i+=2)fires[i].body.vel[0]+=(x-fires[i].body.midX);
+                x+=speed*dir;
+                speed+=0.1;
+                SCREEN.renderer.camera.vibrate(10);
+            },()=>{return m.getState()==0})
+
+            for(let i=0; i<this.MAX_SLAVE_COUNT; i+=2){
+                let slave = this.slaveList[i]
+                slave.body.overlap=false;
+                slave.physics.setCOR(1);
+            } 
+            TIME.addSchedule(3,3,0,function(){
+                for(let i=0; i<this.MAX_SLAVE_COUNT; i+=2){
+                    let slave = this.slaveList[i]
+                    slave.body.overlap=true;
+                    slave.physics.setCOR(0);
+                } 
+            },()=>{return m.getState()==0});
+
+
+        },1000))
+
+        this.physics.inv_mass=0.005;
+        this.physics.setCOR(0);
+        this.body.overlap=true;
+        this.animation=new UnitAnimation(IMAGES.monster_shark,200,100,[1],function(){return (this.attackTick>0?1:0)}.bind(this));
+        this.animation.fps=16;
+
+        this.addEventListener("remove",function(){
+            TIME.addSchedule(1,1,undefined,function(){
+                for(let slave of this.slaveList)slave.setState(0);
+                this.slaveList=null
+            }.bind(this))
+            return true;
+        })
+    }
+
+    update(){
+        super.update();
+        let midX=this.body.midX;
+        let midY=this.body.midY;
+        
+        if(this.electrocutedTime>0){
+            this.electrocutedTime--;
+            this.moveModule.canMove=false;
+        }else {
+            this.moveModule.canMove=true;
+            for(let i=0; i<this.MAX_SLAVE_COUNT; i+=2){
+                let slave = this.slaveList[i]
+                slave.body.addVel([(midX-slave.body.midX)*0.005,(midY-slave.body.midY)*0.005])
+            } 
+            for(let i=1; i<this.MAX_SLAVE_COUNT; i+=2){
+                let slave = this.slaveList[i]
+                slave.body.addVel([(midX-slave.body.midX)*0.01,(midY-slave.body.midY)*0.01])
+            } 
+        }
+
+    }
+
+    draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})} 
+}
 
 
 
