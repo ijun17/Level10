@@ -314,8 +314,9 @@ button{
 /* 전투화면 */
 
 .stageClearText{
-    vertical-align : top;
-    text-align : center;
+    display : flex;
+    justify-content : center;
+    align-items : center;
     font : bold 252px Arial;
     color:white;
     text-shadow: gold 2px 0 30px;

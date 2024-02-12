@@ -725,18 +725,20 @@ class MonsterShark extends Monster{
     image;
     slaveList=[];
     MAX_SLAVE_COUNT=300;
+    slaveCOR=0
     phase=1;
     electrocutedTime = 0;
+    tornadoOn=false;
     constructor(pos){
-        super(pos,[400,200],1000,new GameUnitMoveModule(0,10,10), new GameUnitLifeModule(10000000,50,5), new GameUnitSkillModule(0));
-        this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),10])},500))
+        super(pos,[400,200],1000,new GameUnitMoveModule(0,10,0), new GameUnitLifeModule(10000000,50,5), new GameUnitSkillModule(0));
+        
 
         for(let i=0; i<this.MAX_SLAVE_COUNT; i++){
-            let b = WORLD.add(new Block([pos[0]+i,pos[1]+i],[90-i/10,90-i/10],`rgba(${i},${i+30},${i+50},0.3)`));
+            let b = WORLD.add(new Block([pos[0]+i,pos[1]+i],[90-i/5,90-i/5],`rgba(${i},${i+30},${i+50},0.3)`));
             this.slaveList.push(b);
             b.lifeModule.defense=1000000;
-            b.physics.inv_mass=0.1;
-            b.physics.setCOR(0.1);
+            b.physics.inv_mass=0.01*i;
+            b.physics.setCOR(this.slaveCOR);
             b.physics.setCOF(0);
             b.physics.setCOD(0);
             b.body.overlap=true;
@@ -754,13 +756,20 @@ class MonsterShark extends Monster{
             if(dt==TYPE.damageElectricity)this.electrocutedTime=300;
             return true;
         }
-
+        // this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(20),20])},500))
+        this.skillModule.addSkill(new MagicSkill("surf",function(m){
+            const speed = m.front(60)
+            TIME.addSchedule(0,0.3,0,()=>{
+                // if(m.electrocutedTime>0)return
+                for(let i=0; i<m.MAX_SLAVE_COUNT; i++)m.slaveList[i].body.setVel([speed,1]);
+            },()=>{return m.getState()==0})
+        },750))
         this.skillModule.addSkill(new MagicSkill("TORNADO",function(m){
             let fires=m.slaveList;
             let x=m.body.midX;
             let speed=8
             let dir = m.front();
-            
+            this.tornadoOn=true;
             TIME.addSchedule(0,3,0,()=>{
                 if(m.electrocutedTime>0)return
                 for(let i=0; i<m.slaveList.length; i+=2)fires[i].body.vel[0]+=(x-fires[i].body.midX);
@@ -769,27 +778,42 @@ class MonsterShark extends Monster{
                 SCREEN.renderer.camera.vibrate(10);
             },()=>{return m.getState()==0})
 
-            for(let i=0; i<this.MAX_SLAVE_COUNT; i+=2){
-                let slave = this.slaveList[i]
+            for(let i=0; i<m.MAX_SLAVE_COUNT; i+=2){
+                let slave = m.slaveList[i]
                 slave.body.overlap=false;
                 slave.physics.setCOR(1);
+                slave.physics.enableEnvironment=false;
             } 
             TIME.addSchedule(3,3,0,function(){
-                for(let i=0; i<this.MAX_SLAVE_COUNT; i+=2){
-                    let slave = this.slaveList[i]
+                for(let i=0; i<m.MAX_SLAVE_COUNT; i+=2){
+                    let slave = m.slaveList[i]
                     slave.body.overlap=true;
-                    slave.physics.setCOR(0);
+                    slave.physics.setCOR(m.slaveCOR);
+                    slave.physics.enableEnvironment=true;
                 } 
+                m.tornadoOn=false;
             },()=>{return m.getState()==0});
-
-
         },1000))
+
+        this.skillModule.addSkill(new MagicSkill("RAIN",function(m){
+            let i=1;
+            TIME.addSchedule(0,5,0,()=>{
+                if(m.electrocutedTime>0)return
+                const slave = m.slaveList[i];
+                slave.body.pos[1]=m.body.pos[1]+2000;
+                slave.body.vel[1]=-40;
+                i+=2
+                if(i>=m.MAX_SLAVE_COUNT)i=1;
+                SCREEN.renderer.camera.vibrate(10);
+            },()=>{return m.getState()==0})
+        },1500))
 
         this.physics.inv_mass=0.005;
         this.physics.setCOR(0);
         this.body.overlap=true;
         this.animation=new UnitAnimation(IMAGES.monster_shark,200,100,[1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
+        this.ai_move_cycle=0.04;
 
         this.addEventListener("remove",function(){
             TIME.addSchedule(1,1,undefined,function(){
@@ -810,6 +834,7 @@ class MonsterShark extends Monster{
             this.moveModule.canMove=false;
         }else {
             this.moveModule.canMove=true;
+            if(!this.tornadoOn)
             for(let i=0; i<this.MAX_SLAVE_COUNT; i+=2){
                 let slave = this.slaveList[i]
                 slave.body.addVel([(midX-slave.body.midX)*0.005,(midY-slave.body.midY)*0.005])

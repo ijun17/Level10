@@ -168,11 +168,10 @@ Game.setScene("pvp-game", function(para){
         isFinished=true;
         let stageClearText=SCREEN.ui.add("div",[perX(50),perY(50)],[0,0],cssClass);
         stageClearText.innerText=resultText;
-        TIME.addSchedule(2,2,undefined,()=>{
-            MULTI.reset();
-            MULTI_TIME.stop();
-            Game.changeScene("pvp");
-        });
+        MULTI.reset();
+        MULTI_TIME.stop();
+        TIME.start();
+        TIME.addTimer(2,()=>{Game.changeScene("pvp");});
     }
     P[ME].addEventListener("remove",()=>{finishGame("YOU LOSE", "playerDieText")})
     P[OTHER].addEventListener("remove",()=>{finishGame("YOU WIN", "stageClearText")})
@@ -189,7 +188,8 @@ Game.setScene("pvp-game", function(para){
     let input = [['0','0','0','0','0','0','0','0'],['0','0','0','0','0','0','0','0']] //모든 입력은 SYNC_TICK이후 적용됨
     let meInput = ['0','0','0','0','0','0','0','0'] 
     function getValidCode(i){
-        const digits = P[i].lifeModule.life.toString().split('').map(Number);
+        const num = P[i].lifeModule.life;
+        const digits = num.toString().split('').map(Number);
         return digits.reduce((sum, digit) => sum + digit, 0)%10;
     }
     function solveInput(){ //상대와 나의 입력 정보를 게임에 반영
