@@ -9,6 +9,7 @@ class MapBlock extends GameUnit{
         this.physics.fixedForce=true;
         this.physics.fixedGravity=true;
         this.physics.inv_mass=0;
+        this.physics.setCOF(1)
 
         this.color=color;
 

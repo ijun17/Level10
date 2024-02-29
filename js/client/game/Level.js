@@ -83,11 +83,12 @@ const Level= {
             case 6:
                 SCREEN.renderer.bgColor="#17191c";
                 SCREEN.renderer.bgColor="#456";
+                SCREEN.renderer.bgColor="#567";
                 ReusedModule.createGameMap(5000,1500);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.25]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
                 ReusedModule.rainWeather()
-                Level.createMainMonster(level,[1500, 0]);
+                Level.createMainMonster(level,[3000, 0]);
                 break;
             case 7:
                 SCREEN.renderer.bgColor="rgb(56, 56, 54)"//"rgb(104, 104, 99)"//"rgb(142, 142, 134)"//"rgb(216, 214, 190)"//

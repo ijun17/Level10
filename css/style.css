@@ -159,7 +159,7 @@ button{
 }
 
 .selectMagicComponent{
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,0.3);
     color : whitesmoke;
     /* font-size : 24px; */
     font-size : 1em;
@@ -169,6 +169,7 @@ button{
     flex-direction: column;
     justify-content: space-evenly;
     border-radius: 5px;
+    border:2px solid black;
 }
 
 .selectMagicButton{
@@ -180,6 +181,7 @@ button{
     /* font-size : 16px; */
     font-size : 1em;
     line-height: 30px;
+    border:2px solid black;
 }
 
 .selectMagicButton:hover{border: solid white 2px;}
@@ -190,6 +192,7 @@ button{
     background-color: rgba(0,0,0,0.5);
     border-radius: 5px;
     padding-top: 5px;
+    border:2px solid black;
 }
 
 .magicInfo{
@@ -214,6 +217,7 @@ button{
     font-size : 1em;
     font-family: Arial, Helvetica, sans-serif;
     overflow: hidden;
+    border:2px solid black;
 }
 
 .createMagicCode {
@@ -229,6 +233,7 @@ button{
     border: none;
     border-radius: 5px;
     font-family: consolas;
+    border:2px solid black;
 }
 
 .createMagicbutton {

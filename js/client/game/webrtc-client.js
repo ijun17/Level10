@@ -74,6 +74,9 @@ class SimpleWebRTC{
         this.pc.ondatachannel = (event) =>{
             this.dc=event.channel;
             console.log("pc.ondatachannel")
+            this.dc.onopen = () => {console.log("dc.onopen");this.ondatachannelopen();this.disconnectToSignalingServer(); };
+            this.dc.onmessage = (event) => {this.ondatachannelmessage(event.data)}
+            this.dc.onclose = () => {this.ondatachannelclose();}
         }
         this.pc.onicecandidate = (event) =>{
             if(event.candidate){
@@ -82,6 +85,9 @@ class SimpleWebRTC{
                 else if(this.isDataChannelOpen()) this.dc.send(JSON.stringify({type:"ice", ice:event.candidate}))
             }
         }
+        this.pc.addEventListener('connectionstatechange', event => {
+            console.log('Connection state changed to:', this.pc.connectionState);
+        });
         this.dc=this.pc.createDataChannel("dataChannel", { reliable: true , ordered: true});
         this.dc.onopen = () => {console.log("dc.onopen");this.ondatachannelopen();this.disconnectToSignalingServer(); };
         this.dc.onmessage = (event) => {this.ondatachannelmessage(event.data)}

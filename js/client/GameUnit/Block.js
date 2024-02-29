@@ -6,6 +6,7 @@ class Block extends GameUnit{
         this.physics=new UnitPhysics();
         this.physics.inv_mass=100/(size[0]*size[1]+1);
         this.physics.setCOF(1);
+        
 
         this.lifeModule=new GameUnitLifeModule(size[0]*size[1]*10,100,10);
         this.lifeModule.ondie=function(){this.setState(0);}.bind(this);

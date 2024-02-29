@@ -64,6 +64,10 @@ class MatterFire extends Matter{
         this.physics.setGravity([0,0],true);
         this.physics.fixedForce=true;
         SCREEN.renderer.camera.vibrate(40);
+        this.update=()=>{
+            super.update();
+            SCREEN.renderer.camera.vibrate(5);
+        }
         this.lifeModule.setLife(50)
         this.lifeModule.ondamage=function(d,dt){return false;}
         // let temp = this.body.pos
@@ -103,17 +107,17 @@ class MatterIce extends Matter{
     }
 }
 
-class MatterWater extends Matter{
-    image;
-    constructor(pos,vel){
-        super(pos,[50,50],vel,1000,TYPE.damageEnergy);
-        this.image=Game.resource.getImage("matter_water")
-        this.physics.inv_mass=0.1
-        this.physics.setCOR(-0.02)
-        this.physics.setCOF(0)
-    }
-    draw(r){r.drawImage(this.image,this.body);}
-}
+// class MatterWater extends Matter{
+//     image;
+//     constructor(pos,vel){
+//         super(pos,[50,50],vel,1000,TYPE.damageEnergy);
+//         this.image=Game.resource.getImage("matter_water")
+//         this.physics.inv_mass=0.1
+//         this.physics.setCOR(-0.02)
+//         this.physics.setCOF(0)
+//     }
+//     draw(r){r.drawImage(this.image,this.body);}
+// }
 
 class MatterElectricity extends Matter{
     animation;
@@ -186,14 +190,15 @@ class MatterEnergy extends Matter{
             this.body.setVel([0, 0])
             this.body.fixedPos = true;
             this.body.fixedVel = true;
-            // this.damage *= 2
+            this.damage *= 2
             this.physics.fixedForce = true;
             SCREEN.renderer.camera.vibrate(40);
             this.lifeModule.setLife(50)
             this.lifeModule.ondamage=function(d,dt){return false;}
+            if(event.other.physics)event.other.physics.addForce([(event.other.body.midX-this.body.midX)*0.01,(event.other.body.midY-this.body.midY)*0.01])
         }
         if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
-        SCREEN.renderer.camera.vibrate(3);
+        SCREEN.renderer.camera.vibrate(4);
     }
 }
 
