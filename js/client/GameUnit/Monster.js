@@ -617,7 +617,7 @@ class MonsterDragon extends Monster{
             let x=m.body.midX;
             let y=m.body.midY;
             let tb=m.target.body;
-            let speed=25;
+            let speed=30;
             let dir = m.body.getUnitVector(m.target.body.midPos)
             let vel=[dir[0]*speed, dir[1]*speed];
             let elecs=[];
@@ -658,7 +658,7 @@ class MonsterDragon extends Monster{
         this.body.overlap=true;
         this.physics.inv_mass=0.001;
         this.physics.setGravity([0,0],true)
-        this.ai_move_cycle=0.5;
+        this.ai_move_cycle=0.4;
         this.lifeModule.ondamage=function(d, dt){
             return dt!=TYPE.damageElectricity;
         }
@@ -749,7 +749,7 @@ class MonsterShark extends Monster{
                 if(e.other==this)return false;
                 if(e.other.id==82374543)return true;
                 if(e.other instanceof Matter && e.other.damageType == TYPE.damageFire)e.other.setState(0);
-                if(e.other.lifeModule && this.electrocutedTime<=0)e.other.lifeModule.giveDamage(1000,TYPE.damageNormal);
+                if(e.other.lifeModule && this.electrocutedTime<=0)e.other.lifeModule.giveDamage(500,TYPE.damageNormal);
                 return true
             }
         }
@@ -769,7 +769,7 @@ class MonsterShark extends Monster{
         this.skillModule.addSkill(new MagicSkill("TORNADO",function(m){
             let fires=m.slaveList;
             let x=m.body.midX;
-            let speed=12;
+            let speed=20;
             let dir = m.front();
             this.tornadoOn=true;
             TIME.addSchedule(0,3,0,()=>{

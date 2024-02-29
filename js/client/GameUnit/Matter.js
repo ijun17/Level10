@@ -185,7 +185,7 @@ class MatterEnergy extends Matter{
         if(!(event.other instanceof MatterEnergy) && !this.isExploded){
             this.isExploded=true;
             const BEFORE_SIZE=this.body.size[0]
-            this.body.addPos([-BEFORE_SIZE, -BEFORE_SIZE])
+            this.body.addPos([-BEFORE_SIZE*0.5, -BEFORE_SIZE*0.5])
             this.body.setSize([BEFORE_SIZE * 2, BEFORE_SIZE * 2])
             this.body.setVel([0, 0])
             this.body.fixedPos = true;

@@ -179,20 +179,10 @@ for(@i=0; i<10; i++){
     move(create(ICE,front(10),1),front(100*i), 100);
 }`,level:4},
 
-    {name:"파이어토네이도V",code:`//불꽃 토네이도 생성
-@x=getX(player)+front(200);
-@plusX=front(10);
-addSchedule(0,70/100,1/100,#{x+=plusX;});
-for(@i=0; i<12; i++){
-    @fire = create(FIRE,0,0);
-    move(fire,front(200-13*i-15), i*35);
-    giveLife(fire,500)
-    addSchedule(0,70/100,1/100,#{
-        giveForce(fire,(x-getX(fire))/(11+i)*10,-getVY(fire));
-    });
-    addSchedule(71/100,71/100,1/100,#{
-        giveForce(fire,-getVX(fire)+plusX*20,-10);
-    })
+    {name:"에너지파",code:`//
+for(@i=0;i<100;i++){
+    @e=create(ENERGY,0,0)
+    move(e,front(100+i*10),50)
 }`,level:10},
 
 ]
