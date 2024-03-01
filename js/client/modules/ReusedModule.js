@@ -11,6 +11,7 @@ const ReusedModule={
         WORLD.add(new MapBlock([-WALL_SIZE,h],[w+WALL_SIZE*2,WALL_SIZE],"#303030"))
         WORLD.add(new MapBlock([-WALL_SIZE,-WALL_SIZE],[WALL_SIZE,h+WALL_SIZE*2],"#303030"))
         WORLD.add(new MapBlock([w,-WALL_SIZE],[WALL_SIZE,h+WALL_SIZE*2],"#303030"))
+        WORLD.add(new MapBlock([-WALL_SIZE,-WALL_SIZE],[WALL_SIZE*2,WALL_SIZE*2],"#303030"))
         WORLD.layer[PHYSICS_LAYER].setLimitPos([0,0], [w,h]);
     },
     createScroll(pos,size){

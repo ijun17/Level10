@@ -34,11 +34,11 @@ const Level= {
         switch (level) {
             case 0: 
                 SCREEN.renderer.bgColor="dimgray";
-                ReusedModule.createGameMap(1000,1000);
+                ReusedModule.createGameMap(2000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.25]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
                 ReusedModule.snowWeather()
-                Level.createMainMonster(level, [800, 0]);
+                Level.createMainMonster(level, [1500, 0]);
                 break;
             case 1: 
                 SCREEN.renderer.bgColor="#cde5e4";

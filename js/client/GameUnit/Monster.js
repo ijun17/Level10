@@ -324,7 +324,9 @@ class MonsterSlime extends Monster{
             block.physics.inv_mass=1;
             block.physics.setCOF(0);
             block.eventManager.oncollision=function(e){
-                if(this.canAttack(e.other))e.other.lifeModule.giveDamage(666);
+                // if(this.canAttack(e.other))e.other.lifeModule.giveDamage(666);
+
+                if(e.other.lifeModule && e.other != this)e.other.lifeModule.giveDamage(666,TYPE.damageNormal);
                 return true;
             }.bind(this)
         }
@@ -410,7 +412,7 @@ class MonsterGolem extends Monster{
                 const t = m//(m.canTarget()?m.target:m)
                 const x=t.body.pos[0], y=t.body.pos[1];
                 const mx=t.body.midX, my=t.body.midY
-                let pos=[[mx, my+400], [mx-400, my+300], [mx+400, my+300]];
+                let pos=[[mx, my+400], [mx-300, my+300], [mx+300, my+300], [mx-400, my], [mx+400, my]];
                 for(let i=0; i<pos.length; i++){
                     let effect1 = WORLD.add(new Particle([pos[i][0]-150, pos[i][1]-150], [300, 300], TYPE.magicEffect));
                     effect1.life=500;
@@ -425,6 +427,7 @@ class MonsterGolem extends Monster{
                         ene.lifeModule.setLife(300)
                         ene.body.setSize([80, 80])
                         ene.damage=4000
+                        ene.physics.addForce=function(){};
                         let ga = ene.body.getUnitVector(m.target.body.midPos)
                         ene.body.setVel([ga[0] * 10, ga[1] * 10])
                         ene.physics.setGravity([ga[0]*2, ga[1]*2], true);
@@ -749,16 +752,16 @@ class MonsterShark extends Monster{
                 if(e.other==this)return false;
                 if(e.other.id==82374543)return true;
                 if(e.other instanceof Matter && e.other.damageType == TYPE.damageFire)e.other.setState(0);
-                if(e.other.lifeModule && this.electrocutedTime<=0)e.other.lifeModule.giveDamage(500,TYPE.damageNormal);
+                if(e.other.lifeModule && this.electrocutedTime<=0)e.other.lifeModule.giveDamage((this.tornadoOn?1000:500),TYPE.damageNormal);
                 return true
             }
         }
 
         this.lifeModule.ondamage=(d,dt)=>{
-            if(dt==TYPE.damageElectricity)this.electrocutedTime=300;
+            if(dt==TYPE.damageElectricity)this.electrocutedTime=200;
             return true;
         }
-        // this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(20),20])},500))
+        this.skillModule.addSkill(new MagicSkill("dash",function(m){m.body.addVel([m.front(50),10])},1200))
         this.skillModule.addSkill(new MagicSkill("surf",function(m){
             const speed = m.front(60)
             TIME.addSchedule(0,0.3,0,()=>{
@@ -771,7 +774,7 @@ class MonsterShark extends Monster{
             let x=m.body.midX;
             let speed=20;
             let dir = m.front();
-            this.tornadoOn=true;
+            m.tornadoOn=true;
             TIME.addSchedule(0,3,0,()=>{
                 if(m.electrocutedTime>0)return
                 for(let i=0; i<m.slaveList.length; i+=2)fires[i].body.vel[0]+=(x-fires[i].body.midX);
@@ -818,7 +821,7 @@ class MonsterShark extends Monster{
         this.body.overlap=true;
         this.animation=new UnitAnimation(IMAGES.monster_shark,200,100,[1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
-        this.ai_move_cycle=0.3;
+        this.ai_move_cycle=0.5;
 
         this.addEventListener("remove",function(){
             TIME.addSchedule(1,1,undefined,function(){

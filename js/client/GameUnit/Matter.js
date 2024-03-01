@@ -177,7 +177,7 @@ class MatterEnergy extends Matter{
         this.image=Game.resource.getImage("matter_energy")
         this.physics.setGravity([0,0],true);
         this.physics.inv_mass=0.1
-        this.physics.setCOR(-0.02)
+        this.physics.setCOR(0)
         this.physics.setCOF(0)
     }
     draw(r){r.drawImage(this.image,this.body);}
