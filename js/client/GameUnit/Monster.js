@@ -752,16 +752,16 @@ class MonsterShark extends Monster{
                 if(e.other==this)return false;
                 if(e.other.id==82374543)return true;
                 if(e.other instanceof Matter && e.other.damageType == TYPE.damageFire)e.other.setState(0);
-                if(e.other.lifeModule && this.electrocutedTime<=0)e.other.lifeModule.giveDamage((this.tornadoOn?1000:500),TYPE.damageNormal);
+                if(e.other.lifeModule && this.electrocutedTime<=0)e.other.lifeModule.giveDamage((this.tornadoOn?1500:500),TYPE.damageNormal);
                 return true
             }
         }
 
         this.lifeModule.ondamage=(d,dt)=>{
-            if(dt==TYPE.damageElectricity)this.electrocutedTime=200;
+            if(dt==TYPE.damageElectricity)this.electrocutedTime=100;
             return true;
         }
-        this.skillModule.addSkill(new MagicSkill("dash",function(m){m.body.addVel([m.front(50),10])},1200))
+        this.skillModule.addSkill(new MagicSkill("dash",function(m){m.body.addVel([m.front(20),15])},1200))
         this.skillModule.addSkill(new MagicSkill("surf",function(m){
             const speed = m.front(60)
             TIME.addSchedule(0,0.3,0,()=>{
@@ -842,8 +842,7 @@ class MonsterShark extends Monster{
             this.moveModule.canMove=false;
         }else {
             this.moveModule.canMove=true;
-            if(!this.tornadoOn)
-            for(let i=0; i<this.MAX_SLAVE_COUNT; i+=2){
+            if(!this.tornadoOn)for(let i=0; i<this.MAX_SLAVE_COUNT; i+=2){
                 let slave = this.slaveList[i]
                 slave.body.addVel([(midX-slave.body.midX)*0.002,(midY-slave.body.midY)*0.002])
             } 

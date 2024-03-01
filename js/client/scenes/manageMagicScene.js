@@ -3,6 +3,7 @@ Game.setScene("manageMagic",function(){
     const perX=SCREEN.perX.bind(SCREEN);
     const perY=SCREEN.perY.bind(SCREEN);
     ReusedModule.createbackButton("select");
+    ReusedModule.fireflyWeather(50);
     let buttonSelector=ReusedModule.createButtonSelector();
     ReusedModule.createMagicButtonList([perX(7),perX(1)], [perX(22), perY(100)-perX(2)], buttonSelector,(num)=>{
         const MAGIC=MagicManager.magicList[num];

@@ -3,6 +3,7 @@ Game.setScene("select",function(){
     const perX=SCREEN.perX.bind(SCREEN);
     const perY=SCREEN.perY.bind(SCREEN);
     ReusedModule.createbackButton("main");
+    ReusedModule.fireflyWeather(50);
 
     let levelBtn;
     for(let i=0; i<=Level.playerLevel; i++){

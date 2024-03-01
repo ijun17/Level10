@@ -11,7 +11,8 @@ Game.setScene("monsterVS",function(){
     let scorll2=ReusedModule.createScroll([perX(79),perX(1)],[perX(20),perY(100)-perX(7)]);
     // SCREEN.renderer.bgColor="rgb(141, 156, 160)"
     SCREEN.renderer.bgColor="rgb(100, 90, 90)"
-    SCREEN.renderer.bgColor="#555"
+    SCREEN.renderer.bgColor="#595050"
+    SCREEN.renderer.bgColor="#505059";
 
     for(let i=0,l=Level.monsters.length; i<l; i++){
         let monsterBtn1=ui.create("button",[0,0],[perX(18),perX(4)],"levelButton");
