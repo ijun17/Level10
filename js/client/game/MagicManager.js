@@ -80,7 +80,7 @@ const MagicManager={
 
 const BASIC_MAGIC=[
     {name:"파이어볼",code:`//불 생성
-@e1=create(FIRE,front(20),2);
+@e1=create(FIRE,front(30),3);
 giveLife(e1,10);
 move(e1,front(30), 0);`,level:0},
 
@@ -178,6 +178,15 @@ for(@i=0; i<10; i++){
     move(create(FIRE,front(10),1),front(100*i), 100);
     move(create(ICE,front(10),1),front(100*i), 100);
 }`,level:4},
+
+{name:"샷건",code:`//
+for(@i=0; i<10; i++){
+    for(@j=0; j<10; j++){
+        @bullet = create(BLOCK,0,0,4,4)
+        move(bullet,front(10)*i,j*5)
+        giveForce(bullet,front(100),j)
+    }
+}`,level:10},
 
     {name:"에너지파",code:`//
 for(@i=0;i<100;i++){

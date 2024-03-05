@@ -129,10 +129,10 @@ class GameUnitLifeModule{
             this.life-=this.totalDamage;
             this.totalDamage=0;
             this.damageDelayTick=this.damageDelay;
-            if(this.life<=0){
-                this.life=0;
-                this.ondie();
-            }
+        }
+        if(this.life<=0){
+            this.life=0;
+            this.ondie();
         }
     }
     giveDamage(damage,damageType=0){

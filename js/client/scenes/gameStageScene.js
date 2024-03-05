@@ -15,7 +15,7 @@ Game.setScene("gameStage",function(level){
     })
     SCREEN.renderer.camera.addTarget(player.body);
     
-    ReusedModule.userInputKeySet(player)
+    ReusedModule.userInputKeySet(player)//,[102,100,104,101])
     if(localStorage.getItem("mobile")==='1')ReusedModule.createMobileButton(player);
     Level.makeStage(level,player)
 })

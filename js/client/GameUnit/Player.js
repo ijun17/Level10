@@ -2,7 +2,7 @@ class Player extends Actor{
     animation;
     statusBarInfo;
     constructor(pos, level=Level.playerLevel){
-        super(pos, [30,60], new GameUnitMoveModule(0,5,5), new GameUnitLifeModule(10000*(level+1),50,20), new GameUnitSkillModule((level+1)*20000,level));
+        super(pos, [30,60], new GameUnitMoveModule(0,6,6), new GameUnitLifeModule(10000*(level+1),50,20), new GameUnitSkillModule((level+1)*20000,level));
         this.body.overlap=true;
         this.damageTextColor="red";
         this.damageVibrate=35;

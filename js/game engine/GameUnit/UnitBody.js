@@ -20,7 +20,9 @@ class UnitBody{
     }
     
     addPos(dp){if(this.fixedPos)return;this.pos[0]+=dp[0];this.pos[1]+=dp[1]}
+    addPosAxis(axis,d){if(this.fixedPos)return;this.pos[axis]+=d;}
     addVel(dv){if(this.fixedPos||this.fixedVel)return;this.vel[0]+=dv[0];this.vel[1]+=dv[1]}
+    addVelAxis(axis,d){if(this.fixedPos||this.fixedVel)return;this.vel[axis]+=d}
     setPos(pos){if(this.fixedPos)return;this.pos[0]=pos[0];this.pos[1]=pos[1]}
     setVel(vel){if(this.fixedPos||this.fixedVel)return;this.vel[0]=vel[0];this.vel[1]=vel[1]}
     setSize(size){this.size[0]=size[0];this.size[1]=size[1];}

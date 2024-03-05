@@ -76,7 +76,8 @@ class MatterFire extends Matter{
         this.oncollision=(event)=>{
             const o=event.other
             if(o.lifeModule)o.lifeModule.giveDamage(this.damage,this.damageType);
-            if(o.physics && !o.physics.fixedForce)o.physics.addForce([(o.body.midX-this.body.midX)*0.01,(o.body.midY-this.body.midY)*0.01])
+            if(o.physics && !o.physics.fixedForce)o.physics.addForce([(o.body.midX<this.body.midX?-1:1),(o.body.midY<this.body.midY?-1:1)]);
+            return false;
         }
     }
 }
@@ -182,23 +183,32 @@ class MatterEnergy extends Matter{
     }
     draw(r){r.drawImage(this.image,this.body);}
     oncollision(event){
-        if(!(event.other instanceof MatterEnergy) && !this.isExploded){
-            this.isExploded=true;
-            const BEFORE_SIZE=this.body.size[0]
-            this.body.addPos([-BEFORE_SIZE*0.5, -BEFORE_SIZE*0.5])
-            this.body.setSize([BEFORE_SIZE * 2, BEFORE_SIZE * 2])
-            this.body.setVel([0, 0])
-            this.body.fixedPos = true;
-            this.body.fixedVel = true;
-            this.damage *= 2
-            this.physics.fixedForce = true;
-            SCREEN.renderer.camera.vibrate(40);
-            this.lifeModule.setLife(50)
-            this.lifeModule.ondamage=function(d,dt){return false;}
-            if(event.other.physics)event.other.physics.addForce([(event.other.body.midX-this.body.midX)*0.01,(event.other.body.midY-this.body.midY)*0.01])
-        }
-        if(event.other.lifeModule)event.other.lifeModule.giveDamage(this.damage,this.damageType);
+        const o=event.other;
+        if(!(o instanceof MatterEnergy) && !this.isExploded)this.explode();
+        if(o.lifeModule)o.lifeModule.giveDamage(this.damage,this.damageType);
         SCREEN.renderer.camera.vibrate(4);
+    }
+
+    explode(){
+        this.isExploded=true;
+        const BEFORE_SIZE=this.body.size[0]
+        this.body.addPos([-BEFORE_SIZE*0.5, -BEFORE_SIZE*0.5])
+        this.body.setSize([BEFORE_SIZE * 2, BEFORE_SIZE * 2])
+        this.body.setVel([0, 0])
+        this.body.fixedPos = true;
+        this.body.fixedVel = true;
+        this.damage *= 2
+        this.physics.fixedForce = true;
+        SCREEN.renderer.camera.vibrate(40);
+        this.lifeModule.setLife(50)
+        this.lifeModule.ondamage=function(d,dt){return false;}
+        this.oncollision=function(event){
+            const o=event.other;
+            if(o.physics)o.physics.addForce([(o.body.midX<this.body.midX?-1:1),(o.body.midY<this.body.midY?-1:1)])
+            if(o.lifeModule)o.lifeModule.giveDamage(this.damage,this.damageType);
+            SCREEN.renderer.camera.vibrate(4);
+            return false;
+        }
     }
 }
 

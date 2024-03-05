@@ -148,12 +148,17 @@ class GameWorldPhysics{
             const INV_SUM_INV_MASS = 1 / (physics1.inv_mass + physics2.inv_mass);
             //RESOLVE POSITION
             if(!(body1.overlap && body2.overlap)){
-                let fixPosRatio = COLL_DIR*INV_SUM_INV_MASS*COLL_DEPTH;
-                let deltaPos=[0,0];
-                deltaPos[COLL_AXIS]=-fixPosRatio*physics1.inv_mass;
-                body1.addPos(deltaPos);
-                deltaPos[COLL_AXIS]=fixPosRatio*physics2.inv_mass;
-                body2.addPos(deltaPos)
+                const velDef = Math.abs(body2.vel[COLL_AXIS]-body1.vel[COLL_AXIS]);
+                if(velDef==0){
+                    let fixPosRatio = COLL_DIR*INV_SUM_INV_MASS*COLL_DEPTH;
+                    body1.addPosAxis(COLL_AXIS,-fixPosRatio*physics1.inv_mass);
+                    body2.addPosAxis(COLL_AXIS,fixPosRatio*physics2.inv_mass)
+                }else{
+                    let fixPosRatio = COLL_DIR*COLL_DEPTH/(Math.abs(body2.vel[COLL_AXIS])+Math.abs(body1.vel[COLL_AXIS]));
+                    body1.addPosAxis(COLL_AXIS,-fixPosRatio*Math.abs(body1.vel[COLL_AXIS]));
+                    body2.addPosAxis(COLL_AXIS,fixPosRatio*Math.abs(body2.vel[COLL_AXIS]))
+                }
+                
             }
             //RESOLVE VELOCITY
             let deltaVel=[body2.vel[0]-body1.vel[0], body2.vel[1]-body1.vel[1]];
