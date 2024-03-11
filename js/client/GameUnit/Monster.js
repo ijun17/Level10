@@ -499,7 +499,7 @@ class MonsterWyvern extends Monster{
                         e.other.setState(0);
                         return;
                     }
-                    if(e.other.lifeModule)e.other.lifeModule.giveDamage(1000,TYPE.damageFire);
+                    if(e.other.lifeModule)e.other.lifeModule.giveDamage(2000,TYPE.damageFire);
                     e.other.body.setVel([(x-e.other.body.pos[0])*1,1]);
                     // e.other.physics.setForce([(x-e.other.body.pos[0])*2,0.5]);
                     return !(e.other instanceof Actor)
@@ -560,7 +560,7 @@ class MonsterWyvern extends Monster{
                             return false;
                         }
                         if(e.other.lifeModule)e.other.lifeModule.giveDamage(1000,TYPE.damageFire);
-                        if(fire.colCnt>5){
+                        if(fire.colCnt>4){
                             fire.colCnt=0;
                             fire.body.setPos(m.body.midPos)
                             let dir = fire.body.getUnitVector(target.body.midPos)

@@ -87,27 +87,27 @@ button{
 }
 .selectMagicSceneButton{
     background-color:unset;
-    color:royalblue;
+    color:skyblue;
     /* font-size : 28px; */
     font-size : 1.3em;
     font-weight: bold;
-    border: solid royalblue 3px;
+    border: solid skyblue 2px;
 }
 .selectMagicSceneButton:hover{
     color:white;
     background-color: #FFF4;
-    border: solid white 3px;
+    border: solid white 2px;
 }
 .monsterVSSceneButton{
     background-color:unset;
-    color:brown;
+    color:skyblue;
     /* font-size : 28px; */
     font-size : 1.3em;
     font-weight: bold;
-    border: solid brown 3px;
+    border: solid skyblue 2px;
 }
 .monsterVSSceneButton:hover{
-    border: solid white 3px;
+    border: solid white 2px;
     background-color: #FFF4;
     color: white;
 }
@@ -116,11 +116,11 @@ button{
     /* font-size : 28px; */
     font-size : 1.3em;
     font-weight: bold;
-    border: solid purple 3px;
-    color: purple;
+    border: solid skyblue 2px;
+    color: skyblue;
 }
 .pvpButton:hover{
-    border: solid white 3px;
+    border: solid white 2px;
     background-color: #FFF4;
     color: white;
 }
@@ -131,11 +131,11 @@ button{
     overflow-y:auto;
     overflow-x:visible;
     background-color: rgba(0,0,0,0.1);
-    border: solid rgba(0,0,0,0.2) 2px;
+    border: solid black 1px;
 }
 .magicButton{
     color:black;
-    border: solid black 2px;
+    border: solid black 1px;
     /* font-size : 20px; */
     font-size : 1.2em;
     line-height: 200%;
@@ -144,7 +144,7 @@ button{
 }
 .magicButton:hover{
     color:white;
-    border: solid white 2px;
+    border: solid white 1px;
 }
 .basicMagic{
     background-color: rgba(119, 138, 202,0.8);
@@ -169,7 +169,7 @@ button{
     flex-direction: column;
     justify-content: space-evenly;
     border-radius: 5px;
-    border:2px solid black;
+    border:1px solid black;
 }
 
 .selectMagicButton{
@@ -181,10 +181,10 @@ button{
     /* font-size : 16px; */
     font-size : 1em;
     line-height: 30px;
-    border:2px solid black;
+    border:1px solid black;
 }
 
-.selectMagicButton:hover{border: solid white 2px;}
+.selectMagicButton:hover{border: solid white 1px;}
 
 .magicInput{
     text-align: center;
@@ -192,7 +192,7 @@ button{
     background-color: rgba(0,0,0,0.5);
     border-radius: 5px;
     padding-top: 5px;
-    border:2px solid black;
+    border:1px solid black;
 }
 
 .magicInfo{
@@ -217,7 +217,7 @@ button{
     font-size : 1em;
     font-family: Arial, Helvetica, sans-serif;
     overflow: hidden;
-    border:2px solid black;
+    border:1px solid black;
 }
 
 .createMagicCode {
@@ -233,7 +233,7 @@ button{
     border: none;
     border-radius: 5px;
     font-family: consolas;
-    border:2px solid black;
+    border:1px solid black;
 }
 
 .createMagicbutton {
@@ -244,7 +244,7 @@ button{
     width: 60px;
     height: 30px;
     background-color: royalblue;
-    border: solid black 2px;
+    border: solid black 1px;
     border-radius: 5px;
     /* font-size: 16px; */
     font-size : 1em;
@@ -252,7 +252,7 @@ button{
     color: white;
 }
 .createMagicbutton:hover{
-    border: solid white 2px;
+    border: solid white 1px;
 }
 
 .createMagicInfo{

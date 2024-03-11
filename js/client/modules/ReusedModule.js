@@ -96,7 +96,7 @@ const ReusedModule={
         }
     },
     snowWeather:function(count=50, vy=-1.5){
-        ReusedModule.createParticleSpray(TYPE.snow,15,count,vy)
+        ReusedModule.createParticleSpray(TYPE.snow,10,count,vy)
     },
     fireWeader:function(count=60,vy=-1.5){
         ReusedModule.createParticleSpray(TYPE.ash,15,count/2,vy)

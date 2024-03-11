@@ -39,11 +39,13 @@ const Level= {
                 ReusedModule.createGameMap(2000,1000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
+                SCREEN.renderer.camera.zoom=1;
                 ReusedModule.snowWeather()
                 Level.createMainMonster(level, [1500, 0]);
                 break;
             case 1: 
                 SCREEN.renderer.bgColor="#cde5e4";
+                SCREEN.renderer.camera.zoom=1;
                 ReusedModule.createGameMap(3000,2000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
@@ -52,6 +54,7 @@ const Level= {
                 break;
             case 2:
                 SCREEN.renderer.bgColor="#9fadad";
+                SCREEN.renderer.camera.zoom=1;
                 ReusedModule.createGameMap(3000,3000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
@@ -60,14 +63,16 @@ const Level= {
                 break;
             case 3: 
                 SCREEN.renderer.bgColor="#222"
+                SCREEN.renderer.camera.zoom=1;
                 ReusedModule.createGameMap(3000,3000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
-                ReusedModule.snowWeather()
+                ReusedModule.snowWeather(70,-3)
                 Level.createMainMonster(level,[1500, 0]);
                 break;
             case 4:
                 SCREEN.renderer.bgColor="rgb(108, 141, 150)"
+                SCREEN.renderer.camera.zoom=1;
                 ReusedModule.createGameMap(4000,2000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
