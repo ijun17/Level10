@@ -12,19 +12,26 @@ class SimpleWebRTC{
     onroomenterfail(){}
     constructor(signaling,stun){
         this.signaling=signaling;
-        if(stun)this.rtcConfiguration={iceServers: [{ urls: stun }]}
+
+        this.rtcConfiguration = {
+            bundlePolicy: "max-bundle",
+            iceCandidatePoolSize: 0,
+            iceTransportPolicy: "all"
+        };
+        if(stun)this.rtcConfiguration.iceServers=[{urls: stun}]
     }
     createRoom() {
         this.connectToSignalingServer();
         this.ws.onopen = () => {
-            console.log("ws.onopen")
-            this.createWebRTC();
+            console.log("signaling: connect")
+            this.createWebRTC(true);
             this.ws.send(JSON.stringify({type:"host"}))
             this.setLocal(this.pc.createOffer());
         }
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log(data);
+            console.log("signaling: onmessage",data);
+            this.sendLog(data.type)
             switch(data.type){
                 case "hostid" : this.onroomcreated(data.id); break;
                 case "sdp"    : this.setRemote(data.sdp); break;
@@ -36,13 +43,14 @@ class SimpleWebRTC{
     enterRoom(id){
         this.connectToSignalingServer();
         this.ws.onopen = (event) => {
-            console.log("ws.onopen")
-            this.createWebRTC();
+            console.log("signaling: connect")
+            this.createWebRTC(false);
             this.ws.send(JSON.stringify({ type: "guest", id:id}))
         }
         this.ws.onmessage = (event) => {
             const data=JSON.parse(event.data);
-            //console.log(data);
+            console.log("signaling: onmessage",data);
+            this.sendLog(data.type)
             switch(data.type){
                 case "sdp":
                     this.setRemote(data.sdp);
@@ -60,36 +68,47 @@ class SimpleWebRTC{
     connectToSignalingServer(){
         this.disconnectToSignalingServer();
         this.ws = new WebSocket(this.signaling);
-        this.ws.onclose = () => { console.log("ws.onclose"); this.onwebsocketclose();}
-        this.ws.onerror = (error) => { console.log("ws.onerror:", error); }
+        this.ws.onclose = () => { console.log("signaling: close"); this.onwebsocketclose();}
+        this.ws.onerror = (error) => { console.log("signaling: websocket error:", error) }
     }
     disconnectToSignalingServer(){
         if(this.ws)this.ws.close();
     }
-    createWebRTC(){
+    disconnectPeerConnection(){
         if(this.pc)this.pc.close();
-        if(this.dc)this.dc.close()
+        if(this.dc)this.dc.close();
+        this.pc=null;
+        this.dc=null;
+    }
+    createWebRTC(isHost){
+        this.disconnectPeerConnection();
         this.pc = new RTCPeerConnection(this.rtcConfiguration);
-        
-        this.pc.ondatachannel = (event) =>{
-            this.dc=event.channel;
-            console.log("pc.ondatachannel")
-            this.dc.onopen = () => {console.log("dc.onopen");this.ondatachannelopen();this.disconnectToSignalingServer(); };
-            this.dc.onmessage = (event) => {this.ondatachannelmessage(event.data)}
-            this.dc.onclose = () => {this.ondatachannelclose();}
-        }
+        if(!isHost)
+            this.pc.ondatachannel = (event) =>{
+                this.dc=event.channel;
+                this.applyDatachannelEvent();
+            };
         this.pc.onicecandidate = (event) =>{
             if(event.candidate){
-                console.log("create ice");
+                console.log("peerconnection: onicecandidate",event.candidate)
                 if(this.isWebSocketOpen()) this.ws.send(JSON.stringify({type:"ice", ice:event.candidate}))
                 else if(this.isDataChannelOpen()) this.dc.send(JSON.stringify({type:"ice", ice:event.candidate}))
             }
         }
-        this.pc.addEventListener('connectionstatechange', event => {
-            console.log('Connection state changed to:', this.pc.connectionState);
+        this.pc.addEventListener("connectionstatechange", (event) => {
+            console.log("peerconnection:",this.pc.connectionState)
+            if(this.pc.connectionState=="disconnected") {
+                this.ondatachannelclose();
+                this.disconnectPeerConnection();
+            }
         });
-        this.dc=this.pc.createDataChannel("dataChannel", { reliable: true , ordered: true});
-        this.dc.onopen = () => {console.log("dc.onopen");this.ondatachannelopen();this.disconnectToSignalingServer(); };
+        if(isHost){
+            this.dc = this.pc.createDataChannel("dataChannel", { reliable: true , ordered: true});
+            this.applyDatachannelEvent();
+        }
+    }
+    applyDatachannelEvent(){
+        this.dc.onopen = () => {this.ondatachannelopen();  console.log("datachannel: open"); this.disconnectToSignalingServer();};
         this.dc.onmessage = (event) => {this.ondatachannelmessage(event.data)}
         this.dc.onclose = () => {this.ondatachannelclose();}
     }
@@ -100,31 +119,35 @@ class SimpleWebRTC{
         return this.dc && this.dc.readyState === 'open';
     }
     send(message){
-        this.dc.send(message);
+        try{
+            this.dc.send(message);
+            console.log("send")
+        }catch(e){
+            console.error(e);
+        }
         return this.isDataChannelOpen();
+    }
+    sendLog(log){
+        if(this.isWebSocketOpen())this.ws.send(JSON.stringify({type:"log", log:log}))
     }
     setLocal(sdpPromise){
         sdpPromise.then((sdp)=>{
-            console.log("setLocal")
+            console.log("peerconnection: setLocalDescription")
             this.ws.send(JSON.stringify({type:"sdp",sdp:sdp})) // 시그널링 서버에 로컬 sdp 전송
             this.pc.setLocalDescription(sdp)
-                .catch((e)=>{console.log(e,sdp)});
-        }).catch((e)=>{console.log(e);})
+                .catch((e)=>{console.error("peerconnection: setLocalDescription error",e,sdp)});
+        }).catch((e)=>{console.error("peerconnection: setLocalDescription error",e);})
     }
     setRemote(sdpObject){
-        console.log("setRemote")
+        console.log("peerconnection: setRemoteDescription")
         try{
             this.pc.setRemoteDescription(new RTCSessionDescription(sdpObject))
-                .catch((e)=>{console.log(e, sdpObject)})
+                .catch((e)=>{console.error("peerconnection: setRemoteDescription error",e, sdpObject)})
         }catch(e){
-            console.log(e, sdpObject)
+            console.error("peerconnection: setRemoteDescription error",e, sdpObject)
         }
     }
-    reset(){
-        this.resetEvent()
-        if(this.pc)this.pc.close()
-        this.disconnectToSignalingServer()
-    }
+
     resetEvent(){
         this.onroomcreated=()=>{};
         this.ondatachannelopen=()=>{};
@@ -132,5 +155,11 @@ class SimpleWebRTC{
         this.ondatachannelmessage=()=>{};
         this.onwebsocketclose=()=>{};
         this.onroomenterfail=()=>{};
+    }
+
+    reset(){
+        this.resetEvent()
+        if(this.pc)this.pc.close()
+        this.disconnectToSignalingServer()
     }
 }

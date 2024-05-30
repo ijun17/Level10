@@ -89,7 +89,7 @@ class Monster extends Actor{
         }
     }
     skillAI(){
-        for(let i=0; i<this.skillModule.getSkillCount(); i++){
+        for(let i=this.skillModule.getSkillCount(); i>=0; i--){
             if(this.skillModule.castSkill(this,i))break;
         }
     }
@@ -377,6 +377,14 @@ class MonsterGolem extends Monster{
     invincible=false;//무적모드
     constructor(pos){
         super(pos,[300,300],4000,new GameUnitMoveModule(0,1,2), new GameUnitLifeModule(5000000,100,5), new GameUnitSkillModule(0));
+        this.skillModule.addSkill(new MagicSkill("front",function(e){
+            if(!e.canTarget())return;
+            let b=e.body, vel=e.getTargetDirX()*2;
+            e.antiMatterFlag=true;
+            TIME.addSchedule(0.5, 1, 0, function(){b.vel[0]+=vel;});
+            TIME.addSchedule(1, 1, 0, function(){e.antiMatterFlag=false;});
+            WORLD.add(new Particle([b.midX-100, b.midY-100], [300, 300], TYPE.magicEffect));
+        },888));
         this.skillModule.addSkill(new MagicSkill("down",function(e){
             if(!e.canTarget())return;
             let b=e.body, tb=e.target.body;
@@ -386,14 +394,6 @@ class MonsterGolem extends Monster{
             e.power=9999;
             TIME.addSchedule(1,1,0,function(){e.power=4000});
         },501));
-        this.skillModule.addSkill(new MagicSkill("front",function(e){
-            if(!e.canTarget())return;
-            let b=e.body, vel=e.getTargetDirX()*2;
-            e.antiMatterFlag=true;
-            TIME.addSchedule(0.5, 1, 0, function(){b.vel[0]+=vel;});
-            TIME.addSchedule(1, 1, 0, function(){e.antiMatterFlag=false;});
-            WORLD.add(new Particle([b.midX-100, b.midY-100], [300, 300], TYPE.magicEffect));
-        },888));
 
         this.addEventListener("collision", function(e){if(this.antiMatterFlag && e.other instanceof Matter)e.other.setState(0);})
         this.lifeModule.ondamage=(d,dt)=>{return !this.invincible&&dt!=TYPE.damageEnergy;}
@@ -478,6 +478,53 @@ class MonsterWyvern extends Monster{
                 (m.createMatter(MatterFire,[2+i*0.4, 2.5+i*0.1],[0,-30])).life=100;
             }
         },500))
+
+        this.skillModule.addSkill(new MagicSkill("breath",function(m){
+            if(!m.canTarget())return;
+            const target = m.target;
+            let fires=[];
+            let speed = 55
+            for(let i=0; i<200; i++){
+                let color=`rgba(255,${(255-i*1.5>0 ? 255-i*1.5 : 0)},0,0.4)`
+                let fire=WORLD.add(new Block(m.body.midPos,[60,60],color));
+                fire.lifeModule.life=100000000;
+                fire.id=128743612;
+                fire.colCnt=0;
+                fire.physics.addForce = ()=>{}
+                fire.physics.inv_mass = 1
+                fire.physics.enableEnvironment=false;
+                fires.push(fire);
+                let dir = fire.body.getUnitVector(target.body.midPos)
+                fire.body.setVel([dir[0]*speed, dir[1]*speed])
+                fire.eventManager.oncollision=(e)=>{
+                    if(e.other==m)return false;
+                    if(e.other.id==128743612)return true;
+                    if(e.other instanceof Matter){
+                        if(e.other.damageType != TYPE.damageFire)e.other.setState(0);
+                        return false;
+                    }
+                    if(e.other.lifeModule)e.other.lifeModule.giveDamage(666,TYPE.damageFire);
+                    if(fire.colCnt>5){
+                        fire.colCnt=0;
+                        fire.body.setPos(m.body.midPos)
+                        let dir = fire.body.getUnitVector(target.body.midPos)
+                        fire.body.setVel([dir[0]*speed, dir[1]*speed])
+                    }else fire.colCnt++;
+                    
+                    return true
+                }
+            }
+            TIME.addSchedule(0,7,0.1,function(){
+                SCREEN.renderer.camera.vibrate(10);
+            },()=>{return m.getState()==0})
+            TIME.addSchedule(7,7,0,function(){
+                for(let i=fires.length-1; i>=0; i--)fires[i].setState(0);
+                SCREEN.renderer.camera.vibrate(100);
+            },()=>{return m.getState()==0});
+            m.addEventListener("remove",()=>{
+                for(let i=fires.length-1; i>=0; i--)fires[i].setState(0);
+            })
+        },2000))
         this.skillModule.addSkill(new MagicSkill("FIRETORNADO",function(m){
             let fires=[];
             let x=m.body.midX;
@@ -490,6 +537,7 @@ class MonsterWyvern extends Monster{
                 fire.lifeModule.life=10000000;
                 fire.id=128743612;
                 fire.physics.setCOR(1);
+                // fire.physics.inv_mass=1;
                 fire.physics.enableEnvironment=false;
                 fires.push(fire);
                 fire.eventManager.oncollision=(e)=>{
@@ -524,7 +572,7 @@ class MonsterWyvern extends Monster{
         this.animation=new UnitAnimation(IMAGES.monster_wyvern,80,80,[4, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
-        this.physics.inv_mass=0.001;
+        this.physics.inv_mass=0.0001;
         this.physics.setGravity([0,0],true)
         this.lifeModule.ondamage=function(d, dt){
             return dt!=TYPE.damageFire;
@@ -535,52 +583,6 @@ class MonsterWyvern extends Monster{
         this.animation.update();
         if(this.phase==1 && this.lifeModule.life<this.lifeModule.MAX_LIFE*1.1){ //PHASE 2
             this.phase=2;
-            this.skillModule.addSkill(new MagicSkill("breath",function(m){
-                if(!m.canTarget())return;
-                const target = m.target;
-                let fires=[];
-                let speed = 55
-                for(let i=0; i<200; i++){
-                    let color=`rgba(255,${(255-i*1.5>0 ? 255-i*1.5 : 0)},0,0.4)`
-                    let fire=WORLD.add(new Block(m.body.midPos,[60,60],color));
-                    fire.lifeModule.life=100000000;
-                    fire.id=128743612;
-                    fire.colCnt=0;
-                    fire.physics.addForce = ()=>{}
-                    fire.physics.inv_mass =0.1
-                    fire.physics.enableEnvironment=false;
-                    fires.push(fire);
-                    let dir = fire.body.getUnitVector(target.body.midPos)
-                    fire.body.setVel([dir[0]*speed, dir[1]*speed])
-                    fire.eventManager.oncollision=(e)=>{
-                        if(e.other==m)return false;
-                        if(e.other.id==128743612)return true;
-                        if(e.other instanceof Matter){
-                            if(e.other.damageType != TYPE.damageFire)e.other.setState(0);
-                            return false;
-                        }
-                        if(e.other.lifeModule)e.other.lifeModule.giveDamage(1000,TYPE.damageFire);
-                        if(fire.colCnt>4){
-                            fire.colCnt=0;
-                            fire.body.setPos(m.body.midPos)
-                            let dir = fire.body.getUnitVector(target.body.midPos)
-                            fire.body.setVel([dir[0]*speed, dir[1]*speed])
-                        }else fire.colCnt++;
-                        
-                        return true
-                    }
-                }
-                TIME.addSchedule(0,7,0.1,function(){
-                    SCREEN.renderer.camera.vibrate(10);
-                },()=>{return m.getState()==0})
-                TIME.addSchedule(7,7,0,function(){
-                    for(let i=fires.length-1; i>=0; i--)fires[i].setState(0);
-                    SCREEN.renderer.camera.vibrate(100);
-                },()=>{return m.getState()==0});
-                m.addEventListener("remove",()=>{
-                    for(let i=fires.length-1; i>=0; i--)fires[i].setState(0);
-                })
-            },2000))
         }
     }
     draw(r){r.drawAnimation(this.animation,this.body,{reverseX:!this.moveModule.moveDirection[0]})}   
@@ -662,7 +664,7 @@ class MonsterDragon extends Monster{
         this.animation=new UnitAnimation(IMAGES.monster_golden_dragon,80,80,[4, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
         this.body.overlap=true;
-        this.physics.inv_mass=0.001;
+        this.physics.inv_mass=0.0001;
         this.physics.setGravity([0,0],true)
         this.ai_move_cycle=0.4;
         this.lifeModule.ondamage=function(d, dt){

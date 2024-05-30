@@ -19,14 +19,17 @@ Game.setScene("pvp",function(){
         <div class="room-input-container">
             <div class="create-room-input-container">
                 <input class="create-room-input" placeholder="로딩 중" readonly>
-                <p>다른 사람에게 이 코드를 보여주세요</p>
+                <p style="margin:10px">다른 사람에게 이 코드를 보여주세요</p>
             </div>
+
             <div class="enter-room-input-container">
                 <input class="enter-room-input" placeholder="방 아이디">
-                <p>방 아이디를 입력하세요</p>
+                ${localStorage.getItem("signaling")==null || localStorage.getItem("signaling")==""
+                    ? `<p style="text-align:center;color:brown;margin:10px">설정 화면에서 서버 주소를 입력해주세요</p>` 
+                    : `<p style="margin:10px">방 아이디를 입력하세요</p>`}
             </div>
         </div>
-        <div style="text-align:center;color:gray;">server: ${localStorage.getItem("signaling")}</div>`    
+        `    
 
     const createRoomButton = document.querySelector(".create-room-button")
     const enterRoomButton = document.querySelector(".enter-room-button")
@@ -108,7 +111,8 @@ Game.setScene("pvp-loading",function(para){
     let otherComplete=false;
     
     let message = JSON.stringify({ type: "magic", magic: MagicManager.getSelectedPrimitiveMagic() })
-    TIME.addSchedule(0,undefined,0.5,()=>{MULTI.send(message)})
+    MULTI.send(message)
+    // TIME.addSchedule(0,undefined,0.5,()=>{MULTI.send(message)})
     TIME.addSchedule(0,undefined,0.01,()=>{
         if(magicLoaded&&otherComplete)Game.changeScene("pvp-game",{isHost:para.isHost, magicList: magicList})
     })

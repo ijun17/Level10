@@ -94,7 +94,7 @@ const HELP_MENU=[
 
 ["멀티 플레이",`
 <h1>멀티 플레이</h1>
-<p>상대방과 매칭을 위해 서버 아이피가 필요합니다</p>
+<p>상대방과 매칭을 위한 서버 주소를 입력해주세요.</p>
 <input style="width:20vw;height:2vw;font-size:18px;" type="text" placeholder="0.0.0.0:0" name="signaling">
 `]
 ]

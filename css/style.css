@@ -1,3 +1,11 @@
+:root {
+    --main-bg-color: #f0f0f0;
+    --sub-bg-color: white;
+    --point-color: #333;
+    --main-text-color: #444;
+    --sub-text-color: #fff;
+    --border-color: #ccc;
+}
 
 * {
     padding: 0;
@@ -370,75 +378,7 @@ button{
 
 /* pvp */
 
-.room-form {
-    /* display: none; */
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden;
-}
 
-.room-button-container {
-    width: 100%;
-    height: 20%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: nowrap;
-
-    background-color: black;
-}
-
-.create-room-button,
-.enter-room-button {
-    width: 50%;
-    height: 100%;
-    color: #fff;
-    font-size: 27px;
-    background-color: #007bff;
-    border:none;
-}
-
-.create-room-button:hover,
-.enter-room-button:hover{
-    background-color: #f0f0f0;
-    color: #007bff;
-}
-
-.room-button-click{
-    background-color: white;
-    color: #007bff;
-}
-
-.room-input-container {
-    width: 100%;
-    height: 70%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.create-room-input-container,
-.enter-room-input-container {
-    display: block;
-    text-align: center;
-    width: 100%;
-    color: #444;
-}
-
-.create-room-input-container{
-    display: none;
-}
-
-.room-form input {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    padding: 10px;
-}
 
 .loader {
     display: none;
@@ -449,6 +389,88 @@ button{
     border-top-color: white;
     animation: spin 0.5s linear infinite;
     -webkit-animation: spin 0.5s linear infinite;
+}
+
+
+.room-form {
+    /* display: none; */
+    width: 100%;
+    height: 400px;
+    background-color: var(--sub-bg-color);
+    background-color: unset;
+    /* border: 0px solid var(--border-color); */
+    border-radius: 20px;
+    /* box-shadow: 0 0 3px 1px var(--border-color); */
+    overflow: hidden;
+}
+
+.room-button-container {
+    width: 100%;
+    height: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: nowrap;
+    background-color: unset;
+}
+
+.create-room-button,
+.enter-room-button {
+    width: 50%;
+    height: 100%;
+    color: var(--sub-text-color);
+    font-size: 25px;
+    background-color: var(--point-color);
+    border: none;
+    /* padding: 20px 0; */
+}
+
+.create-room-button:active,
+.enter-room-button:active{
+    background-color: var(--main-bg-color);
+    color: var(--point-color);
+}
+
+/* @media (hover: hover) {
+    .create-room-button:hover,
+    .enter-room-button:hover{
+        background-color: var(--main-bg-color);
+        color: var(--point-color);
+    }
+} */
+
+.room-button-click{
+    background-color: var(--sub-bg-color);
+    color: var(--point-color);
+}
+
+.room-input-container {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--sub-bg-color);
+}
+
+.create-room-input-container,
+.enter-room-input-container {
+    display: block;
+    text-align: center;
+    width: 100%;
+    color: var(--main-text-color);
+}
+
+.create-room-input-container{
+    display: none;
+}
+
+.room-input-container input {
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 10px;
 }
 
 @keyframes spin {

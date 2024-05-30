@@ -20,12 +20,13 @@ const Level= {
         TIME.addSchedule(4,4,undefined,()=>{Game.changeScene("select")});
     },
 
-    createMainMonster:function(level,pos){
+    createMainMonster:function(level,pos,target){
         let m=WORLD.add(new this.monsters[level](pos));
         m.renderStatusBar("LEVEL"+level,[SCREEN.perX(59), SCREEN.perY(100)-SCREEN.perX(8.5)]);
         m.addEventListener("remove",function(){Level.clearLevel(level);return true;})
         TIME.addSchedule(1,1,0,function(){m.activateAI()});
         m.moveModule.moveDirection[0]=false;
+        m.setTarget(target)
         return m;
     },
 
@@ -41,7 +42,7 @@ const Level= {
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
                 SCREEN.renderer.camera.zoom=1;
                 ReusedModule.snowWeather()
-                Level.createMainMonster(level, [1500, 0]);
+                Level.createMainMonster(level, [1500, 0], player);
                 break;
             case 1: 
                 SCREEN.renderer.bgColor="#cde5e4";
@@ -50,16 +51,16 @@ const Level= {
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
                 ReusedModule.snowWeather()
-                Level.createMainMonster(level,[1500, 0]);
+                Level.createMainMonster(level,[1500, 0], player);
                 break;
             case 2:
                 SCREEN.renderer.bgColor="#9fadad";
                 SCREEN.renderer.camera.zoom=1;
-                ReusedModule.createGameMap(3000,3000);
+                ReusedModule.createGameMap(3000,4000);
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
                 ReusedModule.fireWeader()
-                Level.createMainMonster(level,[2000, 1000]);
+                Level.createMainMonster(level,[2000, 1000], player);
                 break;
             case 3: 
                 SCREEN.renderer.bgColor="#222"
@@ -68,7 +69,7 @@ const Level= {
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
                 ReusedModule.snowWeather(70,-3)
-                Level.createMainMonster(level,[1500, 0]);
+                Level.createMainMonster(level,[1500, 0], player);
                 break;
             case 4:
                 SCREEN.renderer.bgColor="rgb(108, 141, 150)"
@@ -77,7 +78,7 @@ const Level= {
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
                 ReusedModule.fireflyWeather()
-                Level.createMainMonster(level,[500, 0]);
+                Level.createMainMonster(level,[500, 0], player);
                 break;
             case 5:
                 SCREEN.renderer.bgColor="#23191a"
@@ -85,7 +86,7 @@ const Level= {
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
                 ReusedModule.fireWeader()
-                Level.createMainMonster(level,[2000, 0]);
+                Level.createMainMonster(level,[2000, 0], player);
                 break;
             case 6:
                 SCREEN.renderer.bgColor="#17191c";
@@ -96,7 +97,7 @@ const Level= {
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
                 ReusedModule.rainWeather()
-                Level.createMainMonster(level,[3000, 0]);
+                Level.createMainMonster(level,[3000, 0], player);
                 break;
             case 7:
                 SCREEN.renderer.bgColor="rgb(56, 56, 54)"//"rgb(104, 104, 99)"//"rgb(142, 142, 134)"//"rgb(216, 214, 190)"//
@@ -105,7 +106,7 @@ const Level= {
                 WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
                 WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
                 ReusedModule.sparkWeather()
-                Level.createMainMonster(level,[2000, 0]);
+                Level.createMainMonster(level,[2000, 0], player);
                 break;
             case 8:
                 ReusedModule.createGameMap(2000,2000);
