@@ -158,8 +158,10 @@ Game.setScene("pvp-game", function(para){
 
     SCREEN.renderer.camera.zoom=0.9;
     ReusedModule.createGameMap(2000,1000)
-    WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,-0.2]);
-    WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],0.01);
+    const GA = -0.327;
+    const AIR = 0.01;
+    WORLD.environment.addGravity([-20000,-20000], [40000,40000], [0,GA]);
+    WORLD.environment.addDrag([-20000,-20000], [40000,40000], [0,0],AIR);
     ReusedModule.fireflyWeather()
     SCREEN.renderer.bgColor="rgb(108, 141, 150)"
     const P = [WORLD.add(new Player([100,0],10)), WORLD.add(new Player([1900,0],10))]
