@@ -34,6 +34,10 @@ const Level= {
         SCREEN.bgColor="rgb("+(255-level*22)+","+(255-level*25)+","+(255-level*25)+")";
         const GA = -0.327;
         const AIR = 0.01;
+
+        //플레이어 발판
+        ReusedModule.createGameMapPlayerFoothold()
+
         switch (level) {
             case 0: 
                 SCREEN.renderer.bgColor="dimgray";
