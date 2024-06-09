@@ -14,7 +14,7 @@ class GameTime{
     mainSchedule
     constructor(mainSchedule=()=>{}){
         this.mainSchedule=mainSchedule;
-        this.scheduleList=new ArrayForSchedule(300);
+        this.scheduleList=new LinkedListForSchedule();
     }
     setFrameRate(fps){
         this.fps=fps;
@@ -93,58 +93,105 @@ class GameSchedule{
 }
 
 
-class ArrayForSchedule{//집합
-    array;
-    startIndex=0;
-    endIndex=0;
-    count=0;
-    constructor(arraySize=300){
-        this.array=new Array(arraySize);
-    }
-    reset(){
-        let arrayLength=this.array.length;
-        this.array=new Array(arrayLength);
+// class ArrayForSchedule{//집합
+//     array;
+//     startIndex=0;
+//     endIndex=0;
+//     count=0;
+//     constructor(arraySize=300){
+//         this.array=new Array(arraySize);
+//     }
+//     reset(){
+//         let arrayLength=this.array.length;
+//         this.array=new Array(arrayLength);
 
-        this.startIndex=0;//맨처음 원소 인덱스
-        this.endIndex=0;//맨 마지막 원소 인덱스
-        this.count=0;
+//         this.startIndex=0;//맨처음 원소 인덱스
+//         this.endIndex=0;//맨 마지막 원소 인덱스
+//         this.count=0;
+//     }
+//     push(e){
+//         if(e===undefined){
+//             console.error("CAN NOT PUSH");
+//             return;
+//         }
+//         const arr=this.array;
+//         if(this.endIndex-this.startIndex!=this.count){
+//             for(let i=this.startIndex, l=this.endIndex; i<l; i++){
+//                 if(arr[i]===undefined){
+//                     arr[i]=e;
+//                     this.count++;
+//                     return;
+//                 }
+//             }
+//         }else if(this.startIndex>0){
+//             arr[this.startIndex-1]=e;
+//             this.startIndex--;
+//             this.count++;
+//         }else{
+//             arr[this.endIndex]=e;
+//             this.endIndex++;
+//             this.count++;
+//         }
+//     }
+//     remove(i){
+//         if(i<this.startIndex||i>=this.endIndex){
+//             console.error("CAN NOT REMOVE")
+//             return;
+//         }
+//         this.array[i]=undefined;
+//         this.count--;
+//         if(i==this.startIndex)this.startIndex++;
+//         else if(i==this.endIndex-1)this.endIndex--;
+//     }
+//     map(f){
+//         const array=this.array;
+//         for(let i=this.startIndex, l=this.endIndex; i<l; i++)if(array[i]!=undefined)f(array[i], i, this)
+//     }
+// }
+
+
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-    push(e){
-        if(e===undefined){
-            console.error("CAN NOT PUSH");
-            return;
-        }
-        const arr=this.array;
-        if(this.endIndex-this.startIndex!=this.count){
-            for(let i=this.startIndex, l=this.endIndex; i<l; i++){
-                if(arr[i]===undefined){
-                    arr[i]=e;
-                    this.count++;
-                    return;
-                }
-            }
-        }else if(this.startIndex>0){
-            arr[this.startIndex-1]=e;
-            this.startIndex--;
-            this.count++;
+}
+
+class LinkedListForSchedule {
+    constructor() {
+        this.head = null;
+        this.size = 0;
+    }
+
+    reset() {
+        this.head = null;
+        this.size = 0;
+    }
+
+    push(data) {
+        const newNode = new Node(data);
+        newNode.next=this.head;
+        this.head=newNode
+        this.size++;
+    }
+
+    remove(previousNode) {
+        if(previousNode == null){
+            this.head = this.head.next;
         }else{
-            arr[this.endIndex]=e;
-            this.endIndex++;
-            this.count++;
+            previousNode.next = previousNode.next.next;
         }
+        this.size--;
     }
-    remove(i){
-        if(i<this.startIndex||i>=this.endIndex){
-            console.error("CAN NOT REMOVE")
-            return;
+
+    map(callback) {
+        let current = this.head;
+        let previous = null;
+        while (current !== null) {
+            let size = this.size;
+            callback(current.data, previous, this);
+            if(size===this.size)previous = current; 
+            current = current.next;
         }
-        this.array[i]=undefined;
-        this.count--;
-        if(i==this.startIndex)this.startIndex++;
-        else if(i==this.endIndex-1)this.endIndex--;
-    }
-    map(f){
-        const array=this.array;
-        for(let i=this.startIndex, l=this.endIndex; i<l; i++)if(array[i]!=undefined)f(array[i], i, this)
     }
 }

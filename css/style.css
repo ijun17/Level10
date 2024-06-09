@@ -397,10 +397,8 @@ button{
     width: 100%;
     height: 400px;
     background-color: var(--sub-bg-color);
-    background-color: unset;
-    /* border: 0px solid var(--border-color); */
+    border: none;
     border-radius: 20px;
-    /* box-shadow: 0 0 3px 1px var(--border-color); */
     overflow: hidden;
 }
 
@@ -421,8 +419,8 @@ button{
     color: var(--sub-text-color);
     font-size: 25px;
     background-color: var(--point-color);
-    border: none;
-    /* padding: 20px 0; */
+    border:none;
+    
 }
 
 .create-room-button:active,

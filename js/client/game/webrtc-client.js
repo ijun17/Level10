@@ -91,17 +91,29 @@ class SimpleWebRTC{
         this.pc.onicecandidate = (event) =>{
             if(event.candidate){
                 console.log("peerconnection: onicecandidate",event.candidate)
-                if(this.isWebSocketOpen()) this.ws.send(JSON.stringify({type:"ice", ice:event.candidate}))
-                else if(this.isDataChannelOpen()) this.dc.send(JSON.stringify({type:"ice", ice:event.candidate}))
+                const candidateInfo = {candidate:event.candidate.candidate, sdpMLineIndex:event.candidate.sdpMLineIndex, sdpMid:event.candidate.sdpMid}
+                console.log(candidateInfo)
+                if(this.isWebSocketOpen()) this.ws.send(JSON.stringify({type:"ice", ice:candidateInfo}))
+                else if(this.isDataChannelOpen()) this.dc.send(JSON.stringify({type:"ice", ice:candidateInfo}))
             }
         }
         this.pc.addEventListener("connectionstatechange", (event) => {
-            console.log("peerconnection:",this.pc.connectionState)
+            console.log("peerconnection: connectionstatechange:",this.pc.connectionState)
             if(this.pc.connectionState=="disconnected") {
                 this.ondatachannelclose();
                 this.disconnectPeerConnection();
             }
         });
+        this.pc.oniceconnectionstatechange = (e) => {
+            console.log('peerconnection: oniceconnectionstatechange:', this.pc.iceConnectionState);
+            if (this.pc.iceConnectionState === 'connected' || this.pc.iceConnectionState === 'completed') {
+                // 선택된 ICE 후보를 출력
+                // const selectedCandidatePair = this.pc.getSenders[0].transport.iceTransport.getSelectedCandidatePair();
+                // if (selectedCandidatePair) {
+                //     console.log('Selected ICE candidates:', selectedCandidatePair);
+                // }
+            }
+        };
         if(isHost){
             this.dc = this.pc.createDataChannel("dataChannel", { reliable: true , ordered: true});
             this.applyDatachannelEvent();
@@ -121,7 +133,6 @@ class SimpleWebRTC{
     send(message){
         try{
             this.dc.send(message);
-            console.log("send")
         }catch(e){
             console.error(e);
         }
