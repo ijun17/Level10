@@ -145,7 +145,8 @@ class MonsterMushroom extends Monster{
     animation
     constructor(pos){
         super(pos,[180,180],500,new GameUnitMoveModule(0,3,5), new GameUnitLifeModule(100000,50,5), new GameUnitSkillModule(0));
-        this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),8])},500))
+        this.skillModule.addSkill(new MagicSkill("jump",function(m){m.body.addVel([m.front(5),20])},500))
+        this.skillModule.addSkill(new MagicSkill("dash",function(m){m.body.addVel([m.front(20),-3])},600))
 
         this.physics.setCOR(0.6)
         this.animation=new UnitAnimation(IMAGES.monster_mushroom,60,60,[3, 3],function(){return (this.attackTick>0?1:0)}.bind(this));
