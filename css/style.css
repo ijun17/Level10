@@ -188,7 +188,7 @@ button{
     border-radius: 5px;
     /* font-size : 16px; */
     font-size : 1em;
-    line-height: 30px;
+    line-height: 2em;
     border:1px solid black;
 }
 
@@ -271,7 +271,7 @@ button{
 .helpSceneButton {
     color: white;
     background-color:unset;
-    font-size : 36px;
+    font-size : 1.2em;
     font-weight: bold;
     border: solid white 4px;
 }
@@ -366,7 +366,7 @@ button{
 .vsButton{
     color:brown;
     text-shadow: black 0 0 10px;
-    font-size : 128px;
+    font-size : 10em;
     font-weight: bold;
     background-color: unset;
     border: unset;

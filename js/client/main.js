@@ -73,7 +73,7 @@ Game.startGame()
 
 
 
-localStorage.setItem("signaling", "tawkor.xyz:8083");
+localStorage.setItem("signaling", "taskify.shop:8083");
 
 //Game.changeScene("pvp")
 
