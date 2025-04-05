@@ -21,9 +21,9 @@ Game.setScene("manageMagic",function(){
     //magicInput
     let magicInput = ui.add("div",[perX(30),perY(2)],[perX(40),perY(96)],"magicInput");
     magicInput.innerHTML=`
-    <div style="display:inline-block;position:relative;width:100%;">
+    <div style="position:relative;width:100%;">
         <textarea class="createMagicName" placeholder="이름을 입력하세요" spellcheck="false" maxlength="20" readonly></textarea>
-        <button class="createMagicbutton">EDIT</button>
+        <button class="createMagicbutton">🪄 Create</button>
     </div>
     <textarea class="createMagicCode" placeholder="코드를 입력하세요" spellcheck="false" readonly></textarea>
     <div class="createMagicInfo" style="font-weight:bold"></div>
@@ -38,7 +38,7 @@ Game.setScene("manageMagic",function(){
             createMagicInfo.innerText=`MP: ${magic.requiredMP} / cooltime: ${magic.cooltime/100}`;
             createMagicInfo.style.color="white"
         }else{
-            createMagicInfo.innerText="ERROR";
+            createMagicInfo.innerText="ERROR: "+magic.errorMessageList.join(" / ");
             createMagicInfo.style.color="brown"
         }
         
