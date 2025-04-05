@@ -48,7 +48,7 @@ const MagicManager={
     },
     createEmptyCustomMagic:function(){
         let emptyMagics=[];
-        for(let i=0; i<MagicManager.CUSTOM_MAGIC_COUNT; i++)emptyMagics.push({name:"Empty Magic "+(i+1), code:""});
+        for(let i=0; i<MagicManager.CUSTOM_MAGIC_COUNT; i++)emptyMagics.push({name:`커스텀 마법[${i+1}]`, code:"//마법을 생성하세요"});
         MagicManager.customMagic=emptyMagics;
         MagicManager.saveMagic();
     },
