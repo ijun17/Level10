@@ -36,7 +36,7 @@ class MagicSkill{
         
         let keywordList=["player","if","for","while","switch","else","front","create","setTrigger","giveForce","giveLife","invisible","move","addSchedule","getX","getY","getVX","getVY","FIRE","ELECTRICITY","ICE","ARROW","ENERGY","WIND","BLOCK","TRIGGER"];
         let testFunctionList=["giveForce","giveLife","invisible", "create","move","addSchedule","setTrigger"];
-        let prohibitedWord=["new","function","return","let","var", "addMagicCost", "setPlayer"]
+        let prohibitedWord=["new","function","return","let","var", "addMagicCost", "setPlayer", "eval", "this", "const", "class", "import", "export", "async", "await"];
 
         let jsCode=pCode;
         //주석제거
