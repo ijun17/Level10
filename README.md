@@ -14,8 +14,8 @@
 
 <table>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/d7012c45-a930-4c69-9daa-7e7c8a5fb9f7" width="100%" alt="LEVEL10 바로가기" /></td>
-    <td><img src="https://github.com/user-attachments/assets/03e90a16-a5e0-4a0a-8e6e-0732eed6c782" width="100%" alt="LEVEL10 바로가기" /></td>
+    <td><img src="https://github.com/user-attachments/assets/d7012c45-a930-4c69-9daa-7e7c8a5fb9f7" width="100%" alt="몬스터와 전투" /></td>
+    <td><img src="https://github.com/user-attachments/assets/03e90a16-a5e0-4a0a-8e6e-0732eed6c782" width="100%" alt="스킬 제작" /></td>
   </tr>
     <tr>
   <td align="center">
@@ -31,8 +31,8 @@
 
 <table>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/ef049d62-0721-45d3-b78a-3cb32cd309b6" width="100%" alt="LEVEL10 바로가기" /></td>
-    <td><img src="https://github.com/user-attachments/assets/913f69fa-b89e-4e04-9360-b7f01d83b473" width="100%" alt="LEVEL10 바로가기" /></td>
+    <td><img src="https://github.com/user-attachments/assets/ef049d62-0721-45d3-b78a-3cb32cd309b6" width="100%" alt="멀티 플레이이" /></td>
+    <td><img src="https://github.com/user-attachments/assets/913f69fa-b89e-4e04-9360-b7f01d83b473" width="100%" alt="몬스터 시뮬레이션" /></td>
   </tr>
     <tr>
   <td align="center">
@@ -109,4 +109,11 @@ const getVY=function(e){return e.body.vel[1];}
 const front=function(d=1){return (player.moveModule.moveDirection[0] ? d : -d);};
 ```
 
-  
+아래 예시는 플레이어 앞으로 불을 쏘는 스킬입니다.
+
+```js
+//불 생성
+@e1=create(FIRE,front(30),3);
+giveLife(e1,10);
+move(e1,front(30), 0);
+```
