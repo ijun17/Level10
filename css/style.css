@@ -329,6 +329,7 @@ button{
     justify-content : center;
     align-items : center;
     font : bold 252px Arial;
+    white-space : nowrap;
     color:white;
     text-shadow: gold 2px 0 30px;
 }
@@ -338,6 +339,7 @@ button{
     justify-content : center;
     align-items : center;
     font : bold 150px Arial;
+    white-space : nowrap;
     color:black;
     text-shadow: brown 2px 0 30px;
 }
