@@ -1,4 +1,4 @@
-<a href="https://quizground.site/">
+<a href="https://ijun17.github.io/Level10/">
     <img src="https://github.com/user-attachments/assets/2dacf8df-c33f-4410-89bd-6447834db6bc" alt="LEVEL10 바로가기" width="100%"/>
 </a>
 
