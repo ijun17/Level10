@@ -1,12 +1,14 @@
 <a href="https://ijun17.github.io/Level10/">
-    <img src="https://github.com/user-attachments/assets/2dacf8df-c33f-4410-89bd-6447834db6bc" alt="LEVEL10 바로가기" width="100%"/>
+    <img src="resource/readme/logo.png" alt="LEVEL10 바로가기" width="100%"/>
 </a>
 
 # 프로젝트 소개
 
 
 - 코딩으로 스킬을 만들어 몬스터를 물리치는 게임입니다. 
-- 자신이 만든 스킬로 다른 플레이어와 PVP를 할 수 있습니다
+- 자신이 만든 스킬로 다른 플레이어와 PVP를 할 수 있습니다.
+
+<br>
 
 # 핵심 기능
 
@@ -14,8 +16,8 @@
 
 <table>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/d7012c45-a930-4c69-9daa-7e7c8a5fb9f7" width="100%" alt="몬스터와 전투" /></td>
-    <td><img src="https://github.com/user-attachments/assets/03e90a16-a5e0-4a0a-8e6e-0732eed6c782" width="100%" alt="스킬 제작" /></td>
+    <td><img src="resource/readme/level10%20fight%20monster.gif" width="100%" alt="몬스터와 전투" /></td>
+    <td><img src="resource/readme/level10%20create%20magic.gif" width="100%" alt="스킬 제작" /></td>
   </tr>
     <tr>
   <td align="center">
@@ -31,8 +33,8 @@
 
 <table>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/ef049d62-0721-45d3-b78a-3cb32cd309b6" width="100%" alt="멀티 플레이이" /></td>
-    <td><img src="https://github.com/user-attachments/assets/913f69fa-b89e-4e04-9360-b7f01d83b473" width="100%" alt="몬스터 시뮬레이션" /></td>
+    <td><img src="resource/readme/level10%20multiplay.gif" width="100%" alt="멀티 플레이이" /></td>
+    <td><img src="resource/readme/level10%20monster%20simulation.gif" width="100%" alt="몬스터 시뮬레이션" /></td>
   </tr>
     <tr>
   <td align="center">
@@ -44,6 +46,7 @@
 </tr>
 </table>
 
+<br>
 
 # 프로젝트 정보
 
@@ -59,6 +62,8 @@
     <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"> 
     <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> 
 </div>
+
+<br>
 
 # 게임 이용 안내
 
@@ -109,7 +114,7 @@ const getVY=function(e){return e.body.vel[1];}
 const front=function(d=1){return (player.moveModule.moveDirection[0] ? d : -d);};
 ```
 
-아래 예시는 플레이어 앞으로 불을 쏘는 스킬입니다.
+아래 예시는 플레이어 앞 쪽으로 불을 쏘는 스킬입니다.
 
 ```js
 //불 생성
