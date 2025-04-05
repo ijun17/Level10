@@ -59,7 +59,7 @@ class MagicSkill{
         try {
             magic = eval("(function(player){"+MAGIC_DATA.unit_magic+jsCode+"})");
             let testMagic=eval("(function(player){"+MAGIC_DATA.unit_magic+MAGIC_DATA.test_unit_magic+test_jsCode+";return magicCost})");
-            magicInfo=testMagic(new Player([0,0],1));
+            magicInfo=testMagic(new Player([10000,10000],1));
             if(isNaN(magicInfo.mp)||isNaN(magicInfo.cooltime))addErrorMessage("error : MP or Cooltime is not Number")
         }catch(e){
             addErrorMessage(e.message);
