@@ -79,10 +79,13 @@ Game.setScene("monsterVS",function(){
         
     }
 
+    // 디폴트로 레벨 0 선택
+    scorll1.children[0].click();
+    scorll2.children[0].click();
+
     ReusedModule.createGameMap(4000, 1500);
     WORLD.environment.addGravity([-20000, -20000], [40000, 40000], [0, -0.2]);
     WORLD.environment.addDrag([-20000, -20000], [40000, 40000], [0, 0], 0.02);
     SCREEN.renderer.camera.zoom = 0.5;
-    // ReusedModule.snowWeather(100)
-    ReusedModule.rainWeather()
+    ReusedModule.rainWeather();
 })
