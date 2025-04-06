@@ -16,8 +16,8 @@
 
 <table>
   <tr>
-    <td><img src="resource/readme/level10%20fight%20monster.gif" width="100%" alt="몬스터와 전투" /></td>
-    <td><img src="resource/readme/level10%20create%20magic.gif" width="100%" alt="스킬 제작" /></td>
+    <td width="50%"><img src="resource/readme/level10%20fight%20monster.gif" width="100%" alt="몬스터와 전투" /></td>
+    <td width="50%"><img src="resource/readme/level10%20create%20magic.gif" width="100%" alt="스킬 제작" /></td>
   </tr>
     <tr>
   <td align="center">
@@ -33,8 +33,8 @@
 
 <table>
   <tr>
-    <td><img src="resource/readme/level10%20multiplay.gif" width="100%" alt="멀티 플레이이" /></td>
-    <td><img src="resource/readme/level10%20monster%20simulation.gif" width="100%" alt="몬스터 시뮬레이션" /></td>
+    <td width="50%"><img src="resource/readme/level10%20multiplay.gif" width="100%" alt="멀티 플레이이" /></td>
+    <td width="50%"><img src="resource/readme/level10%20monster%20simulation.gif" width="100%" alt="몬스터 시뮬레이션" /></td>
   </tr>
     <tr>
   <td align="center">
