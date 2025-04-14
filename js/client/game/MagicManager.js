@@ -79,31 +79,33 @@ const MagicManager={
 
 
 const BASIC_MAGIC=[
-    {name:"파이어볼",code:`//불 생성
-@e1=create(FIRE,front(30),3);
-giveLife(e1,10);
-move(e1,front(30), 0);`,level:0},
+    {name:"에너지볼",code:`//에너지 발사
+@energy = create(ENERGY,front(40),0)
+move(energy,front(100),30)
+`,level:0},
 
-    {name:"벽", code:`//블럭을 생성
+    {name:"장벽", code:`//장벽 생성
 @block = create(BLOCK,0,0,60,200);
 move(block,0,100);`,level:0},
 
-    {name:"대쉬",code:`//플레이어가 빠른 속도로 앞으로 이동
-giveForce(player,front(30),1);`,level:0},
+    {name:"텔레포트",code:`//텔레포트
+move(player, front(600), 0);`,level:0},
 
     {name:"힐",code:`//플레이어 hp를 10000회복
 giveLife(player,10000);`,level:0},
 
-    {name:"파이어볼2",code:`//불과 불이 부딪히면 폭발한다
-for(@i=0; i<3; i++){
-    for(@j=0; j<3; j++){
+    {name:"파이어볼",code:`//불과 불이 충돌하면 폭발
+for(@i=0; i<2; i++){
+    for(@j=0; j<2; j++){
         @fire = create(FIRE,front(60),3)
-        move(fire,front(31)*i,j*31)
+        move(fire,front(100+31*i),j*31)
     }
 }`,level:1},
 
-    {name:"텔레포트",code:`//텔레포트
-move(player, front(600), 0);`,level:1},
+    {name:"매직 애로우",code:`//빠를수록 데미지 증가
+@arrow = create(ARROW,front(100),0)
+move(arrow,front(100),30)
+`,level:1},
 
     {name:"활공",code:`//바람 생성
 @wind=create(WIND,0,40);
@@ -111,7 +113,7 @@ giveLife(wind,500);
 move(wind,front(-100),-50);
 giveForce(wind,0,-30);`,level:1},
     
-    {name:"얼음비", code:`//얼음을 소환
+    {name:"얼음비", code:`//얼음을 아래로 낙하
 for(@i=0;i<10;i++){
     for(@j=0;j<3;j++){
         @ice = create(ICE, 0,-40)
@@ -130,7 +132,7 @@ for(@i=0; i<13; i++){
     addSchedule(26/100,26/100,1/100,#{  giveForce(fire,-getVX(fire)+plusX*3,-30);  })
 }`,level:2},
 
-    {name:"투명",code:`//플레이어의 투명화
+    {name:"투명",code:`//플레이어를 투명하게
 invisible(player,3);`,level:2},
 
     {name:"기관총",code:`//화살 발사
@@ -141,7 +143,7 @@ addSchedule(0,5,1/20,#{
     }
 })`, level:3},
 
-    {name:"전격실드", code:`//전기 실드를 생성
+    {name:"전기실드", code:`//전기가 닿으면 움직임이 느려짐
 for(@j=0;j<5;j++){
     @a=create(ELECTRICITY,0,0);
     move(a,front(20-j*20),60);
@@ -154,13 +156,13 @@ for(@j=0;j<5;j++){
     giveLife(c,500);
 }`,level:3},
 
-    {name:"번개",code:`//전기들이 일정 수 부딪히면 번개가 생성된다. 
+    {name:"번개",code:`//전기들이 많이 부딪히면 번개가 생성
 for(@i=0; i<200; i++){
     @e=create(ELECTRICITY, 0,0);
     move(e, front(300),0);
 }`,level:4},
 
-    {name:"폭발 비",code:`//불끼리 부딪히면 폭발한다.
+    {name:"폭발 비",code:`//불끼리 부딪히면 폭발
 for(@i=0; i<10; i++){
     for(@j=0; j<3; j++){
         @fire=create(FIRE,0,-29);
@@ -171,7 +173,7 @@ for(@i=0; i<10; i++){
     }
 }`,level:4},
 
-    {name:"연막",code:`//수증기는 불과 얼음이 부딪히면 생성된다.
+    {name:"연막",code:`//불과 얼음이 부딪히면 수증기 생성
 for(@i=0; i<10; i++){
     move(create(FIRE,front(10),1),front(100*i), 0);
     move(create(ICE,front(10),1),front(100*i), 0);
@@ -179,7 +181,7 @@ for(@i=0; i<10; i++){
     move(create(ICE,front(10),1),front(100*i), 100);
 }`,level:4},
 
-{name:"샷건",code:`//
+{name:"샷건",code:`//샷건
 for(@i=0; i<10; i++){
     for(@j=0; j<10; j++){
         @bullet = create(BLOCK,0,0,4,4)
@@ -188,7 +190,7 @@ for(@i=0; i<10; i++){
     }
 }`,level:10},
 
-    {name:"에너지파",code:`//
+    {name:"에너지파",code:`//에너지파
 for(@i=0;i<100;i++){
     @e=create(ENERGY,0,0)
     move(e,front(100+i*10),50)

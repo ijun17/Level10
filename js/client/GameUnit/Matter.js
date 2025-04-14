@@ -128,10 +128,7 @@ class MatterElectricity extends Matter{
         this.animation=new UnitAnimation(Game.resource.getImage("matter_electricity"), 10,10,[3],function(){return 0})
         this.physics.fixedGravity=true;
         this.physics.setGravity([0,0]);
-        this.lifeModule.ondamage=(d,dt)=>{
-            if(dt == TYPE.damageElectricity)return false
-            return true
-        }
+        this.lifeModule.ondamage=(d,dt)=>{return false;}
     }
     update(){
         super.update();
@@ -148,7 +145,7 @@ class MatterElectricity extends Matter{
                 WORLD.add(new MatterLightning([this.body.midX-150,this.body.midY]));
                 this.setState(0);
             }
-        }else this.electricPoint=0;
+        }else this.electricPoint--;
         other.body.setVel([0,0])
         return false;
     }

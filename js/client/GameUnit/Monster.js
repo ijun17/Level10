@@ -602,6 +602,7 @@ class MonsterDragon extends Monster{
     constructor(pos){
         super(pos,[400,400],1000,new GameUnitMoveModule(1,3), new GameUnitLifeModule(10000000,100,5), new GameUnitSkillModule(0));
         
+        this.skillModule.addSkill(new MagicSkill("dash",function(m){m.body.setVel([m.front(10),10])},111))
         this.skillModule.addSkill(new MagicSkill("THUNDER",(m)=>{
             let dir=m.front(60)
             let x=m.body.midX+dir;
@@ -617,7 +618,7 @@ class MonsterDragon extends Monster{
                     return true;
                 })
                 dir*=-1;
-                i++;
+                i+=1.5;
             },()=>{return m.getState(0)==0})
         },1000))
 
@@ -626,7 +627,7 @@ class MonsterDragon extends Monster{
             let x=m.body.midX;
             let y=m.body.midY;
             let tb=m.target.body;
-            let speed=30;
+            let speed=35;
             let dir = m.body.getUnitVector(m.target.body.midPos)
             let vel=[dir[0]*speed, dir[1]*speed];
             let elecs=[];
@@ -660,7 +661,7 @@ class MonsterDragon extends Monster{
             },()=>{return m.getState()==0})
             TIME.addSchedule(2.1,2.1,0,function(){for(let i=elecs.length-1; i>=0; i--)elecs[i].setState(0);},()=>{return m.getState()==0});
             m.addEventListener("remove",()=>{for(let i=elecs.length-1; i>=0; i--)elecs[i].setState(0);})
-        },900))
+        },700))
 
         this.animation=new UnitAnimation(IMAGES.monster_golden_dragon,80,80,[4, 1],function(){return (this.attackTick>0?1:0)}.bind(this));
         this.animation.fps=16;
@@ -697,7 +698,7 @@ class MonsterDragon extends Monster{
                             if(o.damageType!==TYPE.damageElectricity)o.setState(0);
                             return false;
                         }
-                        if(o.lifeModule)o.lifeModule.giveDamage(1000,TYPE.damageElectricity);
+                        if(o.lifeModule)o.lifeModule.giveDamage(3000,TYPE.damageElectricity);
     
                         o.body.setVel([(m.body.midX-o.body.midX),(m.body.midY-o.body.midY)]);
                         return false;
@@ -705,7 +706,7 @@ class MonsterDragon extends Monster{
                 }
                 m.canDraw=false;
                 m.canInteract=false;
-                m.moveModule.moveSpeed=30;
+                m.moveModule.moveSpeed=50;
                 TIME.addSchedule(0,4,0,function(){
                     let b=m.body;
                     for(let i=elecs.length-1; i>=0; i--)
@@ -749,7 +750,7 @@ class MonsterShark extends Monster{
             this.slaveList.push(b);
             b.lifeModule.defense=100000000;
             b.update=()=>{}
-            b.physics.inv_mass=0.01*(i+1);
+            b.physics.inv_mass=0.001*(i+1);
             b.physics.setCOR(this.slaveCOR);
             b.physics.setCOF(0);
             b.physics.setCOD(0);
@@ -759,7 +760,7 @@ class MonsterShark extends Monster{
                 if(e.other==this)return false;
                 if(e.other.id==82374543)return true;
                 if(e.other instanceof Matter && e.other.damageType == TYPE.damageFire)e.other.setState(0);
-                if(e.other.lifeModule && this.electrocutedTime<=0)e.other.lifeModule.giveDamage((this.tornadoOn?1500:500),TYPE.damageNormal);
+                if(e.other.lifeModule && this.electrocutedTime<=0)e.other.lifeModule.giveDamage((this.tornadoOn?3000:1000),TYPE.damageNormal);
                 return true
             }
         }
@@ -768,14 +769,14 @@ class MonsterShark extends Monster{
             if(dt==TYPE.damageElectricity)this.electrocutedTime=100;
             return true;
         }
-        this.skillModule.addSkill(new MagicSkill("dash",function(m){m.body.addVel([m.front(20),15])},1200))
+        this.skillModule.addSkill(new MagicSkill("dash",function(m){m.body.addVel([m.front(20),15])},333))
         this.skillModule.addSkill(new MagicSkill("surf",function(m){
             const speed = m.front(60)
             TIME.addSchedule(0,0.3,0,()=>{
                 // if(m.electrocutedTime>0)return
                 for(let i=0; i<m.MAX_SLAVE_COUNT; i++)m.slaveList[i].body.setVel([speed,1]);
             },()=>{return m.getState()==0})
-        },750))
+        },560))
         this.skillModule.addSkill(new MagicSkill("TORNADO",function(m){
             let fires=m.slaveList;
             let x=m.body.midX;
